@@ -35,3 +35,9 @@ WebApi/.vs/
 WebApi/.vs/WebApi/
 WebApi/.vs/WebApi/copilot-chat/
 WebApi/.vs/WebApi/copilot-chat/*
+
+# Ignore Copilot Chat sessions in MauiBlazorWeb
+MauiBlazorWeb/.vs/
+MauiBlazorWeb/.vs/MauiBlazorWeb/
+MauiBlazorWeb/.vs/MauiBlazorWeb/copilot-chat/
+MauiBlazorWeb/.vs/MauiBlazorWeb/copilot-chat/*

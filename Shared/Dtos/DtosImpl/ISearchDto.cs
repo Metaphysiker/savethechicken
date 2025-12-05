@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Shared.Dtos.DtosImpl
 {
-    public class ISearch
+    public class ISearchDto
     {
         public int Page { get; set; }
         public int PageSize { get; set; }

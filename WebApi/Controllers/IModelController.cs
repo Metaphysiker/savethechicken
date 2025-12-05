@@ -4,7 +4,7 @@ using Shared.Dtos.DtosImpl;
 
 namespace WebApi.Controllers
 {
-    public interface IModelController<Dto, SearchT> where Dto : IDto where SearchT : ISearch
+    public interface IModelController<Dto, SearchT> where Dto : IDto where SearchT : ISearchDto
     {
         public Task<ActionResult<List<Dto>>> ReadAll();
         public Task<ActionResult<Dto>> Read(int id);

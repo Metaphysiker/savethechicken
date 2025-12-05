@@ -11,12 +11,20 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MauiBlazorWeb.Web", "MauiBl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MauiBlazorWeb.Web.Client", "MauiBlazorWeb.Web.Client\MauiBlazorWeb.Web.Client.csproj", "{7C064C71-30BE-4D8D-9B68-E7249ED18FA1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "..\Shared\Shared.csproj", "{6311C115-D585-51B9-BEA0-07373A03268A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E3338D37-FF50-4A34-96BD-2716ED93F1E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3338D37-FF50-4A34-96BD-2716ED93F1E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3338D37-FF50-4A34-96BD-2716ED93F1E2}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{E3338D37-FF50-4A34-96BD-2716ED93F1E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3338D37-FF50-4A34-96BD-2716ED93F1E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3338D37-FF50-4A34-96BD-2716ED93F1E2}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{1AA5F22B-62F8-414F-AE50-635E99EB3F76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1AA5F22B-62F8-414F-AE50-635E99EB3F76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1AA5F22B-62F8-414F-AE50-635E99EB3F76}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,18 +41,10 @@ Global
 		{7C064C71-30BE-4D8D-9B68-E7249ED18FA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C064C71-30BE-4D8D-9B68-E7249ED18FA1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7C064C71-30BE-4D8D-9B68-E7249ED18FA1}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{E3338D37-FF50-4A34-96BD-2716ED93F1E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E3338D37-FF50-4A34-96BD-2716ED93F1E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E3338D37-FF50-4A34-96BD-2716ED93F1E2}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{E3338D37-FF50-4A34-96BD-2716ED93F1E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E3338D37-FF50-4A34-96BD-2716ED93F1E2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E3338D37-FF50-4A34-96BD-2716ED93F1E2}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{9E30318E-74DD-491B-9BAF-814DC9E892B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9E30318E-74DD-491B-9BAF-814DC9E892B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9E30318E-74DD-491B-9BAF-814DC9E892B8}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{9E30318E-74DD-491B-9BAF-814DC9E892B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9E30318E-74DD-491B-9BAF-814DC9E892B8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9E30318E-74DD-491B-9BAF-814DC9E892B8}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{6311C115-D585-51B9-BEA0-07373A03268A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6311C115-D585-51B9-BEA0-07373A03268A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6311C115-D585-51B9-BEA0-07373A03268A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6311C115-D585-51B9-BEA0-07373A03268A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

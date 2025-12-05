@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 
 public class TokenService
 {
-    private const int ExpirationMinutes = 525600;
+    private const int ExpirationMinutes = 525600; // 1 year
     private UserManager<IdentityUser> userManager;
 
 

@@ -21,9 +21,14 @@ services:
   web:
     build:
       context: ../../
-      dockerfile: MauiBlazorWeb/MauiBlazorWeb.Web/Dockerfile
+      dockerfile: DockerfileMauiBlazorWeb
+      args:
+      - API_BASE_URL=${API_BASE_URL}
+    env_file:
+      - .env
     ports:
       - "${PORT_FRONTEND}:8080"
+
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080

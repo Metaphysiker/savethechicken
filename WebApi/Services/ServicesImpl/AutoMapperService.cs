@@ -8,11 +8,11 @@ public class AutoMapperService
 
     public IMapper mapper { get; set; }
 
-    public AutoMapperService(ILoggerFactory loggerFactory)
+    public AutoMapperService()
     {
         var config = new MapperConfiguration(cfg => {
-            cfg.CreateMap<SaveChickenRequest, SaveChickenRequestDto>();
-        }, loggerFactory);
+            cfg.CreateMap<SaveChickenRequest, SaveChickenRequestDto>().ReverseMap();
+        });
 
         mapper = new Mapper(config);
     }

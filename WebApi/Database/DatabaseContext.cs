@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using WebApi.Models.ModelsImpl;
 
 public class DatabaseContext : IdentityDbContext<IdentityUser>
 {
-    // public DbSet<Horse> Horses { get; set; }
+    public DbSet<SaveChickenRequest> SaveChickenRequests { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

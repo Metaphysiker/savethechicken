@@ -1,0 +1,39 @@
+﻿@using MauiBlazorWeb.Web.Services
+@using global::Shared.Dtos.DtosImpl
+@inject MauiBlazorWeb.Shared.Factories.FactoriesImpl.GenericDtoServiceFactory DtoServiceFactory
+@page "/save-the-chicken"
+
+<h3>SaveTheChicken</h3>
+
+<button @onclick="CreateRequest">Create Request</button>
+<p>
+    City:
+@newRequest.City
+</p>
+
+@code {
+    private IGenericDtoService<SaveChickenRequestDto, ISearchDto> _service;
+    private SaveChickenRequestDto newRequest = new SaveChickenRequestDto();
+    protected override void OnInitialized()
+    {
+        _service = DtoServiceFactory.Create<SaveChickenRequestDto, ISearchDto>();
+    }
+
+    private List<SaveChickenRequestDto> requests;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _service = DtoServiceFactory.Create<SaveChickenRequestDto, ISearchDto>();
+        requests = await _service.GetAllAsync();
+        StateHasChanged();
+    }
+
+    private async Task CreateRequest()
+    {
+        var newRequest = new SaveChickenRequestDto();
+        newRequest.City = "Sample City";
+        newRequest = await _service.CreateAsync(newRequest);
+        Console.WriteLine($"Created Request with ID: {newRequest.Id}");
+        StateHasChanged();
+    }
+}
