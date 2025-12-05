@@ -1,0 +1,37 @@
+# .NET build and user files
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider and VS Code
+.idea/
+.vscode/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Docker
+**/out/
+**/publish/
+
+# Logs
+*.log
+
+# Others
+*.swp
+*.tmp
+*.bak
+
+# Environment files
+.env
+.env.
+
+# Ignore Copilot Chat sessions and .vs
+WebApi/.vs/
+WebApi/.vs/WebApi/
+WebApi/.vs/WebApi/copilot-chat/
+WebApi/.vs/WebApi/copilot-chat/*

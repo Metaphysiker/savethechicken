@@ -1,0 +1,27 @@
+# Stage 1: Build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+
+WORKDIR /App
+
+# Copy everything
+# Copy WebApi and Shared project folders
+COPY WebApi ./WebApi
+COPY Shared ./Shared
+
+# Restore NuGet packages
+RUN dotnet restore WebApi/WebApi.csproj
+
+# Publish the app
+RUN dotnet publish WebApi/WebApi.csproj -c Release -o out
+
+# Stage 2: Runtime
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS runtime
+
+WORKDIR /App
+
+# Copy built app and global tools
+COPY --from=build /App ./
+
+EXPOSE 8080
+
+ENTRYPOINT [ "dotnet", "out/WebApi.dll" ]
