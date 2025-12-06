@@ -30,7 +30,6 @@ namespace Services.ServicesImpl
             {
                     var term = $"%{search.SearchTerm.ToLower()}%";
 
-
                 query = query.Where(x =>
                     EF.Functions.Like(x.FirstName.ToLower(), term) ||
                     EF.Functions.Like(x.LastName.ToLower(), term) ||
