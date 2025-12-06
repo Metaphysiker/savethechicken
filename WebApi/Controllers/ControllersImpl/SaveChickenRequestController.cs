@@ -57,7 +57,14 @@ namespace WebApi.Controllers.ControllersImpl
         public async Task<ActionResult<PaginationDto<SaveChickenRequestDto>>> Search([FromBody] ISearchDto search)
         {
             var result = await _service.Search(search);
-            var resultDto = _mapper.mapper.Map<PaginationDto<SaveChickenRequestDto>>(result);
+            var resultDto = new PaginationDto<SaveChickenRequestDto>
+            {
+                Data = _mapper.mapper.Map<List<SaveChickenRequestDto>>(result.Data),
+                Page = result.Page,
+                PageSize = result.PageSize,
+                TotalItems = result.TotalItems,
+                TotalPages = result.TotalPages
+            };
             return Ok(resultDto);
         }
 

@@ -42,6 +42,7 @@ public class AuthController : ControllerBase
         return BadRequest(ModelState);
     }
 
+
     [HttpPost]
     [Route("login")]
     public async Task<ActionResult<AuthResponseDto>> Authenticate([FromBody] AuthRequestDto request)
@@ -51,15 +52,12 @@ public class AuthController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        var managedUser = await _userManager.FindByEmailAsync(request.Email);
+        var managedUser = await _userManager.FindByEmailAsync(request.Email) ??
+                          await _userManager.FindByNameAsync(request.Email);
+
         if (managedUser == null)
         {
-            managedUser = await _userManager.FindByNameAsync(request.Email);
-
-            if (managedUser == null)
-            {
-                return BadRequest("User not found");
-            }
+            return BadRequest("User not found");
         }
 
         var isPasswordValid = await _userManager.CheckPasswordAsync(managedUser, request.Password);
@@ -68,16 +66,8 @@ public class AuthController : ControllerBase
             return BadRequest("Login failed");
         }
 
-        var accessToken = await _tokenService.CreateToken(managedUser);
         await _db.SaveChangesAsync();
-
-        return Ok(new AuthResponseDto
-        {
-            UserId = managedUser.Id,
-            Username = managedUser.UserName ?? "",
-            Email = managedUser.Email ?? "",
-            Token = accessToken,
-        });
+        return Ok(await BuildAuthResponse(managedUser));
     }
 
     [HttpGet, Authorize]
@@ -97,15 +87,21 @@ public class AuthController : ControllerBase
             return BadRequest("User not found");
         }
 
-        var accessToken = await _tokenService.CreateToken(foundUser);
+        return Ok(await BuildAuthResponse(foundUser));
+    }
 
-        return Ok(new AuthResponseDto
+    private async Task<AuthResponseDto> BuildAuthResponse(IdentityUser user)
+    {
+        var accessToken = await _tokenService.CreateToken(user);
+        return new AuthResponseDto
         {
-            UserId = foundUser.Id,
-            Username = foundUser.UserName ?? "",
-            Email = foundUser.Email ?? "",
+            UserId = user.Id,
+            Username = user.UserName ?? string.Empty,
+            Email = user.Email ?? string.Empty,
             Token = accessToken,
-        });
+            Roles = (await _userManager.GetRolesAsync(user)).ToList(),
+            ExpiresAt = DateTime.UtcNow.AddMinutes(TokenService.ExpirationMinutes)
+        };
     }
 
     [HttpGet, Authorize]

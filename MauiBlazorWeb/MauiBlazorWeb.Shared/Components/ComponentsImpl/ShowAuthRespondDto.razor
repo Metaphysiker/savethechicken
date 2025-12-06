@@ -1,0 +1,32 @@
+﻿@using MauiBlazorWeb.Shared.Singletons.SingletonsImpl
+@inject AuthResponseSingleton _authResponseSingleton;
+
+<h3>ShowAuthRespondDto</h3>
+
+@if (_authResponseSingleton.AuthResponse != null)
+{
+    <div>
+        <p><strong>User ID:</strong> @_authResponseSingleton.AuthResponse.UserId</p>
+        <p><strong>Username:</strong> @_authResponseSingleton.AuthResponse.Username</p>
+        <p><strong>Email:</strong> @_authResponseSingleton.AuthResponse.Email</p>
+        <p><strong>Token:</strong> @_authResponseSingleton.AuthResponse.Token</p>
+        <p><strong>Roles:</strong> @string.Join(", ", _authResponseSingleton.AuthResponse.Roles)</p>
+        <p><strong>Expires At:</strong> @_authResponseSingleton.AuthResponse.ExpiresAt</p>
+    </div>
+}
+else
+{
+    <p>No authentication information available.</p>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        _authResponseSingleton.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        _authResponseSingleton.OnChange -= StateHasChanged;
+    }
+}

@@ -1,14 +1,17 @@
-using System.Net.Http.Json;
 using Blazored.LocalStorage;
 using MauiBlazorWeb.Shared.Factories.FactoriesImpl;
 using MauiBlazorWeb.Shared.Services;
+using MauiBlazorWeb.Shared.Singletons.SingletonsImpl;
 using MauiBlazorWeb.Web.Client.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using System.Net.Http.Json;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<AuthService>();
+
+builder.Services.AddSingleton<AuthResponseSingleton>();
 
 // Add device-specific services used by the MauiBlazorWeb.Shared project
 builder.Services.AddSingleton<IFormFactor, FormFactor>();

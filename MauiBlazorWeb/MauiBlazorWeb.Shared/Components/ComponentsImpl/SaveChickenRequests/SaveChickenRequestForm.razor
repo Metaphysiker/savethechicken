@@ -1,6 +1,14 @@
 @using global::Shared.Dtos.DtosImpl
 @code {
     [Parameter] public SaveChickenRequestDto Model { get; set; } = default!;
+
+    private List<int> saveChickenActionIds = new List<int>();
+
+    protected override void OnInitialized()
+    {
+        // For demonstration, populate with sample IDs
+        saveChickenActionIds = Enumerable.Range(1, 10).ToList();
+    }
 }
 <div>
     <label for="firstName">First Name:</label>

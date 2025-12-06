@@ -12,6 +12,7 @@ public class AutoMapperService
     {
         var config = new MapperConfiguration(cfg => {
             cfg.CreateMap<SaveChickenRequest, SaveChickenRequestDto>().ReverseMap();
+            cfg.CreateMap<SaveChickenAction, SaveChickenActionDto>().ReverseMap();
         });
 
         mapper = new Mapper(config);

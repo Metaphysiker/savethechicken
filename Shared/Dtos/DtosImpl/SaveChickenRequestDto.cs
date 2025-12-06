@@ -45,5 +45,6 @@ namespace Shared.Dtos.DtosImpl
         public bool AcceptTermsAndConditions { get; set; } = false;
 
         public string Message { get; set; } = string.Empty;
+        public int? SaveChickenActionId { get; set; }
     }
 }

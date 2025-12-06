@@ -1,0 +1,67 @@
+@typeparam TDto where TDto : class
+@typeparam TSearchDto where TSearchDto : ISearchDto
+@inject GenericDtoServiceFactory DtoServiceFactory
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Web.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+
+@code {
+    [Parameter] public TSearchDto SearchDto { get; set; } = default!;
+    [Parameter] public RenderFragment<List<TDto>> ChildContent { get; set; } = default!;
+
+    private PaginationDto<TDto> items = new();
+    private int page = 1;
+    private int pageSize = 10;
+    private int totalCount = 0;
+
+
+    private GenericDtoService<TDto, TSearchDto>? _service;
+
+    protected override void OnInitialized()
+    {
+        _service = DtoServiceFactory.Create<TDto, TSearchDto>();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadItems();
+    }
+
+    private async Task LoadItems()
+    {
+        if (_service == null) return;
+        var result = await _service.SearchAsync(SearchDto);
+        items = result;
+        totalCount = result.Data.Count;
+        StateHasChanged();
+    }
+
+    private async Task NextPage()
+    {
+        page++;
+        await LoadItems();
+    }
+
+    private async Task PrevPage()
+    {
+        if (page > 1)
+        {
+            page--;
+            await LoadItems();
+        }
+    }
+}
+
+@if (items.TotalItems == 0)
+{
+    <p>No results found.</p>
+}
+else
+{
+    // Render the table or list of items here, with CHildContent or other markup
+    @ChildContent(items.Data)
+
+    <button @onclick="PrevPage" disabled="@(page == 1)">Previous</button>
+
+    <button @onclick="NextPage" disabled="@(items.TotalPages < pageSize)">Next</button>
+}

@@ -1,4 +1,5 @@
 ﻿@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
 @using MauiBlazorWeb.Web.Services
 @using global::Shared.Dtos.DtosImpl
 @inject MauiBlazorWeb.Shared.Factories.FactoriesImpl.GenericDtoServiceFactory DtoServiceFactory
@@ -12,6 +13,12 @@
 @newRequest.City
 </p>
 
+<h2> Generic List</h2>
+<GenericList TDto="SaveChickenRequestDto" TSearchDto="ISearchDto" SearchDto="searchDto">
+    <ChildContent Context="items">
+        <SaveChickenRequestTable items="items" />
+    </ChildContent>
+</GenericList>
 
 <h3> Generic</h3>
 <GenericCreate TDto="SaveChickenRequestDto">
@@ -25,6 +32,11 @@
 @code {
     private IGenericDtoService<SaveChickenRequestDto, ISearchDto> _service = null!;
     private SaveChickenRequestDto newRequest = new SaveChickenRequestDto();
+    private ISearchDto searchDto = new ISearchDto
+    {
+        Page = 1,
+        PageSize = 10
+    };
     protected override void OnInitialized()
     {
         _service = DtoServiceFactory.Create<SaveChickenRequestDto, ISearchDto>();

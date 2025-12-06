@@ -1,15 +1,18 @@
 using System.Net.Http.Json;
+using MauiBlazorWeb.Shared.Singletons.SingletonsImpl;
 using Shared.Dtos.DtosImpl;
 
 public class AuthService
 {
     private readonly HttpClient _httpClient;
     private readonly TokenService _tokenService;
+    private readonly AuthResponseSingleton _authResponseSingleton;
 
-    public AuthService(HttpClient httpClient, TokenService tokenService)
+    public AuthService(HttpClient httpClient, TokenService tokenService, AuthResponseSingleton authResponseSingleton)
     {
         _httpClient = httpClient;
         _tokenService = tokenService;
+        _authResponseSingleton = authResponseSingleton;
     }
 
     public async Task<bool> RegisterAsync(RegistrationRequestDto request)
@@ -25,6 +28,7 @@ public class AuthService
         var authResponse = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
         if (authResponse != null)
         {
+            _authResponseSingleton.AuthResponse = authResponse;
             await _tokenService.SaveTokenAsync(authResponse.Token);
         }
         return authResponse;
@@ -40,6 +44,7 @@ public class AuthService
         var authResponse = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
         if (authResponse != null)
         {
+            _authResponseSingleton.AuthResponse = authResponse;
             await _tokenService.SaveTokenAsync(authResponse.Token);
         }
         return authResponse;

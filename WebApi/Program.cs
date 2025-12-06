@@ -94,6 +94,14 @@ builder.Services.AddAWSService<IAmazonS3>();
 var app = builder.Build();
 app.MapIdentityApi<IdentityUser>();
 
+// Enable Swagger in production
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Demo API v1");
+    c.RoutePrefix = "swagger";
+});
+
 app.UseHttpsRedirection();
 
 app.UseRouting();

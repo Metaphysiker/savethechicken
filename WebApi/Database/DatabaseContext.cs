@@ -6,6 +6,7 @@ using WebApi.Models.ModelsImpl;
 public class DatabaseContext : IdentityDbContext<IdentityUser>
 {
     public DbSet<SaveChickenRequest> SaveChickenRequests { get; set; }
+    public DbSet<SaveChickenAction> SaveChickenActions { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

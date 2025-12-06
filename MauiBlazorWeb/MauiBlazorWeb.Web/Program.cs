@@ -1,13 +1,18 @@
-using MauiBlazorWeb.Web.Components;
-using MauiBlazorWeb.Shared.Services;
-using MauiBlazorWeb.Web.Services;
-using MauiBlazorWeb.Shared.Factories.FactoriesImpl;
 using Blazored.LocalStorage;
+using MauiBlazorWeb.Shared.Factories.FactoriesImpl;
+using MauiBlazorWeb.Shared.Services;
+using MauiBlazorWeb.Shared.Singletons.SingletonsImpl;
+using MauiBlazorWeb.Web.Components;
+using MauiBlazorWeb.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<AuthService>();
+
+builder.Services.AddSingleton<AuthResponseSingleton>();
+
+
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()

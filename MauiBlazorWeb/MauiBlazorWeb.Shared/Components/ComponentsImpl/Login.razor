@@ -2,7 +2,6 @@
 @inject NavigationManager NavigationManager
 @inject TokenService TokenService
 @inject HttpClient HttpClient
-
 @using global::Shared.Dtos.DtosImpl
 
 
@@ -21,12 +20,11 @@
     </div>
     <button type="submit" class="btn btn-primary">Login</button>
 
-    <h2>@token</h2>
 </EditForm>
 
 @code {
     private AuthRequestDto loginModel = new();
-    private String token = string.Empty;
+    private string errorMessage = string.Empty;
     private async Task HandleLogin()
     {
         var result = await AuthService.AuthenticateAsync(loginModel);
@@ -35,14 +33,14 @@
             await TokenService.SaveTokenAsync(result.Token);
             // Set jwt token in HttpClient for future requests
             HttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", result.Token);
-            // HttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", result.Token);
-            //NavigationManager.NavigateTo("/");
-            token = result.Token;
             StateHasChanged();
+            NavigationManager.NavigateTo("/");
+
         }
         else
         {
             // Optionally show error message
+            errorMessage = "Login failed. Please check your credentials.";
         }
     }
 

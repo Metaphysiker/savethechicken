@@ -16,5 +16,7 @@
         public String DescriptionOfPlaceForChickens { get; set; } = String.Empty;
         public bool AcceptTermsAndConditions { get; set; } = false;
         public String Message { get; set; } = String.Empty;
+        public int? SaveChickenActionId { get; set; }
+        public SaveChickenAction? SaveChickenAction { get; set; }
     }
 }

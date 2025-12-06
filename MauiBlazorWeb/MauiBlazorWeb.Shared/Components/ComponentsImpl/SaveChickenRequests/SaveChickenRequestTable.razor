@@ -1,0 +1,50 @@
+@using global::Shared.Dtos.DtosImpl
+    @code {
+        [Parameter]
+        public List<SaveChickenRequestDto> items { get; set; } = new List<SaveChickenRequestDto>();
+    }
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Created At</th>
+                <th>Updated At</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Street</th>
+                <th>City</th>
+                <th>Postal Code</th>
+                <th>Phone Number</th>
+                <th>Email</th>
+                <th>Number Of Chickens</th>
+                <th>Description Of Place</th>
+                <th>Accepted Terms</th>
+                <th>Message</th>
+                <th>SaveChickenActionId</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in items)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.CreatedAt</td>
+                    <td>@item.UpdatedAt</td>
+                    <td>@item.FirstName</td>
+                    <td>@item.LastName</td>
+                    <td>@item.Street</td>
+                    <td>@item.City</td>
+                    <td>@item.PostalCode</td>
+                    <td>@item.PhoneNumber</td>
+                    <td>@item.Email</td>
+                    <td>@item.NumberOfChickensToBeSaved</td>
+                    <td>@item.DescriptionOfPlaceForChickens</td>
+                    <td>@item.AcceptTermsAndConditions</td>
+                    <td>@item.Message</td>
+                    <td>@item.SaveChickenActionId</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
