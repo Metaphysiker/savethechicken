@@ -19,7 +19,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseUrl)
 builder.Services.AddScoped<GenericDtoServiceFactory>(sp =>
 {
     var httpClient = sp.GetRequiredService<HttpClient>();
-    return new GenericDtoServiceFactory(httpClient, baseUrl);
+    return new GenericDtoServiceFactory(httpClient);
 });
 
 var app = builder.Build();

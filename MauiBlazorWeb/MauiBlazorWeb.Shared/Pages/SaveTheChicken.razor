@@ -12,14 +12,14 @@
 </p>
 
 @code {
-    private IGenericDtoService<SaveChickenRequestDto, ISearchDto> _service;
+    private IGenericDtoService<SaveChickenRequestDto, ISearchDto> _service = null!;
     private SaveChickenRequestDto newRequest = new SaveChickenRequestDto();
     protected override void OnInitialized()
     {
         _service = DtoServiceFactory.Create<SaveChickenRequestDto, ISearchDto>();
     }
 
-    private List<SaveChickenRequestDto> requests;
+    private List<SaveChickenRequestDto> requests = new List<SaveChickenRequestDto>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -30,7 +30,6 @@
 
     private async Task CreateRequest()
     {
-        var newRequest = new SaveChickenRequestDto();
         newRequest.City = "Sample City";
         newRequest = await _service.CreateAsync(newRequest);
         Console.WriteLine($"Created Request with ID: {newRequest.Id}");

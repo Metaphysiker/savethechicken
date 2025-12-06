@@ -13,10 +13,10 @@ namespace MauiBlazorWeb.Web.Services.ServicesImpl
         private readonly HttpClient _httpClient;
         private readonly string _baseUrl;
 
-        public GenericDtoService(HttpClient httpClient, string baseUrl)
+        public GenericDtoService(HttpClient httpClient, string resource)
         {
             _httpClient = httpClient;
-            _baseUrl = baseUrl.TrimEnd('/') + "/api/SaveChickenRequest";
+            _baseUrl = httpClient.BaseAddress + "api/" + resource;
         }
 
         public async Task<TDto> GetByIdAsync(int id)

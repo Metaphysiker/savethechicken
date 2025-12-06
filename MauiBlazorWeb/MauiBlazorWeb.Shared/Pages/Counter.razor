@@ -29,9 +29,8 @@
         {
             _hasInitialized = true;
             saveChickenRequestDto.City = "Initial City";
+            await Task.CompletedTask;
             StateHasChanged();
-            // Do something here after initial render
-            // Example: await SomeInitializationAsync();
         }
     }
 }

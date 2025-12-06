@@ -11,10 +11,9 @@ builder.Services.AddSingleton<IFormFactor, FormFactor>();
 
 var apiBaseUrl = builder.Configuration["API_BASE_URL"] ?? "http://localhost:8081/";
 var http = new HttpClient { BaseAddress = new Uri(apiBaseUrl) };
-Console.WriteLine($"Using API_BASE_URL: {apiBaseUrl}");
 builder.Services.AddScoped(sp =>
 {
-    return new GenericDtoServiceFactory(http, apiBaseUrl);
+    return new GenericDtoServiceFactory(http);
 });
 
 await builder.Build().RunAsync();
