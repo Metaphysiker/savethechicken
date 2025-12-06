@@ -1,0 +1,59 @@
+@using global::Shared.Dtos.DtosImpl
+@code {
+    [Parameter] public SaveChickenRequestDto Model { get; set; } = default!;
+}
+<div>
+    <label for="firstName">First Name:</label>
+    <InputText id="firstName" @bind-Value="Model.FirstName" class="form-control" />
+    <ValidationMessage For="@(() => Model.FirstName)" />
+</div>
+<div>
+    <label for="lastName">Last Name:</label>
+    <InputText id="lastName" @bind-Value="Model.LastName" class="form-control" />
+    <ValidationMessage For="@(() => Model.LastName)" />
+</div>
+<div>
+    <label for="street">Street:</label>
+    <InputText id="street" @bind-Value="Model.Street" class="form-control" />
+    <ValidationMessage For="@(() => Model.Street)" />
+</div>
+<div>
+    <label for="city">City:</label>
+    <InputText id="city" @bind-Value="Model.City" class="form-control" />
+    <ValidationMessage For="@(() => Model.City)" />
+</div>
+<div>
+    <label for="postalCode">Postal Code:</label>
+    <InputText id="postalCode" @bind-Value="Model.PostalCode" class="form-control" />
+    <ValidationMessage For="@(() => Model.PostalCode)" />
+</div>
+<div>
+    <label for="phoneNumber">Phone Number:</label>
+    <InputText id="phoneNumber" @bind-Value="Model.PhoneNumber" class="form-control" />
+    <ValidationMessage For="@(() => Model.PhoneNumber)" />
+</div>
+<div>
+    <label for="email">Email:</label>
+    <InputText id="email" @bind-Value="Model.Email" class="form-control" />
+    <ValidationMessage For="@(() => Model.Email)" />
+</div>
+<div>
+    <label for="numberOfChickensToBeSaved">Number of Chickens to be Saved:</label>
+    <InputNumber id="numberChickens" @bind-Value="Model.NumberOfChickensToBeSaved" class="form-control" />
+    <ValidationMessage For="@(() => Model.NumberOfChickensToBeSaved)" />
+</div>
+<div>
+    <label>Description of Place:</label>
+    <InputTextArea @bind-Value="Model.DescriptionOfPlaceForChickens" class="form-control" />
+    <ValidationMessage For="@(() => Model.DescriptionOfPlaceForChickens)" />
+</div>
+<div class="form-check">
+    <InputCheckbox @bind-Value="Model.AcceptTermsAndConditions" class="form-check-input" />
+    <label>Accept Terms and Conditions</label>
+    <ValidationMessage For="@(() => Model.AcceptTermsAndConditions)" />
+</div>
+<div>
+    <label>Message:</label>
+    <InputTextArea @bind-Value="Model.Message" class="form-control" />
+    <ValidationMessage For="@(() => Model.Message)" />
+</div>

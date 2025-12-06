@@ -14,11 +14,13 @@ namespace WebApi.Services.ServicesImpl
             _db = db;
         }
 
-        public async Task<TModel> Create(TModel dto)
+        public async Task<TModel> Create(TModel model)
         {
-            _db.Set<TModel>().Add(dto);
+            model.CreatedAt = DateTime.UtcNow;
+            model.UpdatedAt = DateTime.UtcNow;
+            _db.Set<TModel>().Add(model);
             await _db.SaveChangesAsync();
-            return dto;
+            return model;
         }
 
         public async Task Delete(int id)
@@ -58,11 +60,12 @@ namespace WebApi.Services.ServicesImpl
             };
         }
 
-        public async Task<TModel> Update(TModel dto)
+        public async Task<TModel> Update(TModel model)
         {
-            _db.Set<TModel>().Update(dto);
+            model.UpdatedAt = DateTime.UtcNow;
+            _db.Set<TModel>().Update(model);
             await _db.SaveChangesAsync();
-            return dto;
+            return model;
         }
     }
 }

@@ -40,7 +40,8 @@ namespace Shared.Dtos.DtosImpl
         [Required]
         public string DescriptionOfPlaceForChickens { get; set; } = string.Empty;
 
-        [Required]
+        [Required(ErrorMessage = "You must accept the terms and conditions")]
+        [Range(typeof(bool), "true", "true", ErrorMessage = "You must accept the terms and conditions")]
         public bool AcceptTermsAndConditions { get; set; } = false;
 
         public string Message { get; set; } = string.Empty;
