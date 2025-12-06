@@ -19,12 +19,10 @@ namespace MauiBlazorWeb.Shared.Factories.FactoriesImpl
             where TSearchDto : class
         {
             var resource = "";
-            Console.WriteLine($"Creating GenericDtoService for DTO type: {typeof(TDto).Name}");
             if (typeof(TDto).Name.EndsWith(typeof(SaveChickenRequestDto).Name))
             {
                 resource = "SaveChickenRequest";
             }
-            Console.WriteLine($"Creating GenericDtoService for resource: {resource}");
             return new GenericDtoService<TDto, TSearchDto>(_httpClient, resource);
         }
     }
