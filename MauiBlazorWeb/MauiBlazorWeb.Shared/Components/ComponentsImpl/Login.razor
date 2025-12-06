@@ -1,0 +1,60 @@
+@inject AuthService AuthService
+@inject NavigationManager NavigationManager
+@inject TokenService TokenService
+@inject HttpClient HttpClient
+
+@using global::Shared.Dtos.DtosImpl
+
+
+<EditForm Model="loginModel" OnValidSubmit="HandleLogin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div>
+        <label for="email">Email:</label>
+        <InputText id="email" @bind-Value="loginModel.Email" class="form-control" />
+        <ValidationMessage For="@(() => loginModel.Email)" />
+    </div>
+    <div>
+        <label for="password">Password:</label>
+        <InputText id="password" @bind-Value="loginModel.Password" type="password" class="form-control" />
+        <ValidationMessage For="@(() => loginModel.Password)" />
+    </div>
+    <button type="submit" class="btn btn-primary">Login</button>
+
+    <h2>@token</h2>
+</EditForm>
+
+@code {
+    private AuthRequestDto loginModel = new();
+    private String token = string.Empty;
+    private async Task HandleLogin()
+    {
+        var result = await AuthService.AuthenticateAsync(loginModel);
+        if (result != null)
+        {
+            await TokenService.SaveTokenAsync(result.Token);
+            // Set jwt token in HttpClient for future requests
+            HttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", result.Token);
+            // HttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", result.Token);
+            //NavigationManager.NavigateTo("/");
+            token = result.Token;
+            StateHasChanged();
+        }
+        else
+        {
+            // Optionally show error message
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var isTokenValid = await AuthService.CheckIfLoggedInAsync();
+            if (isTokenValid)
+            {
+                NavigationManager.NavigateTo("/");
+            }
+        }
+    }
+}

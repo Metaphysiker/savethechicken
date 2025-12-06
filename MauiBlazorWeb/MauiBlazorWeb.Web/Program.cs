@@ -2,9 +2,12 @@ using MauiBlazorWeb.Web.Components;
 using MauiBlazorWeb.Shared.Services;
 using MauiBlazorWeb.Web.Services;
 using MauiBlazorWeb.Shared.Factories.FactoriesImpl;
+using Blazored.LocalStorage;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<AuthService>();
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
@@ -14,7 +17,9 @@ builder.Services.AddRazorComponents()
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
 
 // get API_BASE_URL from environment variables docker
-var baseUrl = Environment.GetEnvironmentVariable("API_BASE_URL") ?? throw new ArgumentNullException("API_BASE_URL");
+//var baseUrl = Environment.GetEnvironmentVariable("API_BASE_URL") ?? throw new ArgumentNullException("API_BASE_URL");
+
+var baseUrl = builder.Configuration["API_BASE_URL"] ?? "http://localhost:8081/";
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseUrl) });
 builder.Services.AddScoped<GenericDtoServiceFactory>(sp =>
 {

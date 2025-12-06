@@ -1,4 +1,18 @@
 ﻿@inherits LayoutComponentBase
+@inject AuthService AuthService
+
+@code {
+    private bool? isTokenValid = null;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            isTokenValid = await AuthService.CheckIfLoggedInAsync();
+            StateHasChanged();
+        }
+    }
+}
 
 <div class="page">
     <div class="sidebar">
@@ -11,6 +25,10 @@
         </div>
 
         <article class="content px-4">
+            @if (isTokenValid == false)
+            {
+                <div class="alert alert-warning">You are not logged in or your session has expired.</div>
+            }
             @Body
         </article>
     </main>
