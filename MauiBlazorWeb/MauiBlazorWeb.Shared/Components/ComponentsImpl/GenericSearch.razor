@@ -1,0 +1,39 @@
+﻿@typeparam TDto where TDto : class
+@typeparam TSearchDto where TSearchDto : ISearchDto
+@inject GenericDtoServiceFactory DtoServiceFactory
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Web.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+
+<h3>GenericSearch</h3>
+<div class="search-form">
+@SearchForm(search)
+</div>
+<button @onclick="PerformSearch">Search</button>
+
+<div class="table">
+    @Table(items)
+</div>
+
+@code {
+    [Parameter] public RenderFragment<TSearchDto> SearchForm { get; set; } = default!;
+    [Parameter] public RenderFragment<List<TDto>> Table { get; set; } = default!;
+    private TSearchDto search = Activator.CreateInstance<TSearchDto>();
+
+    private List<TDto> items = new List<TDto>();
+
+    private GenericDtoService<TDto, TSearchDto>? _service;
+
+    protected override void OnInitialized()
+    {
+        _service = DtoServiceFactory.Create<TDto, TSearchDto>();
+    }
+
+    private async Task PerformSearch()
+    {
+        if (_service == null) return;
+        var result = await _service.SearchAsync(search);
+        items = result.Data;
+        StateHasChanged();
+    }
+}

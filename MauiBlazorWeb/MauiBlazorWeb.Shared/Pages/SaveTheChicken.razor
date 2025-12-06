@@ -14,7 +14,7 @@
 </p>
 
 <h2> Generic List</h2>
-<GenericList TDto="SaveChickenRequestDto" TSearchDto="ISearchDto" SearchDto="searchDto">
+<GenericList TDto="SaveChickenRequestDto" TSearchDto="SaveChickenRequestSearch" SearchDto="searchDto">
     <ChildContent Context="items">
         <SaveChickenRequestTable items="items" />
     </ChildContent>
@@ -27,12 +27,23 @@
     </ChildContent>
 </GenericCreate>
 
+<hr />
+<h3>Search</h3>
+<GenericSearch TDto="SaveChickenRequestDto" TSearchDto="SaveChickenRequestSearch">
+    <SearchForm Context="search">
+        <SaveChickenRequestSearchForm Model="search" />
+    </SearchForm>
+    <Table Context="items">
+        <SaveChickenRequestTable items="items" />
+    </Table>
+</GenericSearch>
+
 
 
 @code {
     private IGenericDtoService<SaveChickenRequestDto, ISearchDto> _service = null!;
     private SaveChickenRequestDto newRequest = new SaveChickenRequestDto();
-    private ISearchDto searchDto = new ISearchDto
+    private SaveChickenRequestSearch searchDto = new SaveChickenRequestSearch
     {
         Page = 1,
         PageSize = 10

@@ -9,14 +9,14 @@ namespace WebApi.Controllers.ControllersImpl
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class SaveChickenRequestController : ControllerBase, IModelController<SaveChickenRequestDto, ISearchDto>
+    public class SaveChickenRequestController : ControllerBase, IModelController<SaveChickenRequestDto, SaveChickenRequestSearch>
     {
-        private readonly GenericModelService<SaveChickenRequest, ISearchDto> _service;
+        private readonly GenericModelService<SaveChickenRequest, SaveChickenRequestSearch> _service;
         private readonly AutoMapperService _mapper;
 
         public SaveChickenRequestController(GenericModelServiceFactory genericModelServiceFactory, AutoMapperService mapper)
         {
-            _service = genericModelServiceFactory.Create<SaveChickenRequest, ISearchDto>();
+            _service = genericModelServiceFactory.Create<SaveChickenRequest, SaveChickenRequestSearch>();
             _mapper = mapper;
         }
 
@@ -54,7 +54,7 @@ namespace WebApi.Controllers.ControllersImpl
         }
 
         [HttpPost("search")]
-        public async Task<ActionResult<PaginationDto<SaveChickenRequestDto>>> Search([FromBody] ISearchDto search)
+        public async Task<ActionResult<PaginationDto<SaveChickenRequestDto>>> Search([FromBody] SaveChickenRequestSearch search)
         {
             var result = await _service.Search(search);
             var resultDto = new PaginationDto<SaveChickenRequestDto>

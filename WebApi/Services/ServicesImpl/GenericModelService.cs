@@ -8,10 +8,13 @@ namespace WebApi.Services.ServicesImpl
         where TModel : class, IModel
         where TSearchDto : ISearchDto
     {
+        private ModelSearchFactory _modelSearchFactory;
+
         private readonly DatabaseContext _db;
-        public GenericModelService(DatabaseContext db)
+        public GenericModelService(DatabaseContext db, ModelSearchFactory modelSearchFactory)
         {
             _db = db;
+            _modelSearchFactory = modelSearchFactory;
         }
 
         public async Task<TModel> Create(TModel model)
@@ -45,6 +48,11 @@ namespace WebApi.Services.ServicesImpl
 
         public async Task<PaginationDto<TModel>> Search(TSearchDto search)
         {
+
+            var searcher = _modelSearchFactory.Create<TModel, TSearchDto>();
+
+            return await searcher.SearchAsync(search);
+            /*
             var query = _db.Set<TModel>().AsQueryable();
             int page = search.Page > 0 ? search.Page : 1;
             int pageSize = search.PageSize > 0 ? search.PageSize : 10;
@@ -58,6 +66,7 @@ namespace WebApi.Services.ServicesImpl
                 PageSize = pageSize,
                 TotalPages = (int)Math.Ceiling((double)total / pageSize)
             };
+            */
         }
 
         public async Task<TModel> Update(TModel model)

@@ -1,0 +1,20 @@
+﻿@using global::Shared.Dtos.DtosImpl
+
+<h3>SaveChickenRequestSearchForm</h3>
+
+<EditForm Model="Model">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label for="SearchTerm">SearchTerm:</label>
+        <InputText id="SearchTerm" @bind-Value="Model.SearchTerm" class="form-control" />
+        <ValidationMessage For="@(() => Model.SearchTerm)" />
+    </div>
+
+
+</EditForm>
+
+@code {
+    [Parameter] public SaveChickenRequestSearch Model { get; set; } = new SaveChickenRequestSearch();
+}

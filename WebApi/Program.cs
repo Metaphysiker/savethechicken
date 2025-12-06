@@ -15,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddLogging();
 builder.Services.AddScoped<AutoMapperService>();
 builder.Services.AddScoped<GenericModelServiceFactory>();
+builder.Services.AddScoped<ModelSearchFactory>();
 
 builder.Services.AddDbContext<DatabaseContext>();
 builder.Services.AddEndpointsApiExplorer();
