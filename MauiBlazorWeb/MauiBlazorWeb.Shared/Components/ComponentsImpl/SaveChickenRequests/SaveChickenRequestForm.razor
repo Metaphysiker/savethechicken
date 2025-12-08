@@ -1,7 +1,8 @@
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Contacts
 @using global::Shared.Dtos.DtosImpl
 @code {
-    [Parameter] public SaveChickenRequestDto Model { get; set; } = default!;
-
+    [Parameter, EditorRequired]
+    public SaveChickenRequestDto Model { get; set; } = new SaveChickenRequestDto();
     private List<int> saveChickenActionIds = new List<int>();
 
     protected override void OnInitialized()
@@ -10,41 +11,9 @@
         saveChickenActionIds = Enumerable.Range(1, 10).ToList();
     }
 }
-<div>
-    <label for="firstName">First Name:</label>
-    <InputText id="firstName" @bind-Value="Model.FirstName" class="form-control" />
-    <ValidationMessage For="@(() => Model.FirstName)" />
-</div>
-<div>
-    <label for="lastName">Last Name:</label>
-    <InputText id="lastName" @bind-Value="Model.LastName" class="form-control" />
-    <ValidationMessage For="@(() => Model.LastName)" />
-</div>
-<div>
-    <label for="street">Street:</label>
-    <InputText id="street" @bind-Value="Model.Street" class="form-control" />
-    <ValidationMessage For="@(() => Model.Street)" />
-</div>
-<div>
-    <label for="city">City:</label>
-    <InputText id="city" @bind-Value="Model.City" class="form-control" />
-    <ValidationMessage For="@(() => Model.City)" />
-</div>
-<div>
-    <label for="postalCode">Postal Code:</label>
-    <InputText id="postalCode" @bind-Value="Model.PostalCode" class="form-control" />
-    <ValidationMessage For="@(() => Model.PostalCode)" />
-</div>
-<div>
-    <label for="phoneNumber">Phone Number:</label>
-    <InputText id="phoneNumber" @bind-Value="Model.PhoneNumber" class="form-control" />
-    <ValidationMessage For="@(() => Model.PhoneNumber)" />
-</div>
-<div>
-    <label for="email">Email:</label>
-    <InputText id="email" @bind-Value="Model.Email" class="form-control" />
-    <ValidationMessage For="@(() => Model.Email)" />
-</div>
+
+<ContactForm Contact="Model.Contact" />
+
 <div>
     <label for="numberOfChickensToBeSaved">Number of Chickens to be Saved:</label>
     <InputNumber id="numberChickens" @bind-Value="Model.NumberOfChickensToBeSaved" class="form-control" />

@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Shared.Dtos.DtosImpl;
 using WebApi.Models.ModelsImpl;
+using System.Linq.Dynamic.Core;
 
 namespace Services.ServicesImpl
 {
@@ -31,13 +32,13 @@ namespace Services.ServicesImpl
                     var term = $"%{search.SearchTerm.ToLower()}%";
 
                 query = query.Where(x =>
-                    EF.Functions.Like(x.FirstName.ToLower(), term) ||
-                    EF.Functions.Like(x.LastName.ToLower(), term) ||
-                    EF.Functions.Like(x.Street.ToLower(), term) ||
-                    EF.Functions.Like(x.City.ToLower(), term) ||
-                    EF.Functions.Like(x.PostalCode.ToLower(), term) ||
-                    EF.Functions.Like(x.PhoneNumber.ToLower(), term) ||
-                    EF.Functions.Like(x.Email.ToLower(), term) ||
+                    EF.Functions.Like(x.Contact.FirstName.ToLower(), term) ||
+                    EF.Functions.Like(x.Contact.LastName.ToLower(), term) ||
+                    EF.Functions.Like(x.Contact.Street.ToLower(), term) ||
+                    EF.Functions.Like(x.Contact.City.ToLower(), term) ||
+                    EF.Functions.Like(x.Contact.PostalCode.ToLower(), term) ||
+                    EF.Functions.Like(x.Contact.PhoneNumber.ToLower(), term) ||
+                    EF.Functions.Like(x.Contact.Email.ToLower(), term) ||
                     EF.Functions.Like(x.DescriptionOfPlaceForChickens.ToLower(), term) ||
                     EF.Functions.Like(x.Message.ToLower(), term)
                 );
@@ -47,9 +48,8 @@ namespace Services.ServicesImpl
             if (!string.IsNullOrEmpty(search.SortBy))
             {
                 bool descending = search.SortDescending ?? false;
-                query = descending
-                    ? query.OrderByDescending(e => EF.Property<object>(e, search.SortBy))
-                    : query.OrderBy(e => EF.Property<object>(e, search.SortBy));
+                string sortExpression = $"{search.SortBy} {(descending ? "descending" : "ascending")}";
+                query = query.OrderBy(sortExpression);
             }
 
             // Pagination

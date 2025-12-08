@@ -1,8 +1,29 @@
+﻿@inject IJSRuntime JS
+
 @using global::Shared.Dtos.DtosImpl
-    @code {
-        [Parameter]
-        public List<SaveChickenRequestDto> items { get; set; } = new List<SaveChickenRequestDto>();
+@code {
+    [Parameter]
+    public List<SaveChickenRequestDto> items { get; set; } = new List<SaveChickenRequestDto>();
+
+    [Parameter] public EventCallback<SaveChickenRequestDto> OnItemSelected { get; set; }
+    void SelectItem(SaveChickenRequestDto item) => OnItemSelected.InvokeAsync(item);
+
+    [Parameter] public EventCallback<(string? SortBy, bool? SortDescending)> OnSortSelected { get; set; }
+    void SortByColumn(string columnName, bool? descending) => OnSortSelected.InvokeAsync((columnName, descending));
+
+    private string? currentColumnName = null;
+    private bool? currentSortDescending = null;
+
+    private void OnHeaderClick(string columnName)
+    {
+        //write to console
+        JS.InvokeVoidAsync("console.log", $"Sorting by column: {columnName}");
+        bool? descending = currentColumnName == columnName ? !currentSortDescending : false;
+        currentColumnName = columnName;
+        currentSortDescending = descending;
+        SortByColumn(columnName, descending);
     }
+}
 
     <table class="table">
         <thead>
@@ -10,18 +31,64 @@
                 <th>Id</th>
                 <th>Created At</th>
                 <th>Updated At</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Street</th>
-                <th>City</th>
-                <th>Postal Code</th>
-                <th>Phone Number</th>
-                <th>Email</th>
-                <th>Number Of Chickens</th>
-                <th>Description Of Place</th>
-                <th>Accepted Terms</th>
-                <th>Message</th>
+            <th @onclick="@(() => OnHeaderClick("Contact.FirstName"))">
+                First Name     @if (currentColumnName == "Contact.FirstName")
+                {
+                    <span>@(currentSortDescending == true ? "▼" : "▲")</span>
+                }
+            </th>
+                <th @onclick="@(() => OnHeaderClick("Contact.LastName"))">
+                    Last Name     @if (currentColumnName == "Contact.LastName")
+                    {
+                        <span>@(currentSortDescending == true ? "▼" : "▲")</span>
+                    }
+                </th>
+                <th @onclick="@(() => OnHeaderClick("Contact.Street"))">
+                    Street     @if (currentColumnName == "Contact.Street")
+                    {
+                        <span>@(currentSortDescending == true ? "▼" : "▲")</span>
+                    }
+                </th>
+                <th @onclick="@(() => OnHeaderClick("Contact.City"))">
+                    City     @if (currentColumnName == "Contact.City")
+                    {
+                        <span>@(currentSortDescending == true ? "▼" : "▲")</span>
+                    }
+                </th>
+                <th @onclick="@(() => OnHeaderClick("Contact.PostalCode"))">
+                    Postal Code     @if (currentColumnName == "Contact.PostalCode")
+                    {
+                        <span>@(currentSortDescending == true ? "▼" : "▲")</span>
+                    }
+                </th>
+                <th @onclick="@(() => OnHeaderClick("Contact.PhoneNumber"))">
+                    Phone Number     @if (currentColumnName == "Contact.PhoneNumber")
+                    {
+                        <span>@(currentSortDescending == true ? "▼" : "▲")</span>
+                    }
+                </th>
+                <th @onclick="@(() => OnHeaderClick("Contact.Email"))">
+                    Email     @if (currentColumnName == "Contact.Email")
+                    {
+                        <span>@(currentSortDescending == true ? "▼" : "▲")</span>
+                    }
+                </th>
+                <th @onclick="@(() => OnHeaderClick("NumberOfChickensToBeSaved"))">
+                    Number Of Chickens     @if (currentColumnName == "NumberOfChickensToBeSaved")
+                    {
+                        <span>@(currentSortDescending == true ? "▼" : "▲")</span>
+                    }
+                </th>
+                <th @onclick="@(() => OnHeaderClick("DescriptionOfPlaceForChickens"))">
+                    Description Of Place     @if (currentColumnName == "DescriptionOfPlaceForChickens")
+                    {
+                        <span>@(currentSortDescending == true ? "▼" : "▲")</span>
+                    }
+                </th>
+                <th @onclick="@(() => OnHeaderClick("AcceptedTermsAndConditions"))">Accepted Terms</th>
+                <th @onclick="@(() => OnHeaderClick("Message"))">Message</th>
                 <th>SaveChickenActionId</th>
+                <th>Select</th>
             </tr>
         </thead>
         <tbody>
@@ -31,18 +98,19 @@
                     <td>@item.Id</td>
                     <td>@item.CreatedAt</td>
                     <td>@item.UpdatedAt</td>
-                    <td>@item.FirstName</td>
-                    <td>@item.LastName</td>
-                    <td>@item.Street</td>
-                    <td>@item.City</td>
-                    <td>@item.PostalCode</td>
-                    <td>@item.PhoneNumber</td>
-                    <td>@item.Email</td>
+                    <td>@item.Contact.FirstName</td>
+                    <td>@item.Contact.LastName</td>
+                    <td>@item.Contact.Street</td>
+                    <td>@item.Contact.City</td>
+                    <td>@item.Contact.PostalCode</td>
+                    <td>@item.Contact.PhoneNumber</td>
+                    <td>@item.Contact.Email</td>
                     <td>@item.NumberOfChickensToBeSaved</td>
                     <td>@item.DescriptionOfPlaceForChickens</td>
                     <td>@item.AcceptTermsAndConditions</td>
                     <td>@item.Message</td>
                     <td>@item.SaveChickenActionId</td>
+                    <td><button @onclick="() => SelectItem(item)">Select</button></td>
                 </tr>
             }
         </tbody>

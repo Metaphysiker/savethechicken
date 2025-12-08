@@ -5,20 +5,7 @@
 @inject MauiBlazorWeb.Shared.Factories.FactoriesImpl.GenericDtoServiceFactory DtoServiceFactory
 @page "/save-the-chicken"
 
-<h3>SaveTheChicken</h3>
-
-<button @onclick="CreateRequest">Create Request</button>
-<p>
-    City:
-@newRequest.City
-</p>
-
-<h2> Generic List</h2>
-<GenericList TDto="SaveChickenRequestDto" TSearchDto="SaveChickenRequestSearch" SearchDto="searchDto">
-    <ChildContent Context="items">
-        <SaveChickenRequestTable items="items" />
-    </ChildContent>
-</GenericList>
+<h2>SaveTheChicken</h2>
 
 <h3> Generic</h3>
 <GenericCreate TDto="SaveChickenRequestDto">
@@ -33,8 +20,8 @@
     <SearchForm Context="search">
         <SaveChickenRequestSearchForm Model="search" />
     </SearchForm>
-    <Table Context="items">
-        <SaveChickenRequestTable items="items" />
+    <Table Context="ctx">
+        <SaveChickenRequestTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" />
     </Table>
 </GenericSearch>
 
@@ -64,9 +51,15 @@
 
     private async Task CreateRequest()
     {
-        newRequest.City = "Sample City";
         newRequest = await _service.CreateAsync(newRequest);
         Console.WriteLine($"Created Request with ID: {newRequest.Id}");
         StateHasChanged();
+    }
+
+    private SaveChickenRequestDto? selectedItem;
+
+    void OnItemSelected(SaveChickenRequestDto item)
+    {
+        selectedItem = item;
     }
 }

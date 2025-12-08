@@ -4,17 +4,18 @@
 @typeparam TDto where TDto : class
 @inject GenericDtoServiceFactory DtoServiceFactory
 
-<EditForm Model="Model" OnValidSubmit="HandleValidSubmit">
-    <DataAnnotationsValidator />
+<EditForm Model="model" OnValidSubmit="HandleValidSubmit">
+    <ObjectGraphDataAnnotationsValidator />
     <ValidationSummary />
 
-    @ChildContent(Model)
+        @ChildContent(model)
 
     <button type="submit" class="btn btn-primary">Create</button>
 </EditForm>
 
 @code {
-    [Parameter] public TDto Model { get; set; } = Activator.CreateInstance<TDto>();
+
+    [Parameter] public TDto model { get; set; } = Activator.CreateInstance<TDto>();
     [Parameter] public RenderFragment<TDto> ChildContent { get; set; } = default!;
 
     private GenericDtoService<TDto, ISearchDto>? _service;
@@ -22,13 +23,14 @@
     protected override void OnInitialized()
     {
         _service = DtoServiceFactory.Create<TDto, ISearchDto>();
+
     }
 
     private async Task HandleValidSubmit()
     {
         if (_service != null)
         {
-            await _service.CreateAsync(Model);
+            await _service.CreateAsync(model);
         }
     }
 }

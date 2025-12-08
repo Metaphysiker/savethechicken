@@ -15,4 +15,11 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
         var Database = "savethechicken";
         optionsBuilder.UseNpgsql($"Host=postgres;Username={Username};Password={Password};Database={Database}");
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<SaveChickenRequest>()
+            .OwnsOne(x => x.Contact);
+    }
 }

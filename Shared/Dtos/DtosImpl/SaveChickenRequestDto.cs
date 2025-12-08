@@ -11,28 +11,9 @@ namespace Shared.Dtos.DtosImpl
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
-        [Required]
-        public string FirstName { get; set; } = string.Empty;
+        [ValidateComplexType]
 
-        [Required]
-        public string LastName { get; set; } = string.Empty;
-
-        [Required]
-        public string Street { get; set; } = string.Empty;
-
-        [Required]
-        public string City { get; set; } = string.Empty;
-
-        [Required]
-        public string PostalCode { get; set; } = string.Empty;
-
-        [Required]
-        [Phone]
-        public string PhoneNumber { get; set; } = string.Empty;
-
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; } = string.Empty;
+        public ContactDto Contact { get; set; } = new ContactDto();
 
         [Range(1, int.MaxValue, ErrorMessage = "Number of chickens must be greater than 0")]
         public int NumberOfChickensToBeSaved { get; set; } = 0;
