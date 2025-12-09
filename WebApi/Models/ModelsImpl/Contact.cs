@@ -1,25 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Shared.Dtos.DtosImpl
+﻿namespace WebApi.Classes
 {
-    public class ContactDto : IDto
+    public class Contact : IModel
     {
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-
-        [Required]
         public String FirstName { get; set; } = String.Empty;
-
-        [Required]
         public String LastName { get; set; } = String.Empty;
-
-        [Required]
-        [Phone]
         public String PhoneNumber { get; set; } = String.Empty;
-
-        [Required]
-        [EmailAddress]
         public String Email { get; set; } = String.Empty;
         public List<ContactCategory> Categories { get; set; } = new List<ContactCategory>();
         public String CarMake { get; set; } = String.Empty;

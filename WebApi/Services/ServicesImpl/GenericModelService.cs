@@ -1,9 +1,9 @@
 ﻿using Shared.Dtos.DtosImpl;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace WebApi.Services.ServicesImpl
 {
-    // Add 'class' constraint to TModel to ensure it is a reference type
     public class GenericModelService<TModel, TSearchDto> : IModelService<TModel, TSearchDto>
         where TModel : class, IModel
         where TSearchDto : ISearchDto
@@ -17,13 +17,13 @@ namespace WebApi.Services.ServicesImpl
             _modelSearchFactory = modelSearchFactory;
         }
 
-        public async Task<TModel> Create(TModel model)
+        public async Task<TModel> Create(TModel model, params Expression<Func<TModel, object?>>[] includes)
         {
             model.CreatedAt = DateTime.UtcNow;
             model.UpdatedAt = DateTime.UtcNow;
             _db.Set<TModel>().Add(model);
             await _db.SaveChangesAsync();
-            return model;
+            return await Read(model.Id, includes) ?? model;
         }
 
         public async Task Delete(int id)
@@ -36,44 +36,57 @@ namespace WebApi.Services.ServicesImpl
             }
         }
 
-        public async Task<TModel?> Read(int id)
+        public async Task<TModel?> Read(int id, params Expression<Func<TModel, object?>>[] includes)
         {
+            if (includes.Length > 0)
+            {
+                var query = _db.Set<TModel>().AsQueryable();
+
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+
+                return await query.FirstOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
+            }
+
             return await _db.Set<TModel>().FindAsync(id);
         }
 
-        public async Task<List<TModel>> ReadAll()
+        public async Task<List<TModel>> ReadAll(params Expression<Func<TModel, object?>>[] includes)
         {
+            if (includes.Length > 0)
+            {
+                var query = _db.Set<TModel>().AsQueryable();
+
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+
+                return await query.ToListAsync();
+            }
+
             return await _db.Set<TModel>().ToListAsync();
         }
 
-        public async Task<PaginationDto<TModel>> Search(TSearchDto search)
+        public async Task<PaginationDto<TModel>> Search(TSearchDto search, params Expression<Func<TModel, object?>>[] includes)
         {
-
             var searcher = _modelSearchFactory.Create<TModel, TSearchDto>();
-
-            return await searcher.SearchAsync(search);
-            /*
-            var query = _db.Set<TModel>().AsQueryable();
-            int page = search.Page > 0 ? search.Page : 1;
-            int pageSize = search.PageSize > 0 ? search.PageSize : 10;
-            var total = await query.CountAsync();
-            var items = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
-            return new PaginationDto<TModel>
-            {
-                Data = items,
-                TotalItems = total,
-                Page = page,
-                PageSize = pageSize,
-                TotalPages = (int)Math.Ceiling((double)total / pageSize)
-            };
-            */
+            return await searcher.SearchAsync(search, includes);
         }
 
-        public async Task<TModel> Update(TModel model)
+        public async Task<TModel> Update(TModel model, params Expression<Func<TModel, object?>>[] includes)
         {
             model.UpdatedAt = DateTime.UtcNow;
             _db.Set<TModel>().Update(model);
             await _db.SaveChangesAsync();
+
+            if (includes.Length > 0)
+            {
+                return await Read(model.Id, includes) ?? model;
+            }
+
             return model;
         }
     }

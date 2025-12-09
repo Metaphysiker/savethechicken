@@ -13,6 +13,8 @@ public class AutoMapperService
 
         var config = new MapperConfiguration(cfg => {
             cfg.CreateMap<Contact, ContactDto>().ReverseMap();
+            cfg.CreateMap<Address, AddressDto>().ReverseMap();
+            cfg.CreateMap<Farm, FarmDto>().ReverseMap();
             cfg.CreateMap<SaveChickenRequest, SaveChickenRequestDto>().ReverseMap();
             cfg.CreateMap<SaveChickenAction, SaveChickenActionDto>().ReverseMap();
         });

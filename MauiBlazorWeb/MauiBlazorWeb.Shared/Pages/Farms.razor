@@ -1,0 +1,21 @@
+@page "/farms"
+
+<h2>Landwirtschaftsbetriebe</h2>
+
+<h3> Betrieb erstellen</h3>
+<GenericCreate TDto="FarmDto">
+    <ChildContent Context="model">
+        <FarmForm Model="model" />
+    </ChildContent>
+</GenericCreate>
+
+<hr />
+<h3>Suche</h3>
+<GenericSearch TDto="FarmDto" TSearchDto="FarmSearch">
+    <SearchForm Context="search">
+        <FarmSearchForm Model="search" />
+    </SearchForm>
+    <Table Context="ctx">
+        <FarmTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" />
+    </Table>
+</GenericSearch>

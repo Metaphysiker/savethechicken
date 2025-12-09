@@ -1,8 +1,9 @@
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Shared.Dtos.DtosImpl;
-using WebApi.Models.ModelsImpl;
 using System.Linq.Dynamic.Core;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using WebApi.Models.ModelsImpl;
 
 namespace Services.ServicesImpl
 {
@@ -14,9 +15,14 @@ namespace Services.ServicesImpl
             _db = db;
         }
 
-        public async Task<PaginationDto<SaveChickenRequest>> SearchAsync(SaveChickenRequestSearch search)
+        public async Task<PaginationDto<SaveChickenRequest>> SearchAsync(SaveChickenRequestSearch search, params Expression<Func<SaveChickenRequest, object?>>[] includes)
         {
             var query = _db.Set<SaveChickenRequest>().AsQueryable();
+
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
 
             // Filter by Ids
             if (search.Ids != null && search.Ids.Any())
@@ -34,9 +40,9 @@ namespace Services.ServicesImpl
                 query = query.Where(x =>
                     EF.Functions.Like(x.Contact.FirstName.ToLower(), term) ||
                     EF.Functions.Like(x.Contact.LastName.ToLower(), term) ||
-                    EF.Functions.Like(x.Contact.Street.ToLower(), term) ||
-                    EF.Functions.Like(x.Contact.City.ToLower(), term) ||
-                    EF.Functions.Like(x.Contact.PostalCode.ToLower(), term) ||
+                    EF.Functions.Like(x.Address.Street.ToLower(), term) ||
+                    EF.Functions.Like(x.Address.City.ToLower(), term) ||
+                    EF.Functions.Like(x.Address.PostalCode.ToLower(), term) ||
                     EF.Functions.Like(x.Contact.PhoneNumber.ToLower(), term) ||
                     EF.Functions.Like(x.Contact.Email.ToLower(), term) ||
                     EF.Functions.Like(x.DescriptionOfPlaceForChickens.ToLower(), term) ||

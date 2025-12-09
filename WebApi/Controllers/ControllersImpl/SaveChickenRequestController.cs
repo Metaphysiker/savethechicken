@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Shared.Dtos.DtosImpl;
+using System.Linq.Expressions;
+using WebApi.Database.Includes;
 using WebApi.Factories;
 using WebApi.Factories.FactoriesImpl;
 using WebApi.Models.ModelsImpl;
@@ -24,7 +26,7 @@ namespace WebApi.Controllers.ControllersImpl
         public async Task<ActionResult<SaveChickenRequestDto>> Create([FromBody] SaveChickenRequestDto dto)
         {
             var model = _mapper.mapper.Map<SaveChickenRequest>(dto);
-            var result = await _service.Create(model);
+            var result = await _service.Create(model, SaveChickenRequestIncludes.Default);
             var resultDto = _mapper.mapper.Map<SaveChickenRequestDto>(result);
             return CreatedAtAction(nameof(Read), new { id = resultDto.Id }, resultDto);
         }
@@ -39,7 +41,7 @@ namespace WebApi.Controllers.ControllersImpl
         [HttpGet("{id}")]
         public async Task<ActionResult<SaveChickenRequestDto>> Read(int id)
         {
-            var result = await _service.Read(id);
+            var result = await _service.Read(id, SaveChickenRequestIncludes.Default);
             if (result == null) return NotFound();
             var resultDto = _mapper.mapper.Map<SaveChickenRequestDto>(result);
             return Ok(resultDto);
@@ -48,7 +50,7 @@ namespace WebApi.Controllers.ControllersImpl
         [HttpGet]
         public async Task<ActionResult<List<SaveChickenRequestDto>>> ReadAll()
         {
-            var result = await _service.ReadAll();
+            var result = await _service.ReadAll(SaveChickenRequestIncludes.Default);
             var resultDto = _mapper.mapper.Map<List<SaveChickenRequestDto>>(result);
             return Ok(resultDto);
         }
@@ -56,7 +58,7 @@ namespace WebApi.Controllers.ControllersImpl
         [HttpPost("search")]
         public async Task<ActionResult<PaginationDto<SaveChickenRequestDto>>> Search([FromBody] SaveChickenRequestSearch search)
         {
-            var result = await _service.Search(search);
+            var result = await _service.Search(search, SaveChickenRequestIncludes.Default);
             var resultDto = new PaginationDto<SaveChickenRequestDto>
             {
                 Data = _mapper.mapper.Map<List<SaveChickenRequestDto>>(result.Data),
@@ -72,7 +74,7 @@ namespace WebApi.Controllers.ControllersImpl
         public async Task<ActionResult<SaveChickenRequestDto>> Update([FromBody] SaveChickenRequestDto dto)
         {
             var model = _mapper.mapper.Map<SaveChickenRequest>(dto);
-            var result = await _service.Update(model);
+            var result = await _service.Update(model, SaveChickenRequestIncludes.Default);
             var resultDto = _mapper.mapper.Map<SaveChickenRequestDto>(result);
             return Ok(resultDto);
         }

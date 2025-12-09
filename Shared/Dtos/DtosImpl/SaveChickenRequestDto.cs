@@ -11,9 +11,6 @@ namespace Shared.Dtos.DtosImpl
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
-        [ValidateComplexType]
-
-        public ContactDto Contact { get; set; } = new ContactDto();
 
         [Range(1, int.MaxValue, ErrorMessage = "Number of chickens must be greater than 0")]
         public int NumberOfChickensToBeSaved { get; set; } = 0;
@@ -27,5 +24,23 @@ namespace Shared.Dtos.DtosImpl
 
         public string Message { get; set; } = string.Empty;
         public int? SaveChickenActionId { get; set; }
+
+        [ValidateComplexType]
+        [Required]
+        public ContactDto Contact { get; set; } = new ContactDto();
+        public int ContactId { get; set; }
+        [ValidateComplexType]
+        [Required]
+        public AddressDto Address { get; set; } = new AddressDto();
+        public int AddressId { get; set; }
+        public bool IsHandoverAtDifferentAddress { get; set; } = false;
+
+        [ValidateComplexType]
+        public AddressDto? AddressForHandOver { get; set; }
+        public int? AddressForHandOverId { get; set; }
+        public int NumberOfBoxes { get; set; } = 0;
+        public DateOnly DateForHandOver { get; set; } = new DateOnly();
+        public string Color { get; set; } = String.Empty;
+
     }
 }

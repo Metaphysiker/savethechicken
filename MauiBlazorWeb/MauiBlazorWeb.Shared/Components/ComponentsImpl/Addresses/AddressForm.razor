@@ -1,0 +1,20 @@
+@using global::Shared.Dtos.DtosImpl
+@code {
+    [Parameter, EditorRequired] public AddressDto Address { get; set; }
+}
+
+<div>
+    <label for="street">Street:</label>
+    <InputText id="street" @bind-Value="Address.Street" class="form-control" />
+    <ValidationMessage For="@(() => Address.Street)" />
+</div>
+<div>
+    <label for="city">City:</label>
+    <InputText id="city" @bind-Value="Address.City" class="form-control" />
+    <ValidationMessage For="@(() => Address.City)" />
+</div>
+<div>
+    <label for="postalcode">Postal Code:</label>
+    <InputText id="postalcode" @bind-Value="Address.PostalCode" class="form-control" />
+    <ValidationMessage For="@(() => Address.PostalCode)" />
+</div>
