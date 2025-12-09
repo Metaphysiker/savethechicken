@@ -24,7 +24,7 @@ builder.Services.AddSingleton<IFormFactor, FormFactor>();
 // get API_BASE_URL from environment variables docker
 //var baseUrl = Environment.GetEnvironmentVariable("API_BASE_URL") ?? throw new ArgumentNullException("API_BASE_URL");
 
-var baseUrl = builder.Configuration["API_BASE_URL"] ?? "http://localhost:8081/";
+var baseUrl = "http://webapi:8080/";
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseUrl) });
 builder.Services.AddScoped<GenericDtoServiceFactory>(sp =>
 {
@@ -57,5 +57,7 @@ app.MapRazorComponents<App>()
     .AddAdditionalAssemblies(
         typeof(MauiBlazorWeb.Shared._Imports).Assembly,
         typeof(MauiBlazorWeb.Web.Client._Imports).Assembly);
+
+app.MapFallbackToFile("index.html");
 
 app.Run();
