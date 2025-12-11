@@ -4,6 +4,7 @@ using MauiBlazorWeb.Shared.Services;
 using MauiBlazorWeb.Shared.Singletons.SingletonsImpl;
 using MauiBlazorWeb.Web.Client.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using MudBlazor.Services;
 using System.Net.Http.Json;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -26,5 +27,8 @@ builder.Services.AddScoped(sp => new HttpClient
 
 // Register factory and let it use HttpClient from DI
 builder.Services.AddScoped<GenericDtoServiceFactory>();
+
+builder.Services.AddMudServices();
+
 
 await builder.Build().RunAsync();

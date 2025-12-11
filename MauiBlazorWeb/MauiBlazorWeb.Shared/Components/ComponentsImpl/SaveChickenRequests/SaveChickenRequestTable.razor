@@ -1,5 +1,6 @@
 ﻿@inject IJSRuntime JS
-
+@using MudBlazor
+@using MudBlazor.Components
 @using global::Shared.Dtos.DtosImpl
 @code {
     [Parameter]
@@ -23,96 +24,33 @@
         currentSortDescending = descending;
         SortByColumn(columnName, descending);
     }
+
+    private SaveChickenRequestDto? selectedItem;
 }
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Created At</th>
-                <th>Updated At</th>
-            <th @onclick="@(() => OnHeaderClick("Contact.FirstName"))">
-                First Name     @if (currentColumnName == "Contact.FirstName")
-                {
-                    <span>@(currentSortDescending == true ? "▼" : "▲")</span>
-                }
-            </th>
-                <th @onclick="@(() => OnHeaderClick("Contact.LastName"))">
-                    Last Name     @if (currentColumnName == "Contact.LastName")
-                    {
-                        <span>@(currentSortDescending == true ? "▼" : "▲")</span>
-                    }
-                </th>
-                <th @onclick="@(() => OnHeaderClick("Contact.Street"))">
-                    Street     @if (currentColumnName == "Contact.Street")
-                    {
-                        <span>@(currentSortDescending == true ? "▼" : "▲")</span>
-                    }
-                </th>
-                <th @onclick="@(() => OnHeaderClick("Contact.City"))">
-                    City     @if (currentColumnName == "Contact.City")
-                    {
-                        <span>@(currentSortDescending == true ? "▼" : "▲")</span>
-                    }
-                </th>
-                <th @onclick="@(() => OnHeaderClick("Contact.PostalCode"))">
-                    Postal Code     @if (currentColumnName == "Contact.PostalCode")
-                    {
-                        <span>@(currentSortDescending == true ? "▼" : "▲")</span>
-                    }
-                </th>
-                <th @onclick="@(() => OnHeaderClick("Contact.PhoneNumber"))">
-                    Phone Number     @if (currentColumnName == "Contact.PhoneNumber")
-                    {
-                        <span>@(currentSortDescending == true ? "▼" : "▲")</span>
-                    }
-                </th>
-                <th @onclick="@(() => OnHeaderClick("Contact.Email"))">
-                    Email     @if (currentColumnName == "Contact.Email")
-                    {
-                        <span>@(currentSortDescending == true ? "▼" : "▲")</span>
-                    }
-                </th>
-                <th @onclick="@(() => OnHeaderClick("NumberOfChickensToBeSaved"))">
-                    Number Of Chickens     @if (currentColumnName == "NumberOfChickensToBeSaved")
-                    {
-                        <span>@(currentSortDescending == true ? "▼" : "▲")</span>
-                    }
-                </th>
-                <th @onclick="@(() => OnHeaderClick("DescriptionOfPlaceForChickens"))">
-                    Description Of Place     @if (currentColumnName == "DescriptionOfPlaceForChickens")
-                    {
-                        <span>@(currentSortDescending == true ? "▼" : "▲")</span>
-                    }
-                </th>
-                <th @onclick="@(() => OnHeaderClick("AcceptedTermsAndConditions"))">Accepted Terms</th>
-                <th @onclick="@(() => OnHeaderClick("Message"))">Message</th>
-                <th>SaveChickenActionId</th>
-                <th>Select</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in items)
-            {
-                <tr>
-                    <td>@item.Id</td>
-                    <td>@item.CreatedAt</td>
-                    <td>@item.UpdatedAt</td>
-                    <td>@item.Contact.FirstName</td>
-                    <td>@item.Contact.LastName</td>
-                    <td>@item.Address.Street</td>
-                    <td>@item.Address.City</td>
-                    <td>@item.Address.PostalCode</td>
-                    <td>@item.Contact.PhoneNumber</td>
-                    <td>@item.Contact.Email</td>
-                    <td>@item.NumberOfChickensToBeSaved</td>
-                    <td>@item.DescriptionOfPlaceForChickens</td>
-                    <td>@item.AcceptTermsAndConditions</td>
-                    <td>@item.Message</td>
-                    <td>@item.SaveChickenActionId</td>
-                    <td><button @onclick="() => SelectItem(item)">Select</button></td>
-                </tr>
-            }
-        </tbody>
-    </table>
+
+<MudDataGrid Items="@items" Hover="true" Dense="true" Striped="true" Bordered="true">
+    <Columns>
+        <PropertyColumn Property="x => x.Id" Title="Id" />
+        <PropertyColumn Property="x => x.CreatedAt" Title="Created At" />
+        <PropertyColumn Property="x => x.UpdatedAt" Title="Updated At" />
+        <PropertyColumn Property="x => x.Contact.FirstName" Title="First Name" />
+        <PropertyColumn Property="x => x.Contact.LastName" Title="Last Name" />
+        <PropertyColumn Property="x => x.Address.Street" Title="Street" />
+        <PropertyColumn Property="x => x.Address.City" Title="City" />
+        <PropertyColumn Property="x => x.Address.PostalCode" Title="Postal Code" />
+        <PropertyColumn Property="x => x.Contact.PhoneNumber" Title="Phone Number" />
+        <PropertyColumn Property="x => x.Contact.Email" Title="Email" />
+        <PropertyColumn Property="x => x.NumberOfChickensToBeSaved" Title="Number Of Chickens" />
+        <PropertyColumn Property="x => x.DescriptionOfPlaceForChickens" Title="Description Of Place" />
+        <PropertyColumn Property="x => x.AcceptTermsAndConditions" Title="Accepted Terms" />
+        <PropertyColumn Property="x => x.Message" Title="Message" />
+        <PropertyColumn Property="x => x.SaveChickenActionId" Title="SaveChickenActionId" />
+        <PropertyColumn Property="x => x.Id" Title="Select">
+            <CellTemplate Context="context">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => SelectItem(context))">Select</MudButton>
+            </CellTemplate>
+        </PropertyColumn>
+    </Columns>
+</MudDataGrid>
 

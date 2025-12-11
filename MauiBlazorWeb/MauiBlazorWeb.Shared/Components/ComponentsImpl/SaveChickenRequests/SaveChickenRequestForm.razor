@@ -1,5 +1,6 @@
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Contacts
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Addresses
+@using MudBlazor
 @using global::Shared.Dtos.DtosImpl
 @code {
     [Parameter, EditorRequired]
@@ -16,23 +17,22 @@
 <ContactForm Contact="Model.Contact" />
 <AddressForm Address="Model.Address" />
 
-<div>
-    <label for="numberOfChickensToBeSaved">Number of Chickens to be Saved:</label>
-    <InputNumber id="numberChickens" @bind-Value="Model.NumberOfChickensToBeSaved" class="form-control" />
+<MudItem>
+    <MudText Typo="Typo.subtitle2">Number of Chickens to be Saved:</MudText>
+    <MudNumericField T="int" @bind-Value="Model.NumberOfChickensToBeSaved" Label="Number of Chickens" Variant="Variant.Outlined" />
     <ValidationMessage For="@(() => Model.NumberOfChickensToBeSaved)" />
-</div>
-<div>
-    <label>Description of Place:</label>
-    <InputTextArea @bind-Value="Model.DescriptionOfPlaceForChickens" class="form-control" />
+</MudItem>
+<MudItem>
+    <MudText Typo="Typo.subtitle2">Description of Place:</MudText>
+    <MudTextField @bind-Value="Model.DescriptionOfPlaceForChickens" Label="Description" Variant="Variant.Outlined" Lines="3" />
     <ValidationMessage For="@(() => Model.DescriptionOfPlaceForChickens)" />
-</div>
-<div class="form-check">
-    <InputCheckbox @bind-Value="Model.AcceptTermsAndConditions" class="form-check-input" />
-    <label>Accept Terms and Conditions</label>
+</MudItem>
+<MudItem>
+    <MudCheckBox T="bool" @bind-Checked="Model.AcceptTermsAndConditions" Label="Accept Terms and Conditions" />
     <ValidationMessage For="@(() => Model.AcceptTermsAndConditions)" />
-</div>
-<div>
-    <label>Message:</label>
-    <InputTextArea @bind-Value="Model.Message" class="form-control" />
+</MudItem>
+<MudItem>
+    <MudText Typo="Typo.subtitle2">Message:</MudText>
+    <MudTextField @bind-Value="Model.Message" Label="Message" Variant="Variant.Outlined" Lines="3" />
     <ValidationMessage For="@(() => Model.Message)" />
-</div>
+</MudItem>

@@ -3,24 +3,15 @@
     [Parameter, EditorRequired] public ContactDto Contact { get; set; }
 }
 
-<div>
-    <label for="firstname">First Name:</label>
-    <InputText id="firstname" @bind-Value="Contact.FirstName" class="form-control" />
-    <ValidationMessage For="@(() => Contact.FirstName)" />
-</div>
-<div>
-    <label for="lastname">Last Name:</label>
-    <InputText id="lastname" @bind-Value="Contact.LastName" class="form-control" />
-    <ValidationMessage For="@(() => Contact.LastName)" />
-</div>
-<div>
-    <label for="email">Email:</label>
-    <InputText id="email" @bind-Value="Contact.Email" class="form-control" />
-    <ValidationMessage For="@(() => Contact.Email)" />
-</div>
-<div>
-    <label for="phone">Phone:</label>
-    <InputText id="phone" @bind-Value="Contact.PhoneNumber" class="form-control" />
-    <ValidationMessage For="@(() => Contact.PhoneNumber)" />
-</div>
+<MudTextField @bind-Value="Contact.FirstName" Label="First Name" Variant="Variant.Outlined" />
+<ValidationMessage For="@(() => Contact.FirstName)" />
+
+<MudTextField @bind-Value="Contact.LastName" Label="Last Name" Variant="Variant.Outlined" />
+<ValidationMessage For="@(() => Contact.LastName)" />
+
+<MudTextField @bind-Value="Contact.Email" Label="Email" Variant="Variant.Outlined" />
+<ValidationMessage For="@(() => Contact.Email)" />
+
+<MudTextField @bind-Value="Contact.PhoneNumber" Label="Phone" Variant="Variant.Outlined" />
+<ValidationMessage For="@(() => Contact.PhoneNumber)" />
 

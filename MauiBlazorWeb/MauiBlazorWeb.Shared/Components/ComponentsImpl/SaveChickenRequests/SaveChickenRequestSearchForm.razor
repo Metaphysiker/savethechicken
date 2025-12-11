@@ -6,11 +6,8 @@
     <DataAnnotationsValidator />
     <ValidationSummary />
 
-    <div>
-        <label for="SearchTerm">SearchTerm:</label>
-        <InputText id="SearchTerm" @bind-Value="Model.SearchTerm" class="form-control" />
-        <ValidationMessage For="@(() => Model.SearchTerm)" />
-    </div>
+    <MudTextField @bind-Value="Model.SearchTerm" Label="SearchTerm" Variant="Variant.Outlined" />
+    <ValidationMessage For="@(() => Model.SearchTerm)" />
 
 
 </EditForm>

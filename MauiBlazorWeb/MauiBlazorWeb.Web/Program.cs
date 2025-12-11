@@ -4,6 +4,7 @@ using MauiBlazorWeb.Shared.Services;
 using MauiBlazorWeb.Shared.Singletons.SingletonsImpl;
 using MauiBlazorWeb.Web.Components;
 using MauiBlazorWeb.Web.Services;
+using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddBlazoredLocalStorage();
@@ -31,9 +32,10 @@ builder.Services.AddScoped<GenericDtoServiceFactory>(sp =>
     var httpClient = sp.GetRequiredService<HttpClient>();
     return new GenericDtoServiceFactory(httpClient);
 });
+builder.Services.AddMudServices();
 
 var app = builder.Build();
-
+app.MapStaticAssets();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

@@ -6,44 +6,26 @@
     public FarmDto Model { get; set; } = new FarmDto();
 }
 
-<div>
-    <label for="name">Name:</label>
-    <InputText id="name" @bind-Value="Model.Name" class="form-control" />
-    <ValidationMessage For="@(() => Model.Name)" />
-</div>
+<MudTextField @bind-Value="Model.Name" Label="Name" Variant="Variant.Outlined" />
+<ValidationMessage For="@(() => Model.Name)" />
 
 <ContactForm Contact="Model.Contact" />
 <AddressForm Address="Model.Address" />
 
-<div>
-    <label for="number-of-chickens">Number of Chickens:</label>
-    <InputNumber id="number-of-chickens" @bind-Value="Model.NumberOfChickens" class="form-control" />
-    <ValidationMessage For="@(() => Model.NumberOfChickens)" />
-</div>
+<MudNumericField T="int" @bind-Value="Model.NumberOfChickens" Label="Number of Chickens" Variant="Variant.Outlined" />
+<ValidationMessage For="@(() => Model.NumberOfChickens)" />
 
-<div>
-    <label for="size">Size</label>
-    <InputText id="size" @bind-Value="Model.Size" class="form-control" />
-    <ValidationMessage For="@(() => Model.Size)" />
-</div>
+<MudTextField @bind-Value="Model.Size" Label="Size" Variant="Variant.Outlined" />
+<ValidationMessage For="@(() => Model.Size)" />
 
-<div>
-    <label for="color">Color</label>
-    <InputText id="color" @bind-Value="Model.Color" class="form-control" />
-    <ValidationMessage For="@(() => Model.Color)" />
-</div>
+<MudTextField @bind-Value="Model.Color" Label="Color" Variant="Variant.Outlined" />
+<ValidationMessage For="@(() => Model.Color)" />
 
-<div>
-    <label for="dates-for-rescues">Dates For Rescues (comma separated YYYY-MM-DD):</label>
-    <InputText id="dates-for-rescues" @bind-Value="DatesForRescuesString" @onchange="OnDatesForRescuesChanged" class="form-control" />
-    <ValidationMessage For="@(() => Model.DatesForRescues)" />
-</div>
+<MudTextField @bind-Value="DatesForRescuesString" Label="Dates For Rescues (comma separated YYYY-MM-DD)" Variant="Variant.Outlined" @onchange="OnDatesForRescuesChanged" />
+<ValidationMessage For="@(() => Model.DatesForRescues)" />
 
-<div>
-    <label for="general-information">General Information:</label>
-    <InputTextArea id="general-information" @bind-Value="Model.GeneralInformation" class="form-control" />
-    <ValidationMessage For="@(() => Model.GeneralInformation)" />
-</div>
+<MudTextField @bind-Value="Model.GeneralInformation" Label="General Information" Variant="Variant.Outlined" Lines="3" />
+<ValidationMessage For="@(() => Model.GeneralInformation)" />
 
 @code {
     private string DatesForRescuesString
