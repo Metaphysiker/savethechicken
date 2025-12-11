@@ -71,4 +71,10 @@
     <ProjectReference Include="..\MauiBlazorWeb.Shared\MauiBlazorWeb.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\index.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

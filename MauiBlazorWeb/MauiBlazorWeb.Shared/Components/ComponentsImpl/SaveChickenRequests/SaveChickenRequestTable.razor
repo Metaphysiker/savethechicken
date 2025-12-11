@@ -23,32 +23,218 @@
     }
 
     private SaveChickenRequestDto? selectedItem;
+
+    private string? GetSortIcon(string columnName)
+    {
+        if (currentColumnName != columnName) return null;
+        return currentSortDescending == true ? Icons.Material.Filled.ArrowDownward : Icons.Material.Filled.ArrowUpward;
+    }
 }
 
 <div style="overflow-x: auto; max-width: 100%;">
-<MudDataGrid Items="@items" Hover="true" Dense="true" Striped="true" Bordered="true">
+<MudDataGrid Items="@items" Hover="true" Dense="true" Striped="true" Bordered="true" SortMode="SortMode.None">
     <Columns>
-        <PropertyColumn Property="x => x.Id" Title="Id" />
-        <PropertyColumn Property="x => x.CreatedAt" Title="Created At" />
-        <PropertyColumn Property="x => x.UpdatedAt" Title="Updated At" />
-        <PropertyColumn Property="x => x.Contact.FirstName" Title="First Name" />
-        <PropertyColumn Property="x => x.Contact.LastName" Title="Last Name" />
-        <PropertyColumn Property="x => x.Address.Street" Title="Street" />
-        <PropertyColumn Property="x => x.Address.City" Title="City" />
-        <PropertyColumn Property="x => x.Address.PostalCode" Title="Postal Code" />
-        <PropertyColumn Property="x => x.Contact.PhoneNumber" Title="Phone Number" />
-        <PropertyColumn Property="x => x.Contact.Email" Title="Email" />
-        <PropertyColumn Property="x => x.NumberOfChickensToBeSaved" Title="Number Of Chickens" />
-        <PropertyColumn Property="x => x.DescriptionOfPlaceForChickens" Title="Description Of Place" />
-        <PropertyColumn Property="x => x.AcceptTermsAndConditions" Title="Accepted Terms" />
-        <PropertyColumn Property="x => x.Message" Title="Message" />
-        <PropertyColumn Property="x => x.SaveChickenActionId" Title="SaveChickenActionId" />
-        <PropertyColumn Property="x => x.Id" Title="Select">
-            <CellTemplate Context="context">
+        <TemplateColumn>
+            <HeaderTemplate>
+                <MudButton OnClick="@(() => OnHeaderClick("Id"))" Variant="Variant.Text" Style="text-transform: none;">
+                    Id
+                    @if (GetSortIcon("Id") != null)
+                    {
+                        <MudIcon Icon="@GetSortIcon("Id")" Size="Size.Small" />
+                    }
+                </MudButton>
+            </HeaderTemplate>
+            <CellTemplate>@context.Item.Id</CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn>
+            <HeaderTemplate>
+                <MudButton OnClick="@(() => OnHeaderClick("CreatedAt"))" Variant="Variant.Text" Style="text-transform: none;">
+                    Created At
+                    @if (GetSortIcon("CreatedAt") != null)
+                    {
+                        <MudIcon Icon="@GetSortIcon("CreatedAt")" Size="Size.Small" />
+                    }
+                </MudButton>
+            </HeaderTemplate>
+            <CellTemplate>@context.Item.CreatedAt</CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn>
+            <HeaderTemplate>
+                <MudButton OnClick="@(() => OnHeaderClick("UpdatedAt"))" Variant="Variant.Text" Style="text-transform: none;">
+                    Updated At
+                    @if (GetSortIcon("UpdatedAt") != null)
+                    {
+                        <MudIcon Icon="@GetSortIcon("UpdatedAt")" Size="Size.Small" />
+                    }
+                </MudButton>
+            </HeaderTemplate>
+            <CellTemplate>@context.Item.UpdatedAt</CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn>
+            <HeaderTemplate>
+                <MudButton OnClick="@(() => OnHeaderClick("FirstName"))" Variant="Variant.Text" Style="text-transform: none;">
+                    First Name
+                    @if (GetSortIcon("FirstName") != null)
+                    {
+                        <MudIcon Icon="@GetSortIcon("FirstName")" Size="Size.Small" />
+                    }
+                </MudButton>
+            </HeaderTemplate>
+            <CellTemplate>@context.Item.Contact.FirstName</CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn>
+            <HeaderTemplate>
+                <MudButton OnClick="@(() => OnHeaderClick("LastName"))" Variant="Variant.Text" Style="text-transform: none;">
+                    Last Name
+                    @if (GetSortIcon("LastName") != null)
+                    {
+                        <MudIcon Icon="@GetSortIcon("LastName")" Size="Size.Small" />
+                    }
+                </MudButton>
+            </HeaderTemplate>
+            <CellTemplate>@context.Item.Contact.LastName</CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn>
+            <HeaderTemplate>
+                <MudButton OnClick="@(() => OnHeaderClick("Street"))" Variant="Variant.Text" Style="text-transform: none;">
+                    Street
+                    @if (GetSortIcon("Street") != null)
+                    {
+                        <MudIcon Icon="@GetSortIcon("Street")" Size="Size.Small" />
+                    }
+                </MudButton>
+            </HeaderTemplate>
+            <CellTemplate>@context.Item.Address.Street</CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn>
+            <HeaderTemplate>
+                <MudButton OnClick="@(() => OnHeaderClick("City"))" Variant="Variant.Text" Style="text-transform: none;">
+                    City
+                    @if (GetSortIcon("City") != null)
+                    {
+                        <MudIcon Icon="@GetSortIcon("City")" Size="Size.Small" />
+                    }
+                </MudButton>
+            </HeaderTemplate>
+            <CellTemplate>@context.Item.Address.City</CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn>
+            <HeaderTemplate>
+                <MudButton OnClick="@(() => OnHeaderClick("PostalCode"))" Variant="Variant.Text" Style="text-transform: none;">
+                    Postal Code
+                    @if (GetSortIcon("PostalCode") != null)
+                    {
+                        <MudIcon Icon="@GetSortIcon("PostalCode")" Size="Size.Small" />
+                    }
+                </MudButton>
+            </HeaderTemplate>
+            <CellTemplate>@context.Item.Address.PostalCode</CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn>
+            <HeaderTemplate>
+                <MudButton OnClick="@(() => OnHeaderClick("PhoneNumber"))" Variant="Variant.Text" Style="text-transform: none;">
+                    Phone Number
+                    @if (GetSortIcon("PhoneNumber") != null)
+                    {
+                        <MudIcon Icon="@GetSortIcon("PhoneNumber")" Size="Size.Small" />
+                    }
+                </MudButton>
+            </HeaderTemplate>
+            <CellTemplate>@context.Item.Contact.PhoneNumber</CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn>
+            <HeaderTemplate>
+                <MudButton OnClick="@(() => OnHeaderClick("Email"))" Variant="Variant.Text" Style="text-transform: none;">
+                    Email
+                    @if (GetSortIcon("Email") != null)
+                    {
+                        <MudIcon Icon="@GetSortIcon("Email")" Size="Size.Small" />
+                    }
+                </MudButton>
+            </HeaderTemplate>
+            <CellTemplate>@context.Item.Contact.Email</CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn>
+            <HeaderTemplate>
+                <MudButton OnClick="@(() => OnHeaderClick("NumberOfChickensToBeSaved"))" Variant="Variant.Text" Style="text-transform: none;">
+                    Number Of Chickens
+                    @if (GetSortIcon("NumberOfChickensToBeSaved") != null)
+                    {
+                        <MudIcon Icon="@GetSortIcon("NumberOfChickensToBeSaved")" Size="Size.Small" />
+                    }
+                </MudButton>
+            </HeaderTemplate>
+            <CellTemplate>@context.Item.NumberOfChickensToBeSaved</CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn>
+            <HeaderTemplate>
+                <MudButton OnClick="@(() => OnHeaderClick("DescriptionOfPlaceForChickens"))" Variant="Variant.Text" Style="text-transform: none;">
+                    Description Of Place
+                    @if (GetSortIcon("DescriptionOfPlaceForChickens") != null)
+                    {
+                        <MudIcon Icon="@GetSortIcon("DescriptionOfPlaceForChickens")" Size="Size.Small" />
+                    }
+                </MudButton>
+            </HeaderTemplate>
+            <CellTemplate>@context.Item.DescriptionOfPlaceForChickens</CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn>
+            <HeaderTemplate>
+                <MudButton OnClick="@(() => OnHeaderClick("AcceptTermsAndConditions"))" Variant="Variant.Text" Style="text-transform: none;">
+                    Accepted Terms
+                    @if (GetSortIcon("AcceptTermsAndConditions") != null)
+                    {
+                        <MudIcon Icon="@GetSortIcon("AcceptTermsAndConditions")" Size="Size.Small" />
+                    }
+                </MudButton>
+            </HeaderTemplate>
+            <CellTemplate>@context.Item.AcceptTermsAndConditions</CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn>
+            <HeaderTemplate>
+                <MudButton OnClick="@(() => OnHeaderClick("Message"))" Variant="Variant.Text" Style="text-transform: none;">
+                    Message
+                    @if (GetSortIcon("Message") != null)
+                    {
+                        <MudIcon Icon="@GetSortIcon("Message")" Size="Size.Small" />
+                    }
+                </MudButton>
+            </HeaderTemplate>
+            <CellTemplate>@context.Item.Message</CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn>
+            <HeaderTemplate>
+                <MudButton OnClick="@(() => OnHeaderClick("SaveChickenActionId"))" Variant="Variant.Text" Style="text-transform: none;">
+                    SaveChickenActionId
+                    @if (GetSortIcon("SaveChickenActionId") != null)
+                    {
+                        <MudIcon Icon="@GetSortIcon("SaveChickenActionId")" Size="Size.Small" />
+                    }
+                </MudButton>
+            </HeaderTemplate>
+            <CellTemplate>@context.Item.SaveChickenActionId</CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn>
+            <HeaderTemplate>Select</HeaderTemplate>
+            <CellTemplate>
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => SelectItem(context.Item))">Select</MudButton>
             </CellTemplate>
-        </PropertyColumn>
+        </TemplateColumn>
     </Columns>
 </MudDataGrid>
 </div>
-
