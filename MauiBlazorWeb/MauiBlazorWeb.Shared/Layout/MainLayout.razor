@@ -1,8 +1,46 @@
-﻿@inherits LayoutComponentBase
+﻿@using MudBlazor
+@inherits LayoutComponentBase
 @inject AuthService AuthService
+
+<MudThemeProvider />
+<MudPopoverProvider />
+
+<MudLayout>
+
+    <!-- Fixed AppBar -->
+    <MudAppBar Elevation="4" Fixed="true">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                       Color="Color.Inherit"
+                       Edge="Edge.Start"
+                       OnClick="@ToggleDrawer" />
+        <MudSpacer />
+        <MudText Typo="Typo.subtitle1">About</MudText>
+    </MudAppBar>
+
+    <!-- Responsive Drawer -->
+    <MudDrawer @bind-Open="_drawerOpen"
+               Variant="DrawerVariant.Responsive"
+               Elevation="2"
+               ClipMode="DrawerClipMode.Never">
+        <NavMenu/>
+    </MudDrawer>
+
+    <!-- Main content with top padding -->
+    <MudMainContent Class="pt-16 px-4 pb-4">
+        @if (isTokenValid == false)
+        {
+            <MudAlert Severity="Severity.Warning">
+                You are not logged in or your session has expired.
+            </MudAlert>
+        }
+        @Body
+    </MudMainContent>
+
+</MudLayout>
 
 @code {
     private bool? isTokenValid = null;
+    private bool _drawerOpen = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -19,34 +57,11 @@
         }
     }
 
+    private void ToggleDrawer() => _drawerOpen = !_drawerOpen;
 
+    private void CloseDrawerOnMobile()
+    {
+        // Close temporary drawer after navigation
+        _drawerOpen = false;
+    }
 }
-
-<MudThemeProvider />
-<MudPopoverProvider />
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
-            @if (isTokenValid == false)
-            {
-                <div class="alert alert-warning">You are not logged in or your session has expired.</div>
-            }
-            @Body
-        </article>
-
-    </main>
-</div>
-
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
-</div>

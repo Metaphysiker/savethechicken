@@ -1,5 +1,4 @@
-﻿@inject IJSRuntime JS
-@using MudBlazor
+﻿@using MudBlazor
 @using MudBlazor.Components
 @using global::Shared.Dtos.DtosImpl
 @code {
@@ -17,8 +16,6 @@
 
     private void OnHeaderClick(string columnName)
     {
-        //write to console
-        JS.InvokeVoidAsync("console.log", $"Sorting by column: {columnName}");
         bool? descending = currentColumnName == columnName ? !currentSortDescending : false;
         currentColumnName = columnName;
         currentSortDescending = descending;
@@ -28,7 +25,7 @@
     private SaveChickenRequestDto? selectedItem;
 }
 
-
+<div style="overflow-x: auto; max-width: 100%;">
 <MudDataGrid Items="@items" Hover="true" Dense="true" Striped="true" Bordered="true">
     <Columns>
         <PropertyColumn Property="x => x.Id" Title="Id" />
@@ -48,9 +45,10 @@
         <PropertyColumn Property="x => x.SaveChickenActionId" Title="SaveChickenActionId" />
         <PropertyColumn Property="x => x.Id" Title="Select">
             <CellTemplate Context="context">
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => SelectItem(context))">Select</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => SelectItem(context.Item))">Select</MudButton>
             </CellTemplate>
         </PropertyColumn>
     </Columns>
 </MudDataGrid>
+</div>
 

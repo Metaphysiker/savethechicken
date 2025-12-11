@@ -4,8 +4,6 @@
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
-@inject IJSRuntime JS
-
 
 <h3>GenericSearch</h3>
 <div class="search-form">
@@ -26,13 +24,11 @@
     {
         selectedItem = item;
         //console log
-        await JS.InvokeVoidAsync("console.log", $"Selected Item: {item}");
         StateHasChanged();
     }
 
     private async Task OnSortSelected(string? sortBy, bool? sortDescending)
     {
-        await JS.InvokeVoidAsync("console.log", $"Sorting by column: {sortBy}, Descending: {sortDescending}");
         search.SortBy = sortBy;
         search.SortDescending = sortDescending;
         await PerformSearch();
