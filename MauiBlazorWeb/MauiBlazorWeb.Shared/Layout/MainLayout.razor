@@ -4,39 +4,33 @@
 
 <MudThemeProvider />
 <MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
 <MudLayout>
-
-    <!-- Fixed AppBar -->
-    <MudAppBar Elevation="4" Fixed="true">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu"
-                       Color="Color.Inherit"
-                       Edge="Edge.Start"
-                       OnClick="@ToggleDrawer" />
-        <MudSpacer />
-        <MudText Typo="Typo.subtitle1">About</MudText>
+    <MudAppBar Fixed="true">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@DrawerToggle" />
+        Rettet das Huhn
     </MudAppBar>
-
-    <!-- Responsive Drawer -->
-    <MudDrawer @bind-Open="_drawerOpen"
-               Variant="DrawerVariant.Responsive"
-               Elevation="2"
-               ClipMode="DrawerClipMode.Never">
-        <NavMenu/>
+    <MudDrawer @bind-Open="@_drawerOpen"
+        Variant="DrawerVariant.Mini"
+    >
+        <NavMenu
+            _drawerOpen="@_drawerOpen"
+            OnCloseDrawer="CloseDrawer"
+        ></NavMenu>
     </MudDrawer>
-
-    <!-- Main content with top padding -->
-    <MudMainContent Class="pt-16 px-4 pb-4">
-        @if (isTokenValid == false)
-        {
-            <MudAlert Severity="Severity.Warning">
-                You are not logged in or your session has expired.
-            </MudAlert>
-        }
+    <MudMainContent Class="main-content-spacing">
         @Body
     </MudMainContent>
-
 </MudLayout>
+
+<style>
+    .main-content-spacing {
+        padding-top: 80px; /* adjust as needed */
+    }
+
+</style>
 
 @code {
     private bool? isTokenValid = null;
@@ -57,11 +51,13 @@
         }
     }
 
-    private void ToggleDrawer() => _drawerOpen = !_drawerOpen;
-
-    private void CloseDrawerOnMobile()
+    void DrawerToggle(MouseEventArgs e)
     {
-        // Close temporary drawer after navigation
+        _drawerOpen = !_drawerOpen;
+    }
+
+    void CloseDrawer()
+    {
         _drawerOpen = false;
     }
 }

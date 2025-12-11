@@ -1,0 +1,46 @@
+﻿@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
+@using MauiBlazorWeb.Web.Services
+@using global::Shared.Dtos.DtosImpl
+@inject MauiBlazorWeb.Shared.Factories.FactoriesImpl.GenericDtoServiceFactory DtoServiceFactory
+@page "/save-chicken"
+
+<MudContainer>
+        <h2>Rettet das Huhn</h2>
+
+<p>Nächste Aktion ist am 28. Dezember 2025</p>
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary">
+    Ich biete Hühnern einen Lebensplatz an
+</MudButton>
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary">
+    Ich biete mich als Fahrer an
+</MudButton>
+
+<GenericCreate TDto="SaveChickenRequestDto">
+    <ChildContent Context="model">
+        <SaveChickenRequestForm Model="model" />
+    </ChildContent>
+</GenericCreate>
+
+<h3> Generic</h3>
+<GenericCreate TDto="SaveChickenRequestDto">
+    <ChildContent Context="model">
+        <SaveChickenRequestForm Model="model" />
+    </ChildContent>
+</GenericCreate>
+
+<hr />
+<h3>Search</h3>
+<GenericSearch TDto="SaveChickenRequestDto" TSearchDto="SaveChickenRequestSearch">
+    <SearchForm Context="search">
+        <SaveChickenRequestSearchForm Model="search" />
+    </SearchForm>
+    <Table Context="ctx">
+        <SaveChickenRequestTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" />
+    </Table>
+</GenericSearch>
+</MudContainer>
+
+

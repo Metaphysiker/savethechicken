@@ -1,0 +1,21 @@
+﻿@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Web.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+
+@page "/new-save-chicken-request"
+
+<PageTitle>Hühner retten</PageTitle>
+
+<MudContainer>
+
+    <h3>Ich biete Hühnern einen Lebensplatz an</h3>
+
+    <GenericCreate TDto="SaveChickenRequestDto">
+        <ChildContent Context="model">
+            <SaveChickenRequestForm Model="model" />
+        </ChildContent>
+    </GenericCreate>
+
+</MudContainer>

@@ -1,17 +1,37 @@
 ﻿@page "/"
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
 @using MauiBlazorWeb.Shared.Services
 @using global::Shared.Dtos.DtosImpl
-@inject IFormFactor FormFactor
+@inject GenericDtoServiceFactory DtoServiceFactory
 
-<PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<MudContainer>
 
-Welcome to your new app running on <em>@factor</em> using <em>@platform</em>.
+<PageTitle>Rettet das Huhn - Startseite</PageTitle>
 
+<MudStack AlignItems="AlignItems.Center">
+    <MudText Typo="Typo.body1">
+        Wir retten Hühner aus schlechten Haltungsbedingungen und vermitteln sie an liebevolle Plätze.
+    </MudText>
+    <MudText Typo="Typo.body1">Nächste Aktion ist am 28. Dezember 2025</MudText>
+
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="/new-save-chicken-request">
+            Ich biete Hühnern einen Lebensplatz an
+        </MudButton>
+
+        <MudButton Variant="Variant.Filled" Color="Color.Primary">
+            Ich biete mich als Fahrer an
+        </MudButton>
+
+</MudStack>
+
+
+
+
+
+</MudContainer>
 @code {
-    private string factor => FormFactor.GetFormFactor();
-    private string platform => FormFactor.GetPlatform();
+
 }

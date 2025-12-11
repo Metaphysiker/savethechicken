@@ -1,27 +1,26 @@
-﻿@inject NavigationManager NavManager
-
-<MudNavMenu Dense="true">
-
-    <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">
-        Home
-    </MudNavLink>
-
-    <MudNavLink Href="counter" Icon="@Icons.Material.Filled.AddBox">
-        Counter
-    </MudNavLink>
-
-    <MudNavLink Href="weather" Icon="@Icons.Material.Filled.Cloud">
-        Weather
-    </MudNavLink>
-
-    <MudNavLink Href="save-the-chicken" Icon="@Icons.Material.Filled.Pets">
-        Save The Chicken
-    </MudNavLink>
-
+﻿<MudNavMenu>
+    <MudNavLink Href="/" Class="nav-link-entry" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+    <MudNavLink Href="/save-chicken" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Support">Rettet das Huhn</MudNavLink>
     <MudDivider Class="my-2" />
-
-    <MudNavLink Href="login" Icon="@Icons.Material.Filled.Login">
-        Login
-    </MudNavLink>
-
+    @if (_drawerOpen)
+    {
+        <MudNavLink OnClick="@HandleCloseDrawer" Icon="@Icons.Material.Filled.ArrowLeft">Schliessen</MudNavLink>
+    }
 </MudNavMenu>
+
+<style>
+    .nav-link-entry {
+        white-space: nowrap;
+        overflow: hidden;
+    }
+</style>
+
+@code {
+    [Parameter] public bool _drawerOpen { get; set; }
+    [Parameter] public EventCallback OnCloseDrawer { get; set; }
+
+    private async Task HandleCloseDrawer()
+    {
+        await OnCloseDrawer.InvokeAsync();
+    }
+}
