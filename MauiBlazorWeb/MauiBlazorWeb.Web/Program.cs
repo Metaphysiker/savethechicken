@@ -35,6 +35,10 @@ builder.Services.AddScoped<GenericDtoServiceFactory>(sp =>
 });
 builder.Services.AddMudServices();
 
+builder.Services.AddLocalization();
+
+var supportedCultures = new[] { "en", "de", "fr" };
+
 var app = builder.Build();
 app.MapStaticAssets();
 // Configure the HTTP request pipeline.
@@ -53,6 +57,13 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
+
+var localizationOptions = new RequestLocalizationOptions()
+    .SetDefaultCulture("de")
+    .AddSupportedCultures(supportedCultures)
+    .AddSupportedUICultures(supportedCultures);
+
+app.UseRequestLocalization(localizationOptions);
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()

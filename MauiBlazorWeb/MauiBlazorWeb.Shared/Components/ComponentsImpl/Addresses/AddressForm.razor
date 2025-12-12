@@ -1,13 +1,31 @@
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
 @using global::Shared.Dtos.DtosImpl
+@inject IStringLocalizer<AppResources> L
+
 @code {
     [Parameter, EditorRequired] public AddressDto Address { get; set; }
 }
 
-<MudTextField @bind-Value="Address.Street" Label="Street" Variant="Variant.Outlined" />
-<ValidationMessage For="@(() => Address.Street)" />
+<MudPaper Class="pa-4 my-4" Elevation="2">
+    <MudText Typo="Typo.h6">Adresse</MudText>
 
-<MudTextField @bind-Value="Address.City" Label="City" Variant="Variant.Outlined" />
-<ValidationMessage For="@(() => Address.City)" />
+<MudGrid>
+    <MudItem xs="12" sm="6">
+        <MudTextField @bind-Value="Address.City" Label="@L["Address_City"]" Variant="Variant.Outlined" />
+        <ValidationMessage For="@(() => Address.City)" />
+    </MudItem>
+    <MudItem xs="12" sm="6">
+        <MudTextField @bind-Value="Address.PostalCode" Label="@L["Address_PostalCode"]" Variant="Variant.Outlined" />
+        <ValidationMessage For="@(() => Address.PostalCode)" />
+    </MudItem>
+</MudGrid>
 
-<MudTextField @bind-Value="Address.PostalCode" Label="Postal Code" Variant="Variant.Outlined" />
-<ValidationMessage For="@(() => Address.PostalCode)" />
+<MudGrid>
+
+    <MudItem xs="12">
+        <MudTextField @bind-Value="Address.Street" Label="@L["Address_Street"]" Variant="Variant.Outlined" />
+        <ValidationMessage For="@(() => Address.Street)" />
+    </MudItem>
+</MudGrid>
+</MudPaper>

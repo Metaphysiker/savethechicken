@@ -2,43 +2,97 @@
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Shared.Resources.Strings
 @using MauiBlazorWeb.Shared.Services
+@using System.Globalization
+@using Microsoft.Extensions.Localization
 @using global::Shared.Dtos.DtosImpl
 @inject GenericDtoServiceFactory DtoServiceFactory
-
+@inject IStringLocalizer<AppResources> L
+<PageTitle>@L["SaveTheChicken"] - @L["HomePage"]</PageTitle>
 
 <MudContainer>
 
-<PageTitle>Rettet das Huhn - Startseite</PageTitle>
 
-<MudStack AlignItems="AlignItems.Center">
+    <MudCard>
+        <MudCardContent>
+            <MudText Typo="Typo.h3">
+                @L["SaveTheChicken"]
+            </MudText>
+            <MudText Typo="Typo.body1">
+                Wir retten Hühner und vermitteln sie an liebevolle Plätze.
+            </MudText>
+        </MudCardContent>
+        <MudCardActions>
+            <MudStack Direction="Column" Spacing="5">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                           Href="/new-save-chicken-request"
+                           StartIcon="@Icons.Material.Filled.Home" FullWidth="true"
+                           Style="justify-content: flex-start; text-align: left; gap: 8px;">
+                    Ich biete Hühnern einen Lebensplatz an
+                </MudButton>
+
+                <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                           Href="/new-driver"
+                           StartIcon="@Icons.Material.Filled.DirectionsCar" FullWidth="true"
+                           Style="justify-content: flex-start; text-align: left; gap: 8px;">
+                    Ich biete mich als Fahrer an
+                </MudButton>
+
+                <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                           Href="/new-farm"
+                           StartIcon="@Icons.Material.Filled.Agriculture" FullWidth="true"
+                           Style="justify-content: flex-start; text-align: left; gap: 8px;">
+                    Ich möchte meinen Landwirtschaftsbetrieb anmelden
+                </MudButton>
+            </MudStack>
+        </MudCardActions>
+    </MudCard>
+
+    <MudCard Class="pa-4 mb-4" Elevation="2">
+        <MudText Typo="Typo.h3">
+            @L["SaveTheChicken"]
+        </MudText>
+    </MudCard>
+
+    <p>test</p>
+
+    <MudPaper Class="pa-4" Elevation="2">
+    <MudText Typo="Typo.h3">
+            @L["SaveTheChicken"]
+    </MudText>
+
     <MudText Typo="Typo.body1">
-        Wir retten Hühner aus schlechten Haltungsbedingungen und vermitteln sie an liebevolle Plätze.
+        Wir retten Hühner und vermitteln sie an liebevolle Plätze.
     </MudText>
     <MudText Typo="Typo.body1">Nächste Aktion ist am 28. Dezember 2025</MudText>
 
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="/new-save-chicken-request">
-            Ich biete Hühnern einen Lebensplatz an
-        </MudButton>
+    <div class="my-4">
 
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="/new-driver">
-            Ich biete mich als Fahrer an
-        </MudButton>
 
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="/new-farm">
-            Ich möchte meinen Landwirtschaftsbetrieb anmelden
-        </MudButton>
+    </div>
+
+        <div class="my-4">
+
+
+    </div>
+
+
+        <div class="my-4">
+
+
+    </div>
+
 
         <MudDivider></MudDivider>
         <MudButton Variant="Variant.Outlined" Color="Color.Secondary" Href="/new-save-chicken-action">
             Neue Rettungsaktion
         </MudButton>
-</MudStack>
 
 
 
 
-
+    </MudPaper>
 </MudContainer>
 @code {
 

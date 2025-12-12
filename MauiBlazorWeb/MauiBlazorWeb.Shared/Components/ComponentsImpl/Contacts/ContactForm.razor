@@ -1,17 +1,42 @@
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
 @using global::Shared.Dtos.DtosImpl
+@inject IStringLocalizer<AppResources> L
+
 @code {
     [Parameter, EditorRequired] public ContactDto Contact { get; set; }
 }
 
-<MudTextField @bind-Value="Contact.FirstName" Label="First Name" Variant="Variant.Outlined" />
-<ValidationMessage For="@(() => Contact.FirstName)" />
 
-<MudTextField @bind-Value="Contact.LastName" Label="Last Name" Variant="Variant.Outlined" />
-<ValidationMessage For="@(() => Contact.LastName)" />
+<MudPaper Class="pa-4 my-4" Elevation="2">
+    <MudText Typo="Typo.h6">Kontakt</MudText>
 
-<MudTextField @bind-Value="Contact.Email" Label="Email" Variant="Variant.Outlined" />
-<ValidationMessage For="@(() => Contact.Email)" />
+    <MudGrid>
+        <MudItem xs="12" sm="6">
+            <MudTextField @bind-Value="Contact.FirstName" Label="@L["Contact_FirstName"]" Variant="Variant.Outlined" />
+            <ValidationMessage For="@(() => Contact.FirstName)" />
+        </MudItem>
+        <MudItem xs="12" sm="6">
+            <MudTextField @bind-Value="Contact.LastName" Label="@L["Contact_LastName"]" Variant="Variant.Outlined" />
+            <ValidationMessage For="@(() => Contact.LastName)" />
+        </MudItem>
+    </MudGrid>
+    <MudGrid>
+        <MudItem xs="12" sm="6">
+            <MudTextField @bind-Value="Contact.Email" Label="@L["Contact_Email"]" Variant="Variant.Outlined" />
+            <ValidationMessage For="@(() => Contact.Email)" />
+        </MudItem>
+        <MudItem xs="12" sm="6">
+            <MudTextField @bind-Value="Contact.PhoneNumber" Label="@L["Contact_Phone"]" Variant="Variant.Outlined" />
+            <ValidationMessage For="@(() => Contact.PhoneNumber)" />
+        </MudItem>
+    </MudGrid>
+</MudPaper>
 
-<MudTextField @bind-Value="Contact.PhoneNumber" Label="Phone" Variant="Variant.Outlined" />
-<ValidationMessage For="@(() => Contact.PhoneNumber)" />
+
+
+
+
+
+
 

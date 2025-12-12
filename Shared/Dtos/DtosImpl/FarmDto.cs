@@ -25,11 +25,11 @@ namespace Shared.Dtos.DtosImpl
         public string Name { get; set; } = String.Empty;
         [ValidateComplexType]
         [Required]
-        public ContactDto Contact { get; set; }
+        public ContactDto Contact { get; set; } = new ContactDto();
         public int ContactId { get; set; }
         [ValidateComplexType]
         [Required]
-        public AddressDto Address { get; set; }
+        public AddressDto Address { get; set; } = new AddressDto();
         public int AddressId { get; set; }
     }
 }

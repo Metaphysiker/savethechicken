@@ -7,25 +7,31 @@
     public FarmDto Model { get; set; } = new FarmDto();
 }
 
-<MudTextField @bind-Value="Model.Name" Label="Name" Variant="Variant.Outlined" />
-<ValidationMessage For="@(() => Model.Name)" />
+
+
 
 <ContactForm Contact="Model.Contact" />
 <AddressForm Address="Model.Address" />
 
-<MudNumericField T="int" @bind-Value="Model.NumberOfChickens" Label="Number of Chickens" Variant="Variant.Outlined" />
-<ValidationMessage For="@(() => Model.NumberOfChickens)" />
+<MudPaper Class="pa-4 my-4" Elevation="2">
+    <MudText Typo="Typo.h6">Allgemeine Informationen</MudText>
 
-<MudTextField @bind-Value="Model.Size" Label="Size" Variant="Variant.Outlined" />
-<ValidationMessage For="@(() => Model.Size)" />
+    <MudTextField @bind-Value="Model.Name" Label="Name" Variant="Variant.Outlined" />
+    <ValidationMessage For="@(() => Model.Name)" />
 
-<MudTextField @bind-Value="Model.Color" Label="Color" Variant="Variant.Outlined" />
-<ValidationMessage For="@(() => Model.Color)" />
+    <MudNumericField T="int" @bind-Value="Model.NumberOfChickens" Label="Number of Chickens" Variant="Variant.Outlined" />
+    <ValidationMessage For="@(() => Model.NumberOfChickens)" />
 
-<MauiBlazorWeb.Shared.Components.MultiDateSelecters.MultiDateOnlySelector @bind-SelectedDates="Model.DatesForRescues" Text="An diesen Tagen abholen:" />
+    <MudTextField @bind-Value="Model.Size" Label="Size" Variant="Variant.Outlined" />
+    <ValidationMessage For="@(() => Model.Size)" />
+
+    <MudTextField @bind-Value="Model.Color" Label="Color" Variant="Variant.Outlined" />
+    <ValidationMessage For="@(() => Model.Color)" />
+
+    <MudTextField @bind-Value="Model.GeneralInformation" Label="General Information" Variant="Variant.Outlined" Lines="3" />
+    <ValidationMessage For="@(() => Model.GeneralInformation)" />
+</MudPaper>
+
+<MauiBlazorWeb.Shared.Components.MultiDateSelecters.MultiDateOnlySelector @bind-SelectedDates="Model.DatesForRescues" Text="Hühner können an diesen Tagen abgeholt werden:" />
 <ValidationMessage For="@(() => Model.DatesForRescues)" />
-
-
-<MudTextField @bind-Value="Model.GeneralInformation" Label="General Information" Variant="Variant.Outlined" Lines="3" />
-<ValidationMessage For="@(() => Model.GeneralInformation)" />
 

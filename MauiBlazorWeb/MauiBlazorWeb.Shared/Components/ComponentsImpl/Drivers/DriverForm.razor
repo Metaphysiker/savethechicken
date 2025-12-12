@@ -8,8 +8,12 @@
     <ContactForm Contact="Driver.Contact" />
     <AddressForm Address="Driver.Address" />
 
-    <MudTextField @bind-Value="Driver.CarMake" Label="Car Make" Variant="Variant.Outlined" />
-    <ValidationMessage For="@(() => Driver.CarMake)" />
+    <MudPaper Class="pa-4 my-4" Elevation="2">
+        <MudText Typo="Typo.h6">Allgemeine Informationen</MudText>
+
+        <MudTextField @bind-Value="Driver.CarMake" Label="Car Make" Variant="Variant.Outlined" />
+        <ValidationMessage For="@(() => Driver.CarMake)" />
+    </MudPaper>
 
     <MauiBlazorWeb.Shared.Components.MultiDateSelecters.MultiDateOnlySelector Text="Ich kann an diesen Tagen fahren:" @bind-SelectedDates="Driver.AvailableDates"  />
 

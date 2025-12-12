@@ -2,11 +2,19 @@
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Addresses
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
 @using MauiBlazorWeb.Shared.Components.MultiDateSelecters
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
 @using MudBlazor
 @using global::Shared.Dtos.DtosImpl
+@inject IStringLocalizer<AppResources> L
+
 @code {
     [Parameter, EditorRequired]
     public SaveChickenRequestDto Model { get; set; } = new SaveChickenRequestDto();
+
+    [Parameter]
+    public bool ShowSaveChickenActionInput { get; set; } = true;
+
     private List<int> saveChickenActionIds = new List<int>();
 
     protected override void OnInitialized()
@@ -18,25 +26,32 @@
 <ContactForm Contact="Model.Contact" />
 <AddressForm Address="Model.Address" />
 
-<MudItem>
-    <MudNumericField T="int" @bind-Value="Model.NumberOfChickensToBeSaved" Label="Number of Chickens" Variant="Variant.Outlined" />
-    <ValidationMessage For="@(() => Model.NumberOfChickensToBeSaved)" />
-</MudItem>
-<MudItem>
-    <MudTextField @bind-Value="Model.DescriptionOfPlaceForChickens" Label="Description" Variant="Variant.Outlined" Lines="3" />
-    <ValidationMessage For="@(() => Model.DescriptionOfPlaceForChickens)" />
-</MudItem>
-<MudItem>
-    <MudCheckBox @bind-Value="Model.AcceptTermsAndConditions"></MudCheckBox>
-    <ValidationMessage For="@(() => Model.AcceptTermsAndConditions)" />
-</MudItem>
-<MudItem>
-    <MudTextField @bind-Value="Model.Message" Label="Message" Variant="Variant.Outlined" Lines="3" />
-    <ValidationMessage For="@(() => Model.Message)" />
-</MudItem>
-<MudItem>
-    <SaveChickenActionSelector @bind-SelectedActionId="Model.SaveChickenActionId" />
-</MudItem>
-<MudItem>
-    <MultiDateOnlySelector @bind-SelectedDates="Model.DateForHandOver" />
-</MudItem>
+<MudPaper Class="pa-4 my-4">
+    <MudText Typo="Typo.h6">Allgemeine Informationen</MudText>
+    <MudItem>
+        <MudNumericField T="int" @bind-Value="Model.NumberOfChickensToBeSaved" Label="@L["NumberOfChickens"]" Variant="Variant.Outlined" />
+        <ValidationMessage For="@(() => Model.NumberOfChickensToBeSaved)" />
+    </MudItem>
+    <MudItem>
+        <MudTextField @bind-Value="Model.DescriptionOfPlaceForChickens" Label="@L["Description"]" Variant="Variant.Outlined" Lines="3" />
+        <ValidationMessage For="@(() => Model.DescriptionOfPlaceForChickens)" />
+    </MudItem>
+
+    <MudItem>
+        <MudTextField @bind-Value="Model.Message" Label="@L["Message"]" Variant="Variant.Outlined" Lines="3" />
+        <ValidationMessage For="@(() => Model.Message)" />
+    </MudItem>
+    @if (ShowSaveChickenActionInput){
+        <MudItem>
+            <SaveChickenActionSelector @bind-SelectedActionId="Model.SaveChickenActionId" />
+        </MudItem>
+    }
+
+    <MudItem>
+        <MudCheckBox @bind-Value="Model.AcceptTermsAndConditions" Label="@L["AcceptTermsAndConditions"]"></MudCheckBox>
+        <ValidationMessage For="@(() => Model.AcceptTermsAndConditions)" />
+    </MudItem>
+
+</MudPaper>
+
+<MultiDateOnlySelector @bind-SelectedDates="Model.DateForHandOver" Text="Ich bin an diesen Tagen erreichbar:" />

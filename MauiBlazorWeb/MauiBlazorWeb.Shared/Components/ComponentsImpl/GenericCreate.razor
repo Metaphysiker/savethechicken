@@ -4,15 +4,17 @@
 @typeparam TDto where TDto : class
 @inject GenericDtoServiceFactory DtoServiceFactory
 
-<EditForm Model="model" OnValidSubmit="HandleValidSubmit">
-    <ObjectGraphDataAnnotationsValidator />
+@if(model != null){
+    <EditForm Model="model" OnValidSubmit="HandleValidSubmit">
+        <ObjectGraphDataAnnotationsValidator />
 
-    @ChildContent(model)
+        @ChildContent(model)
 
-    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
-        Create
-    </MudButton>
-</EditForm>
+        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
+            Create
+        </MudButton>
+    </EditForm>
+}
 
 @code {
     [Parameter] public TDto model { get; set; }

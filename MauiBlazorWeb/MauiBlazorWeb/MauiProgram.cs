@@ -5,6 +5,7 @@ using MauiBlazorWeb.Shared.Services;
 using MauiBlazorWeb.Shared.Singletons.SingletonsImpl;
 using Microsoft.Extensions.Logging;
 using MudBlazor.Services;
+using System.Globalization;
 
 namespace MauiBlazorWeb;
 
@@ -51,6 +52,12 @@ public static class MauiProgram
         builder.Services.AddScoped<GenericDtoServiceFactory>();
 
         builder.Services.AddMudServices();
+
+        builder.Services.AddLocalization();
+
+        var ci = new CultureInfo("de");
+        CultureInfo.DefaultThreadCurrentCulture = ci;
+        CultureInfo.DefaultThreadCurrentUICulture = ci;
 
         return builder.Build();
     }

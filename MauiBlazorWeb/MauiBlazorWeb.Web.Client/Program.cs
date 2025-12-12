@@ -5,6 +5,7 @@ using MauiBlazorWeb.Shared.Singletons.SingletonsImpl;
 using MauiBlazorWeb.Web.Client.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
+using System.Globalization;
 using System.Net.Http.Json;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -30,5 +31,10 @@ builder.Services.AddScoped<GenericDtoServiceFactory>();
 
 builder.Services.AddMudServices();
 
+builder.Services.AddLocalization();
+
+var ci = new CultureInfo("de");
+CultureInfo.DefaultThreadCurrentCulture = ci;
+CultureInfo.DefaultThreadCurrentUICulture = ci;
 
 await builder.Build().RunAsync();
