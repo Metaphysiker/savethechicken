@@ -23,6 +23,7 @@ namespace Shared.Dtos.DtosImpl
         public bool AcceptTermsAndConditions { get; set; } = false;
 
         public string Message { get; set; } = string.Empty;
+        public SaveChickenActionDto? SaveChickenAction { get; set; }
         public int? SaveChickenActionId { get; set; }
 
         [ValidateComplexType]
@@ -39,7 +40,8 @@ namespace Shared.Dtos.DtosImpl
         public AddressDto? AddressForHandOver { get; set; }
         public int? AddressForHandOverId { get; set; }
         public int NumberOfBoxes { get; set; } = 0;
-        public DateOnly DateForHandOver { get; set; } = new DateOnly();
+
+        public List<DateOnly> DateForHandOver { get; set; } = new List<DateOnly>();
         public string Color { get; set; } = String.Empty;
 
     }

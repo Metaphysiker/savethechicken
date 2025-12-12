@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Shared.Dtos.DtosImpl;
+using WebApi.Database.Includes;
 using WebApi.Factories;
 using WebApi.Factories.FactoriesImpl;
 using WebApi.Models.ModelsImpl;
@@ -9,14 +10,14 @@ namespace WebApi.Controllers.ControllersImpl
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class SaveChickenActionController : ControllerBase, IModelController<SaveChickenActionDto, ISearchDto>
+    public class SaveChickenActionController : ControllerBase, IModelController<SaveChickenActionDto, SaveChickenActionSearch>
     {
-        private readonly GenericModelService<SaveChickenAction, ISearchDto> _service;
+        private readonly GenericModelService<SaveChickenAction, SaveChickenActionSearch> _service;
         private readonly AutoMapperService _mapper;
 
         public SaveChickenActionController(GenericModelServiceFactory genericModelServiceFactory, AutoMapperService mapper)
         {
-            _service = genericModelServiceFactory.Create<SaveChickenAction, ISearchDto>();
+            _service = genericModelServiceFactory.Create<SaveChickenAction, SaveChickenActionSearch>();
             _mapper = mapper;
         }
 
@@ -54,10 +55,17 @@ namespace WebApi.Controllers.ControllersImpl
         }
 
         [HttpPost("search")]
-        public async Task<ActionResult<PaginationDto<SaveChickenActionDto>>> Search([FromBody] ISearchDto search)
+        public async Task<ActionResult<PaginationDto<SaveChickenActionDto>>> Search([FromBody] SaveChickenActionSearch search)
         {
-            var result = await _service.Search(search);
-            var resultDto = _mapper.mapper.Map<PaginationDto<SaveChickenActionDto>>(result);
+            var result = await _service.Search(search, SaveChickenActionIncludes.Default);
+            var resultDto = new PaginationDto<SaveChickenActionDto>
+            {
+                Data = _mapper.mapper.Map<List<SaveChickenActionDto>>(result.Data),
+                Page = result.Page,
+                PageSize = result.PageSize,
+                TotalItems = result.TotalItems,
+                TotalPages = result.TotalPages
+            };
             return Ok(resultDto);
         }
 

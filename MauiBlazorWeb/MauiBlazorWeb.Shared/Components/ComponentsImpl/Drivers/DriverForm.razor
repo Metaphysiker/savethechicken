@@ -10,3 +10,6 @@
 
     <MudTextField @bind-Value="Driver.CarMake" Label="Car Make" Variant="Variant.Outlined" />
     <ValidationMessage For="@(() => Driver.CarMake)" />
+
+    <MauiBlazorWeb.Shared.Components.MultiDateSelecters.MultiDateOnlySelector Text="Ich kann an diesen Tagen fahren:" @bind-SelectedDates="Driver.AvailableDates"  />
+

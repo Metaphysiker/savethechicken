@@ -7,7 +7,9 @@
 
 <MudTextField @bind-Value="Model.Title" Label="Title" Variant="Variant.Outlined" />
 <ValidationMessage For="@(() => Model.Title)" />
-<MudTextField @bind-Value="Model.Description" Label="Description" Variant="Variant.Outlined" />
+<MudTextField @bind-Value="Model.Description" Label="Description" Variant="Variant.Outlined" Lines="4" TextFieldStyle="MudBlazor.TextFieldStyle.TextArea" />
 <ValidationMessage For="@(() => Model.Description)" />
-
+<MauiBlazorWeb.Shared.Components.MultiDateSelecters.MultiDateOnlySelector Text="Übergabe an diesen Daten:" @bind-SelectedDates="Model.Dates" />
+<MudCheckBox @bind-Value="Model.IsActive"></MudCheckBox>
+<ValidationMessage For="@(() => Model.IsActive)" />
 

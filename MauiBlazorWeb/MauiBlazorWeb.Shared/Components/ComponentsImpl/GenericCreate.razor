@@ -7,22 +7,28 @@
 <EditForm Model="model" OnValidSubmit="HandleValidSubmit">
     <ObjectGraphDataAnnotationsValidator />
 
-        @ChildContent(model)
+    @ChildContent(model)
 
-        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Create</MudButton>
+    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
+        Create
+    </MudButton>
 </EditForm>
 
 @code {
-
-    [Parameter] public TDto model { get; set; } = Activator.CreateInstance<TDto>();
+    [Parameter] public TDto model { get; set; }
     [Parameter] public RenderFragment<TDto> ChildContent { get; set; } = default!;
 
     private GenericDtoService<TDto, ISearchDto>? _service;
 
+
+
     protected override void OnInitialized()
     {
         _service = DtoServiceFactory.Create<TDto, ISearchDto>();
-
+        if (model == null)
+        {
+            model = Activator.CreateInstance<TDto>();
+        }
     }
 
     private async Task HandleValidSubmit()

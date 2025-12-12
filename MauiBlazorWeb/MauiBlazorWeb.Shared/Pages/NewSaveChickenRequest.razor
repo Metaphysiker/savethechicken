@@ -2,6 +2,7 @@
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
 @using MauiBlazorWeb.Web.Services.ServicesImpl
+@inject GenericDtoServiceFactory DtoServiceFactory
 @using global::Shared.Dtos.DtosImpl
 
 @page "/new-save-chicken-request"
@@ -12,10 +13,37 @@
 
     <h3>Ich biete Hühnern einen Lebensplatz an</h3>
 
-    <GenericCreate TDto="SaveChickenRequestDto">
-        <ChildContent Context="model">
-            <SaveChickenRequestForm Model="model" />
-        </ChildContent>
-    </GenericCreate>
-
+    @if (SaveChickenActionLoaded == true)
+    {
+        <GenericCreate TDto="SaveChickenRequestDto" model="newRequestDto">
+            <ChildContent Context="model">
+                <SaveChickenRequestForm Model="model" />
+            </ChildContent>
+        </GenericCreate>
+    }
 </MudContainer>
+
+
+@code {
+    private GenericDtoService<SaveChickenActionDto, SaveChickenActionSearch>? _service;
+    private SaveChickenActionDto? activeChickenDto;
+    private SaveChickenRequestDto newRequestDto = new();
+    private bool SaveChickenActionLoaded = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        SaveChickenActionSearch search = new SaveChickenActionSearch
+        {
+            IsActive = true,
+            PageSize = 1
+        };
+        _service = DtoServiceFactory.Create<SaveChickenActionDto, SaveChickenActionSearch>();
+        var searchResults = await _service.SearchAsync(search);
+        activeChickenDto = searchResults.Data.FirstOrDefault();
+        if (activeChickenDto != null)
+        {
+            newRequestDto.SaveChickenActionId = activeChickenDto?.Id;
+        }
+        SaveChickenActionLoaded = true;
+    }
+}

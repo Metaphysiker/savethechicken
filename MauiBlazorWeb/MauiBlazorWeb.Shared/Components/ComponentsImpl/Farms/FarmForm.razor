@@ -22,28 +22,10 @@
 <MudTextField @bind-Value="Model.Color" Label="Color" Variant="Variant.Outlined" />
 <ValidationMessage For="@(() => Model.Color)" />
 
-<MudTextField @bind-Value="DatesForRescuesString" Label="Dates For Rescues (comma separated YYYY-MM-DD)" Variant="Variant.Outlined" @onchange="OnDatesForRescuesChanged" />
+<MauiBlazorWeb.Shared.Components.MultiDateSelecters.MultiDateOnlySelector @bind-SelectedDates="Model.DatesForRescues" Text="An diesen Tagen abholen:" />
 <ValidationMessage For="@(() => Model.DatesForRescues)" />
+
 
 <MudTextField @bind-Value="Model.GeneralInformation" Label="General Information" Variant="Variant.Outlined" Lines="3" />
 <ValidationMessage For="@(() => Model.GeneralInformation)" />
 
-@code {
-    private string DatesForRescuesString
-    {
-        get => string.Join(',', Model.DatesForRescues.Select(d => d.ToString("yyyy-MM-dd")));
-        set
-        {
-            Model.DatesForRescues = value.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                .Select(s => DateOnly.TryParse(s.Trim(), out var d) ? d : (DateOnly?)null)
-                .Where(d => d.HasValue)
-                .Select(d => d.Value)
-                .ToList();
-        }
-    }
-
-    private void OnDatesForRescuesChanged(ChangeEventArgs e)
-    {
-        DatesForRescuesString = e.Value?.ToString() ?? string.Empty;
-    }
-}

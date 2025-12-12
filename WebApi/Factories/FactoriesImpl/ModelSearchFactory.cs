@@ -21,6 +21,12 @@ public class ModelSearchFactory
             return (IModelSearcher<ModelT, SearchDtoT>)new SaveChickenRequestSearcher(_db);
         }
 
+        if( typeof(ModelT) ==  typeof(SaveChickenAction) && typeof(SearchDtoT) == typeof(SaveChickenActionSearch))
+        {
+            return (IModelSearcher<ModelT, SearchDtoT>)new SaveChickenActionSearcher(_db);
+        }
+
+
        throw new NotImplementedException($"No searcher implemented for model type {typeof(ModelT)} and search dto type {typeof(SearchDtoT)}");
     }
 }

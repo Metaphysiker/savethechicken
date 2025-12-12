@@ -16,12 +16,12 @@ namespace WebApi.Models.ModelsImpl
         public int? AddressForHandOverId { get; set; }
         public int NumberOfChickensToBeSaved { get; set; } = 0;
         public int NumberOfBoxes { get; set; } = 0;
-        public String DescriptionOfPlaceForChickens { get; set; } = String.Empty;
+        public string DescriptionOfPlaceForChickens { get; set; } = string.Empty;
         public bool AcceptTermsAndConditions { get; set; } = false;
-        public String Message { get; set; } = String.Empty;
+        public string Message { get; set; } = string.Empty;
         public int? SaveChickenActionId { get; set; }
         public SaveChickenAction? SaveChickenAction { get; set; }
-        public DateOnly DateForHandOver { get; set; } = new DateOnly();
-        public string Color { get; set; } = String.Empty;
+        public List<DateOnly> DateForHandOver { get; set; } = new List<DateOnly>();
+        public string Color { get; set; } = string.Empty;
     }
 }

@@ -11,9 +11,11 @@ namespace WebApi.Models.ModelsImpl
         [Required]
         public List<DateOnly> Dates { get; set; } = new List<DateOnly>();
         [Required]
-        public string Title { get; set; } = String.Empty;
+        public string Title { get; set; } = string.Empty;
         [Required]
-        public String Description { get; set; } = String.Empty;
+        public string Description { get; set; } = string.Empty;
         public List<SaveChickenRequest> SaveChickenRequests { get; set; } = new List<SaveChickenRequest>();
+        public bool IsActive { get; set; } = false;
+
     }
 }

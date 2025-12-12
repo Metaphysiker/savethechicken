@@ -1,0 +1,144 @@
+@using System.Globalization
+
+<div class="multi-date-selector-border">
+
+    <MudText Typo="Typo.h6">@Text</MudText>
+    <MudText>
+        Ausgewählte Daten:
+        @if (selectedDates.Count == 0)
+        {
+            <em>Keine</em>
+        }
+        else
+        {
+            var orderedDates = selectedDates.OrderBy(d => d).ToList();
+            <ul style="margin: 0 0 0 1.2em; padding: 0;">
+            @foreach (var date in orderedDates)
+            {
+                <li>@date.ToString("dd.MM.yyyy")</li>
+            }
+            </ul>
+        }
+    </MudText>
+    <MudDivider Class="my-2" />
+    <div class="mud-calendar">
+        <div class="calendar-header">
+            <MudIconButton Icon="@Icons.Material.Filled.ChevronLeft" OnClick="PrevMonth" />
+            <span>@currentMonth.ToString("MMMM yyyy", CultureInfo.CurrentCulture)</span>
+            <MudIconButton Icon="@Icons.Material.Filled.ChevronRight" OnClick="NextMonth" />
+        </div>
+        <div class="calendar-grid">
+            @foreach (var day in dayNames)
+            {
+                <div class="calendar-day-name">@day</div>
+            }
+            @foreach (var date in GetCalendarDates())
+            {
+                if (date == DateOnly.MinValue)
+                {
+                    <div class="calendar-day"></div>
+                }
+                else
+                {
+                    <div class="calendar-day @(selectedDates.Contains(date) ? "selected" : "")"
+                        @onclick="() => ToggleDate(date)">
+                        @date.Day
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public List<DateOnly> selectedDates { get; set; } = new();
+    [Parameter] public EventCallback<List<DateOnly>> selectedDatesChanged { get; set; }
+    [Parameter] public string Text { get; set; } = "Daten auswählen:";
+
+    private DateTime currentMonth = DateTime.Today;
+    private static readonly string[] dayNames = GetMondayFirstDayNames();
+
+    private static string[] GetMondayFirstDayNames()
+    {
+        var days = CultureInfo.CurrentCulture.DateTimeFormat.AbbreviatedDayNames;
+        // Move Sunday (index 0) to the end
+        return days.Skip(1).Concat(days.Take(1)).ToArray();
+    }
+
+    private IEnumerable<DateOnly> GetCalendarDates()
+    {
+        var firstOfMonth = new DateTime(currentMonth.Year, currentMonth.Month, 1);
+        int daysInMonth = DateTime.DaysInMonth(currentMonth.Year, currentMonth.Month);
+        // Adjust so Monday is 0, Sunday is 6
+        int startDay = ((int)firstOfMonth.DayOfWeek + 6) % 7;
+        var days = new List<DateOnly>();
+
+        // Fill leading blanks
+        for (int i = 0; i < startDay; i++)
+            days.Add(DateOnly.MinValue);
+
+        // Fill days of month
+        for (int d = 1; d <= daysInMonth; d++)
+            days.Add(DateOnly.FromDateTime(new DateTime(currentMonth.Year, currentMonth.Month, d)));
+
+        return days;
+    }
+
+    private void ToggleDate(DateOnly date)
+    {
+        if (date == DateOnly.MinValue) return;
+        if (selectedDates.Contains(date))
+            selectedDates.Remove(date);
+        else
+            selectedDates.Add(date);
+
+        selectedDatesChanged.InvokeAsync(selectedDates);
+    }
+
+    private void PrevMonth() => currentMonth = currentMonth.AddMonths(-1);
+    private void NextMonth() => currentMonth = currentMonth.AddMonths(1);
+}
+<style>
+    .mud-calendar {
+        max-width: 350px;
+    }
+
+    .calendar-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 2px;
+    }
+
+    .calendar-day,
+    .calendar-day-name {
+        text-align: center;
+        padding: 6px;
+        border-radius: 4px;
+    }
+
+    .calendar-day.selected {
+        background: #1976d2;
+        color: white;
+    }
+
+    .calendar-day {
+        cursor: pointer;
+    }
+
+    .multi-date-selector-border {
+        border: 2px solid #1976d2;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 16px;
+        background: #fafbfc;
+        display: block;
+        width: fit-content;
+    }
+</style>
