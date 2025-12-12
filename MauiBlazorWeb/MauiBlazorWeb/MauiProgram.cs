@@ -39,7 +39,7 @@ public static class MauiProgram
         // Add device-specific services used by the MauiBlazorWeb.Shared project
         builder.Services.AddSingleton<IFormFactor, FormFactor>();
 
-        var apiBaseUrl = builder.Configuration["API_BASE_URL"] ?? "http://localhost:8081/";
+        var apiBaseUrl = builder.Configuration["API_BASE_URL"] ?? "https://localhost:7101/";
 
         // Register HttpClient for WebAssembly DI
         builder.Services.AddScoped(sp => new HttpClient

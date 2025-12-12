@@ -50,9 +50,15 @@ builder.Services
     {
         var key = Environment.GetEnvironmentVariable("SIGNING_KEY");
 
-        if (key == null)
+        if (string.IsNullOrEmpty(key))
         {
-            throw new ArgumentNullException("SIGNING_KEY");
+            // Generate a random 64-character base64 string
+            var randomBytes = new byte[48];
+            using (var rng = System.Security.Cryptography.RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomBytes);
+            }
+            key = Convert.ToBase64String(randomBytes);
         }
 
         options.TokenValidationParameters = new TokenValidationParameters()

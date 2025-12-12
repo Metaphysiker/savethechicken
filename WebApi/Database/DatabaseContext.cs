@@ -14,10 +14,11 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        var Username = "savethechicken";
-        var Password = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD");
         var Database = "savethechicken";
-        optionsBuilder.UseNpgsql($"Host=postgres;Username={Username};Password={Password};Database={Database}");
+        var Username = "savethechicken";
+        var Password = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD") ?? "savethechicken";
+        var Host = Environment.GetEnvironmentVariable("POSTGRES_HOST") ?? "localhost";
+        optionsBuilder.UseNpgsql($"Host={Host};Username={Username};Password={Password};Database={Database}");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
