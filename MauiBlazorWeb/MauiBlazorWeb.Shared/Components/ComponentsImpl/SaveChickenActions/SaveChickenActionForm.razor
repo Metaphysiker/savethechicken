@@ -1,0 +1,13 @@
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Addresses
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Contacts
+@using global::Shared.Dtos.DtosImpl
+@code {
+    [Parameter, EditorRequired] public SaveChickenActionDto Model { get; set; }
+}
+
+<MudTextField @bind-Value="Model.Title" Label="Title" Variant="Variant.Outlined" />
+<ValidationMessage For="@(() => Model.Title)" />
+<MudTextField @bind-Value="Model.Description" Label="Description" Variant="Variant.Outlined" />
+<ValidationMessage For="@(() => Model.Description)" />
+
+

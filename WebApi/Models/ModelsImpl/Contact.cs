@@ -1,4 +1,4 @@
-﻿namespace WebApi.Classes
+﻿namespace WebApi.Models.ModelsImpl
 {
     public class Contact : IModel
     {

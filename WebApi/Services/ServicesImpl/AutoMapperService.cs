@@ -1,6 +1,5 @@
 using AutoMapper;
 using Shared.Dtos.DtosImpl;
-using WebApi.Classes;
 using WebApi.Models.ModelsImpl;
 
 public class AutoMapperService

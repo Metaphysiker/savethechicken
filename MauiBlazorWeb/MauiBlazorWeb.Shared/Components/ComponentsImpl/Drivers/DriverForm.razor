@@ -1,0 +1,12 @@
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Addresses
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Contacts
+@using global::Shared.Dtos.DtosImpl
+@code {
+    [Parameter, EditorRequired] public DriverDto Driver { get; set; }
+}
+
+    <ContactForm Contact="Driver.Contact" />
+    <AddressForm Address="Driver.Address" />
+
+    <MudTextField @bind-Value="Driver.CarMake" Label="Car Make" Variant="Variant.Outlined" />
+    <ValidationMessage For="@(() => Driver.CarMake)" />

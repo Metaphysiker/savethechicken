@@ -23,6 +23,18 @@ namespace MauiBlazorWeb.Shared.Factories.FactoriesImpl
             {
                 resource = "SaveChickenRequest";
             }
+            else if (typeof(TDto).Name.EndsWith(typeof(DriverDto).Name))
+            {
+                resource = "Driver";
+            }
+            else if (typeof(TDto).Name.EndsWith(typeof(FarmDto).Name))
+            {
+                resource = "Farm";
+            }
+            else if (typeof(TDto).Name.EndsWith(typeof(SaveChickenActionDto).Name))
+            {
+                resource = "SaveChickenAction";
+            }
             return new GenericDtoService<TDto, TSearchDto>(_httpClient, resource);
         }
     }

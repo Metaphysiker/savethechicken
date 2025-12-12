@@ -1,4 +1,4 @@
-﻿using WebApi.Classes;
+﻿using WebApi.Models.ModelsImpl;
 
 namespace WebApi.Models.ModelsImpl
 {

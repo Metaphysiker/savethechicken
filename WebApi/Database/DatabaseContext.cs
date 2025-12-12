@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using WebApi.Models.ModelsImpl;
-using WebApi.Classes;
 
 public class DatabaseContext : IdentityDbContext<IdentityUser>
 {
@@ -11,6 +10,7 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
     public DbSet<Farm> Farms { get; set; }
     public DbSet<Contact> Contacts { get; set; }
     public DbSet<Address> Addresses { get; set; }
+    public DbSet<Driver> Drivers { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

@@ -1,0 +1,22 @@
+﻿@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Drivers
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Web.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+
+@page "/new-driver"
+
+<PageTitle>Fahrer werden</PageTitle>
+
+<MudContainer>
+
+    <h3>Ich biete mich als Fahrer an</h3>
+
+    <GenericCreate TDto="DriverDto">
+        <ChildContent Context="model">
+            <DriverForm Driver="model" />
+        </ChildContent>
+    </GenericCreate>
+
+</MudContainer>

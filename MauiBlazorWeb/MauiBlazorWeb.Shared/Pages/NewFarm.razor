@@ -1,0 +1,22 @@
+﻿@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Drivers
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Farms
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Web.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+
+@page "/new-farm"
+
+<PageTitle>Landwirtschaftsbetrieb anmelden</PageTitle>
+
+<MudContainer>
+
+    <h3>Ich möchte meinen Landwirtschaftsbetrieb anmelden</h3>
+    <GenericCreate TDto="FarmDto">
+        <ChildContent Context="model">
+            <FarmForm Model="model" />
+        </ChildContent>
+    </GenericCreate>
+
+</MudContainer>
