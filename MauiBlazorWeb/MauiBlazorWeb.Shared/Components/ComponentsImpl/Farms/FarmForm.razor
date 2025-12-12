@@ -1,6 +1,10 @@
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Contacts
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Addresses
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
 @using MudBlazor
+@inject IStringLocalizer<AppResources> L
+
 @using global::Shared.Dtos.DtosImpl
 @code {
     [Parameter, EditorRequired]
@@ -16,19 +20,19 @@
 <MudPaper Class="pa-4 my-4" Elevation="2">
     <MudText Typo="Typo.h6">Allgemeine Informationen</MudText>
 
-    <MudTextField @bind-Value="Model.Name" Label="Name" Variant="Variant.Outlined" />
+    <MudTextField @bind-Value="Model.Name" Label="@L["Farm_Name"]" Variant="Variant.Outlined" />
     <ValidationMessage For="@(() => Model.Name)" />
 
-    <MudNumericField T="int" @bind-Value="Model.NumberOfChickens" Label="Number of Chickens" Variant="Variant.Outlined" />
+    <MudNumericField T="int" @bind-Value="Model.NumberOfChickens" Label="@L["NumberOfChickens"]" Variant="Variant.Outlined" />
     <ValidationMessage For="@(() => Model.NumberOfChickens)" />
 
-    <MudTextField @bind-Value="Model.Size" Label="Size" Variant="Variant.Outlined" />
+    <MudTextField @bind-Value="Model.Size" Label="@L["Farm_Size"]" Variant="Variant.Outlined" />
     <ValidationMessage For="@(() => Model.Size)" />
 
-    <MudTextField @bind-Value="Model.Color" Label="Color" Variant="Variant.Outlined" />
+    <MudTextField @bind-Value="Model.Color" Label="@L["Color"]" Variant="Variant.Outlined" />
     <ValidationMessage For="@(() => Model.Color)" />
 
-    <MudTextField @bind-Value="Model.GeneralInformation" Label="General Information" Variant="Variant.Outlined" Lines="3" />
+    <MudTextField @bind-Value="Model.GeneralInformation" Label="@L["GeneralInformation"]" Variant="Variant.Outlined" Lines="3" />
     <ValidationMessage For="@(() => Model.GeneralInformation)" />
 </MudPaper>
 

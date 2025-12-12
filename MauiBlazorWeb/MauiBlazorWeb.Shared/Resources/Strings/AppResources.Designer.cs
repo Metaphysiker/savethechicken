@@ -106,6 +106,24 @@ namespace MauiBlazorWeb.Shared.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Automarke.
+        /// </summary>
+        public static string CarMake {
+            get {
+                return ResourceManager.GetString("CarMake", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Farbe.
+        /// </summary>
+        public static string Color {
+            get {
+                return ResourceManager.GetString("Color", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Kontakt.
         /// </summary>
         public static string Contact {
@@ -156,6 +174,33 @@ namespace MauiBlazorWeb.Shared.Resources.Strings {
         public static string Description {
             get {
                 return ResourceManager.GetString("Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name des Betriebs.
+        /// </summary>
+        public static string Farm_Name {
+            get {
+                return ResourceManager.GetString("Farm_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Anzahl Hühner.
+        /// </summary>
+        public static string Farm_Size {
+            get {
+                return ResourceManager.GetString("Farm_Size", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allgemeine Information.
+        /// </summary>
+        public static string GeneralInformation {
+            get {
+                return ResourceManager.GetString("GeneralInformation", resourceCulture);
             }
         }
         
