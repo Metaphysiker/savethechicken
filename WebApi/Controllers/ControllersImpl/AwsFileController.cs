@@ -109,6 +109,7 @@ public class AwsFileController : ControllerBase
         return NoContent();
     }
 
+    [HttpPost("create-unique-filename")]
     public async Task<string> CreateUniqFileName(string fileName)
     {
         var newFileName = $"{fileName}";
