@@ -1,0 +1,92 @@
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Contacts
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Addresses
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
+@using MauiBlazorWeb.Shared.Components.MultiDateSelecters
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
+@using MudBlazor
+@using global::Shared.Dtos.DtosImpl
+@inject IStringLocalizer<AppResources> L
+
+@code {
+    [Parameter, EditorRequired]
+    public ItemWithBrowserFiles<SaveChickenRequestDto> EntityWithFiles { get; set; } = default!;
+    //public SaveChickenRequestDto Model { get; set; } = new SaveChickenRequestDto();
+
+    [Parameter]
+    public bool ShowSaveChickenActionInput { get; set; } = true;
+
+    private List<int> saveChickenActionIds = new List<int>();
+
+    protected override void OnInitialized()
+    {
+        saveChickenActionIds = Enumerable.Range(1, 10).ToList();
+    }
+
+    private void UploadFiles(IReadOnlyList<IBrowserFile> files)
+    {
+        foreach (var file in files)
+        {
+            EntityWithFiles.Files.Add(file);
+        }
+    }
+}
+
+<ContactForm Contact="EntityWithFiles.Item.Contact" />
+<AddressForm Address="EntityWithFiles.Item.Address" />
+
+<MudPaper Class="pa-4 my-4">
+    <MudText Typo="Typo.h6">Allgemeine Informationen</MudText>
+    <MudItem>
+        <MudNumericField T="int" @bind-Value="EntityWithFiles.Item.NumberOfChickensToBeSaved" Label="@L["NumberOfChickens"]" Variant="Variant.Outlined" />
+        <ValidationMessage For="@(() => EntityWithFiles.Item.NumberOfChickensToBeSaved)" />
+    </MudItem>
+    <MudItem>
+        <MudTextField @bind-Value="EntityWithFiles.Item.DescriptionOfPlaceForChickens" Label="@L["Description"]" Variant="Variant.Outlined" Lines="3" />
+        <ValidationMessage For="@(() => EntityWithFiles.Item.DescriptionOfPlaceForChickens)" />
+    </MudItem>
+
+    <MudItem>
+        <MudTextField @bind-Value="EntityWithFiles.Item.Message" Label="@L["Message"]" Variant="Variant.Outlined" Lines="3" />
+        <ValidationMessage For="@(() => EntityWithFiles.Item.Message)" />
+    </MudItem>
+    @if (ShowSaveChickenActionInput){
+        <MudItem>
+            <SaveChickenActionSelector @bind-SelectedActionId="EntityWithFiles.Item.SaveChickenActionId" />
+        </MudItem>
+    }
+
+    <MudItem>
+        <MudCheckBox @bind-Value="EntityWithFiles.Item.AcceptTermsAndConditions" Label="@L["AcceptTermsAndConditions"]"></MudCheckBox>
+        <ValidationMessage For="@(() => EntityWithFiles.Item.AcceptTermsAndConditions)" />
+    </MudItem>
+
+    <MudItem>
+        <MudFileUpload T="IReadOnlyList<IBrowserFile>" FilesChanged="UploadFiles">
+            <ActivatorContent>
+                <MudButton Variant="Variant.Filled"
+                        Color="Color.Primary"
+                        StartIcon="@Icons.Material.Filled.CloudUpload">
+                    Multiple Files
+                </MudButton>
+            </ActivatorContent>
+        </MudFileUpload>
+
+        @if (EntityWithFiles.Files != null)
+        {
+            <MudList T="string">
+                @foreach (var file in EntityWithFiles.Files)
+                {
+                    <MudListItem Icon="@Icons.Material.Filled.AttachFile">
+                        @file.Name <code>@file.Size bytes</code>
+                    </MudListItem>
+                }
+            </MudList>
+        }
+    </MudItem>
+
+</MudPaper>
+
+<MultiDateOnlySelector @bind-SelectedDates="EntityWithFiles.Item.DateForHandOver" Text="Ich bin an diesen Tagen erreichbar:" />
+
+

@@ -20,6 +20,13 @@
                 <SaveChickenRequestForm Model="model" ShowSaveChickenActionInput=false />
             </ChildContent>
         </GenericCreate>
+
+    <h3> WITH FILES</h3>
+        <GenericCreateWithFiles TDto="SaveChickenRequestDto" model="newRequestDto">
+            <ChildContent Context="model">
+                <SaveChickenRequestFormWithFiles EntityWithFiles="model" ShowSaveChickenActionInput=false />
+            </ChildContent>
+        </GenericCreateWithFiles>
     }
 </MudContainer>
 
