@@ -13,16 +13,9 @@
 
     <h3>Ich biete Hühnern einen Lebensplatz an</h3>
 
-    @if (SaveChickenActionLoaded == true)
+    @if (SaveChickenActionLoaded == true && newRequestDtoWithFiles != null)
     {
-        <GenericCreate TDto="SaveChickenRequestDto" model="newRequestDto">
-            <ChildContent Context="model">
-                <SaveChickenRequestForm Model="model" ShowSaveChickenActionInput=false />
-            </ChildContent>
-        </GenericCreate>
-
-    <h3> WITH FILES</h3>
-        <GenericCreateWithFiles TDto="SaveChickenRequestDto" model="newRequestDtoWithFiles.Item">
+        <GenericCreateWithFiles TDto="SaveChickenRequestDto" model="newRequestDtoWithFiles">
             <ChildContent Context="model">
                 <SaveChickenRequestFormWithFiles EntityWithFiles="newRequestDtoWithFiles" ShowSaveChickenActionInput=false />
             </ChildContent>
@@ -46,13 +39,15 @@
             PageSize = 1
         };
         _service = DtoServiceFactory.Create<SaveChickenActionDto, SaveChickenActionSearch>();
+
+
         var searchResults = await _service.SearchAsync(search);
         activeChickenDto = searchResults.Data.FirstOrDefault();
         if (activeChickenDto != null)
         {
             newRequestDto.SaveChickenActionId = activeChickenDto?.Id;
-            newRequestDtoWithFiles.Item.SaveChickenActionId = activeChickenDto?.Id;
         }
+        newRequestDtoWithFiles.Item = newRequestDto;
         SaveChickenActionLoaded = true;
     }
 }

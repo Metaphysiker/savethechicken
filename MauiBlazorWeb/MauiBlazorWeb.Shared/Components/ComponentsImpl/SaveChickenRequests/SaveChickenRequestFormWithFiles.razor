@@ -1,5 +1,6 @@
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Contacts
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Addresses
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.FileUploads
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
 @using MauiBlazorWeb.Shared.Components.MultiDateSelecters
 @using MauiBlazorWeb.Shared.Resources.Strings
@@ -11,25 +12,9 @@
 @code {
     [Parameter, EditorRequired]
     public ItemWithBrowserFiles<SaveChickenRequestDto> EntityWithFiles { get; set; } = default!;
-    //public SaveChickenRequestDto Model { get; set; } = new SaveChickenRequestDto();
 
     [Parameter]
     public bool ShowSaveChickenActionInput { get; set; } = true;
-
-    private List<int> saveChickenActionIds = new List<int>();
-
-    protected override void OnInitialized()
-    {
-        saveChickenActionIds = Enumerable.Range(1, 10).ToList();
-    }
-
-    private void UploadFiles(IReadOnlyList<IBrowserFile> files)
-    {
-        foreach (var file in files)
-        {
-            EntityWithFiles.Files.Add(file);
-        }
-    }
 }
 
 <ContactForm Contact="EntityWithFiles.Item.Contact" />
@@ -56,37 +41,13 @@
         </MudItem>
     }
 
-    <MudItem>
-        <MudCheckBox @bind-Value="EntityWithFiles.Item.AcceptTermsAndConditions" Label="@L["AcceptTermsAndConditions"]"></MudCheckBox>
-        <ValidationMessage For="@(() => EntityWithFiles.Item.AcceptTermsAndConditions)" />
-    </MudItem>
-
-    <MudItem>
-        <MudFileUpload T="IReadOnlyList<IBrowserFile>" FilesChanged="UploadFiles">
-            <ActivatorContent>
-                <MudButton Variant="Variant.Filled"
-                        Color="Color.Primary"
-                        StartIcon="@Icons.Material.Filled.CloudUpload">
-                    Multiple Files
-                </MudButton>
-            </ActivatorContent>
-        </MudFileUpload>
-
-        @if (EntityWithFiles.Files != null)
-        {
-            <MudList T="string">
-                @foreach (var file in EntityWithFiles.Files)
-                {
-                    <MudListItem Icon="@Icons.Material.Filled.AttachFile">
-                        @file.Name <code>@file.Size bytes</code>
-                    </MudListItem>
-                }
-            </MudList>
-        }
-    </MudItem>
-
 </MudPaper>
 
 <MultiDateOnlySelector @bind-SelectedDates="EntityWithFiles.Item.DatesForHandOver" Text="Ich bin an diesen Tagen erreichbar:" />
 
+<FilesUploadForm @bind-Value="EntityWithFiles.Files" Label="Dateien hochladen" />
 
+<MudPaper Class="pa-4 my-4">
+    <MudCheckBox @bind-Value="EntityWithFiles.Item.AcceptTermsAndConditions" Label="@L["AcceptTermsAndConditions"]"></MudCheckBox>
+    <ValidationMessage For="@(() => EntityWithFiles.Item.AcceptTermsAndConditions)" />
+</MudPaper>

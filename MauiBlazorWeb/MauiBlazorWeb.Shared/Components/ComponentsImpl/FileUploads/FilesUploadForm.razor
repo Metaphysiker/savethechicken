@@ -1,0 +1,55 @@
+@inject IJSRuntime JS
+
+<MudPaper Class="pa-4 my-4">
+
+<MudFileUpload T="IReadOnlyList<IBrowserFile>" FilesChanged="FileChanged">
+    <ActivatorContent>
+        <MudButton Variant="Variant.Filled"
+                Color="Color.Primary"
+                StartIcon="@Icons.Material.Filled.CloudUpload">
+            @Label
+        </MudButton>
+    </ActivatorContent>
+</MudFileUpload>
+
+        @if (Value != null)
+        {
+            <MudList T="string">
+                @foreach (var file in Value)
+                {
+            <MudListItem Icon="@Icons.Material.Filled.AttachFile">
+                @file.Name <code>@($"{file.Size / (1024.0 * 1024.0):0.##} MB")</code>
+            </MudListItem>
+                }
+            </MudList>
+        }
+
+</MudPaper>
+@code {
+    [Parameter] public List<IBrowserFile> Value { get; set; } = new();
+    [Parameter] public EventCallback<List<IBrowserFile>> ValueChanged { get; set; }
+    [Parameter] public string Label { get; set; } = "Dateien hochladen";
+
+    protected override void OnInitialized()
+    {
+        Value ??= new List<IBrowserFile>();
+    }
+
+    private async void FileChanged(IReadOnlyList<IBrowserFile> files)
+    {
+
+        Value.Clear();
+        await JS.InvokeVoidAsync("console.log", "Files changed:");
+
+        foreach (var file in files)
+        {
+            Value.Add(file);
+        }
+        if (ValueChanged.HasDelegate)
+        {
+            await ValueChanged.InvokeAsync(Value);
+        }
+
+        await JS.InvokeVoidAsync("console.log", Value);
+    }
+}

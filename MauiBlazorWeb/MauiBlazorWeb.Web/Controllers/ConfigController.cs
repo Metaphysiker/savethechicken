@@ -7,6 +7,6 @@ public class ConfigController : ControllerBase
     [HttpGet]
     public IActionResult GetConfig()
     {
-        return Ok(new { ApiBaseUrl = Environment.GetEnvironmentVariable("API_BASE_URL") ?? "http://localhost:8081/" });
+        return Ok(new { ApiBaseUrl = Environment.GetEnvironmentVariable("API_BASE_URL") ?? "https://localhost:7101/" });
     }
 }

@@ -1,6 +1,7 @@
 using Blazored.LocalStorage;
 using MauiBlazorWeb.Shared.Factories.FactoriesImpl;
 using MauiBlazorWeb.Shared.Services;
+using MauiBlazorWeb.Shared.Services.ServicesImpl;
 using MauiBlazorWeb.Shared.Singletons.SingletonsImpl;
 using MauiBlazorWeb.Web.Components;
 using MauiBlazorWeb.Web.Services;
@@ -10,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<AwsFileService>();
 
 builder.Services.AddSingleton<AuthResponseSingleton>();
 

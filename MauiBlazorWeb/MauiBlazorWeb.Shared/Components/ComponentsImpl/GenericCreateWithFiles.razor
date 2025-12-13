@@ -1,26 +1,26 @@
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Shared.Services.ServicesImpl
 @using MauiBlazorWeb.Web.Services.ServicesImpl
+@inject AwsFileService AwsFileService
 @using global::Shared.Dtos.DtosImpl
 @inject IJSRuntime JS
 @typeparam TDto where TDto : class, IEntityWithFiles
 @inject GenericDtoServiceFactory DtoServiceFactory
 
-@if(itemWithFiles != null && model != null){
+@if(model != null){
     <EditForm Model="model" OnValidSubmit="HandleValidSubmit">
         <ObjectGraphDataAnnotationsValidator />
 
-        @ChildContent(itemWithFiles)
+        @ChildContent(model)
 
         <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
-            Create
+            Create x
         </MudButton>
     </EditForm>
 }
 
 @code {
-    [Parameter] public TDto model { get; set; } = default!;
-
-    ItemWithBrowserFiles<TDto>? itemWithFiles = null;
+    [Parameter] public ItemWithBrowserFiles<TDto> model { get; set; } = default!;
 
     [Parameter] public RenderFragment<ItemWithBrowserFiles<TDto>> ChildContent { get; set; } = default!;
 
@@ -33,18 +33,24 @@
         _service = DtoServiceFactory.Create<TDto, ISearchDto>();
         if (model == null)
         {
-            model = Activator.CreateInstance<TDto>();
+            model = Activator.CreateInstance<ItemWithBrowserFiles<TDto>>();
         }
-        itemWithFiles = new ItemWithBrowserFiles<TDto>();
-        itemWithFiles.Item = model;
+        StateHasChanged();
     }
 
     private async Task HandleValidSubmit()
     {
-        if (_service != null && itemWithFiles != null)
+
+        // console log something
+        await JS.InvokeVoidAsync("console.log", "Submitting form with files");
+        if (_service != null && model != null)
         {
+            // console.log itemWithFiles
+            await JS.InvokeVoidAsync("console.log", model);
             // console log the files
-            foreach (var file in itemWithFiles.Files)
+
+            await UploadFiles(model);
+            foreach (var file in model.Files)
             {
                 //javascript console log
                 await JS.InvokeVoidAsync("console.log", $"File: {file.Name}, Size: {file.Size} bytes");
@@ -53,6 +59,16 @@
             }
 
             //await _service.CreateAsync(model);
+        }
+    }
+
+    private async Task UploadFiles(ItemWithBrowserFiles<TDto> itemWithFiles)
+    {
+        foreach (var file in itemWithFiles.Files)
+        {
+            var key = await AwsFileService.UploadFileAsync(file);
+            await JS.InvokeVoidAsync("console.log", key);
+            //itemWithFiles.Item.Files.Add(key);
         }
     }
 }

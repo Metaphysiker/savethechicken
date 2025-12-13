@@ -1,6 +1,7 @@
 using Blazored.LocalStorage;
 using MauiBlazorWeb.Shared.Factories.FactoriesImpl;
 using MauiBlazorWeb.Shared.Services;
+using MauiBlazorWeb.Shared.Services.ServicesImpl;
 using MauiBlazorWeb.Shared.Singletons.SingletonsImpl;
 using MauiBlazorWeb.Web.Client.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -13,7 +14,7 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<AuthService>();
-
+builder.Services.AddScoped<AwsFileService>();
 builder.Services.AddSingleton<AuthResponseSingleton>();
 
 // Add device-specific services used by the MauiBlazorWeb.Shared project
