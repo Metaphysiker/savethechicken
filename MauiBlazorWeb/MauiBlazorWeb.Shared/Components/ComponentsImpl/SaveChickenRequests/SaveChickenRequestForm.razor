@@ -21,6 +21,16 @@
     {
         saveChickenActionIds = Enumerable.Range(1, 10).ToList();
     }
+
+    IList<IBrowserFile> files = new List<IBrowserFile>();
+    private void UploadFiles(IReadOnlyList<IBrowserFile> files)
+    {
+        foreach (var file in files)
+        {
+            this.files.Add(file);
+        }
+        //TODO upload the files to the server
+    }
 }
 
 <ContactForm Contact="Model.Contact" />
@@ -50,6 +60,30 @@
     <MudItem>
         <MudCheckBox @bind-Value="Model.AcceptTermsAndConditions" Label="@L["AcceptTermsAndConditions"]"></MudCheckBox>
         <ValidationMessage For="@(() => Model.AcceptTermsAndConditions)" />
+    </MudItem>
+
+    <MudItem>
+        <MudFileUpload T="IReadOnlyList<IBrowserFile>" FilesChanged="UploadFiles">
+            <ActivatorContent>
+                <MudButton Variant="Variant.Filled"
+                        Color="Color.Primary"
+                        StartIcon="@Icons.Material.Filled.CloudUpload">
+                    Multiple Files
+                </MudButton>
+            </ActivatorContent>
+        </MudFileUpload>
+
+        @if (files != null)
+        {
+            <MudList T="string">
+                @foreach (var file in files)
+                {
+                    <MudListItem Icon="@Icons.Material.Filled.AttachFile">
+                        @file.Name <code>@file.Size bytes</code>
+                    </MudListItem>
+                }
+            </MudList>
+        }
     </MudItem>
 
 </MudPaper>

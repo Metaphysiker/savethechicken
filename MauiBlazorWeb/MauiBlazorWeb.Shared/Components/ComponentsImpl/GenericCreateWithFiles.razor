@@ -1,0 +1,43 @@
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Web.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+@typeparam TDto where TDto : class, IEntityWithFiles
+@inject GenericDtoServiceFactory DtoServiceFactory
+
+@if(model != null){
+    <EditForm Model="model" OnValidSubmit="HandleValidSubmit">
+        <ObjectGraphDataAnnotationsValidator />
+
+        @ChildContent(model)
+
+        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
+            Create
+        </MudButton>
+    </EditForm>
+}
+
+@code {
+    [Parameter] public TDto model { get; set; }
+    [Parameter] public RenderFragment<TDto> ChildContent { get; set; } = default!;
+
+    private GenericDtoService<TDto, ISearchDto>? _service;
+
+
+
+    protected override void OnInitialized()
+    {
+        _service = DtoServiceFactory.Create<TDto, ISearchDto>();
+        if (model == null)
+        {
+            model = Activator.CreateInstance<TDto>();
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (_service != null)
+        {
+            await _service.CreateAsync(model);
+        }
+    }
+}
