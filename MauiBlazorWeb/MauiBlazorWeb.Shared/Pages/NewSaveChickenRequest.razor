@@ -22,9 +22,9 @@
         </GenericCreate>
 
     <h3> WITH FILES</h3>
-        <GenericCreateWithFiles TDto="SaveChickenRequestDto" model="newRequestDto">
+        <GenericCreateWithFiles TDto="SaveChickenRequestDto" model="newRequestDtoWithFiles.Item">
             <ChildContent Context="model">
-                <SaveChickenRequestFormWithFiles EntityWithFiles="model" ShowSaveChickenActionInput=false />
+                <SaveChickenRequestFormWithFiles EntityWithFiles="newRequestDtoWithFiles" ShowSaveChickenActionInput=false />
             </ChildContent>
         </GenericCreateWithFiles>
     }
@@ -35,6 +35,7 @@
     private GenericDtoService<SaveChickenActionDto, SaveChickenActionSearch>? _service;
     private SaveChickenActionDto? activeChickenDto;
     private SaveChickenRequestDto newRequestDto = new();
+    private ItemWithBrowserFiles<SaveChickenRequestDto> newRequestDtoWithFiles = new();
     private bool SaveChickenActionLoaded = false;
 
     protected override async Task OnInitializedAsync()
@@ -50,6 +51,7 @@
         if (activeChickenDto != null)
         {
             newRequestDto.SaveChickenActionId = activeChickenDto?.Id;
+            newRequestDtoWithFiles.Item.SaveChickenActionId = activeChickenDto?.Id;
         }
         SaveChickenActionLoaded = true;
     }

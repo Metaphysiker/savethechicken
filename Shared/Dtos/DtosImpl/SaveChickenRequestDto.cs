@@ -42,7 +42,7 @@ namespace Shared.Dtos.DtosImpl
         public int? AddressForHandOverId { get; set; }
         public int NumberOfBoxes { get; set; } = 0;
 
-        public List<DateOnly> DateForHandOver { get; set; } = new List<DateOnly>();
+        public List<DateOnly> DatesForHandOver { get; set; } = new List<DateOnly>();
         public string Color { get; set; } = String.Empty;
 
         public List<StoredFileDto> Files { get; set; }

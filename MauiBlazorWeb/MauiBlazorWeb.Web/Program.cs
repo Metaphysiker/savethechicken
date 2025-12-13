@@ -22,7 +22,6 @@ builder.Services.AddRazorComponents()
 // Add device-specific services used by the MauiBlazorWeb.Shared project
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
 
-// Use webapi:8080 if running in Docker, otherwise use localhost:7101
 var isDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
 var baseUrl = isDocker ? "http://webapi:8080/" : "https://localhost:7101/";
 
@@ -38,6 +37,8 @@ builder.Services.AddMudServices();
 builder.Services.AddLocalization();
 
 var supportedCultures = new[] { "en", "de", "fr" };
+
+builder.Services.AddControllers();
 
 var app = builder.Build();
 app.MapStaticAssets();
@@ -72,6 +73,7 @@ app.MapRazorComponents<App>()
         typeof(MauiBlazorWeb.Shared._Imports).Assembly,
         typeof(MauiBlazorWeb.Web.Client._Imports).Assembly);
 
+app.MapControllers();
 app.MapFallbackToFile("index.html");
 
 app.Run();

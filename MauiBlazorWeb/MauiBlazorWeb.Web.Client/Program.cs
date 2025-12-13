@@ -5,6 +5,7 @@ using MauiBlazorWeb.Shared.Singletons.SingletonsImpl;
 using MauiBlazorWeb.Web.Client.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
+using Shared.Dtos.DtosImpl;
 using System.Globalization;
 using System.Net.Http.Json;
 
@@ -18,7 +19,19 @@ builder.Services.AddSingleton<AuthResponseSingleton>();
 // Add device-specific services used by the MauiBlazorWeb.Shared project
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
 
-var apiBaseUrl = builder.Configuration["API_BASE_URL"] ?? "https://localhost:7101/";
+//var apiBaseUrl = builder.Configuration["API_BASE_URL"] ?? "https://localhost:7101/";
+using var hostHttp = new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) };
+
+ConfigDto? config = await hostHttp.GetFromJsonAsync<ConfigDto>("api/config");
+if (config is null)
+{
+    config = new ConfigDto
+    {
+        ApiBaseUrl = "https://localhost:7101/"
+    };
+}
+
+var apiBaseUrl = config.ApiBaseUrl ?? "https://localhost:7101/";
 
 // Register HttpClient for WebAssembly DI
 builder.Services.AddScoped(sp => new HttpClient

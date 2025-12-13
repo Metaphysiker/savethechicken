@@ -27,12 +27,12 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
     {
         modelBuilder.Entity<Contact>(entity =>
         {
-                entity.Property(e => e.Categories)
-                    .HasConversion(
-                        v => string.Join(";", v.Select(e => e.ToString())),
-                        v => v.Split(';', StringSplitOptions.RemoveEmptyEntries)
-                            .Select(s => Enum.Parse<ContactCategory>(s)).ToList()
-                    );
+            entity.Property(e => e.Categories)
+                .HasConversion(
+                    v => string.Join(";", v.Select(e => e.ToString())),
+                    v => v.Split(';', StringSplitOptions.RemoveEmptyEntries)
+                        .Select(s => Enum.Parse<ContactCategory>(s)).ToList()
+                );
 
             entity.Property(e => e.AvailableDates)
                 .HasConversion(
@@ -41,6 +41,17 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
                         .Select(s => DateOnly.Parse(s)).ToList()
                 );
         });
+
+        modelBuilder.Entity<SaveChickenRequest>(entity =>
+        {
+            entity.Property(e => e.DatesForHandOver)
+                .HasConversion(
+                    v => string.Join(";", v.Select(d => d.ToString("yyyy-MM-dd"))),
+                    v => v.Split(';', StringSplitOptions.RemoveEmptyEntries)
+                        .Select(s => DateOnly.Parse(s)).ToList()
+                );
+        });
+
         base.OnModelCreating(modelBuilder);
     }
 }

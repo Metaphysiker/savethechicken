@@ -21,7 +21,7 @@ namespace WebApi.Models.ModelsImpl
         public string Message { get; set; } = string.Empty;
         public int? SaveChickenActionId { get; set; }
         public SaveChickenAction? SaveChickenAction { get; set; }
-        public List<DateOnly> DateForHandOver { get; set; } = new List<DateOnly>();
+        public List<DateOnly> DatesForHandOver { get; set; } = new List<DateOnly>();
         public string Color { get; set; } = string.Empty;
         public List<StoredFile> Files { get; set; }
 
