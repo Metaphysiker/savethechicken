@@ -16,6 +16,6 @@ namespace WebApi.Models.ModelsImpl
         public int ContactId { get; set; }
         public Address Address { get; set; }
         public int AddressId { get; set; }
-
+        public List<File> Files { get; set; } = new List<File>();
     }
 }

@@ -11,13 +11,15 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
     public DbSet<Contact> Contacts { get; set; }
     public DbSet<Address> Addresses { get; set; }
     public DbSet<Driver> Drivers { get; set; }
+    public DbSet<File> Files { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         var Database = "savethechicken";
         var Username = "savethechicken";
         var Password = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD") ?? "savethechicken";
-        var Host = Environment.GetEnvironmentVariable("POSTGRES_HOST") ?? "localhost";
+        var isDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
+        var Host = isDocker ? "postgres" : "localhost";
         optionsBuilder.UseNpgsql($"Host={Host};Username={Username};Password={Password};Database={Database}");
     }
 
