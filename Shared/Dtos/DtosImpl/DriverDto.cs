@@ -10,14 +10,20 @@ namespace Shared.Dtos.DtosImpl
 
         [ValidateComplexType]
         [Required]
-        public ContactDto Contact { get; set; } = new ContactDto();
+        public ContactDto Contact { get; set; }
         public int ContactId { get; set; }
 
         [ValidateComplexType]
-        public AddressDto Address { get; set; } = new AddressDto();
+        public AddressDto Address { get; set; }
         public int AddressId { get; set; }
         public String CarMake { get; set; } = String.Empty;
         public List<DateOnly> AvailableDates { get; set; } = new List<DateOnly>();
+
+        public DriverDto()
+        {
+            Contact = new ContactDto();
+            Address = new AddressDto();
+        }
     }
 }
 

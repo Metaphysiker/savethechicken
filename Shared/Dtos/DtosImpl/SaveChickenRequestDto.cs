@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using Microsoft.AspNetCore.Http;
 
 namespace Shared.Dtos.DtosImpl
 {
@@ -28,11 +29,11 @@ namespace Shared.Dtos.DtosImpl
 
         [ValidateComplexType]
         [Required]
-        public ContactDto Contact { get; set; } = new ContactDto();
+        public ContactDto Contact { get; set; }
         public int ContactId { get; set; }
         [ValidateComplexType]
         [Required]
-        public AddressDto Address { get; set; } = new AddressDto();
+        public AddressDto Address { get; set; }
         public int AddressId { get; set; }
         public bool IsHandoverAtDifferentAddress { get; set; } = false;
 
@@ -43,6 +44,17 @@ namespace Shared.Dtos.DtosImpl
 
         public List<DateOnly> DateForHandOver { get; set; } = new List<DateOnly>();
         public string Color { get; set; } = String.Empty;
+
+        public List<StoredFileDto> Files { get; set; }
+
+        public List<IFormFile> FormFiles { get; set; } = new();
+
+        public SaveChickenRequestDto()
+        {
+            Contact = new ContactDto();
+            Address = new AddressDto();
+            Files = new List<StoredFileDto>();
+        }
 
     }
 }

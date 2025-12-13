@@ -1,7 +1,7 @@
+using Shared.Dtos;
+using Shared.Dtos.DtosImpl;
 
-namespace WebApi.Models.ModelsImpl
-{
-    public class StoredFile : IModel
+public class StoredFileDto : IDto
     {
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -12,9 +12,7 @@ namespace WebApi.Models.ModelsImpl
         public string FileKey { get; set; } = String.Empty;
 
         public int? FarmId { get; set; }
-        public Farm? Farm { get; set; }
-
+        public FarmDto? Farm { get; set; }
         public int? SaveChickenRequestId { get; set; }
-        public SaveChickenRequest? SaveChickenRequest { get; set; }
+        public SaveChickenRequestDto? SaveChickenRequest { get; set; }
     }
-}

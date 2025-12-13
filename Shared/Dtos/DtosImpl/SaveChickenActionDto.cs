@@ -19,7 +19,12 @@ namespace Shared.Dtos.DtosImpl
         public string Title { get; set; } = string.Empty;
         [Required]
         public string Description { get; set; } = string.Empty;
-        public List<SaveChickenRequestDto> SaveChickenRequests { get; set; } = new List<SaveChickenRequestDto>();
+        public List<SaveChickenRequestDto> SaveChickenRequests { get; set; }
         public bool IsActive { get; set; } = false;
+
+        public SaveChickenActionDto()
+        {
+            SaveChickenRequests = new List<SaveChickenRequestDto>();
+        }
     }
 }

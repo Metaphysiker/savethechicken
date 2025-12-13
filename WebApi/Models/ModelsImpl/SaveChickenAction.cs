@@ -14,8 +14,13 @@ namespace WebApi.Models.ModelsImpl
         public string Title { get; set; } = string.Empty;
         [Required]
         public string Description { get; set; } = string.Empty;
-        public List<SaveChickenRequest> SaveChickenRequests { get; set; } = new List<SaveChickenRequest>();
+        public List<SaveChickenRequest> SaveChickenRequests { get; set; }
         public bool IsActive { get; set; } = false;
+
+        SaveChickenAction()
+        {
+            SaveChickenRequests = new List<SaveChickenRequest>();
+        }
 
     }
 }

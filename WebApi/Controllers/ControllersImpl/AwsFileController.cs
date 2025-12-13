@@ -3,6 +3,7 @@ using Amazon.S3.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shared.Dtos.DtosImpl;
 
 [Route("api/aws-files")]
 [ApiController]
@@ -22,19 +23,19 @@ public class AwsFileController : ControllerBase
     public async Task<IActionResult> UploadFileAsync(IFormFile file)
     {
 
-        var fileKeysString = await CreateUniqFileName(file.FileName);
+        var fileKey = await CreateUniqFileName(file.FileName);
         var bucketName = Environment.GetEnvironmentVariable("AWS_BUCKET_NAME");
         var bucketExists = await Amazon.S3.Util.AmazonS3Util.DoesS3BucketExistV2Async(s3Client: _s3Client, bucketName: bucketName);
         if (!bucketExists) return NotFound($"Bucket {bucketName} does not exist.");
         var request = new PutObjectRequest()
         {
             BucketName = bucketName,
-            Key = fileKeysString,
+            Key = fileKey,
             InputStream = file.OpenReadStream()
         };
         request.Metadata.Add("Content-Type", file.ContentType);
         await _s3Client.PutObjectAsync(request);
-        return Ok(fileKeysString);
+        return Ok(fileKey);
     }
 
     [HttpGet("get-all")]
@@ -113,9 +114,10 @@ public class AwsFileController : ControllerBase
         var newFileName = $"{fileName}";
         var counter = 0;
 
-        while (true)
+        const int maxAttempts = 5000;
+        while (counter < maxAttempts)
         {
-            var files = await _db.Files.Where(f => f.FileKeysString == newFileName).ToListAsync();
+            var files = await _db.Files.Where(f => f.FileKey == newFileName).ToListAsync();
             if (files.Count == 0)
             {
                 return newFileName;
@@ -124,5 +126,6 @@ public class AwsFileController : ControllerBase
             var extension = Path.GetExtension(fileName);
             newFileName = $"{fileNameWithoutExtension}({++counter}){extension}";
         }
+        throw new InvalidOperationException("Could not generate a unique file name after 1000 attempts.");
     }
 }

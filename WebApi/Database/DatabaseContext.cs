@@ -11,7 +11,7 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
     public DbSet<Contact> Contacts { get; set; }
     public DbSet<Address> Addresses { get; set; }
     public DbSet<Driver> Drivers { get; set; }
-    public DbSet<File> Files { get; set; }
+    public DbSet<StoredFile> Files { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

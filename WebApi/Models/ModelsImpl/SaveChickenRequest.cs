@@ -23,8 +23,13 @@ namespace WebApi.Models.ModelsImpl
         public SaveChickenAction? SaveChickenAction { get; set; }
         public List<DateOnly> DateForHandOver { get; set; } = new List<DateOnly>();
         public string Color { get; set; } = string.Empty;
+        public List<StoredFile> Files { get; set; }
 
-        // Navigation property: SaveChickenRequest has many Files
-        public List<File> Files { get; set; } = new List<File>();
+        SaveChickenRequest()
+        {
+            Contact = new Contact();
+            Address = new Address();
+            Files = new List<StoredFile>();
+        }
     }
 }

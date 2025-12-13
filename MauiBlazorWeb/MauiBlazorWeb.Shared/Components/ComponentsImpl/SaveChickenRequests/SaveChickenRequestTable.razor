@@ -22,8 +22,6 @@
         SortByColumn(columnName, descending);
     }
 
-    private SaveChickenRequestDto? selectedItem;
-
     private string? GetSortIcon(string columnName)
     {
         if (currentColumnName != columnName) return null;

@@ -11,5 +11,13 @@ namespace WebApi.Models.ModelsImpl
         public int AddressId { get; set; }
         public String CarMake { get; set; } = String.Empty;
         public List<DateOnly> AvailableDates { get; set; } = new List<DateOnly>();
+        public List<StoredFile> Files { get; set; }
+
+        Driver()
+        {
+            Contact = new Contact();
+            Address = new Address();
+            Files = new List<StoredFile>();
+        }
     }
 }

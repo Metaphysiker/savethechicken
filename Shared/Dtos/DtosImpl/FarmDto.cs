@@ -25,11 +25,18 @@ namespace Shared.Dtos.DtosImpl
         public string Name { get; set; } = String.Empty;
         [ValidateComplexType]
         [Required]
-        public ContactDto Contact { get; set; } = new ContactDto();
+        public ContactDto Contact { get; set; }
         public int ContactId { get; set; }
         [ValidateComplexType]
         [Required]
-        public AddressDto Address { get; set; } = new AddressDto();
+        public AddressDto Address { get; set; }
         public int AddressId { get; set; }
+        public List<StoredFileDto> Files { get; set; }
+        public FarmDto()
+        {
+            Files = new List<StoredFileDto>();
+            Contact = new ContactDto();
+            Address = new AddressDto();
+        }
     }
 }

@@ -11,10 +11,8 @@
 @inject IStringLocalizer<AppResources> L
 <PageTitle>@L["SaveTheChicken"] - @L["HomePage"]</PageTitle>
 
-<MudContainer>
-
-
-    <MudCard>
+<MudContainer MaxWidth="MaxWidth.Small">
+    <MudCard class="my-2 pa-4" Elevation="4">
         <MudCardContent>
             <MudText Typo="Typo.h3">
                 @L["SaveTheChicken"]
@@ -49,50 +47,10 @@
         </MudCardActions>
     </MudCard>
 
-    <MudCard Class="pa-4 mb-4" Elevation="2">
-        <MudText Typo="Typo.h3">
-            @L["SaveTheChicken"]
-        </MudText>
-    </MudCard>
-
-    <p>test</p>
-
-    <MudPaper Class="pa-4" Elevation="2">
-    <MudText Typo="Typo.h3">
-            @L["SaveTheChicken"]
-    </MudText>
-
-    <MudText Typo="Typo.body1">
-        Wir retten Hühner und vermitteln sie an liebevolle Plätze.
-    </MudText>
-    <MudText Typo="Typo.body1">Nächste Aktion ist am 28. Dezember 2025</MudText>
-
-    <div class="my-4">
-
-
-    </div>
-
-        <div class="my-4">
-
-
-    </div>
-
-
-        <div class="my-4">
-
-
-    </div>
-
-
-        <MudDivider></MudDivider>
-        <MudButton Variant="Variant.Outlined" Color="Color.Secondary" Href="/new-save-chicken-action">
-            Neue Rettungsaktion
-        </MudButton>
-
-
-
-
-    </MudPaper>
+    <MudDivider></MudDivider>
+    <MudButton Variant="Variant.Outlined" Color="Color.Secondary" Href="/new-save-chicken-action">
+        Neue Rettungsaktion
+    </MudButton>
 </MudContainer>
 @code {
 

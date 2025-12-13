@@ -12,10 +12,17 @@ namespace WebApi.Models.ModelsImpl
         public List<DateOnly> DatesForRescues { get; set; } = new List<DateOnly>();
         public string GeneralInformation { get; set; } = String.Empty;
         public string Name { get; set; } = String.Empty;
-        public Contact Contact { get; set; }
+        public Contact Contact { get; set; } = null!;
         public int ContactId { get; set; }
-        public Address Address { get; set; }
+        public Address Address { get; set; } = null!;
         public int AddressId { get; set; }
-        public List<File> Files { get; set; } = new List<File>();
+        public List<StoredFile> Files { get; set; }
+
+        Farm()
+        {
+            Files = new List<StoredFile>();
+            Contact = new Contact();
+            Address = new Address();
+        }
     }
 }
