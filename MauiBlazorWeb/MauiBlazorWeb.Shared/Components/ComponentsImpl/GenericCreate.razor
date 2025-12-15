@@ -1,8 +1,11 @@
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Shared.Resources.Strings
 @using MauiBlazorWeb.Web.Services.ServicesImpl
+@using Microsoft.Extensions.Localization
 @using global::Shared.Dtos.DtosImpl
 @typeparam TDto where TDto : class
 @inject GenericDtoServiceFactory DtoServiceFactory
+@inject IStringLocalizer<AppResources> L
 
 @if(model != null){
     <EditForm Model="model" OnValidSubmit="HandleValidSubmit">
@@ -11,7 +14,7 @@
         @ChildContent(model)
 
         <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
-            Create
+            @L["Create"]
         </MudButton>
     </EditForm>
 }

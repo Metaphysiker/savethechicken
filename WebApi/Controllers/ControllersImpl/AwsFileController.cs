@@ -1,3 +1,4 @@
+using Amazon.Extensions.NETCore.Setup;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Microsoft.AspNetCore.Authorization;
@@ -12,10 +13,20 @@ public class AwsFileController : ControllerBase
     private readonly DatabaseContext _db;
 
     private readonly IAmazonS3 _s3Client;
-    public AwsFileController(IAmazonS3 s3Client, DatabaseContext db)
+    private readonly string bucketName;
+    public AwsFileController(IAmazonS3 s3Client, DatabaseContext db, IConfiguration configuration)
     {
         _s3Client = s3Client;
         _db = db;
+
+        var isDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
+        if (isDocker) {
+            bucketName = Environment.GetEnvironmentVariable("AWS_BUCKET_NAME");
+        }
+        else
+        {
+            bucketName = configuration["AWS:AWS_BUCKET_NAME"];
+        }
     }
 
 
@@ -24,7 +35,6 @@ public class AwsFileController : ControllerBase
     {
 
         var fileKey = await CreateUniqFileName(file.FileName);
-        var bucketName = Environment.GetEnvironmentVariable("AWS_BUCKET_NAME");
         var bucketExists = await Amazon.S3.Util.AmazonS3Util.DoesS3BucketExistV2Async(s3Client: _s3Client, bucketName: bucketName);
         if (!bucketExists) return NotFound($"Bucket {bucketName} does not exist.");
         var request = new PutObjectRequest()
@@ -41,8 +51,6 @@ public class AwsFileController : ControllerBase
     [HttpGet("get-all")]
     public async Task<IActionResult> GetAllFilesAsync(string? prefix)
     {
-        var bucketName = Environment.GetEnvironmentVariable("AWS_BUCKET_NAME");
-
         var bucketExists = await Amazon.S3.Util.AmazonS3Util.DoesS3BucketExistV2Async(s3Client: _s3Client, bucketName: bucketName);
         if (!bucketExists) return NotFound($"Bucket {bucketName} does not exist.");
         var request = new ListObjectsV2Request()
@@ -71,8 +79,6 @@ public class AwsFileController : ControllerBase
     [HttpGet("get-by-key")]
     public async Task<IActionResult> GetFileByKeyAsync(string key)
     {
-        var bucketName = Environment.GetEnvironmentVariable("AWS_BUCKET_NAME");
-
         var bucketExists = await Amazon.S3.Util.AmazonS3Util.DoesS3BucketExistV2Async(s3Client: _s3Client, bucketName: bucketName);
         if (!bucketExists) return NotFound($"Bucket {bucketName} does not exist.");
 
@@ -83,8 +89,6 @@ public class AwsFileController : ControllerBase
     [HttpGet("get-presigned-url-by-key")]
     public async Task<IActionResult> GetPresignedUrlByKeyAsync(string key)
     {
-        var bucketName = Environment.GetEnvironmentVariable("AWS_BUCKET_NAME");
-
         var bucketExists = await Amazon.S3.Util.AmazonS3Util.DoesS3BucketExistV2Async(s3Client: _s3Client, bucketName: bucketName);
         if (!bucketExists) return NotFound($"Bucket {bucketName} does not exist.");
 
@@ -101,8 +105,6 @@ public class AwsFileController : ControllerBase
     [HttpDelete("delete")]
     public async Task<IActionResult> DeleteFileAsync(string key)
     {
-        var bucketName = Environment.GetEnvironmentVariable("AWS_BUCKET_NAME");
-
         var bucketExists = await Amazon.S3.Util.AmazonS3Util.DoesS3BucketExistV2Async(s3Client: _s3Client, bucketName: bucketName);
         if (!bucketExists) return NotFound($"Bucket {bucketName} does not exist");
         await _s3Client.DeleteObjectAsync(bucketName, key);

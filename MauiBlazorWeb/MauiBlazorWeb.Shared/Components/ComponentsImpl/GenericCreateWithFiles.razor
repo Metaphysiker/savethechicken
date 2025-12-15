@@ -1,11 +1,14 @@
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Shared.Resources.Strings
 @using MauiBlazorWeb.Shared.Services.ServicesImpl
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @inject AwsFileService AwsFileService
+@using Microsoft.Extensions.Localization
 @using global::Shared.Dtos.DtosImpl
 @inject IJSRuntime JS
 @typeparam TDto where TDto : class, IEntityWithFiles
 @inject GenericDtoServiceFactory DtoServiceFactory
+@inject IStringLocalizer<AppResources> L
 
 @if(model != null){
     <EditForm Model="model" OnValidSubmit="HandleValidSubmit">
@@ -14,7 +17,7 @@
         @ChildContent(model)
 
         <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
-            Create x
+            @L["Create"]
         </MudButton>
     </EditForm>
 }
@@ -40,35 +43,32 @@
 
     private async Task HandleValidSubmit()
     {
-
-        // console log something
-        await JS.InvokeVoidAsync("console.log", "Submitting form with files");
         if (_service != null && model != null)
         {
-            // console.log itemWithFiles
-            await JS.InvokeVoidAsync("console.log", model);
-            // console log the files
-
-            await UploadFiles(model);
-            foreach (var file in model.Files)
-            {
-                //javascript console log
-                await JS.InvokeVoidAsync("console.log", $"File: {file.Name}, Size: {file.Size} bytes");
-
-               // Console.WriteLine($"File: {file.Name}, Size: {file.Size} bytes");
-            }
-
-            //await _service.CreateAsync(model);
+            var storedFiles = await UploadFilesAsync(model);
+            model.Item.Files = storedFiles;
+            await _service.CreateAsync(model.Item);
         }
     }
 
-    private async Task UploadFiles(ItemWithBrowserFiles<TDto> itemWithFiles)
+    private async Task<List<StoredFileDto>> UploadFilesAsync(ItemWithBrowserFiles<TDto> itemWithFiles)
     {
+        List<StoredFileDto> storedFiles = new List<StoredFileDto>();
         foreach (var file in itemWithFiles.Files)
         {
             var key = await AwsFileService.UploadFileAsync(file);
-            await JS.InvokeVoidAsync("console.log", key);
-            //itemWithFiles.Item.Files.Add(key);
+            if(!string.IsNullOrEmpty(key))
+            {
+                StoredFileDto storedFile = new StoredFileDto
+                {
+                    FileName = file.Name,
+                    FileKey = key,
+                    ContentType = file.ContentType,
+                };
+
+                storedFiles.Add(storedFile);
+            }
         }
+        return storedFiles;
     }
 }

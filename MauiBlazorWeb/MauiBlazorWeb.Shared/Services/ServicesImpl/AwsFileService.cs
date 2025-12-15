@@ -27,5 +27,15 @@ namespace MauiBlazorWeb.Shared.Services.ServicesImpl
             }
             return null;
         }
+
+        public async Task<string?> GetPresignedUrlByKeyAsync(string key)
+        {
+            var response = await _httpClient.GetAsync($"api/aws-files/get-presigned-url-by-key?key={Uri.EscapeDataString(key)}");
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsStringAsync();
+            }
+            return null;
+        }
     }
 }

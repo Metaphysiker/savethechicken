@@ -177,4 +177,7 @@
   <data name="GeneralInformation" xml:space="preserve">
     <value>Allgemeine Information</value>
   </data>
+  <data name="Create" xml:space="preserve">
+    <value>Erstellen</value>
+  </data>
 </root>

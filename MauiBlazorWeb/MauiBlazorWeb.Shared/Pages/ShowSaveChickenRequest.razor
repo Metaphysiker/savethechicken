@@ -1,4 +1,4 @@
-@page "/save-chicken-request/{Id:int}/edit"
+@page "/save-chicken-request/{Id:int}"
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
@@ -6,15 +6,16 @@
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl
 @inject GenericDtoServiceFactory DtoServiceFactory
 
-<h2>Edit Save Chicken Request</h2>
+<h2>Show Save Chicken Request</h2>
 
 @if (model != null)
 {
-    <GenericUpdate TDto="SaveChickenRequestDto" model="model">
-        <ChildContent Context="editModel">
-            <SaveChickenRequestForm Model="editModel" />
-        </ChildContent>
-    </GenericUpdate>
+    @foreach(var item in model.Files ?? Enumerable.Empty<StoredFileDto>())
+    {
+        <p>@item.FileName (@item.Id)</p>
+        <MauiBlazorWeb.Shared.Components.ComponentsImpl.StoredFiles.StoredFileViewer storedFileDto="item" />
+    }
+
 }
 else
 {

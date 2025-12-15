@@ -95,7 +95,25 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredUniqueChars = 0;
 });
 
-builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions());
+var awsOptions = builder.Configuration.GetAWSOptions();
+var creds = awsOptions.Credentials?.GetCredentials();
+
+if (creds == null || string.IsNullOrEmpty(creds.AccessKey))
+{
+    var awsAccessKeyId = builder.Configuration["AWS:AWS_ACCESS_KEY_ID"];
+    var awsSecretAccessKey = builder.Configuration["AWS:AWS_SECRET_ACCESS_KEY"];
+    var region = builder.Configuration["AWS:AWS_REGION"] ?? "eu-central-1";
+
+    awsOptions = new AWSOptions
+    {
+        Credentials = new Amazon.Runtime.BasicAWSCredentials(awsAccessKeyId, awsSecretAccessKey),
+        Region = Amazon.RegionEndpoint.GetBySystemName(region)
+    };
+}
+
+
+// AWS credentials can come from environment variables (like in docker) but if not docker, use manage user secrets
+builder.Services.AddDefaultAWSOptions(awsOptions);
 builder.Services.AddAWSService<IAmazonS3>();
 
 var app = builder.Build();

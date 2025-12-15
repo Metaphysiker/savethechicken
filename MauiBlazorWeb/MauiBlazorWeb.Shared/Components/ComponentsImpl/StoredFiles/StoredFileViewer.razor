@@ -1,0 +1,60 @@
+﻿@using MauiBlazorWeb.Shared.Services.ServicesImpl
+@inject AwsFileService AwsFileService
+
+    <MudPaper Class="pa-4 my-4" Elevation="2">
+    <MudText Style="font-weight: bold;">
+        @storedFileDto.FileName
+    </MudText>
+
+@if (!loading && fileUrl != null)
+{
+    @if (storedFileDto.ContentType.StartsWith("image/"))
+    {
+         <img src="@fileUrl" alt="Vorschau Bild" style="max-width: 100%; height: auto;" />
+    }
+
+    @if (storedFileDto.ContentType == "application/pdf")
+    {
+        <iframe src="@fileUrl" style="width: 100%; height: 500px;" frameborder="0"></iframe>
+    }
+
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="@fileUrl" Target="_blank">
+        Datei öffnen
+    </MudButton>
+}
+else
+{
+    <MudText>Die Datei wird geladen...</MudText>
+}
+
+    @if(errorMessage != null)
+    {
+        <MudText>
+            @errorMessage
+        </MudText>
+    }
+
+</MudPaper>
+
+@code {
+    [Parameter, EditorRequired] public StoredFileDto storedFileDto { get; set; }
+    private string fileUrl = string.Empty;
+    private string errorMessage = string.Empty;
+    private bool loading = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var fileUrlFromApi = await AwsFileService.GetPresignedUrlByKeyAsync(storedFileDto.FileKey);
+        if (fileUrlFromApi != null)
+        {
+            fileUrl = fileUrlFromApi;
+        } else
+        {
+            errorMessage = "Datei konnte nicht geladen werden.";
+        }
+        loading = false;
+        StateHasChanged();
+    }
+
+}
+
