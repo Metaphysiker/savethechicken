@@ -2,14 +2,22 @@
 @typeparam TSearchDto where TSearchDto : ISearchDto
 @inject GenericDtoServiceFactory DtoServiceFactory
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Shared.Resources.Strings
 @using MauiBlazorWeb.Web.Services.ServicesImpl
+@using Microsoft.Extensions.Localization
 @using global::Shared.Dtos.DtosImpl
+@inject IStringLocalizer<AppResources> L
 
-<h3>GenericSearch</h3>
 <div class="search-form">
     @SearchForm(search)
 </div>
-<button @onclick="PerformSearch">Search</button>
+
+<MudButton Variant="Variant.Filled"
+           Color="Color.Primary"
+           StartIcon="@Icons.Material.Filled.Search"
+           OnClick="PerformSearch">
+    @L["search"]
+</MudButton>
 
 <div class="table">
     @Table((items, EventCallback.Factory.Create<TDto>(this, item => OnItemSelected(item)), EventCallback.Factory.Create<(string?, bool?)>(this, args => OnSortSelected(args.Item1, args.Item2))))

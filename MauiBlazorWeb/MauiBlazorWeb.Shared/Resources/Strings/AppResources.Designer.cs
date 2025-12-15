@@ -187,6 +187,15 @@ namespace MauiBlazorWeb.Shared.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to bearbeiten.
+        /// </summary>
+        public static string edit {
+            get {
+                return ResourceManager.GetString("edit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Name des Betriebs.
         /// </summary>
         public static string Farm_Name {
@@ -246,6 +255,15 @@ namespace MauiBlazorWeb.Shared.Resources.Strings {
         public static string SaveTheChicken {
             get {
                 return ResourceManager.GetString("SaveTheChicken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to suchen.
+        /// </summary>
+        public static string search {
+            get {
+                return ResourceManager.GetString("search", resourceCulture);
             }
         }
     }

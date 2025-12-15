@@ -180,4 +180,10 @@
   <data name="Create" xml:space="preserve">
     <value>Erstellen</value>
   </data>
+  <data name="search" xml:space="preserve">
+    <value>suchen</value>
+  </data>
+  <data name="edit" xml:space="preserve">
+    <value>bearbeiten</value>
+  </data>
 </root>

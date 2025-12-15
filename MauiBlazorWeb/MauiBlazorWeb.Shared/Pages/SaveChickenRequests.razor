@@ -5,9 +5,8 @@
 @inject MauiBlazorWeb.Shared.Factories.FactoriesImpl.GenericDtoServiceFactory DtoServiceFactory
 @page "/save-chicken-requests"
 
-<MudContainer>
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
     <MudPaper Class="pa-4">
-        <h3>Search</h3>
         <GenericSearch TDto="SaveChickenRequestDto" TSearchDto="SaveChickenRequestSearch" OnItemsFound="OnItemsFound" search="saveChickenRequestSearch">
             <SearchForm Context="search">
                 <SaveChickenRequestSearchForm Model="search" />
@@ -18,12 +17,7 @@
         </GenericSearch>
     </MudPaper>
 
-    <div>
-        @items.Count()
-    </div>
-
     <MudPaper Class="pa-4 mt-4">
-        <h3>Map</h3>
         <SaveChickenRequestMap saveChickenRequestDtos="items" />
     </MudPaper>
 

@@ -1,6 +1,11 @@
-﻿@using MudBlazor
+﻿@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
+@using MudBlazor
 @using MudBlazor.Components
 @using global::Shared.Dtos.DtosImpl
+@inject NavigationManager NavigationManager
+@inject IStringLocalizer<AppResources> L
+
 @code {
     [Parameter]
     public List<SaveChickenRequestDto> items { get; set; } = new List<SaveChickenRequestDto>();
@@ -27,6 +32,12 @@
         if (currentColumnName != columnName) return null;
         return currentSortDescending == true ? Icons.Material.Filled.ArrowDownward : Icons.Material.Filled.ArrowUpward;
     }
+
+    private void EditItem(SaveChickenRequestDto saveChickenRequestDto)
+    {
+        NavigationManager.NavigateTo($"/save-chicken-requests/{saveChickenRequestDto.Id}/edit");
+
+    }
 }
 
 <div style="overflow-x: auto; max-width: 100%;">
@@ -34,50 +45,11 @@
     <Columns>
         <TemplateColumn>
             <HeaderTemplate>
-                <MudButton OnClick="@(() => OnHeaderClick("Id"))" Variant="Variant.Text" Style="text-transform: none;">
-                    Id
-                    @if (GetSortIcon("Id") != null)
-                    {
-                        <MudIcon Icon="@GetSortIcon("Id")" Size="Size.Small" />
-                    }
-                </MudButton>
-            </HeaderTemplate>
-            <CellTemplate>@context.Item.Id</CellTemplate>
-        </TemplateColumn>
-
-        <TemplateColumn>
-            <HeaderTemplate>
-                <MudButton OnClick="@(() => OnHeaderClick("CreatedAt"))" Variant="Variant.Text" Style="text-transform: none;">
-                    Created At
-                    @if (GetSortIcon("CreatedAt") != null)
-                    {
-                        <MudIcon Icon="@GetSortIcon("CreatedAt")" Size="Size.Small" />
-                    }
-                </MudButton>
-            </HeaderTemplate>
-            <CellTemplate>@context.Item.CreatedAt</CellTemplate>
-        </TemplateColumn>
-
-        <TemplateColumn>
-            <HeaderTemplate>
-                <MudButton OnClick="@(() => OnHeaderClick("UpdatedAt"))" Variant="Variant.Text" Style="text-transform: none;">
-                    Updated At
-                    @if (GetSortIcon("UpdatedAt") != null)
-                    {
-                        <MudIcon Icon="@GetSortIcon("UpdatedAt")" Size="Size.Small" />
-                    }
-                </MudButton>
-            </HeaderTemplate>
-            <CellTemplate>@context.Item.UpdatedAt</CellTemplate>
-        </TemplateColumn>
-
-        <TemplateColumn>
-            <HeaderTemplate>
-                <MudButton OnClick="@(() => OnHeaderClick("FirstName"))" Variant="Variant.Text" Style="text-transform: none;">
+                <MudButton OnClick="@(() => OnHeaderClick("Contact.FirstName"))" Variant="Variant.Text" Style="text-transform: none;">
                     First Name
-                    @if (GetSortIcon("FirstName") != null)
+                        @if (GetSortIcon("Contact.FirstName") != null)
                     {
-                        <MudIcon Icon="@GetSortIcon("FirstName")" Size="Size.Small" />
+                            <MudIcon Icon="@GetSortIcon("Contact.FirstName")" Size="Size.Small" />
                     }
                 </MudButton>
             </HeaderTemplate>
@@ -86,11 +58,11 @@
 
         <TemplateColumn>
             <HeaderTemplate>
-                <MudButton OnClick="@(() => OnHeaderClick("LastName"))" Variant="Variant.Text" Style="text-transform: none;">
+                <MudButton OnClick="@(() => OnHeaderClick("Contact.LastName"))" Variant="Variant.Text" Style="text-transform: none;">
                     Last Name
-                    @if (GetSortIcon("LastName") != null)
+                        @if (GetSortIcon("Contact.LastName") != null)
                     {
-                        <MudIcon Icon="@GetSortIcon("LastName")" Size="Size.Small" />
+                            <MudIcon Icon="@GetSortIcon("Contact.LastName")" Size="Size.Small" />
                     }
                 </MudButton>
             </HeaderTemplate>
@@ -99,11 +71,11 @@
 
         <TemplateColumn>
             <HeaderTemplate>
-                <MudButton OnClick="@(() => OnHeaderClick("Street"))" Variant="Variant.Text" Style="text-transform: none;">
+                <MudButton OnClick="@(() => OnHeaderClick("Address.Street"))" Variant="Variant.Text" Style="text-transform: none;">
                     Street
-                    @if (GetSortIcon("Street") != null)
+                        @if (GetSortIcon("Address.Street") != null)
                     {
-                        <MudIcon Icon="@GetSortIcon("Street")" Size="Size.Small" />
+                            <MudIcon Icon="@GetSortIcon("Address.Street")" Size="Size.Small" />
                     }
                 </MudButton>
             </HeaderTemplate>
@@ -112,11 +84,11 @@
 
         <TemplateColumn>
             <HeaderTemplate>
-                <MudButton OnClick="@(() => OnHeaderClick("City"))" Variant="Variant.Text" Style="text-transform: none;">
+                    <MudButton OnClick="@(() => OnHeaderClick("Address.City"))" Variant="Variant.Text" Style="text-transform: none;">
                     City
-                    @if (GetSortIcon("City") != null)
+                        @if (GetSortIcon("Address.City") != null)
                     {
-                        <MudIcon Icon="@GetSortIcon("City")" Size="Size.Small" />
+                            <MudIcon Icon="@GetSortIcon("Address.City")" Size="Size.Small" />
                     }
                 </MudButton>
             </HeaderTemplate>
@@ -125,11 +97,11 @@
 
         <TemplateColumn>
             <HeaderTemplate>
-                <MudButton OnClick="@(() => OnHeaderClick("PostalCode"))" Variant="Variant.Text" Style="text-transform: none;">
+                    <MudButton OnClick="@(() => OnHeaderClick("Address.PostalCode"))" Variant="Variant.Text" Style="text-transform: none;">
                     Postal Code
-                    @if (GetSortIcon("PostalCode") != null)
+                        @if (GetSortIcon("Address.PostalCode") != null)
                     {
-                        <MudIcon Icon="@GetSortIcon("PostalCode")" Size="Size.Small" />
+                            <MudIcon Icon="@GetSortIcon("Address.PostalCode")" Size="Size.Small" />
                     }
                 </MudButton>
             </HeaderTemplate>
@@ -138,11 +110,11 @@
 
         <TemplateColumn>
             <HeaderTemplate>
-                <MudButton OnClick="@(() => OnHeaderClick("PhoneNumber"))" Variant="Variant.Text" Style="text-transform: none;">
+                    <MudButton OnClick="@(() => OnHeaderClick("Contact.PhoneNumber"))" Variant="Variant.Text" Style="text-transform: none;">
                     Phone Number
-                    @if (GetSortIcon("PhoneNumber") != null)
+                        @if (GetSortIcon("Contact.PhoneNumber") != null)
                     {
-                        <MudIcon Icon="@GetSortIcon("PhoneNumber")" Size="Size.Small" />
+                            <MudIcon Icon="@GetSortIcon("Contact.PhoneNumber")" Size="Size.Small" />
                     }
                 </MudButton>
             </HeaderTemplate>
@@ -151,11 +123,11 @@
 
         <TemplateColumn>
             <HeaderTemplate>
-                <MudButton OnClick="@(() => OnHeaderClick("Email"))" Variant="Variant.Text" Style="text-transform: none;">
+                    <MudButton OnClick="@(() => OnHeaderClick("Contact.Email"))" Variant="Variant.Text" Style="text-transform: none;">
                     Email
-                    @if (GetSortIcon("Email") != null)
+                        @if (GetSortIcon("Contact.Email") != null)
                     {
-                        <MudIcon Icon="@GetSortIcon("Email")" Size="Size.Small" />
+                            <MudIcon Icon="@GetSortIcon("Contact.Email")" Size="Size.Small" />
                     }
                 </MudButton>
             </HeaderTemplate>
@@ -190,19 +162,6 @@
 
         <TemplateColumn>
             <HeaderTemplate>
-                <MudButton OnClick="@(() => OnHeaderClick("AcceptTermsAndConditions"))" Variant="Variant.Text" Style="text-transform: none;">
-                    Accepted Terms
-                    @if (GetSortIcon("AcceptTermsAndConditions") != null)
-                    {
-                        <MudIcon Icon="@GetSortIcon("AcceptTermsAndConditions")" Size="Size.Small" />
-                    }
-                </MudButton>
-            </HeaderTemplate>
-            <CellTemplate>@context.Item.AcceptTermsAndConditions</CellTemplate>
-        </TemplateColumn>
-
-        <TemplateColumn>
-            <HeaderTemplate>
                 <MudButton OnClick="@(() => OnHeaderClick("Message"))" Variant="Variant.Text" Style="text-transform: none;">
                     Message
                     @if (GetSortIcon("Message") != null)
@@ -228,9 +187,11 @@
         </TemplateColumn>
 
         <TemplateColumn>
-            <HeaderTemplate>Select</HeaderTemplate>
+            <HeaderTemplate>Aktionen</HeaderTemplate>
             <CellTemplate>
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => SelectItem(context.Item))">Select</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => EditItem(context.Item))">@L["edit"]</MudButton>
+
             </CellTemplate>
         </TemplateColumn>
     </Columns>
