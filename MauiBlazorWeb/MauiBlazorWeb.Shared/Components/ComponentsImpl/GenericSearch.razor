@@ -18,6 +18,9 @@
 @code {
     [Parameter] public RenderFragment<TSearchDto> SearchForm { get; set; } = default!;
     [Parameter] public RenderFragment<(List<TDto>, EventCallback<TDto>, EventCallback<(string?, bool?)>)> Table { get; set; } = default!;
+
+    [Parameter] public EventCallback<List<TDto>> OnItemsFound { get; set; }
+
     private TDto? selectedItem;
 
     private async Task OnItemSelected(TDto item)
@@ -49,6 +52,7 @@
         if (_service == null) return;
         var result = await _service.SearchAsync(search);
         items = result.Data;
+        await OnItemsFound.InvokeAsync(items);
         StateHasChanged();
     }
 }

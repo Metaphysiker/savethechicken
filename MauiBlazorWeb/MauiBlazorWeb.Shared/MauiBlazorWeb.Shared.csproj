@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Classes\" />
     <Folder Include="Factories\FactoriesImpl\" />
   </ItemGroup>
 

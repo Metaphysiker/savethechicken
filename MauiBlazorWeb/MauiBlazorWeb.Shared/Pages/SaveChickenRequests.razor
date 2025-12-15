@@ -1,0 +1,42 @@
+﻿@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
+@using MauiBlazorWeb.Web.Services
+@using global::Shared.Dtos.DtosImpl
+@inject MauiBlazorWeb.Shared.Factories.FactoriesImpl.GenericDtoServiceFactory DtoServiceFactory
+@page "/save-chicken-requests"
+
+<MudContainer>
+    <MudPaper Class="pa-4">
+        <h3>Search</h3>
+        <GenericSearch TDto="SaveChickenRequestDto" TSearchDto="SaveChickenRequestSearch" OnItemsFound="OnItemsFound">
+            <SearchForm Context="search">
+                <SaveChickenRequestSearchForm Model="search" />
+            </SearchForm>
+            <Table Context="ctx">
+                <SaveChickenRequestTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" />
+            </Table>
+        </GenericSearch>
+    </MudPaper>
+
+    <div>
+        @items.Count()
+    </div>
+
+    <MudPaper Class="pa-4 mt-4">
+        <h3>Map</h3>
+        <SaveChickenRequestMap saveChickenRequestDtos="items" />
+    </MudPaper>
+
+</MudContainer>
+
+
+@code {
+
+    private List<SaveChickenRequestDto> items = new();
+
+    private void OnItemsFound(List<SaveChickenRequestDto> foundItems)
+    {
+        items = foundItems;
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,45 @@
+﻿@using MauiBlazorWeb.Shared.Classes
+@using global::Shared.Dtos.DtosImpl
+@inject IJSRuntime JS
+
+<div id="map" style="height: 500px;"></div>
+
+@code {
+    [Parameter, EditorRequired]
+    public List<MapMarker> markers { get; set; } = default!;
+
+    private bool firstRenderDone = false;
+    private List<MapMarker> previousMarkers = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            firstRenderDone = true;
+            await JS.InvokeVoidAsync("initMap", markers);
+            previousMarkers = markers.ToList();
+        }
+        else
+        {
+            // If markers changed after first render, update map
+            if (!AreMarkersEqual(previousMarkers, markers))
+            {
+                await JS.InvokeVoidAsync("updateMarkers", markers);
+                previousMarkers = markers.ToList();
+            }
+        }
+    }
+
+    private bool AreMarkersEqual(List<MapMarker> oldList, List<MapMarker> newList)
+    {
+        if (oldList.Count != newList.Count) return false;
+        for (int i = 0; i < oldList.Count; i++)
+        {
+            if (oldList[i].Latitude != newList[i].Latitude ||
+                oldList[i].Longitude != newList[i].Longitude ||
+                oldList[i].Info != newList[i].Info)
+                return false;
+        }
+        return true;
+    }
+}
