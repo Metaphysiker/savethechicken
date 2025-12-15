@@ -1,6 +1,7 @@
-﻿using Shared.Dtos.DtosImpl;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Shared.Dtos.DtosImpl;
 using System.Linq.Expressions;
+using WebApi.Interfaces;
 
 namespace WebApi.Services.ServicesImpl
 {
@@ -9,18 +10,38 @@ namespace WebApi.Services.ServicesImpl
         where TSearchDto : ISearchDto
     {
         private ModelSearchFactory _modelSearchFactory;
+        private GeoLocatorService _geoLocatorService;
 
         private readonly DatabaseContext _db;
         public GenericModelService(DatabaseContext db, ModelSearchFactory modelSearchFactory)
         {
             _db = db;
             _modelSearchFactory = modelSearchFactory;
+            _geoLocatorService = new GeoLocatorService();
+        }
+
+        public async Task UpdateCoordinatesAsync(TModel model)
+        {
+            if (model is IEntityWithAddress entityWithAddress)
+            {
+                if (entityWithAddress.Address != null)
+                {
+                    var geoCoordinates = await _geoLocatorService.GetCoordinatesAsync(entityWithAddress.Address.Street, entityWithAddress.Address.PostalCode, entityWithAddress.Address.City);
+                    if (geoCoordinates != null)
+                    {
+                        entityWithAddress.Address.GeoCoordinate = geoCoordinates;
+                    }
+                }
+            }
         }
 
         public async Task<TModel> Create(TModel model, params Expression<Func<TModel, object?>>[] includes)
         {
             model.CreatedAt = DateTime.UtcNow;
             model.UpdatedAt = DateTime.UtcNow;
+
+            await UpdateCoordinatesAsync(model);
+
             _db.Set<TModel>().Add(model);
             await _db.SaveChangesAsync();
             return await Read(model.Id, includes) ?? model;
@@ -79,6 +100,8 @@ namespace WebApi.Services.ServicesImpl
         public async Task<TModel> Update(TModel model, params Expression<Func<TModel, object?>>[] includes)
         {
             model.UpdatedAt = DateTime.UtcNow;
+            await UpdateCoordinatesAsync(model);
+
             _db.Set<TModel>().Update(model);
             await _db.SaveChangesAsync();
 

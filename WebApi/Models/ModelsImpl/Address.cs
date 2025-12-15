@@ -1,6 +1,9 @@
-﻿namespace WebApi.Models.ModelsImpl
+﻿using Shared.Dtos.DtosImpl;
+using WebApi.Interfaces;
+
+namespace WebApi.Models.ModelsImpl
 {
-    public class Address : IModel
+    public class Address : IModel, IEntityWithGeoCoordinate
     {
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -8,5 +11,6 @@
         public String Street { get; set; } = String.Empty;
         public String City { get; set; } = String.Empty;
         public String PostalCode { get; set; } = String.Empty;
-    }
+        public GeoCoordinate? GeoCoordinate { get; set; }
+        }
 }

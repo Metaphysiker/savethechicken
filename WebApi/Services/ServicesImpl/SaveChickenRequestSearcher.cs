@@ -18,7 +18,6 @@ namespace Services.ServicesImpl
         public async Task<PaginationDto<SaveChickenRequest>> SearchAsync(SaveChickenRequestSearch search, params Expression<Func<SaveChickenRequest, object?>>[] includes)
         {
             var query = _db.Set<SaveChickenRequest>().AsQueryable();
-
             foreach (var include in includes)
             {
                 query = query.Include(include);

@@ -40,6 +40,12 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
                     v => v.Split(';', StringSplitOptions.RemoveEmptyEntries)
                         .Select(s => DateOnly.Parse(s)).ToList()
                 );
+
+        });
+
+        modelBuilder.Entity<Address>(entity =>
+        {
+            entity.OwnsOne(e => e.GeoCoordinate);
         });
 
         modelBuilder.Entity<SaveChickenRequest>(entity =>

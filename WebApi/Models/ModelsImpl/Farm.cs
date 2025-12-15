@@ -1,7 +1,9 @@
 
+using WebApi.Interfaces;
+
 namespace WebApi.Models.ModelsImpl
 {
-    public class Farm : IModel
+    public class Farm : IModel, IEntityWithAddress
     {
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }

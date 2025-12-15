@@ -4,6 +4,7 @@ using MauiBlazorWeb.Shared.Factories.FactoriesImpl;
 using MauiBlazorWeb.Shared.Services;
 using MauiBlazorWeb.Shared.Services.ServicesImpl;
 using MauiBlazorWeb.Shared.Singletons.SingletonsImpl;
+using Microsoft.AspNetCore.Components.WebView.Maui;
 using Microsoft.Extensions.Logging;
 using MudBlazor.Services;
 using System.Globalization;

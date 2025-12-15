@@ -9,6 +9,7 @@ namespace WebApi.Database.Includes
         {
             r => r.Contact,
             r => r.Address,
+            r => r.Address.GeoCoordinate,
             r => r.AddressForHandOver,
             r => r.SaveChickenAction,
             r => r.Files

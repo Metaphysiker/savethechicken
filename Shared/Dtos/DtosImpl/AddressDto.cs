@@ -18,5 +18,7 @@ namespace Shared.Dtos.DtosImpl
         public String City { get; set; } = String.Empty;
         [Required]
         public String PostalCode { get; set; } = String.Empty;
+        public GeoCoordinate? GeoCoordinate { get; set; }
+
     }
 }

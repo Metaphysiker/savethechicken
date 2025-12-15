@@ -1,8 +1,9 @@
-﻿using WebApi.Models.ModelsImpl;
+﻿using WebApi.Interfaces;
+using WebApi.Models.ModelsImpl;
 
 namespace WebApi.Models.ModelsImpl
 {
-    public class SaveChickenRequest : IModel
+    public class SaveChickenRequest : IModel, IEntityWithAddress
     {
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }

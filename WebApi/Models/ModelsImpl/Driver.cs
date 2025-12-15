@@ -1,6 +1,8 @@
+using WebApi.Interfaces;
+
 namespace WebApi.Models.ModelsImpl
 {
-    public class Driver : IModel
+    public class Driver : IModel, IEntityWithAddress
     {
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }
