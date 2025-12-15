@@ -8,7 +8,7 @@
 <MudContainer>
     <MudPaper Class="pa-4">
         <h3>Search</h3>
-        <GenericSearch TDto="SaveChickenRequestDto" TSearchDto="SaveChickenRequestSearch" OnItemsFound="OnItemsFound">
+        <GenericSearch TDto="SaveChickenRequestDto" TSearchDto="SaveChickenRequestSearch" OnItemsFound="OnItemsFound" search="saveChickenRequestSearch">
             <SearchForm Context="search">
                 <SaveChickenRequestSearchForm Model="search" />
             </SearchForm>
@@ -31,8 +31,14 @@
 
 
 @code {
+    private SaveChickenRequestSearch saveChickenRequestSearch = new SaveChickenRequestSearch();
 
     private List<SaveChickenRequestDto> items = new();
+
+    protected override void OnInitialized()
+    {
+        saveChickenRequestSearch.PageSize = 1000;
+    }
 
     private void OnItemsFound(List<SaveChickenRequestDto> foundItems)
     {

@@ -18,10 +18,19 @@
 @code {
     [Parameter] public RenderFragment<TSearchDto> SearchForm { get; set; } = default!;
     [Parameter] public RenderFragment<(List<TDto>, EventCallback<TDto>, EventCallback<(string?, bool?)>)> Table { get; set; } = default!;
-
     [Parameter] public EventCallback<List<TDto>> OnItemsFound { get; set; }
+    [Parameter] public TSearchDto search { get; set; } = default!;
 
     private TDto? selectedItem;
+
+    protected override Task OnInitializedAsync()
+    {
+        if (search == null)
+        {
+            search = Activator.CreateInstance<TSearchDto>();
+        }
+        return Task.CompletedTask;
+    }
 
     private async Task OnItemSelected(TDto item)
     {
@@ -35,8 +44,6 @@
         search.SortDescending = sortDescending;
         await PerformSearch();
     }
-
-    private TSearchDto search = Activator.CreateInstance<TSearchDto>();
 
     private List<TDto> items = new List<TDto>();
 
