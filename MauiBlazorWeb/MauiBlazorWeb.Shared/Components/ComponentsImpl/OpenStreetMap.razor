@@ -1,32 +1,26 @@
 ﻿@using MauiBlazorWeb.Shared.Classes
-@using global::Shared.Dtos.DtosImpl
 @inject IJSRuntime JS
 
-<div id="map" style="height: 500px;"></div>
+<div @ref="mapDiv" style="height: 500px;"></div>
 
 @code {
     [Parameter, EditorRequired]
     public List<MapMarker> markers { get; set; } = default!;
 
-    private bool firstRenderDone = false;
+    private ElementReference mapDiv;
     private List<MapMarker> previousMarkers = new();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            firstRenderDone = true;
-            await JS.InvokeVoidAsync("initMap", markers);
+            await JS.InvokeVoidAsync("initMap", mapDiv, markers);
             previousMarkers = markers.ToList();
         }
-        else
+        else if (!AreMarkersEqual(previousMarkers, markers))
         {
-            // If markers changed after first render, update map
-            if (!AreMarkersEqual(previousMarkers, markers))
-            {
-                await JS.InvokeVoidAsync("updateMarkers", markers);
-                previousMarkers = markers.ToList();
-            }
+            await JS.InvokeVoidAsync("updateMarkers", mapDiv, markers);
+            previousMarkers = markers.ToList();
         }
     }
 

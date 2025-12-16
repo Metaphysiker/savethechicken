@@ -1,0 +1,8 @@
+﻿@using global::Shared.Dtos.DtosImpl
+
+    <MudTextField @bind-Value="Model.SearchTerm" Label="Suche" Variant="Variant.Outlined" Placeholder="Suchbegriff eingeben" />
+    <ValidationMessage For="@(() => Model.SearchTerm)" />
+
+@code {
+    [Parameter] public FarmSearch Model { get; set; } = default!;
+}

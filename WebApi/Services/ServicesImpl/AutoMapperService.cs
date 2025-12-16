@@ -17,6 +17,7 @@ public class AutoMapperService
             cfg.CreateMap<SaveChickenRequest, SaveChickenRequestDto>().ReverseMap();
             cfg.CreateMap<SaveChickenAction, SaveChickenActionDto>().ReverseMap();
             cfg.CreateMap<StoredFile, StoredFileDto>().ReverseMap();
+            cfg.CreateMap<Driver, DriverDto>().ReverseMap();
         });
 
         mapper = new Mapper(config);

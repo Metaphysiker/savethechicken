@@ -1,21 +1,22 @@
-﻿let map;
+﻿const maps = new WeakMap(); // store map instances per element
 
-function initMap(initialMarkers) {
-    if (!map) {
-        map = L.map('map').setView([0, 0], 2);
-
+function initMap(element, initialMarkers) {
+    if (!maps.has(element)) {
+        const map = L.map(element).setView([0, 0], 2);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
+        maps.set(element, map);
     }
-    updateMarkers(initialMarkers);
+    updateMarkers(element, initialMarkers);
 }
 
-function updateMarkers(markers) {
+function updateMarkers(element, markers) {
+    const map = maps.get(element);
     if (!map) return;
 
     // Remove existing markers
-    map.eachLayer((layer) => {
+    map.eachLayer(layer => {
         if (layer instanceof L.Marker) map.removeLayer(layer);
     });
 
@@ -26,7 +27,7 @@ function updateMarkers(markers) {
             .bindPopup(m.info);
     });
 
-    // Optional: Adjust map view to fit markers
+    // Adjust view
     if (markers.length > 0) {
         const bounds = L.latLngBounds(markers.map(m => [m.latitude, m.longitude]));
         map.fitBounds(bounds, { padding: [50, 50] });

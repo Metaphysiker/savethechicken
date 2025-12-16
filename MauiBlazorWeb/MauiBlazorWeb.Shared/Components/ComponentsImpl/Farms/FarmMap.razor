@@ -1,0 +1,36 @@
+﻿@using MauiBlazorWeb.Shared.Classes
+@using global::Shared.Dtos.DtosImpl
+<h3>SaveChickenRequestMap</h3>
+
+<OpenStreetMap markers="markers" />
+
+@code {
+    [Parameter, EditorRequired]
+    public List<FarmDto> farmDtos { get; set; } = new();
+
+    private List<MapMarker> markers = new();
+
+    protected override void OnParametersSet()
+    {
+        DrawMarkers();
+    }
+
+    private void DrawMarkers()
+    {
+        markers = new List<MapMarker>();
+        foreach (var dto in farmDtos)
+        {
+            if (dto.Address != null && dto.Address.GeoCoordinate != null)
+            {
+                var marker = new MapMarker
+                {
+                    Latitude = dto.Address.GeoCoordinate.Latitude,
+                    Longitude = dto.Address.GeoCoordinate.Longitude,
+                    Info = $"{dto.Name}"
+                };
+                markers.Add(marker);
+            }
+        }
+    }
+
+}
