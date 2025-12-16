@@ -95,10 +95,11 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredUniqueChars = 0;
 });
 
-var awsOptions = builder.Configuration.GetAWSOptions();
-var creds = awsOptions.Credentials?.GetCredentials();
 
-if (creds == null || string.IsNullOrEmpty(creds.AccessKey))
+var awsOptions = builder.Configuration.GetAWSOptions();
+
+var isDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
+if (!isDocker)
 {
     var awsAccessKeyId = builder.Configuration["AWS:AWS_ACCESS_KEY_ID"];
     var awsSecretAccessKey = builder.Configuration["AWS:AWS_SECRET_ACCESS_KEY"];
@@ -109,11 +110,15 @@ if (creds == null || string.IsNullOrEmpty(creds.AccessKey))
         Credentials = new Amazon.Runtime.BasicAWSCredentials(awsAccessKeyId, awsSecretAccessKey),
         Region = Amazon.RegionEndpoint.GetBySystemName(region)
     };
+
+    builder.Services.AddDefaultAWSOptions(awsOptions);
+} else
+{
+    builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions());
+    Console.WriteLine("Running in Docker - using AWS options from environment");
 }
 
 
-// AWS credentials can come from environment variables (like in docker) but if not docker, use manage user secrets
-builder.Services.AddDefaultAWSOptions(awsOptions);
 builder.Services.AddAWSService<IAmazonS3>();
 
 var app = builder.Build();

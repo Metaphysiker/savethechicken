@@ -1,0 +1,20 @@
+@using MudBlazor
+@inject IDialogService DialogService
+
+
+<MudButton Variant="Variant.Filled" OnClick="OpenDialog">@StoredFile.FileName</MudButton>
+
+@code {
+	[Parameter, EditorRequired]
+	public StoredFileDto StoredFile { get; set; } = default!;
+
+	private async Task OpenDialog()
+	{
+		var parameters = new DialogParameters
+		{
+			{ "storedFileDto", StoredFile }
+		};
+		var options = new DialogOptions { FullScreen = true, CloseButton = true, MaxWidth = MaxWidth.False };
+		await DialogService.ShowAsync<StoredFileViewer>("Datei anzeigen", parameters, options);
+	}
+}
