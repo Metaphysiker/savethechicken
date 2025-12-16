@@ -1,14 +1,7 @@
 ﻿@using global::Shared.Dtos.DtosImpl
 
-<EditForm Model="Model">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-
     <MudTextField @bind-Value="Model.SearchTerm" Label="Suche" Variant="Variant.Outlined" Placeholder="Suchbegriff eingeben" />
     <ValidationMessage For="@(() => Model.SearchTerm)" />
-
-
-</EditForm>
 
 @code {
     [Parameter] public SaveChickenRequestSearch Model { get; set; } = default!;
