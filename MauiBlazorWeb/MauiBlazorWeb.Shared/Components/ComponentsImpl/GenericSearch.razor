@@ -31,6 +31,11 @@
 
     private TDto? selectedItem;
 
+    protected override async Task OnParametersSetAsync()
+    {
+        await PerformSearch();
+    }
+
     protected override Task OnInitializedAsync()
     {
         if (search == null)
@@ -40,7 +45,7 @@
         return Task.CompletedTask;
     }
 
-    private async Task OnItemSelected(TDto item)
+    private void OnItemSelected(TDto item)
     {
         selectedItem = item;
         StateHasChanged();

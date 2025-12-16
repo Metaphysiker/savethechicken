@@ -5,11 +5,15 @@
     [Parameter, EditorRequired] public SaveChickenActionDto Model { get; set; }
 }
 
-<MudTextField @bind-Value="Model.Title" Label="Title" Variant="Variant.Outlined" />
-<ValidationMessage For="@(() => Model.Title)" />
-<MudTextField @bind-Value="Model.Description" Label="Description" Variant="Variant.Outlined" Lines="4" TextFieldStyle="MudBlazor.TextFieldStyle.TextArea" />
-<ValidationMessage For="@(() => Model.Description)" />
+<MudPaper Class="pa-4 my-4" Elevation="2">
+    <MudTextField @bind-Value="Model.Title" Label="Title" Variant="Variant.Outlined" />
+    <ValidationMessage For="@(() => Model.Title)" />
+    <MudTextField @bind-Value="Model.Description" Label="Description" Variant="Variant.Outlined" Lines="4" TextFieldStyle="MudBlazor.TextFieldStyle.TextArea" />
+    <ValidationMessage For="@(() => Model.Description)" />
+    <MudCheckBox @bind-Value="Model.IsActive" Label="Aktiv"></MudCheckBox>
+    <ValidationMessage For="@(() => Model.IsActive)" />
+    </MudPaper>
+
 <MauiBlazorWeb.Shared.Components.MultiDateSelecters.MultiDateOnlySelector Text="Übergabe an diesen Daten:" @bind-SelectedDates="Model.Dates" />
-<MudCheckBox @bind-Value="Model.IsActive"></MudCheckBox>
-<ValidationMessage For="@(() => Model.IsActive)" />
+
 

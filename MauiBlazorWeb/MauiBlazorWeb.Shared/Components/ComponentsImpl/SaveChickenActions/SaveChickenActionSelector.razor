@@ -4,16 +4,28 @@
 @using MudBlazor
 @using global::Shared.Dtos.DtosImpl
 
-<MudSelect T="int?" Label="Aktion auswählen" @bind-Value="SelectedActionId" Dense="true" Variant="Variant.Outlined" Clearable="true">
+<MudSelect T="int?"
+           Label="Aktion auswählen"
+           Value="SelectedActionId"
+           ValueChanged="OnValueChanged"
+           ValueExpression="(() => SelectedActionId)"
+           Dense="true"
+           Variant="Variant.Outlined"
+           Clearable="true">
     @foreach (var action in actions)
     {
-        <MudSelectItem Value="@((int?)action.Id)">#@action.Id: @action.Title</MudSelectItem>
+        <MudSelectItem Value="@((int?)action.Id)">
+            #@action.Id: @action.Title
+        </MudSelectItem>
     }
 </MudSelect>
+
 
 @code {
     [Parameter] public int? SelectedActionId { get; set; }
     [Parameter] public EventCallback<int?> SelectedActionIdChanged { get; set; }
+    [Parameter] public EventCallback<SaveChickenActionDto?> OnActionSelected { get; set; }
+
     private GenericDtoService<SaveChickenActionDto, SaveChickenActionSearch>? _service;
     private List<SaveChickenActionDto> actions = new();
 
@@ -21,11 +33,15 @@
     {
         _service = DtoServiceFactory.Create<SaveChickenActionDto, SaveChickenActionSearch>();
         actions = await _service.GetAllAsync();
-        StateHasChanged();
     }
 
-    private async Task OnItemSelected(SaveChickenActionDto? item)
+    private async Task OnValueChanged(int? newValue)
     {
-        await SelectedActionIdChanged.InvokeAsync(item?.Id);
+        SelectedActionId = newValue;
+
+        var selectedAction = actions.FirstOrDefault(a => a.Id == newValue);
+
+        await SelectedActionIdChanged.InvokeAsync(newValue);
+        await OnActionSelected.InvokeAsync(selectedAction);
     }
 }

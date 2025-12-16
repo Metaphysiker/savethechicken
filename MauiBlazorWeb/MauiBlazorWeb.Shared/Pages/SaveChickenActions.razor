@@ -1,0 +1,83 @@
+﻿@page "/save-chicken-actions"
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Web.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+@inject GenericDtoServiceFactory DtoServiceFactory
+
+<MudContainer>
+    <h3>Rettungs-Aktionen</h3>
+
+    <MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions.SaveChickenActionSelector @bind-SelectedActionId="selectedActionId" OnActionSelected="OnActionSelected" />
+
+    @if(selectedAction != null)
+    {
+        <MudPaper Class="pa-4">
+            <GenericSearch TDto="SaveChickenRequestDto" TSearchDto="SaveChickenRequestSearch" search="saveChickenRequestSearch" OnItemsFound="OnItemsFound">
+                <SearchForm Context="search">
+                    <SaveChickenRequestSearchForm Model="search" />
+                </SearchForm>
+                <Table Context="ctx">
+                    <SaveChickenRequestTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" />
+                </Table>
+            </GenericSearch>
+        </MudPaper>
+
+        <MudPaper Class="pa-4 mt-4">
+            <SaveChickenRequestMap saveChickenRequestDtos="items" />
+        </MudPaper>
+    }
+
+
+</MudContainer>
+
+
+@code {
+    private GenericDtoService<SaveChickenActionDto, SaveChickenActionSearch>? _service;
+    private SaveChickenActionDto? selectedAction;
+    private int? selectedActionId;
+    private SaveChickenRequestSearch saveChickenRequestSearch = new SaveChickenRequestSearch();
+    private List<SaveChickenRequestDto> items = new();
+
+    private void OnItemsFound(List<SaveChickenRequestDto> foundItems)
+    {
+        items = foundItems;
+        StateHasChanged();
+    }
+
+    private void OnActionSelected(SaveChickenActionDto action)
+    {
+        selectedAction = action;
+        UpdateSaveChickenRequestSearch();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        SaveChickenActionSearch searchForActiveAction = new SaveChickenActionSearch
+        {
+            IsActive = true,
+            PageSize = 1
+        };
+        _service = DtoServiceFactory.Create<SaveChickenActionDto, SaveChickenActionSearch>();
+
+
+        var searchResults = await _service.SearchAsync(searchForActiveAction);
+        selectedAction = searchResults.Data.FirstOrDefault();
+        selectedActionId = selectedAction?.Id;
+        UpdateSaveChickenRequestSearch();
+    }
+
+    private void UpdateSaveChickenRequestSearch()
+    {
+       var saveChickenActionIds = selectedAction != null
+        ? new List<int> { selectedAction.Id }
+        : new List<int>();
+
+            saveChickenRequestSearch = new SaveChickenRequestSearch
+            {
+                SaveChickenActionIds = saveChickenActionIds
+            };
+    }
+}
