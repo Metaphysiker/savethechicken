@@ -16,6 +16,7 @@ namespace WebApi.Models.ModelsImpl
         public Address? AddressForHandOver { get; set; }
         public int? AddressForHandOverId { get; set; }
         public int NumberOfChickensToBeSaved { get; set; } = 0;
+        public int NumberOfRoostersToBeSaved { get; set; } = 0;
         public int NumberOfBoxes { get; set; } = 0;
         public string DescriptionOfPlaceForChickens { get; set; } = string.Empty;
         public bool AcceptTermsAndConditions { get; set; } = false;

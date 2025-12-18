@@ -9,6 +9,7 @@ namespace WebApi.Models.ModelsImpl
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public int NumberOfChickens { get; set; } = 0;
+        public int NumberOfRoosters { get; set; } = 0;
         public string Size { get; set; } = String.Empty;
         public string Color { get; set; } = String.Empty;
         public List<DateOnly> DatesForRescues { get; set; } = new List<DateOnly>();
