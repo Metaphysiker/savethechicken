@@ -10,7 +10,7 @@
 @inject GenericDtoServiceFactory DtoServiceFactory
 @inject SaveChickenActionService saveChickenActionService
 
-<MudContainer>
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
     <h3>Rettungs-Aktionen</h3>
 
     <MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions.SaveChickenActionSelector @bind-SelectedActionId="selectedActionId" OnActionSelected="OnActionSelected" />
@@ -95,7 +95,15 @@
     private void OnActionSelected(SaveChickenActionDto action)
     {
         selectedAction = action;
+        UpdateSearches();
+        StateHasChanged();
+    }
+
+    private void UpdateSearches()
+    {
         UpdateSaveChickenRequestSearch();
+        UpdateDriverSearch();
+        UpdateFarmSearch();
     }
 
     protected override async Task OnInitializedAsync()
@@ -106,7 +114,7 @@
         {
             selectedAction = activeSaveChickenAction;
             selectedActionId = activeSaveChickenAction.Id;
-            UpdateSaveChickenRequestSearch();
+            UpdateSearches();
         }
     }
 
@@ -120,5 +128,27 @@
             {
                 SaveChickenActionIds = saveChickenActionIds
             };
+    }
+
+    private void UpdateFarmSearch()
+    {
+        var saveChickenActionIds = selectedAction != null
+         ? new List<int> { selectedAction.Id }
+         : new List<int>();
+        farmSearch = new FarmSearch
+        {
+            SaveChickenActionIds = saveChickenActionIds
+        };
+    }
+
+    private void UpdateDriverSearch()
+    {
+        var saveChickenActionIds = selectedAction != null
+         ? new List<int> { selectedAction.Id }
+         : new List<int>();
+        driverSearch = new DriverSearch
+        {
+            SaveChickenActionIds = saveChickenActionIds
+        };
     }
 }

@@ -8,6 +8,6 @@ namespace Shared.Dtos.DtosImpl
 {
     public class DriverSearch : ISearchDto
     {
-
+        public List<int>? SaveChickenActionIds { get; set; }
     }
 }

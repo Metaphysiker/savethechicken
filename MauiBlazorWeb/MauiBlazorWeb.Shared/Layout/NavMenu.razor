@@ -1,15 +1,10 @@
 ﻿<MudNavMenu>
     <MudNavLink Href="/" Class="nav-link-entry" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-    <MudNavLink Href="/save-chicken-requests" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Support">Rettet das Huhn</MudNavLink>
-    <MudNavLink Href="/save-chicken-actions" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Dashboard">Rettungs-Aktionen</MudNavLink>
-
     <MudNavLink Href="/save-chicken-requests/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Support">Platz für Hühner anbieten</MudNavLink>
     <MudNavLink Href="/drivers/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.DirectionsCar">Fahrer werden</MudNavLink>
     <MudNavLink Href="/farms/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Agriculture">Betrieb anmelden</MudNavLink>
-
-
     <MudDivider Class="my-2" />
-
+    <MudNavLink Href="/save-chicken-actions" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Dashboard">Rettungs-Aktionen</MudNavLink>
     <MudNavLink Href="/save-chicken-actions/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Neue Rettungs-Aktion</MudNavLink>
     <MudDivider Class="my-2" />
     @if (_drawerOpen)
