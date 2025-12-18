@@ -15,6 +15,8 @@ namespace Shared.Dtos.DtosImpl
 
         [Range(1, int.MaxValue, ErrorMessage = "Number of chickens must be greater than 0")]
         public int NumberOfChickensToBeSaved { get; set; } = 0;
+        public int NumberOfRoostersToBeSaved { get; set; } = 0;
+
 
         [Required]
         public string DescriptionOfPlaceForChickens { get; set; } = string.Empty;

@@ -2,6 +2,10 @@
 
 <MudPaper Class="pa-4 my-4">
 
+<MudText>
+    @Text
+</MudText>
+
 <MudFileUpload T="IReadOnlyList<IBrowserFile>" FilesChanged="FileChanged">
     <ActivatorContent>
         <MudButton Variant="Variant.Filled"
@@ -29,6 +33,7 @@
     [Parameter] public List<IBrowserFile> Value { get; set; } = new();
     [Parameter] public EventCallback<List<IBrowserFile>> ValueChanged { get; set; }
     [Parameter] public string Label { get; set; } = "Dateien hochladen";
+    [Parameter] public string Text { get; set; } = string.Empty;
 
     protected override void OnInitialized()
     {

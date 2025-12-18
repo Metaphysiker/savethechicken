@@ -23,25 +23,34 @@
         <MudNumericField T="int" @bind-Value="EntityWithFiles.Item.NumberOfChickensToBeSaved" Label="@L["NumberOfChickens"]" Variant="Variant.Outlined" />
         <ValidationMessage For="@(() => EntityWithFiles.Item.NumberOfChickensToBeSaved)" />
     </MudItem>
+        <MudItem>
+        <MudNumericField T="int" @bind-Value="EntityWithFiles.Item.NumberOfRoostersToBeSaved" Label="@L["NumberOfRoostersToBeSaved"]" Variant="Variant.Outlined" />
+        <ValidationMessage For="@(() => EntityWithFiles.Item.NumberOfRoostersToBeSaved)" />
+    </MudItem>
     <MudItem>
+        <MudText>
+            Bitte beschreiben Sie kurz  Ihr Hühnerzuhause (Stall, Auslauf m2) , Anzahl bestehende Hühner, Erfahrung etc.
+        </MudText>
         <MudTextField @bind-Value="EntityWithFiles.Item.DescriptionOfPlaceForChickens" Label="@L["Description"]" Variant="Variant.Outlined" Lines="3" />
         <ValidationMessage For="@(() => EntityWithFiles.Item.DescriptionOfPlaceForChickens)" />
     </MudItem>
 
     <MudItem>
+        <MudText>
+            Was ich noch sagen möchte:
+        </MudText>
         <MudTextField @bind-Value="EntityWithFiles.Item.Message" Label="@L["Message"]" Variant="Variant.Outlined" Lines="3" />
         <ValidationMessage For="@(() => EntityWithFiles.Item.Message)" />
     </MudItem>
-    <MudItem>
-        <SaveChickenActionSelector @bind-SelectedActionId="EntityWithFiles.Item.SaveChickenActionId" />
-    </MudItem>
-    
 
 </MudPaper>
 
 <MultiDateOnlySelector @bind-SelectedDates="EntityWithFiles.Item.DatesForHandOver" Text="Ich bin an diesen Tagen erreichbar:" />
 
-<FilesUploadForm @bind-Value="EntityWithFiles.Files" Label="Dateien hochladen" />
+<FilesUploadForm @bind-Value="EntityWithFiles.Files" Label="Dateien hochladen" Text="" />
+
+<SaveChickenActionSelector @bind-SelectedActionId="EntityWithFiles.Item.SaveChickenActionId" />
+
 
 <MudPaper Class="pa-4 my-4">
     <MudCheckBox @bind-Value="EntityWithFiles.Item.AcceptTermsAndConditions" Label="@L["AcceptTermsAndConditions"]"></MudCheckBox>
