@@ -14,6 +14,8 @@ namespace WebApi.Models.ModelsImpl
         public String CarMake { get; set; } = String.Empty;
         public List<DateOnly> AvailableDates { get; set; } = new List<DateOnly>();
         public List<StoredFile> Files { get; set; }
+        public int? SaveChickenActionId { get; set; }
+        public SaveChickenAction? SaveChickenAction { get; set; }
 
         Driver()
         {

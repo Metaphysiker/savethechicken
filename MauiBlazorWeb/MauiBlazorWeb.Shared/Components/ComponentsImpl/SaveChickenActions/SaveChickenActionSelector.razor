@@ -15,7 +15,7 @@
     @foreach (var action in actions)
     {
         <MudSelectItem Value="@((int?)action.Id)">
-            #@action.Id: @action.Title
+            #@action.Id | @action.Title | @string.Join(", ", action.Dates.Select(d => d.ToString("dd.MM.yyyy")))
         </MudSelectItem>
     }
 </MudSelect>

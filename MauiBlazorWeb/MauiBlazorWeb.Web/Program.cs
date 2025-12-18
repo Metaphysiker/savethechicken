@@ -12,6 +12,7 @@ builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<AwsFileService>();
+builder.Services.AddScoped<SaveChickenActionService>();
 
 builder.Services.AddSingleton<AuthResponseSingleton>();
 

@@ -32,6 +32,8 @@ namespace Shared.Dtos.DtosImpl
         public AddressDto Address { get; set; }
         public int AddressId { get; set; }
         public List<StoredFileDto> Files { get; set; }
+        public SaveChickenActionDto? SaveChickenAction { get; set; }
+        public int? SaveChickenActionId { get; set; }
         public FarmDto()
         {
             Files = new List<StoredFileDto>();

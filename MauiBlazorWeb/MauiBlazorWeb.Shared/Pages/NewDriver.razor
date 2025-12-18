@@ -2,7 +2,9 @@
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Drivers
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Shared.Services.ServicesImpl
 @using MauiBlazorWeb.Web.Services.ServicesImpl
+@inject SaveChickenActionService saveChickenActionService;
 @using global::Shared.Dtos.DtosImpl
 
 @page "/drivers/new"
@@ -13,10 +15,39 @@
 
     <h3>Ich biete mich als Fahrer an</h3>
 
-    <GenericCreateWithFiles TDto="DriverDto">
+    @if(newItemWithBrowserFiles != null)
+    {
+      <GenericCreateWithFiles TDto="DriverDto" model="newItemWithBrowserFiles" >
         <ChildContent Context="model">
             <DriverFormWithFiles EntityWithFiles="model" />
         </ChildContent>
     </GenericCreateWithFiles>
+    }
+
 
 </MudContainer>
+
+@code {
+    @code {
+        private DriverDto driverDto = new();
+        private ItemWithBrowserFiles<DriverDto>? newItemWithBrowserFiles;
+
+        protected override async Task OnInitializedAsync()
+        {
+            SaveChickenActionDto? activeSaveChickenAction = await saveChickenActionService.GetActiveSaveChickenAction();
+
+            if (activeSaveChickenAction != null)
+            {
+                driverDto.SaveChickenActionId = activeSaveChickenAction?.Id;
+            }
+
+            newItemWithBrowserFiles = new ItemWithBrowserFiles<DriverDto>
+            {
+                Item = driverDto,
+                Files = new List<IBrowserFile>()
+            };
+
+            newItemWithBrowserFiles.Item = driverDto;
+        }
+    }
+}

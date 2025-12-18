@@ -12,9 +12,6 @@
 @code {
     [Parameter, EditorRequired]
     public ItemWithBrowserFiles<SaveChickenRequestDto> EntityWithFiles { get; set; } = default!;
-
-    [Parameter]
-    public bool ShowSaveChickenActionInput { get; set; } = true;
 }
 
 <ContactForm Contact="EntityWithFiles.Item.Contact" />
@@ -35,11 +32,10 @@
         <MudTextField @bind-Value="EntityWithFiles.Item.Message" Label="@L["Message"]" Variant="Variant.Outlined" Lines="3" />
         <ValidationMessage For="@(() => EntityWithFiles.Item.Message)" />
     </MudItem>
-    @if (ShowSaveChickenActionInput){
-        <MudItem>
-            <SaveChickenActionSelector @bind-SelectedActionId="EntityWithFiles.Item.SaveChickenActionId" />
-        </MudItem>
-    }
+    <MudItem>
+        <SaveChickenActionSelector @bind-SelectedActionId="EntityWithFiles.Item.SaveChickenActionId" />
+    </MudItem>
+    
 
 </MudPaper>
 

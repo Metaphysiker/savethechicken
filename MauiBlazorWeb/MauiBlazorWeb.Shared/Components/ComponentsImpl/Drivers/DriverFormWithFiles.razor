@@ -3,6 +3,7 @@
 @inject IStringLocalizer<AppResources> L
 
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.FileUploads
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
 @using MauiBlazorWeb.Shared.Resources.Strings
 @using Microsoft.Extensions.Localization
 @using global::Shared.Dtos.DtosImpl
@@ -23,5 +24,7 @@
     </MudPaper>
 
     <MauiBlazorWeb.Shared.Components.MultiDateSelecters.MultiDateOnlySelector Text="Ich kann an diesen Tagen fahren:" @bind-SelectedDates="EntityWithFiles.Item.AvailableDates"  />
+
+     <SaveChickenActionSelector @bind-SelectedActionId="EntityWithFiles.Item.SaveChickenActionId" />
 
     <FilesUploadForm @bind-Value="EntityWithFiles.Files" Label="Dateien hochladen" />

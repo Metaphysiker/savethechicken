@@ -1,6 +1,7 @@
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Contacts
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Addresses
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.FileUploads
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
 @using MauiBlazorWeb.Shared.Resources.Strings
 @using Microsoft.Extensions.Localization
 @using MudBlazor
@@ -36,5 +37,7 @@
 
 <MauiBlazorWeb.Shared.Components.MultiDateSelecters.MultiDateOnlySelector @bind-SelectedDates="EntityWithFiles.Item.DatesForRescues" Text="Hühner können an diesen Tagen abgeholt werden:" />
 <ValidationMessage For="@(() => EntityWithFiles.Item.DatesForRescues)" />
+
+<SaveChickenActionSelector @bind-SelectedActionId="EntityWithFiles.Item.SaveChickenActionId" />
 
 <FilesUploadForm @bind-Value="EntityWithFiles.Files" Label="Dateien hochladen" />

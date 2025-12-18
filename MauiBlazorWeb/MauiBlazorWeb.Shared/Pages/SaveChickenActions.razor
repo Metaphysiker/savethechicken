@@ -4,9 +4,11 @@
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Farms
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Shared.Services.ServicesImpl
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
 @inject GenericDtoServiceFactory DtoServiceFactory
+@inject SaveChickenActionService saveChickenActionService
 
 <MudContainer>
     <h3>Rettungs-Aktionen</h3>
@@ -99,18 +101,13 @@
     protected override async Task OnInitializedAsync()
     {
 
-        SaveChickenActionSearch searchForActiveAction = new SaveChickenActionSearch
+        var activeSaveChickenAction = await saveChickenActionService.GetActiveSaveChickenAction();
+        if(activeSaveChickenAction != null)
         {
-            IsActive = true,
-            PageSize = 1
-        };
-        _service = DtoServiceFactory.Create<SaveChickenActionDto, SaveChickenActionSearch>();
-
-
-        var searchResults = await _service.SearchAsync(searchForActiveAction);
-        selectedAction = searchResults.Data.FirstOrDefault();
-        selectedActionId = selectedAction?.Id;
-        UpdateSaveChickenRequestSearch();
+            selectedAction = activeSaveChickenAction;
+            selectedActionId = activeSaveChickenAction.Id;
+            UpdateSaveChickenRequestSearch();
+        }
     }
 
     private void UpdateSaveChickenRequestSearch()

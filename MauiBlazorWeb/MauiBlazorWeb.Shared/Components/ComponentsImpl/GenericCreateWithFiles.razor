@@ -23,9 +23,9 @@
 }
 
 @code {
-    [Parameter] public ItemWithBrowserFiles<TDto> model { get; set; } = default!;
+    [Parameter, EditorRequired] public ItemWithBrowserFiles<TDto> model { get; set; } = default!;
 
-    [Parameter] public RenderFragment<ItemWithBrowserFiles<TDto>> ChildContent { get; set; } = default!;
+    [Parameter, EditorRequired] public RenderFragment<ItemWithBrowserFiles<TDto>> ChildContent { get; set; } = default!;
 
     private GenericDtoService<TDto, ISearchDto>? _service;
 

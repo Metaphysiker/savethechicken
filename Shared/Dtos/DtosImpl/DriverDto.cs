@@ -19,6 +19,8 @@ namespace Shared.Dtos.DtosImpl
         public String CarMake { get; set; } = String.Empty;
         public List<DateOnly> AvailableDates { get; set; } = new List<DateOnly>();
         public List<StoredFileDto> Files { get; set; }
+        public SaveChickenActionDto? SaveChickenAction { get; set; }
+        public int? SaveChickenActionId { get; set; }
 
         public DriverDto()
         {

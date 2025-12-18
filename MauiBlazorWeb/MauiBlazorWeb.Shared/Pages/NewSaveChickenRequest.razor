@@ -1,8 +1,9 @@
 ﻿@using MauiBlazorWeb.Shared.Components.ComponentsImpl
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Shared.Services.ServicesImpl
 @using MauiBlazorWeb.Web.Services.ServicesImpl
-@inject GenericDtoServiceFactory DtoServiceFactory
+@inject SaveChickenActionService saveChickenActionService;
 @using global::Shared.Dtos.DtosImpl
 
 @page "/save-chicken-requests/new"
@@ -13,41 +14,36 @@
 
     <h3>Ich biete Hühnern einen Lebensplatz an</h3>
 
-    @if (SaveChickenActionLoaded == true && newRequestDtoWithFiles != null)
+    @if (newRequestDtoWithFiles != null)
     {
         <GenericCreateWithFiles TDto="SaveChickenRequestDto" model="newRequestDtoWithFiles">
             <ChildContent Context="model">
-                <SaveChickenRequestFormWithFiles EntityWithFiles="newRequestDtoWithFiles" ShowSaveChickenActionInput=false />
+                <SaveChickenRequestFormWithFiles EntityWithFiles="newRequestDtoWithFiles" />
             </ChildContent>
         </GenericCreateWithFiles>
     }
+    
 </MudContainer>
 
 
 @code {
-    private GenericDtoService<SaveChickenActionDto, SaveChickenActionSearch>? _service;
-    private SaveChickenActionDto? activeChickenDto;
     private SaveChickenRequestDto newRequestDto = new();
-    private ItemWithBrowserFiles<SaveChickenRequestDto> newRequestDtoWithFiles = new();
+    private ItemWithBrowserFiles<SaveChickenRequestDto>? newRequestDtoWithFiles;
     private bool SaveChickenActionLoaded = false;
 
     protected override async Task OnInitializedAsync()
     {
-        SaveChickenActionSearch search = new SaveChickenActionSearch
-        {
-            IsActive = true,
-            PageSize = 1
-        };
-        _service = DtoServiceFactory.Create<SaveChickenActionDto, SaveChickenActionSearch>();
+        SaveChickenActionDto? activeSaveChickenAction = await saveChickenActionService.GetActiveSaveChickenAction();
 
-
-        var searchResults = await _service.SearchAsync(search);
-        activeChickenDto = searchResults.Data.FirstOrDefault();
-        if (activeChickenDto != null)
+        if (activeSaveChickenAction != null)
         {
-            newRequestDto.SaveChickenActionId = activeChickenDto?.Id;
+            newRequestDto.SaveChickenActionId = activeSaveChickenAction?.Id;
         }
-        newRequestDtoWithFiles.Item = newRequestDto;
-        SaveChickenActionLoaded = true;
+
+        newRequestDtoWithFiles = new ItemWithBrowserFiles<SaveChickenRequestDto>
+        {
+            Item = newRequestDto,
+            Files = new List<IBrowserFile>()
+        };
     }
 }

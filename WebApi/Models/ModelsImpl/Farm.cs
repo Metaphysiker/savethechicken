@@ -19,7 +19,8 @@ namespace WebApi.Models.ModelsImpl
         public Address Address { get; set; } = null!;
         public int AddressId { get; set; }
         public List<StoredFile> Files { get; set; }
-
+        public int? SaveChickenActionId { get; set; }
+        public SaveChickenAction? SaveChickenAction { get; set; }
         Farm()
         {
             Files = new List<StoredFile>();
