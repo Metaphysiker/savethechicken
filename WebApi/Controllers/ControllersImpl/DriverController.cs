@@ -25,7 +25,7 @@ namespace WebApi.Controllers.ControllersImpl
         public async Task<ActionResult<DriverDto>> Create([FromBody] DriverDto dto)
         {
             var model = _mapper.mapper.Map<Driver>(dto);
-            var result = await _service.Create(model);
+            var result = await _service.Create(model, DriverIncludes.Default);
             var resultDto = _mapper.mapper.Map<DriverDto>(result);
             return CreatedAtAction(nameof(Read), new { id = resultDto.Id }, resultDto);
         }
@@ -40,7 +40,7 @@ namespace WebApi.Controllers.ControllersImpl
         [HttpGet("{id}")]
         public async Task<ActionResult<DriverDto>> Read(int id)
         {
-            var result = await _service.Read(id);
+            var result = await _service.Read(id, DriverIncludes.Default);
             if (result == null) return NotFound();
             var resultDto = _mapper.mapper.Map<DriverDto>(result);
             return Ok(resultDto);
@@ -49,7 +49,7 @@ namespace WebApi.Controllers.ControllersImpl
         [HttpGet]
         public async Task<ActionResult<List<DriverDto>>> ReadAll()
         {
-            var result = await _service.ReadAll();
+            var result = await _service.ReadAll(DriverIncludes.Default);
             var resultDto = _mapper.mapper.Map<List<DriverDto>>(result);
             return Ok(resultDto);
         }
@@ -73,7 +73,7 @@ namespace WebApi.Controllers.ControllersImpl
         public async Task<ActionResult<DriverDto>> Update([FromBody] DriverDto dto)
         {
             var model = _mapper.mapper.Map<Driver>(dto);
-            var result = await _service.Update(model);
+            var result = await _service.Update(model, DriverIncludes.Default);
             var resultDto = _mapper.mapper.Map<DriverDto>(result);
             return Ok(resultDto);
         }

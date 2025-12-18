@@ -1,0 +1,66 @@
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using MauiBlazorWeb.Shared.Services.ServicesImpl
+@using MauiBlazorWeb.Web.Services.ServicesImpl
+@inject AwsFileService AwsFileService
+@using Microsoft.Extensions.Localization
+@using global::Shared.Dtos.DtosImpl
+@inject IJSRuntime JS
+@typeparam TDto where TDto : class, IEntityWithFiles
+@inject GenericDtoServiceFactory DtoServiceFactory
+@inject IStringLocalizer<AppResources> L
+
+@if(model != null){
+    <EditForm Model="model" OnValidSubmit="HandleValidSubmit">
+        <ObjectGraphDataAnnotationsValidator />
+
+        @ChildContent(model)
+
+        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
+            @L["update"]
+        </MudButton>
+    </EditForm>
+}
+
+@code {
+    [Parameter, EditorRequired] public ItemWithBrowserFiles<TDto> model { get; set; } = default!;
+    [Parameter, EditorRequired] public RenderFragment<ItemWithBrowserFiles<TDto>> ChildContent { get; set; } = default!;
+
+    private GenericDtoService<TDto, ISearchDto>? _service;
+
+    protected override void OnInitialized()
+    {
+        _service = DtoServiceFactory.Create<TDto, ISearchDto>();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (_service != null && model != null)
+        {
+            var storedFiles = await UploadFilesAsync(model);
+            model.Item.Files = storedFiles;
+            await _service.UpdateAsync(model.Item);
+        }
+    }
+
+    private async Task<List<StoredFileDto>> UploadFilesAsync(ItemWithBrowserFiles<TDto> itemWithFiles)
+    {
+        List<StoredFileDto> storedFiles = new List<StoredFileDto>();
+        foreach (var file in itemWithFiles.Files)
+        {
+            var key = await AwsFileService.UploadFileAsync(file);
+            if(!string.IsNullOrEmpty(key))
+            {
+                StoredFileDto storedFile = new StoredFileDto
+                {
+                    FileName = file.Name,
+                    FileKey = key,
+                    ContentType = file.ContentType,
+                };
+
+                storedFiles.Add(storedFile);
+            }
+        }
+        return storedFiles;
+    }
+}

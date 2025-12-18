@@ -21,15 +21,11 @@ public class AwsFileController : ControllerBase
 
         var isDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
         if (isDocker) {
-            Console.WriteLine("Running in Docker - getting bucket name from environment variable");
             bucketName = Environment.GetEnvironmentVariable("AWS_BUCKET_NAME") ?? "";
-            Console.WriteLine($"Bucket name: {bucketName}");
         }
         else
         {
-            Console.WriteLine("Running locally - getting bucket name from appsettings");
             bucketName = configuration["AWS:AWS_BUCKET_NAME"] ?? "";
-            Console.WriteLine($"Bucket name: {bucketName}");
         }
     }
 

@@ -1,4 +1,5 @@
-@page "/save-chicken-requests/{Id:int}/edit"
+@page "/farms/{Id:int}/edit"
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Farms
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
@@ -6,13 +7,13 @@
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl
 @inject GenericDtoServiceFactory DtoServiceFactory
 
-<h2>Edit Save Chicken Request</h2>
+<h2>Edit Farm</h2>
 
 @if (modelWithFiles != null)
 {
-    <GenericUpdateWithFiles TDto="SaveChickenRequestDto" model="modelWithFiles">
+    <GenericUpdateWithFiles TDto="FarmDto" model="modelWithFiles">
         <ChildContent Context="editModel">
-            <SaveChickenRequestFormWithFiles EntityWithFiles="editModel" />
+            <FarmFormWithFiles EntityWithFiles="editModel" />
         </ChildContent>
     </GenericUpdateWithFiles>
 }
@@ -23,16 +24,16 @@ else
 
 @code {
     [Parameter] public int Id { get; set; }
-    private SaveChickenRequestDto? model = null;
-    private ItemWithBrowserFiles<SaveChickenRequestDto>? modelWithFiles = null;
+    private FarmDto? model = null;
+    private ItemWithBrowserFiles<FarmDto>? modelWithFiles = null;
 
-    private GenericDtoService<SaveChickenRequestDto, SaveChickenRequestSearch>? _service;
+    private GenericDtoService<FarmDto, FarmSearch>? _service;
 
     protected override async Task OnInitializedAsync()
     {
-        _service = DtoServiceFactory.Create<SaveChickenRequestDto, SaveChickenRequestSearch>();
+        _service = DtoServiceFactory.Create<FarmDto, FarmSearch>();
         model = await _service.GetByIdAsync(Id);
-        modelWithFiles = new ItemWithBrowserFiles<SaveChickenRequestDto>
+        modelWithFiles = new ItemWithBrowserFiles<FarmDto>
         {
             Item = model,
             Files = new List<IBrowserFile>()

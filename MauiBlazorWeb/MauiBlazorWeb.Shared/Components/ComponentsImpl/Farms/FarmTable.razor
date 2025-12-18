@@ -34,9 +34,9 @@
         return currentSortDescending == true ? Icons.Material.Filled.ArrowDownward : Icons.Material.Filled.ArrowUpward;
     }
 
-    private void EditItem(FarmDto driverDto)
+    private void EditItem(FarmDto farmDto)
     {
-        NavigationManager.NavigateTo($"/drivers/{driverDto.Id}/edit");
+        NavigationManager.NavigateTo($"/farms/{farmDto.Id}/edit");
 
     }
 }

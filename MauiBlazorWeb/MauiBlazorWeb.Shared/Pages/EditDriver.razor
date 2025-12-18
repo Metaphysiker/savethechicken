@@ -1,4 +1,5 @@
-@page "/save-chicken-requests/{Id:int}/edit"
+@page "/drivers/{Id:int}/edit"
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Drivers
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
@@ -6,13 +7,13 @@
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl
 @inject GenericDtoServiceFactory DtoServiceFactory
 
-<h2>Edit Save Chicken Request</h2>
+<h2>Edit Driver</h2>
 
 @if (modelWithFiles != null)
 {
-    <GenericUpdateWithFiles TDto="SaveChickenRequestDto" model="modelWithFiles">
+    <GenericUpdateWithFiles TDto="DriverDto" model="modelWithFiles">
         <ChildContent Context="editModel">
-            <SaveChickenRequestFormWithFiles EntityWithFiles="editModel" />
+            <DriverFormWithFiles EntityWithFiles="editModel" />
         </ChildContent>
     </GenericUpdateWithFiles>
 }
@@ -23,16 +24,16 @@ else
 
 @code {
     [Parameter] public int Id { get; set; }
-    private SaveChickenRequestDto? model = null;
-    private ItemWithBrowserFiles<SaveChickenRequestDto>? modelWithFiles = null;
+    private DriverDto? model = null;
+    private ItemWithBrowserFiles<DriverDto>? modelWithFiles = null;
 
-    private GenericDtoService<SaveChickenRequestDto, SaveChickenRequestSearch>? _service;
+    private GenericDtoService<DriverDto, DriverSearch>? _service;
 
     protected override async Task OnInitializedAsync()
     {
-        _service = DtoServiceFactory.Create<SaveChickenRequestDto, SaveChickenRequestSearch>();
+        _service = DtoServiceFactory.Create<DriverDto, DriverSearch>();
         model = await _service.GetByIdAsync(Id);
-        modelWithFiles = new ItemWithBrowserFiles<SaveChickenRequestDto>
+        modelWithFiles = new ItemWithBrowserFiles<DriverDto>
         {
             Item = model,
             Files = new List<IBrowserFile>()

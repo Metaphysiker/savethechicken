@@ -186,4 +186,7 @@
   <data name="edit" xml:space="preserve">
     <value>bearbeiten</value>
   </data>
+  <data name="update" xml:space="preserve">
+    <value>aktualisieren</value>
+  </data>
 </root>

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Shared.Dtos.DtosImpl
 {
-    public class DriverDto : IDto
+    public class DriverDto : IDto, IEntityWithFiles
     {
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -18,11 +18,13 @@ namespace Shared.Dtos.DtosImpl
         public int AddressId { get; set; }
         public String CarMake { get; set; } = String.Empty;
         public List<DateOnly> AvailableDates { get; set; } = new List<DateOnly>();
+        public List<StoredFileDto> Files { get; set; }
 
         public DriverDto()
         {
             Contact = new ContactDto();
             Address = new AddressDto();
+            Files = new List<StoredFileDto>();
         }
     }
 }

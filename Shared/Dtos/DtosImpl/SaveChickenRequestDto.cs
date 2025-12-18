@@ -47,8 +47,6 @@ namespace Shared.Dtos.DtosImpl
 
         public List<StoredFileDto> Files { get; set; }
 
-        public List<IFormFile> FormFiles { get; set; } = new();
-
         public SaveChickenRequestDto()
         {
             Contact = new ContactDto();

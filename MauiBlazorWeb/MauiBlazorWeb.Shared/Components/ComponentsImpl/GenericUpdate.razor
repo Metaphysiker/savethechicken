@@ -1,21 +1,28 @@
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Shared.Resources.Strings
 @using MauiBlazorWeb.Web.Services.ServicesImpl
+@using Microsoft.Extensions.Localization
 @using global::Shared.Dtos.DtosImpl
 @typeparam TDto where TDto : class
 @inject GenericDtoServiceFactory DtoServiceFactory
+@inject IStringLocalizer<AppResources> L
 
-<EditForm Model="model" OnValidSubmit="HandleValidSubmit">
-    <ObjectGraphDataAnnotationsValidator />
-    <ValidationSummary />
+@if (model != null)
+{
+    <EditForm Model="model" OnValidSubmit="HandleValidSubmit">
+        <ObjectGraphDataAnnotationsValidator />
 
-    @ChildContent(model)
+        @ChildContent(model)
 
-    <button type="submit" class="btn btn-primary">Update</button>
-</EditForm>
+        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
+            @L["update"]
+        </MudButton>
+    </EditForm>
+}
 
 @code {
-    [Parameter, EditorRequired] public TDto model { get; set; }
-    [Parameter] public RenderFragment<TDto> ChildContent { get; set; } = default!;
+    [Parameter, EditorRequired] public TDto model { get; set; } = default!;
+    [Parameter, EditorRequired] public RenderFragment<TDto> ChildContent { get; set; } = default!;
 
     private GenericDtoService<TDto, ISearchDto>? _service;
 

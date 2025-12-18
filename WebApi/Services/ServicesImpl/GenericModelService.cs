@@ -2,6 +2,7 @@
 using Shared.Dtos.DtosImpl;
 using System.Linq.Expressions;
 using WebApi.Interfaces;
+using WebApi.Models.ModelsImpl;
 
 namespace WebApi.Services.ServicesImpl
 {
@@ -35,12 +36,26 @@ namespace WebApi.Services.ServicesImpl
             }
         }
 
+        public async Task UpdateIsActiveInSaveChickenActions(TModel model)
+        {
+            {
+                if (model is SaveChickenAction saveChickenAction && saveChickenAction.IsActive)
+                {
+                    var others = _db.Set<SaveChickenAction>()
+                        .Where(a => a.Id != saveChickenAction.Id && a.IsActive);
+
+                    await others.ForEachAsync(a => a.IsActive = false);
+                }
+            }
+        }
+
         public async Task<TModel> Create(TModel model, params Expression<Func<TModel, object?>>[] includes)
         {
             model.CreatedAt = DateTime.UtcNow;
             model.UpdatedAt = DateTime.UtcNow;
 
             await UpdateCoordinatesAsync(model);
+            await UpdateIsActiveInSaveChickenActions(model);
 
             _db.Set<TModel>().Add(model);
             await _db.SaveChangesAsync();
@@ -100,7 +115,9 @@ namespace WebApi.Services.ServicesImpl
         public async Task<TModel> Update(TModel model, params Expression<Func<TModel, object?>>[] includes)
         {
             model.UpdatedAt = DateTime.UtcNow;
+
             await UpdateCoordinatesAsync(model);
+            await UpdateIsActiveInSaveChickenActions(model);
 
             _db.Set<TModel>().Update(model);
             await _db.SaveChangesAsync();

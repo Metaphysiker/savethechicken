@@ -1,0 +1,38 @@
+@page "/save-chicken-actions/{Id:int}/edit"
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
+@using MauiBlazorWeb.Web.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@inject GenericDtoServiceFactory DtoServiceFactory
+
+<h2>Edit Save Chicken Request</h2>
+
+@if (model != null)
+{
+    <GenericUpdate TDto="SaveChickenActionDto" model="model">
+        <ChildContent Context="editModel">
+            <MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions.SaveChickenActionForm Model="model" />
+        </ChildContent>
+    </GenericUpdate>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private SaveChickenActionDto? model = null;
+
+    private GenericDtoService<SaveChickenActionDto, SaveChickenActionSearch>? _service;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _service = DtoServiceFactory.Create<SaveChickenActionDto, SaveChickenActionSearch>();
+        if (_service != null)
+        {
+            model = await _service.GetByIdAsync(Id);
+        }
+    }
+}

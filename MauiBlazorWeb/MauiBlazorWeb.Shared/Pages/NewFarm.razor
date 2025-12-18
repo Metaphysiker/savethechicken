@@ -6,17 +6,17 @@
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
 
-@page "/new-farm"
+@page "/farms/new"
 
 <PageTitle>Landwirtschaftsbetrieb anmelden</PageTitle>
 
 <MudContainer>
 
     <h3>Ich möchte meinen Landwirtschaftsbetrieb anmelden</h3>
-    <GenericCreate TDto="FarmDto">
+    <GenericCreateWithFiles TDto="FarmDto">
         <ChildContent Context="model">
-            <FarmForm Model="model"  />
+            <FarmFormWithFiles EntityWithFiles="model"  />
         </ChildContent>
-    </GenericCreate>
+    </GenericCreateWithFiles>
 
 </MudContainer>

@@ -1,0 +1,40 @@
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Contacts
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Addresses
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.FileUploads
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
+@using MudBlazor
+@inject IStringLocalizer<AppResources> L
+
+@using global::Shared.Dtos.DtosImpl
+@code {
+    [Parameter, EditorRequired]
+    public ItemWithBrowserFiles<FarmDto> EntityWithFiles { get; set; } = default!;
+}
+
+<ContactForm Contact="EntityWithFiles.Item.Contact" />
+<AddressForm Address="EntityWithFiles.Item.Address" />
+
+<MudPaper Class="pa-4 my-4" Elevation="2">
+    <MudText Typo="Typo.h6">Allgemeine Informationen</MudText>
+
+    <MudTextField @bind-Value="EntityWithFiles.Item.Name" Label="@L["Farm_Name"]" Variant="Variant.Outlined" />
+    <ValidationMessage For="@(() => EntityWithFiles.Item.Name)" />
+
+    <MudNumericField T="int" @bind-Value="EntityWithFiles.Item.NumberOfChickens" Label="@L["NumberOfChickens"]" Variant="Variant.Outlined" />
+    <ValidationMessage For="@(() => EntityWithFiles.Item.NumberOfChickens)" />
+
+    <MudTextField @bind-Value="EntityWithFiles.Item.Size" Label="@L["Farm_Size"]" Variant="Variant.Outlined" />
+    <ValidationMessage For="@(() => EntityWithFiles.Item.Size)" />
+
+    <MudTextField @bind-Value="EntityWithFiles.Item.Color" Label="@L["Color"]" Variant="Variant.Outlined" />
+    <ValidationMessage For="@(() => EntityWithFiles.Item.Color)" />
+
+    <MudTextField @bind-Value="EntityWithFiles.Item.GeneralInformation" Label="@L["GeneralInformation"]" Variant="Variant.Outlined" Lines="3" />
+    <ValidationMessage For="@(() => EntityWithFiles.Item.GeneralInformation)" />
+</MudPaper>
+
+<MauiBlazorWeb.Shared.Components.MultiDateSelecters.MultiDateOnlySelector @bind-SelectedDates="EntityWithFiles.Item.DatesForRescues" Text="Hühner können an diesen Tagen abgeholt werden:" />
+<ValidationMessage For="@(() => EntityWithFiles.Item.DatesForRescues)" />
+
+<FilesUploadForm @bind-Value="EntityWithFiles.Files" Label="Dateien hochladen" />

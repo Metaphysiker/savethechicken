@@ -5,7 +5,7 @@
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
 
-@page "/new-driver"
+@page "/drivers/new"
 
 <PageTitle>Fahrer werden</PageTitle>
 
@@ -13,10 +13,10 @@
 
     <h3>Ich biete mich als Fahrer an</h3>
 
-    <GenericCreate TDto="DriverDto">
+    <GenericCreateWithFiles TDto="DriverDto">
         <ChildContent Context="model">
-            <DriverForm Driver="model" />
+            <DriverFormWithFiles EntityWithFiles="model" />
         </ChildContent>
-    </GenericCreate>
+    </GenericCreateWithFiles>
 
 </MudContainer>

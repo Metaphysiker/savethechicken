@@ -266,5 +266,14 @@ namespace MauiBlazorWeb.Shared.Resources.Strings {
                 return ResourceManager.GetString("search", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to aktualisieren.
+        /// </summary>
+        public static string update {
+            get {
+                return ResourceManager.GetString("update", resourceCulture);
+            }
+        }
     }
 }
