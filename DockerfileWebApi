@@ -27,6 +27,8 @@ ENV PATH="$PATH:/root/.dotnet/tools"
 # Copy built app and global tools
 COPY --from=build /App ./
 
+COPY WebApi/SeedData ./SeedData
+
 EXPOSE 8080
 
 ENTRYPOINT [ "dotnet", "out/WebApi.dll" ]
