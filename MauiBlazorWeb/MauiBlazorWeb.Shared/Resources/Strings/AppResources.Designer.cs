@@ -61,15 +61,6 @@ namespace MauiBlazorWeb.Shared.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to swag.
-        /// </summary>
-        public static string abc {
-            get {
-                return ResourceManager.GetString("abc", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Ich akzeptiere die Datenschutzerklärung.
         /// </summary>
         public static string AcceptTermsAndConditions {
@@ -111,6 +102,15 @@ namespace MauiBlazorWeb.Shared.Resources.Strings {
         public static string AlreadyReceivedChickenPreviously {
             get {
                 return ResourceManager.GetString("AlreadyReceivedChickenPreviously", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to swag.
+        /// </summary>
+        public static string B {
+            get {
+                return ResourceManager.GetString("B", resourceCulture);
             }
         }
         
@@ -196,11 +196,29 @@ namespace MauiBlazorWeb.Shared.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Daten.
+        /// </summary>
+        public static string DatesForRescues {
+            get {
+                return ResourceManager.GetString("DatesForRescues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Beschreibung.
         /// </summary>
         public static string Description {
             get {
                 return ResourceManager.GetString("Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Beschreibung.
+        /// </summary>
+        public static string DescriptionOfPlaceForChickens {
+            get {
+                return ResourceManager.GetString("DescriptionOfPlaceForChickens", resourceCulture);
             }
         }
         
@@ -228,6 +246,15 @@ namespace MauiBlazorWeb.Shared.Resources.Strings {
         public static string Farm_Size {
             get {
                 return ResourceManager.GetString("Farm_Size", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dateien.
+        /// </summary>
+        public static string Files {
+            get {
+                return ResourceManager.GetString("Files", resourceCulture);
             }
         }
         
@@ -264,6 +291,15 @@ namespace MauiBlazorWeb.Shared.Resources.Strings {
         public static string NumberOfChickens {
             get {
                 return ResourceManager.GetString("NumberOfChickens", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Anzahl Hühner.
+        /// </summary>
+        public static string NumberOfChickensToBeSaved {
+            get {
+                return ResourceManager.GetString("NumberOfChickensToBeSaved", resourceCulture);
             }
         }
         

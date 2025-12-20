@@ -42,7 +42,10 @@
         <ValidationMessage For="@(() => EntityWithFiles.Item.DescriptionOfPlaceForChickens)" />
     </MudItem>
 
-
+    <MudItem>
+        <MudCheckBox ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.AlreadyReceivedChickenPreviously" Label="@L["AlreadyReceivedChickenPreviously"]"></MudCheckBox>
+        <ValidationMessage For="@(() => EntityWithFiles.Item.AlreadyReceivedChickenPreviously)" />
+    </MudItem>
 
 </MudPaper>
 
@@ -58,9 +61,6 @@
 <MudPaper Class="pa-4 my-4">
     <MudCheckBox ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.ConfirmThatIFulfillCriteria" Label="@L["ConfirmThatIFulfillCriteria"]"></MudCheckBox>
     <ValidationMessage For="@(() => EntityWithFiles.Item.ConfirmThatIFulfillCriteria)" />
-
-    <MudCheckBox ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.AlreadyReceivedChickenPreviously" Label="@L["AlreadyReceivedChickenPreviously"]"></MudCheckBox>
-    <ValidationMessage For="@(() => EntityWithFiles.Item.AlreadyReceivedChickenPreviously)" />
 
     <MudCheckBox ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.AcceptTermsAndConditions" Label="@L["AcceptTermsAndConditions"]"></MudCheckBox>
     <ValidationMessage For="@(() => EntityWithFiles.Item.AcceptTermsAndConditions)" />

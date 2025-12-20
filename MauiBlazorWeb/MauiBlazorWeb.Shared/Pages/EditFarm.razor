@@ -7,21 +7,22 @@
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl
 @inject GenericDtoServiceFactory DtoServiceFactory
 
+<MudContainer>
 <h2>Edit Farm</h2>
 
-@if (modelWithFiles != null)
-{
-    <GenericUpdateWithFiles TDto="FarmDto" model="modelWithFiles">
-        <ChildContent Context="editModel">
-            <FarmFormWithFiles EntityWithFiles="editModel" />
-        </ChildContent>
-    </GenericUpdateWithFiles>
-}
-else
-{
-    <p>Loading...</p>
-}
-
+    @if (modelWithFiles != null)
+    {
+        <GenericUpdateWithFiles TDto="FarmDto" model="modelWithFiles">
+            <ChildContent Context="editModel">
+                <FarmFormWithFiles EntityWithFiles="editModel" />
+            </ChildContent>
+        </GenericUpdateWithFiles>
+    }
+    else
+    {
+        <p>Loading...</p>
+    }
+</MudContainer>
 @code {
     [Parameter] public int Id { get; set; }
     private FarmDto? model = null;

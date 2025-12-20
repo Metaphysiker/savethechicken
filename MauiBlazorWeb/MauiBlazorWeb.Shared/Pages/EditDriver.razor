@@ -6,7 +6,7 @@
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl
 @inject GenericDtoServiceFactory DtoServiceFactory
-
+<MudContainer>
 <h2>Edit Driver</h2>
 
 @if (modelWithFiles != null)
@@ -21,7 +21,7 @@ else
 {
     <p>Loading...</p>
 }
-
+</MudContainer>
 @code {
     [Parameter] public int Id { get; set; }
     private DriverDto? model = null;

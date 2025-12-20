@@ -1,21 +1,25 @@
 ﻿@using MauiBlazorWeb.Shared.Components.ComponentsImpl.StoredFiles;
 
-<MudTable Items="Files" Elevation="0">
-    <HeaderContent>
-        <MudTh>Vorschau</MudTh>
-        <MudTh>Aktion</MudTh>
-    </HeaderContent>
-    <RowTemplate>
-        <MudTd>
-            <StoredFileDialog StoredFile="@context" />
-        </MudTd>
-        <MudTd>
-            <MudButton Color="Color.Error" Variant="Variant.Outlined" OnClick="@(() => RemoveFileFromList(context))">
-                Datei entfernen
-            </MudButton>
-        </MudTd>
-    </RowTemplate>
-</MudTable>
+@if(Files.Count > 0)
+{
+    <MudTable Items="Files" Elevation="0">
+        <HeaderContent>
+            <MudTh>Vorschau</MudTh>
+            <MudTh>Aktion</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>
+                <StoredFileDialog StoredFile="@context" />
+            </MudTd>
+            <MudTd>
+                <MudButton Color="Color.Error" Variant="Variant.Outlined" OnClick="@(() => RemoveFileFromList(context))">
+                    Datei entfernen
+                </MudButton>
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+}
+
 
 @code {
     [Parameter, EditorRequired] public List<StoredFileDto> Files { get; set; } = default!;

@@ -6,6 +6,8 @@
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl
 @inject GenericDtoServiceFactory DtoServiceFactory
 
+<MudContainer>
+
 <h2>Edit Save Chicken Request</h2>
 
 @if (modelWithFiles != null)
@@ -20,7 +22,7 @@ else
 {
     <p>Loading...</p>
 }
-
+</MudContainer>
 @code {
     [Parameter] public int Id { get; set; }
     private SaveChickenRequestDto? model = null;
