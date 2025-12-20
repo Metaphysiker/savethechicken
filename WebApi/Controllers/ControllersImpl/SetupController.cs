@@ -23,7 +23,6 @@ public class SetupController : ControllerBase
     [HttpGet("seed")]
     public async Task<ActionResult> Seed()
     {
-
         var options = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
@@ -31,46 +30,63 @@ public class SetupController : ControllerBase
         options.Converters.Add(new UtcDateTimeConverter());
 
         var saveChickenRequestSeedPath = Path.Combine(Directory.GetCurrentDirectory(), "SeedData", "SaveChickenRequestSeed.json");
+        Console.WriteLine($"Checking SaveChickenRequestSeed.json at: {saveChickenRequestSeedPath}");
         if (System.IO.File.Exists(saveChickenRequestSeedPath))
         {
             var json = System.IO.File.ReadAllText(saveChickenRequestSeedPath);
-
             var requests = JsonSerializer.Deserialize<List<SaveChickenRequest>>(json, options);
-
+            Console.WriteLine($"Loaded {requests?.Count ?? 0} SaveChickenRequests from seed file.");
             if (requests != null)
             {
                 _db.SaveChickenRequests.AddRange(requests);
                 await _db.SaveChangesAsync();
+                Console.WriteLine($"Seeded {requests.Count} SaveChickenRequests.");
             }
+        }
+        else
+        {
+            Console.WriteLine("SaveChickenRequestSeed.json not found.");
         }
 
         var driverSeedPath = Path.Combine(Directory.GetCurrentDirectory(), "SeedData", "DriverSeed.json");
+        Console.WriteLine($"Checking DriverSeed.json at: {driverSeedPath}");
         if (System.IO.File.Exists(driverSeedPath))
         {
             var json = System.IO.File.ReadAllText(driverSeedPath);
             var drivers = JsonSerializer.Deserialize<List<Driver>>(json, options);
-
+            Console.WriteLine($"Loaded {drivers?.Count ?? 0} Drivers from seed file.");
             if (drivers != null)
             {
                 _db.Drivers.AddRange(drivers);
                 await _db.SaveChangesAsync();
+                Console.WriteLine($"Seeded {drivers.Count} Drivers.");
             }
+        }
+        else
+        {
+            Console.WriteLine("DriverSeed.json not found.");
         }
 
         var farmPath = Path.Combine(Directory.GetCurrentDirectory(), "SeedData", "FarmSeed.json");
+        Console.WriteLine($"Checking FarmSeed.json at: {farmPath}");
         if (System.IO.File.Exists(farmPath))
         {
             var json = System.IO.File.ReadAllText(farmPath);
             var farms = JsonSerializer.Deserialize<List<Farm>>(json, options);
-
+            Console.WriteLine($"Loaded {farms?.Count ?? 0} Farms from seed file.");
             if (farms != null)
             {
                 _db.Farms.AddRange(farms);
                 await _db.SaveChangesAsync();
+                Console.WriteLine($"Seeded {farms.Count} Farms.");
             }
         }
+        else
+        {
+            Console.WriteLine("FarmSeed.json not found.");
+        }
 
-    var action = new SaveChickenAction
+        var action = new SaveChickenAction
         {
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
@@ -86,31 +102,31 @@ public class SetupController : ControllerBase
 
         _db.SaveChickenActions.Add(action);
         await _db.SaveChangesAsync();
+        Console.WriteLine("Seeded SaveChickenAction.");
 
-
-        // For Drivers
         foreach (var driver in _db.Drivers)
         {
             driver.SaveChickenAction = action;
             driver.SaveChickenActionId = action.Id;
         }
         await _db.SaveChangesAsync();
+        Console.WriteLine("Linked SaveChickenAction to Drivers.");
 
-        // For Farms
         foreach (var farm in _db.Farms)
         {
             farm.SaveChickenAction = action;
             farm.SaveChickenActionId = action.Id;
         }
         await _db.SaveChangesAsync();
+        Console.WriteLine("Linked SaveChickenAction to Farms.");
 
-        // For SaveChickenRequests
         foreach (var req in _db.SaveChickenRequests)
         {
             req.SaveChickenAction = action;
             req.SaveChickenActionId = action.Id;
         }
         await _db.SaveChangesAsync();
+        Console.WriteLine("Linked SaveChickenAction to SaveChickenRequests.");
 
         return Ok();
     }
