@@ -189,6 +189,21 @@
 
         <TemplateColumn>
             <HeaderTemplate>
+                <MudButton OnClick="@(() => OnHeaderClick("DatesForHandOver"))" Variant="Variant.Text" Style="text-transform: none;">
+                    @L["DatesForHandOver"]
+                    @if (GetSortIcon("DatesForHandOver") != null)
+                    {
+                        <MudIcon Icon="@GetSortIcon("DatesForHandOver")" Size="Size.Small" />
+                    }
+                </MudButton>
+            </HeaderTemplate>
+            <CellTemplate>
+                @string.Join(", ", context.Item.DatesForHandOver.Select(d => d.ToString("dd.MM.yyyy")))
+            </CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn>
+            <HeaderTemplate>
                     @L["Files"]
             </HeaderTemplate>
             <CellTemplate>

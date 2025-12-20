@@ -106,6 +106,15 @@ namespace MauiBlazorWeb.Shared.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Daten.
+        /// </summary>
+        public static string AvailableDates {
+            get {
+                return ResourceManager.GetString("AvailableDates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to swag.
         /// </summary>
         public static string B {
@@ -192,6 +201,15 @@ namespace MauiBlazorWeb.Shared.Resources.Strings {
         public static string Create {
             get {
                 return ResourceManager.GetString("Create", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Daten.
+        /// </summary>
+        public static string DatesForHandOver {
+            get {
+                return ResourceManager.GetString("DatesForHandOver", resourceCulture);
             }
         }
         

@@ -150,6 +150,21 @@
 
             <TemplateColumn>
                 <HeaderTemplate>
+                    <MudButton OnClick="@(() => OnHeaderClick("AvailableDates"))" Variant="Variant.Text" Style="text-transform: none;">
+                        @L["AvailableDates"]
+                        @if (GetSortIcon("AvailableDates") != null)
+                        {
+                            <MudIcon Icon="@GetSortIcon("AvailableDates")" Size="Size.Small" />
+                        }
+                    </MudButton>
+                </HeaderTemplate>
+                <CellTemplate>
+                    @string.Join(", ", context.Item.AvailableDates.Select(d => d.ToString("dd.MM.yyyy")))
+                </CellTemplate>
+            </TemplateColumn>
+
+            <TemplateColumn>
+                <HeaderTemplate>
                     @L["Files"]
                 </HeaderTemplate>
                 <CellTemplate>

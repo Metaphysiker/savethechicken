@@ -213,4 +213,10 @@
   <data name="NumberOfChickensToBeSaved" xml:space="preserve">
     <value>Anzahl Hühner</value>
   </data>
+  <data name="DatesForHandOver" xml:space="preserve">
+    <value>Daten</value>
+  </data>
+  <data name="AvailableDates" xml:space="preserve">
+    <value>Daten</value>
+  </data>
 </root>
