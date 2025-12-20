@@ -8,13 +8,16 @@ using System.Threading.Tasks;
 
 namespace Shared.Dtos.DtosImpl
 {
-    public class FarmDto :IDto, IEntityWithFiles
+    public class FarmDto :IDto, IEntityWithFileDtos
     {
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         [Range(1, int.MaxValue, ErrorMessage = "Number of chickens must be greater than 0")]
         public int NumberOfChickens { get; set; } = 0;
+
+        [Range(0, int.MaxValue, ErrorMessage = "Number of roosters must be greater than or equal to 0")]
+        public int NumberOfRoosters { get; set; } = 0;
         public string Size { get; set; } = String.Empty;
         public string Color { get; set; } = String.Empty;
         // at least one date required

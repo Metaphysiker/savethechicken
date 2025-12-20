@@ -6,6 +6,7 @@
 @typeparam TDto where TDto : class
 @inject GenericDtoServiceFactory DtoServiceFactory
 @inject IStringLocalizer<AppResources> L
+@inject NavigationManager NavigationManager
 
 @if(model != null){
     <EditForm Model="model" OnValidSubmit="HandleValidSubmit">
@@ -40,7 +41,16 @@
     {
         if (_service != null)
         {
-            await _service.CreateAsync(model);
+            try
+            {
+                await _service.CreateAsync(model);
+                NavigationManager.NavigateTo("/thank-you"); // Only runs if CreateAsync succeeds
+            }
+            catch (Exception ex)
+            {
+                // Optionally show an error message to the user
+                // e.g., set an error flag or log the exception
+            }
         }
     }
 }

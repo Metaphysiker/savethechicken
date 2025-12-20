@@ -6,14 +6,13 @@ using Microsoft.AspNetCore.Http;
 
 namespace Shared.Dtos.DtosImpl
 {
-    public class SaveChickenRequestDto : IDto, IEntityWithFiles
+    public class SaveChickenRequestDto : IDto, IEntityWithFileDtos
     {
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
 
-        [Range(1, int.MaxValue, ErrorMessage = "Number of chickens must be greater than 0")]
         public int NumberOfChickensToBeSaved { get; set; } = 0;
         public int NumberOfRoostersToBeSaved { get; set; } = 0;
 
@@ -24,6 +23,12 @@ namespace Shared.Dtos.DtosImpl
         [Required(ErrorMessage = "You must accept the terms and conditions")]
         [Range(typeof(bool), "true", "true", ErrorMessage = "You must accept the terms and conditions")]
         public bool AcceptTermsAndConditions { get; set; } = false;
+
+        public bool AlreadyReceivedChickenPreviously { get; set; } = false;
+
+        [Required(ErrorMessage = "You must accept")]
+        [Range(typeof(bool), "true", "true", ErrorMessage = "You must accept")]
+        public bool ConfirmThatIFulfillCriteria { get; set; } = false;
 
         public string Message { get; set; } = string.Empty;
         public SaveChickenActionDto? SaveChickenAction { get; set; }

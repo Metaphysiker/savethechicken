@@ -25,11 +25,18 @@
     <MudNumericField T="int" @bind-Value="EntityWithFiles.Item.NumberOfChickens" Label="@L["NumberOfChickens"]" Variant="Variant.Outlined" />
     <ValidationMessage For="@(() => EntityWithFiles.Item.NumberOfChickens)" />
 
+    <MudNumericField T="int" @bind-Value="EntityWithFiles.Item.NumberOfRoosters" Label="@L["NumberOfRoosters"]" Variant="Variant.Outlined" />
+    <ValidationMessage For="@(() => EntityWithFiles.Item.NumberOfRoosters)" />
+
     <MudTextField @bind-Value="EntityWithFiles.Item.Size" Label="@L["Farm_Size"]" Variant="Variant.Outlined" />
     <ValidationMessage For="@(() => EntityWithFiles.Item.Size)" />
 
     <MudTextField @bind-Value="EntityWithFiles.Item.Color" Label="@L["Color"]" Variant="Variant.Outlined" />
     <ValidationMessage For="@(() => EntityWithFiles.Item.Color)" />
+
+    <MudDivider Class="my-2"></MudDivider>
+
+    <MudText>Weitere Informationen:</MudText>
 
     <MudTextField @bind-Value="EntityWithFiles.Item.GeneralInformation" Label="@L["GeneralInformation"]" Variant="Variant.Outlined" Lines="3" />
     <ValidationMessage For="@(() => EntityWithFiles.Item.GeneralInformation)" />

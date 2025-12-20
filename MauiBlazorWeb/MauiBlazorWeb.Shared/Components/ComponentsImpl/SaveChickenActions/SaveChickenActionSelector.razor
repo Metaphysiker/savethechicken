@@ -33,6 +33,11 @@
     {
         _service = DtoServiceFactory.Create<SaveChickenActionDto, SaveChickenActionSearch>();
         actions = await _service.GetAllAsync();
+
+        if (SelectedActionId.HasValue)
+        {
+            await OnValueChanged(SelectedActionId);
+        }
     }
 
     private async Task OnValueChanged(int? newValue)

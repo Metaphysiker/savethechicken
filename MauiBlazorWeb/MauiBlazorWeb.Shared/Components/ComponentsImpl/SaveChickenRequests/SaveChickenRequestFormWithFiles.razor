@@ -2,6 +2,7 @@
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Addresses
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.FileUploads
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.StoredFiles
 @using MauiBlazorWeb.Shared.Components.MultiDateSelecters
 @using MauiBlazorWeb.Shared.Resources.Strings
 @using Microsoft.Extensions.Localization
@@ -27,7 +28,10 @@
         <MudNumericField T="int" @bind-Value="EntityWithFiles.Item.NumberOfRoostersToBeSaved" Label="@L["NumberOfRoostersToBeSaved"]" Variant="Variant.Outlined" />
         <ValidationMessage For="@(() => EntityWithFiles.Item.NumberOfRoostersToBeSaved)" />
     </MudItem>
-    <MudItem>
+
+    <MudDivider Class="my-2"></MudDivider>
+
+    <MudItem Class="my-2">
         <MudText>
             Bitte beschreiben Sie kurz  Ihr Hühnerzuhause (Stall, Auslauf m2) , Anzahl bestehende Hühner, Erfahrung etc.
         </MudText>
@@ -35,17 +39,13 @@
         <ValidationMessage For="@(() => EntityWithFiles.Item.DescriptionOfPlaceForChickens)" />
     </MudItem>
 
-    <MudItem>
-        <MudText>
-            Was ich noch sagen möchte:
-        </MudText>
-        <MudTextField @bind-Value="EntityWithFiles.Item.Message" Label="@L["Message"]" Variant="Variant.Outlined" Lines="3" />
-        <ValidationMessage For="@(() => EntityWithFiles.Item.Message)" />
-    </MudItem>
+
 
 </MudPaper>
 
 <MultiDateOnlySelector @bind-SelectedDates="EntityWithFiles.Item.DatesForHandOver" Text="Ich bin an diesen Tagen erreichbar:" />
+
+<StoredFilesEdit @bind-Files="EntityWithFiles.Item.Files" />
 
 <FilesUploadForm @bind-Value="EntityWithFiles.Files" Label="Dateien hochladen" Text="" />
 
@@ -53,6 +53,22 @@
 
 
 <MudPaper Class="pa-4 my-4">
+    <MudCheckBox @bind-Value="EntityWithFiles.Item.ConfirmThatIFulfillCriteria" Label="@L["ConfirmThatIFulfillCriteria"]"></MudCheckBox>
+    <ValidationMessage For="@(() => EntityWithFiles.Item.ConfirmThatIFulfillCriteria)" />
+
+    <MudCheckBox @bind-Value="EntityWithFiles.Item.AlreadyReceivedChickenPreviously" Label="@L["AlreadyReceivedChickenPreviously"]"></MudCheckBox>
+    <ValidationMessage For="@(() => EntityWithFiles.Item.AlreadyReceivedChickenPreviously)" />
+
     <MudCheckBox @bind-Value="EntityWithFiles.Item.AcceptTermsAndConditions" Label="@L["AcceptTermsAndConditions"]"></MudCheckBox>
     <ValidationMessage For="@(() => EntityWithFiles.Item.AcceptTermsAndConditions)" />
+
+     <MudDivider Class="my-2"></MudDivider>
+
+    <MudItem Class="my-2">
+        <MudText>
+            Was ich noch sagen möchte:
+        </MudText>
+        <MudTextField @bind-Value="EntityWithFiles.Item.Message" Label="@L["Message"]" Variant="Variant.Outlined" Lines="3" />
+        <ValidationMessage For="@(() => EntityWithFiles.Item.Message)" />
+    </MudItem>
 </MudPaper>

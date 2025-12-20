@@ -3,7 +3,7 @@ using WebApi.Interfaces;
 
 namespace WebApi.Models.ModelsImpl
 {
-    public class Farm : IModel, IEntityWithAddress
+    public class Farm : IModel, IEntityWithAddress, IEntityWithFiles
     {
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }

@@ -2,7 +2,7 @@ using WebApi.Interfaces;
 
 namespace WebApi.Models.ModelsImpl
 {
-    public class Driver : IModel, IEntityWithAddress
+    public class Driver : IModel, IEntityWithAddress, IEntityWithFiles
     {
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }

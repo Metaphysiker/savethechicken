@@ -79,7 +79,7 @@ namespace MauiBlazorWeb.Shared.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Stadt.
+        ///   Looks up a localized string similar to Ort.
         /// </summary>
         public static string Address_City {
             get {
@@ -106,6 +106,15 @@ namespace MauiBlazorWeb.Shared.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ich habe bereits früher Hühner von rettetdashuhn erhalten.
+        /// </summary>
+        public static string AlreadyReceivedChickenPreviously {
+            get {
+                return ResourceManager.GetString("AlreadyReceivedChickenPreviously", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Automarke.
         /// </summary>
         public static string CarMake {
@@ -120,6 +129,15 @@ namespace MauiBlazorWeb.Shared.Resources.Strings {
         public static string Color {
             get {
                 return ResourceManager.GetString("Color", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ich bestätige, dass ich die Voraussetzungen erfülle und die Hühnerhaltung ohne Einschränkung in mein Leben passt!.
+        /// </summary>
+        public static string ConfirmThatIFulfillCriteria {
+            get {
+                return ResourceManager.GetString("ConfirmThatIFulfillCriteria", resourceCulture);
             }
         }
         
@@ -205,7 +223,7 @@ namespace MauiBlazorWeb.Shared.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Anzahl Hühner.
+        ///   Looks up a localized string similar to Grösse.
         /// </summary>
         public static string Farm_Size {
             get {
@@ -246,6 +264,24 @@ namespace MauiBlazorWeb.Shared.Resources.Strings {
         public static string NumberOfChickens {
             get {
                 return ResourceManager.GetString("NumberOfChickens", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Anzahl Hähne.
+        /// </summary>
+        public static string NumberOfRoosters {
+            get {
+                return ResourceManager.GetString("NumberOfRoosters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Anzahl Hähne.
+        /// </summary>
+        public static string NumberOfRoostersToBeSaved {
+            get {
+                return ResourceManager.GetString("NumberOfRoostersToBeSaved", resourceCulture);
             }
         }
         

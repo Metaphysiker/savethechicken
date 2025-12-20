@@ -49,6 +49,51 @@ namespace WebApi.Services.ServicesImpl
             }
         }
 
+        public async Task UpdateFiles(TModel model)
+        {
+            if (model is not IEntityWithFiles incoming)
+                return;
+
+            var parentType = typeof(TModel);
+            var fkPropertyName = parentType.Name + "Id";
+
+            // 1. Fetch existing files WITHOUT tracking them
+            var existingFiles = await _db.Set<StoredFile>()
+                .AsNoTracking() // This prevents the ID conflict
+                .Where(f => EF.Property<int?>(f, fkPropertyName) == incoming.Id)
+                .ToListAsync();
+
+            // 2. Identify which files need to be deleted
+            var incomingIds = incoming.Files.Where(f => f.Id > 0).Select(f => f.Id).ToHashSet();
+            var toRemove = existingFiles
+                .Where(f => !incomingIds.Contains(f.Id))
+                .Select(f => new StoredFile { Id = f.Id }) // Create "stub" for deletion
+                .ToList();
+
+            if (toRemove.Any())
+            {
+                // We must attach and remove because these weren't being tracked
+                _db.Set<StoredFile>().RemoveRange(toRemove);
+            }
+
+            // 3. Handle Foreign Keys for new files
+            foreach (var file in incoming.Files)
+            {
+                if (file.Id == 0)
+                {
+                    // Ensure the Shadow Property/FK is set so EF knows where it belongs
+                    _db.Entry(file).Property(fkPropertyName).CurrentValue = incoming.Id;
+                }
+                else
+                {
+                    // Note: We don't need to manually update existing files here.
+                    // Because you are calling _db.Update(model), EF will automatically
+                    // detect changes in the Files collection of the model and 
+                    // generate UPDATE statements for them.
+                }
+            }
+        }
+
         public async Task<TModel> Create(TModel model, params Expression<Func<TModel, object?>>[] includes)
         {
             model.CreatedAt = DateTime.UtcNow;
@@ -56,6 +101,7 @@ namespace WebApi.Services.ServicesImpl
 
             await UpdateCoordinatesAsync(model);
             await UpdateIsActiveInSaveChickenActions(model);
+            await UpdateFiles(model);
 
             _db.Set<TModel>().Add(model);
             await _db.SaveChangesAsync();
@@ -118,6 +164,7 @@ namespace WebApi.Services.ServicesImpl
 
             await UpdateCoordinatesAsync(model);
             await UpdateIsActiveInSaveChickenActions(model);
+            await UpdateFiles(model);
 
             _db.Set<TModel>().Update(model);
             await _db.SaveChangesAsync();

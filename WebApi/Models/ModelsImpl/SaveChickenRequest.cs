@@ -3,7 +3,7 @@ using WebApi.Models.ModelsImpl;
 
 namespace WebApi.Models.ModelsImpl
 {
-    public class SaveChickenRequest : IModel, IEntityWithAddress
+    public class SaveChickenRequest : IModel, IEntityWithAddress, IEntityWithFiles
     {
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -20,6 +20,8 @@ namespace WebApi.Models.ModelsImpl
         public int NumberOfBoxes { get; set; } = 0;
         public string DescriptionOfPlaceForChickens { get; set; } = string.Empty;
         public bool AcceptTermsAndConditions { get; set; } = false;
+        public bool AlreadyReceivedChickenPreviously { get; set; } = false;
+        public bool ConfirmThatIFulfillCriteria { get; set; } = false;
         public string Message { get; set; } = string.Empty;
         public int? SaveChickenActionId { get; set; }
         public SaveChickenAction? SaveChickenAction { get; set; }

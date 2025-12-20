@@ -6,7 +6,7 @@
 @using Microsoft.Extensions.Localization
 @using global::Shared.Dtos.DtosImpl
 @inject IJSRuntime JS
-@typeparam TDto where TDto : class, IEntityWithFiles
+@typeparam TDto where TDto : class, IEntityWithFileDtos
 @inject GenericDtoServiceFactory DtoServiceFactory
 @inject IStringLocalizer<AppResources> L
 
@@ -38,7 +38,7 @@
         if (_service != null && model != null)
         {
             var storedFiles = await UploadFilesAsync(model);
-            model.Item.Files = storedFiles;
+            model.Item.Files.AddRange(storedFiles);
             await _service.UpdateAsync(model.Item);
         }
     }

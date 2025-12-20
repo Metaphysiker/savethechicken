@@ -142,7 +142,7 @@
     <value>Telefon</value>
   </data>
   <data name="Address_City" xml:space="preserve">
-    <value>Stadt</value>
+    <value>Ort</value>
   </data>
   <data name="Address_PostalCode" xml:space="preserve">
     <value>Postleitzahl</value>
@@ -169,7 +169,7 @@
     <value>Name des Betriebs</value>
   </data>
   <data name="Farm_Size" xml:space="preserve">
-    <value>Anzahl Hühner</value>
+    <value>Grösse</value>
   </data>
   <data name="Color" xml:space="preserve">
     <value>Farbe</value>
@@ -188,5 +188,17 @@
   </data>
   <data name="update" xml:space="preserve">
     <value>aktualisieren</value>
+  </data>
+  <data name="NumberOfRoostersToBeSaved" xml:space="preserve">
+    <value>Anzahl Hähne</value>
+  </data>
+  <data name="AlreadyReceivedChickenPreviously" xml:space="preserve">
+    <value>Ich habe bereits früher Hühner von rettetdashuhn erhalten</value>
+  </data>
+  <data name="ConfirmThatIFulfillCriteria" xml:space="preserve">
+    <value>Ich bestätige, dass ich die Voraussetzungen erfülle und die Hühnerhaltung ohne Einschränkung in mein Leben passt!</value>
+  </data>
+  <data name="NumberOfRoosters" xml:space="preserve">
+    <value>Anzahl Hähne</value>
   </data>
 </root>
