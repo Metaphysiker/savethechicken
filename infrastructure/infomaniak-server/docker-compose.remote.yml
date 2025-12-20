@@ -1,0 +1,33 @@
+name: savethechicken-production
+services:
+  webapi:
+    image: savethechicken-production-webapi
+    ports:
+      - "${PORT_WEBAPI}:8080"
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+  web:
+    image: savethechicken-production-web
+    env_file:
+      - .env
+    ports:
+      - "${PORT_FRONTEND}:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+    depends_on:
+      - webapi
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      - POSTGRES_DB=savethechicken
+      - POSTGRES_USER=savethechicken
+    env_file:
+      - .env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:

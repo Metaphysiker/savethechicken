@@ -1,0 +1,47 @@
+name: savethechicken-production
+services:
+  webapi:
+    build:
+      context: ../../
+      dockerfile: DockerfileWebApi
+    ports:
+      - "${PORT_WEBAPI}:8080"
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+  dotnet:
+    build: ../../tools/dotnet
+    volumes:
+      - ../../:/app
+    env_file:
+      - .env
+    depends_on:
+      - webapi
+  web:
+    build:
+      context: ../../
+      dockerfile: DockerfileMauiBlazorWeb
+      args:
+      - API_BASE_URL=${API_BASE_URL}
+    env_file:
+      - .env
+    ports:
+      - "${PORT_FRONTEND}:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+    depends_on:
+      - webapi
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      - POSTGRES_DB=savethechicken
+      - POSTGRES_USER=savethechicken
+    env_file:
+      - .env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:
