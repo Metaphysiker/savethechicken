@@ -1,0 +1,182 @@
+[
+  {
+    "createdAt": "2025-11-15T10:30:00",
+    "updatedAt": "2025-11-15T10:30:00",
+    "contact": {
+      "createdAt": "2025-11-15T10:00:00",
+      "updatedAt": "2025-11-15T10:00:00",
+      "firstName": "Anna",
+      "lastName": "Müller",
+      "email": "anna.mueller@example.ch",
+      "phoneNumber": "+41 44 123 45 67"
+    },
+    "address": {
+      "createdAt": "2025-12-05T11:30:00",
+      "updatedAt": "2025-12-05T11:30:00",
+      "street": "Seefeldstrasse 120",
+      "city": "Zürich",
+      "postalCode": "8008",
+      "geoCoordinate": { "latitude": 47.3565, "longitude": 8.5548 }
+    },
+    "isHandoverAtDifferentAddress": false,
+    "addressForHandOver": null,
+    "numberOfChickensToBeSaved": 5,
+    "numberOfRoostersToBeSaved": 0,
+    "numberOfBoxes": 1,
+    "descriptionOfPlaceForChickens": "Großer Garten mit Auslauf",
+    "acceptTermsAndConditions": true,
+    "alreadyReceivedChickenPreviously": false,
+    "confirmThatIFulfillCriteria": true,
+    "message": "Freue mich auf die Hühner.",
+    "saveChickenActionId": null,
+    "saveChickenAction": null,
+    "datesForHandOver": ["2026-03-10", "2026-03-24"],
+    "color": "Gelb",
+    "files": []
+  },
+  {
+    "createdAt": "2025-11-16T09:15:00",
+    "updatedAt": "2025-11-16T09:15:00",
+    "contact": {
+      "createdAt": "2025-11-16T09:00:00",
+      "updatedAt": "2025-11-16T09:00:00",
+      "firstName": "Lukas",
+      "lastName": "Schneider",
+      "email": "lukas.schneider@example.ch",
+      "phoneNumber": "+41 31 987 65 43"
+    },
+    "address": {
+      "createdAt": "2025-12-05T11:30:00",
+      "updatedAt": "2025-12-05T11:30:00",
+      "street": "Belpstrasse 22",
+      "city": "Bern",
+      "postalCode": "3007",
+      "geoCoordinate": { "latitude": 46.9442, "longitude": 7.4265 }
+    },
+    "isHandoverAtDifferentAddress": false,
+    "addressForHandOver": null,
+    "numberOfChickensToBeSaved": 3,
+    "numberOfRoostersToBeSaved": 1,
+    "numberOfBoxes": 1,
+    "descriptionOfPlaceForChickens": "Hühnerstall mit Auslauf",
+    "acceptTermsAndConditions": true,
+    "alreadyReceivedChickenPreviously": true,
+    "confirmThatIFulfillCriteria": true,
+    "message": "Habe bereits Erfahrung.",
+    "saveChickenActionId": null,
+    "saveChickenAction": null,
+    "datesForHandOver": ["2026-03-10"],
+    "color": "Weiß",
+    "files": []
+  },
+  {
+    "createdAt": "2025-11-17T14:20:00",
+    "updatedAt": "2025-11-17T14:20:00",
+    "contact": {
+      "createdAt": "2025-11-17T14:00:00",
+      "updatedAt": "2025-11-17T14:00:00",
+      "firstName": "Sophie",
+      "lastName": "Meier",
+      "email": "sophie.meier@example.ch",
+      "phoneNumber": "+41 61 222 33 44"
+    },
+    "address": {
+      "createdAt": "2025-12-05T11:30:00",
+      "updatedAt": "2025-12-05T11:30:00",
+      "street": "Gundeldingerstrasse 85",
+      "city": "Basel",
+      "postalCode": "4053",
+      "geoCoordinate": { "latitude": 47.5482, "longitude": 7.5891 }
+    },
+    "isHandoverAtDifferentAddress": true,
+    "addressForHandOver": {
+      "street": "Bahnhofstrasse 10",
+      "postalCode": "5000",
+      "city": "Aarau",
+      "country": "Switzerland"
+    },
+    "numberOfChickensToBeSaved": 2,
+    "numberOfRoostersToBeSaved": 0,
+    "numberOfBoxes": 1,
+    "descriptionOfPlaceForChickens": "Kleiner Hof mit Auslauf",
+    "acceptTermsAndConditions": true,
+    "alreadyReceivedChickenPreviously": false,
+    "confirmThatIFulfillCriteria": true,
+    "message": "Handover bitte an anderer Adresse.",
+    "saveChickenActionId": null,
+    "saveChickenAction": null,
+    "datesForHandOver": ["2026-03-24"],
+    "color": "Braun",
+    "files": []
+  },
+  {
+    "createdAt": "2025-11-18T08:45:00",
+    "updatedAt": "2025-11-18T08:45:00",
+    "contact": {
+      "createdAt": "2025-11-18T08:00:00",
+      "updatedAt": "2025-11-18T08:00:00",
+      "firstName": "Markus",
+      "lastName": "Keller",
+      "email": "markus.keller@example.ch",
+      "phoneNumber": "+41 71 555 66 77"
+    },
+    "address": {
+      "createdAt": "2025-12-05T11:30:00",
+      "updatedAt": "2025-12-05T11:30:00",
+      "street": "Rorschacher Strasse 150",
+      "city": "St. Gallen",
+      "postalCode": "9000",
+      "geoCoordinate": { "latitude": 47.4246, "longitude": 9.3772 }
+    },
+    "isHandoverAtDifferentAddress": false,
+    "addressForHandOver": null,
+    "numberOfChickensToBeSaved": 4,
+    "numberOfRoostersToBeSaved": 0,
+    "numberOfBoxes": 2,
+    "descriptionOfPlaceForChickens": "Großer Stall mit viel Platz",
+    "acceptTermsAndConditions": true,
+    "alreadyReceivedChickenPreviously": false,
+    "confirmThatIFulfillCriteria": true,
+    "message": "Platz für mehrere Hühner vorhanden.",
+    "saveChickenActionId": null,
+    "saveChickenAction": null,
+    "datesForHandOver": ["2026-03-10", "2026-03-24"],
+    "color": "Schwarz",
+    "files": []
+  },
+  {
+    "createdAt": "2025-11-19T11:10:00",
+    "updatedAt": "2025-11-19T11:10:00",
+    "contact": {
+      "createdAt": "2025-11-19T11:00:00",
+      "updatedAt": "2025-11-19T11:00:00",
+      "firstName": "Laura",
+      "lastName": "Weber",
+      "email": "laura.weber@example.ch",
+      "phoneNumber": "+41 26 888 99 00"
+    },
+    "address": {
+      "createdAt": "2025-12-05T11:30:00",
+      "updatedAt": "2025-12-05T11:30:00",
+      "street": "Route de Fribourg 45",
+      "city": "Bulle",
+      "postalCode": "1630",
+      "geoCoordinate": { "latitude": 46.6173, "longitude": 7.0571 }
+    },
+    "isHandoverAtDifferentAddress": false,
+    "addressForHandOver": null,
+    "numberOfChickensToBeSaved": 6,
+    "numberOfRoostersToBeSaved": 2,
+    "numberOfBoxes": 2,
+    "descriptionOfPlaceForChickens": "Familiengarten mit Hühnerhaus",
+    "acceptTermsAndConditions": true,
+    "alreadyReceivedChickenPreviously": true,
+    "confirmThatIFulfillCriteria": true,
+    "message": "Wir freuen uns auf neue Hühner.",
+    "saveChickenActionId": null,
+    "saveChickenAction": null,
+    "datesForHandOver": ["2026-03-24"],
+    "color": "Rot",
+    "files": []
+  }
+]

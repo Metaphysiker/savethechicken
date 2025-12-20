@@ -17,7 +17,7 @@ namespace WebApi.Models.ModelsImpl
         public int? SaveChickenActionId { get; set; }
         public SaveChickenAction? SaveChickenAction { get; set; }
 
-        Driver()
+        public Driver()
         {
             Contact = new Contact();
             Address = new Address();

@@ -1,0 +1,167 @@
+[
+  {
+
+    "createdAt": "2025-12-01T08:00:00",
+    "updatedAt": "2025-12-01T08:00:00",
+    "contact": {
+
+      "createdAt": "2025-12-01T08:00:00",
+      "updatedAt": "2025-12-01T08:00:00",
+      "firstName": "Lukas",
+      "lastName": "Schneider",
+      "phoneNumber": "+41 79 111 22 33",
+      "email": "lukas.schneider@example.ch",
+      "categories": [],
+      "carMake": "VW Transporter",
+      "availableDates": ["2025-12-10", "2025-12-11"]
+    },
+
+    "address": {
+
+      "createdAt": "2025-12-01T08:00:00",
+      "updatedAt": "2025-12-01T08:00:00",
+      "street": "Fahrstrasse 1",
+      "city": "Zürich",
+      "postalCode": "8005",
+      "geoCoordinate": { "latitude": 47.3848, "longitude": 8.5296 }
+    },
+
+    "carMake": "VW Transporter",
+    "availableDates": ["2025-12-10", "2025-12-11"],
+    "files": [],
+    "saveChickenActionId": null,
+    "saveChickenAction": null
+  },
+  {
+
+    "createdAt": "2025-12-02T09:30:00",
+    "updatedAt": "2025-12-02T09:30:00",
+    "contact": {
+
+      "createdAt": "2025-12-02T09:30:00",
+      "updatedAt": "2025-12-02T09:30:00",
+      "firstName": "Nadine",
+      "lastName": "Frei",
+      "phoneNumber": "+41 78 222 33 44",
+      "email": "nadine.frei@example.ch",
+      "categories": [],
+      "carMake": "Renault Kangoo",
+      "availableDates": ["2025-12-12", "2025-12-13"]
+    },
+
+    "address": {
+
+      "createdAt": "2025-12-02T09:30:00",
+      "updatedAt": "2025-12-02T09:30:00",
+      "street": "Autoweg 22",
+      "city": "Bern",
+      "postalCode": "3013",
+      "geoCoordinate": { "latitude": 46.9580, "longitude": 7.4474 }
+    },
+
+    "carMake": "Renault Kangoo",
+    "availableDates": ["2025-12-12", "2025-12-13"],
+    "files": [],
+    "saveChickenActionId": null,
+    "saveChickenAction": null
+  },
+  {
+
+    "createdAt": "2025-12-03T10:15:00",
+    "updatedAt": "2025-12-03T10:15:00",
+    "contact": {
+
+      "createdAt": "2025-12-03T10:15:00",
+      "updatedAt": "2025-12-03T10:15:00",
+      "firstName": "Pascal",
+      "lastName": "Baumgartner",
+      "phoneNumber": "+41 77 333 44 55",
+      "email": "pascal.baumgartner@example.ch",
+      "categories": [],
+      "carMake": "Mercedes Sprinter",
+      "availableDates": ["2025-12-14", "2025-12-15"]
+    },
+
+    "address": {
+
+      "createdAt": "2025-12-03T10:15:00",
+      "updatedAt": "2025-12-03T10:15:00",
+      "street": "Lieferweg 5",
+      "city": "Basel",
+      "postalCode": "4057",
+      "geoCoordinate": { "latitude": 47.5700, "longitude": 7.6000 }
+    },
+
+    "carMake": "Mercedes Sprinter",
+    "availableDates": ["2025-12-14", "2025-12-15"],
+    "files": [],
+    "saveChickenActionId": null,
+    "saveChickenAction": null
+  },
+  {
+
+    "createdAt": "2025-12-04T11:00:00",
+    "updatedAt": "2025-12-04T11:00:00",
+    "contact": {
+
+      "createdAt": "2025-12-04T11:00:00",
+      "updatedAt": "2025-12-04T11:00:00",
+      "firstName": "Simone",
+      "lastName": "Keller",
+      "phoneNumber": "+41 76 444 55 66",
+      "email": "simone.keller@example.ch",
+      "categories": [],
+      "carMake": "Opel Vivaro",
+      "availableDates": ["2025-12-16", "2025-12-17"]
+    },
+
+    "address": {
+
+      "createdAt": "2025-12-04T11:00:00",
+      "updatedAt": "2025-12-04T11:00:00",
+      "street": "Transportstrasse 8",
+      "city": "Luzern",
+      "postalCode": "6003",
+      "geoCoordinate": { "latitude": 47.0488, "longitude": 8.3081 }
+    },
+
+    "carMake": "Opel Vivaro",
+    "availableDates": ["2025-12-16", "2025-12-17"],
+    "files": [],
+    "saveChickenActionId": null,
+    "saveChickenAction": null
+  },
+  {
+
+    "createdAt": "2025-12-05T12:30:00",
+    "updatedAt": "2025-12-05T12:30:00",
+    "contact": {
+
+      "createdAt": "2025-12-05T12:30:00",
+      "updatedAt": "2025-12-05T12:30:00",
+      "firstName": "Fabian",
+      "lastName": "Meier",
+      "phoneNumber": "+41 75 555 66 77",
+      "email": "fabian.meier@example.ch",
+      "categories": [],
+      "carMake": "Citroen Jumper",
+      "availableDates": ["2025-12-18", "2025-12-19"]
+    },
+
+    "address": {
+
+      "createdAt": "2025-12-05T12:30:00",
+      "updatedAt": "2025-12-05T12:30:00",
+      "street": "Chauffeurweg 3",
+      "city": "St. Gallen",
+      "postalCode": "9008",
+      "geoCoordinate": { "latitude": 47.4245, "longitude": 9.3767 }
+    },
+
+    "carMake": "Citroen Jumper",
+    "availableDates": ["2025-12-18", "2025-12-19"],
+    "files": [],
+    "saveChickenActionId": null,
+    "saveChickenAction": null
+  }
+]

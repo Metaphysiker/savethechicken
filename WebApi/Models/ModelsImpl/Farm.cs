@@ -22,7 +22,7 @@ namespace WebApi.Models.ModelsImpl
         public List<StoredFile> Files { get; set; }
         public int? SaveChickenActionId { get; set; }
         public SaveChickenAction? SaveChickenAction { get; set; }
-        Farm()
+        public Farm()
         {
             Files = new List<StoredFile>();
             Contact = new Contact();

@@ -1,0 +1,192 @@
+[
+  {
+
+    "createdAt": "2025-12-01T07:00:00",
+    "updatedAt": "2025-12-01T07:00:00",
+    "numberOfChickens": 120,
+    "numberOfRoosters": 8,
+    "size": "large",
+    "color": "#A3CB38",
+    "datesForRescues": ["2025-12-10", "2025-12-20"],
+    "generalInformation": "Biohof mit großem Freilauf und moderner Ausstattung.",
+    "name": "Biohof Zürichberg",
+    "contact": {
+
+      "createdAt": "2025-12-01T07:00:00",
+      "updatedAt": "2025-12-01T07:00:00",
+      "firstName": "Urs",
+      "lastName": "Kunz",
+      "phoneNumber": "+41 79 123 45 67",
+      "email": "urs.kunz@biohof.ch",
+      "categories": [],
+      "carMake": "",
+      "datesForRescues": "2025-12-10;2025-12-20"
+    },
+
+    "address": {
+
+      "createdAt": "2025-12-01T07:00:00",
+      "updatedAt": "2025-12-01T07:00:00",
+      "street": "Zürichbergstrasse 100",
+      "city": "Zürich",
+      "postalCode": "8044",
+      "geoCoordinate": { "latitude": 47.3833, "longitude": 8.5706 }
+    },
+
+    "files": [],
+    "saveChickenActionId": null,
+    "saveChickenAction": null
+  },
+  {
+
+    "createdAt": "2025-12-02T08:30:00",
+    "updatedAt": "2025-12-02T08:30:00",
+    "numberOfChickens": 80,
+    "numberOfRoosters": 5,
+    "size": "medium",
+    "color": "#00B894",
+    "datesForRescues": ["2025-12-15", "2025-12-25"],
+    "generalInformation": "Familienbetrieb mit Fokus auf Tierwohl.",
+    "name": "Hof am Aareufer",
+    "contact": {
+
+      "createdAt": "2025-12-02T08:30:00",
+      "updatedAt": "2025-12-02T08:30:00",
+      "firstName": "Martina",
+      "lastName": "Fischer",
+      "phoneNumber": "+41 78 234 56 78",
+      "email": "martina.fischer@hofamaar.ch",
+      "categories": [],
+      "carMake": "",
+      "datesForRescues": "2025-12-15;2025-12-25"
+    },
+
+    "address": {
+
+      "createdAt": "2025-12-02T08:30:00",
+      "updatedAt": "2025-12-02T08:30:00",
+      "street": "Aareweg 5",
+      "city": "Bern",
+      "postalCode": "3005",
+      "geoCoordinate": { "latitude": 46.9439, "longitude": 7.4476 }
+    },
+
+    "files": [],
+    "saveChickenActionId": null,
+    "saveChickenAction": null
+  },
+  {
+
+    "createdAt": "2025-12-03T09:45:00",
+    "updatedAt": "2025-12-03T09:45:00",
+    "numberOfChickens": 60,
+    "numberOfRoosters": 4,
+    "size": "small",
+    "color": "#0984E3",
+    "datesForRescues": ["2025-12-18", "2025-12-28"],
+    "generalInformation": "Kleiner Hof mit Fokus auf Nachhaltigkeit.",
+    "name": "Sonnenhof Luzern",
+    "contact": {
+
+      "createdAt": "2025-12-03T09:45:00",
+      "updatedAt": "2025-12-03T09:45:00",
+      "firstName": "Peter",
+      "lastName": "Meier",
+      "phoneNumber": "+41 77 345 67 89",
+      "email": "peter.meier@sonnenhof.ch",
+      "categories": [],
+      "carMake": "",
+      "datesForRescues": "2025-12-18;2025-12-28"
+    },
+
+    "address": {
+
+      "createdAt": "2025-12-03T09:45:00",
+      "updatedAt": "2025-12-03T09:45:00",
+      "street": "Sonnenweg 12",
+      "city": "Luzern",
+      "postalCode": "6006",
+      "geoCoordinate": { "latitude": 47.0580, "longitude": 8.3190 }
+    },
+
+    "files": [],
+    "saveChickenActionId": null,
+    "saveChickenAction": null
+  },
+  {
+
+    "createdAt": "2025-12-04T10:15:00",
+    "updatedAt": "2025-12-04T10:15:00",
+    "numberOfChickens": 200,
+    "numberOfRoosters": 12,
+    "size": "very large",
+    "color": "#6C5CE7",
+    "datesForRescues": ["2025-12-22", "2026-01-02"],
+    "generalInformation": "Großer Betrieb mit modernem Stall und viel Auslauf.",
+    "name": "Alpenblick Farm",
+    "contact": {
+
+      "createdAt": "2025-12-04T10:15:00",
+      "updatedAt": "2025-12-04T10:15:00",
+      "firstName": "Sandra",
+      "lastName": "Roth",
+      "phoneNumber": "+41 76 456 78 90",
+      "email": "sandra.roth@alpenblick.ch",
+      "categories": [],
+      "carMake": "",
+      "datesForRescues": "2025-12-22;2026-01-02"
+    },
+
+    "address": {
+
+      "createdAt": "2025-12-04T10:15:00",
+      "updatedAt": "2025-12-04T10:15:00",
+      "street": "Alpenblickstrasse 50",
+      "city": "Chur",
+      "postalCode": "7000",
+      "geoCoordinate": { "latitude": 46.8530, "longitude": 9.5300 }
+    },
+
+    "files": [],
+    "saveChickenActionId": null,
+    "saveChickenAction": null
+  },
+  {
+
+    "createdAt": "2025-12-05T11:30:00",
+    "updatedAt": "2025-12-05T11:30:00",
+    "numberOfChickens": 150,
+    "numberOfRoosters": 10,
+    "size": "large",
+    "color": "#FD7272",
+    "datesForRescues": ["2025-12-25", "2026-01-05"],
+    "generalInformation": "Traditionsreicher Familienbetrieb im Tessin.",
+    "name": "Cascina Ticino",
+    "contact": {
+
+      "createdAt": "2025-12-05T11:30:00",
+      "updatedAt": "2025-12-05T11:30:00",
+      "firstName": "Giovanni",
+      "lastName": "Bianchi",
+      "phoneNumber": "+41 75 567 89 01",
+      "email": "giovanni.bianchi@cascinaticino.ch",
+      "categories": [],
+      "carMake": "",
+      "datesForRescues": "2025-12-25;2026-01-05"
+    },
+
+    "address": {
+
+      "createdAt": "2025-12-05T11:30:00",
+      "updatedAt": "2025-12-05T11:30:00",
+      "street": "Via Campagna 7",
+      "city": "Lugano",
+      "postalCode": "6900",
+      "geoCoordinate": { "latitude": 46.0037, "longitude": 8.9511 }
+    },
+
+    "files": [],
+    "saveChickenActionId": null,
+    "saveChickenAction": null
+  }
+]

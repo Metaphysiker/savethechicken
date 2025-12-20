@@ -29,7 +29,7 @@ namespace WebApi.Models.ModelsImpl
         public string Color { get; set; } = string.Empty;
         public List<StoredFile> Files { get; set; }
 
-        SaveChickenRequest()
+        public SaveChickenRequest()
         {
             Contact = new Contact();
             Address = new Address();

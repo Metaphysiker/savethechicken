@@ -17,7 +17,7 @@ namespace WebApi.Models.ModelsImpl
         public List<SaveChickenRequest> SaveChickenRequests { get; set; }
         public bool IsActive { get; set; } = false;
 
-        SaveChickenAction()
+        public SaveChickenAction()
         {
             SaveChickenRequests = new List<SaveChickenRequest>();
         }
