@@ -3,14 +3,17 @@
 @using global::Shared.Dtos.DtosImpl
 @code {
     [Parameter, EditorRequired] public SaveChickenActionDto Model { get; set; }
+
+    [Parameter]
+    public bool IsReadOnly { get; set; } = false;
 }
 
 <MudPaper Class="pa-4 my-4" Elevation="2">
-    <MudTextField @bind-Value="Model.Title" Label="Title" Variant="Variant.Outlined" />
+    <MudTextField ReadOnly="@IsReadOnly" @bind-Value="Model.Title" Label="Title" Variant="Variant.Outlined" />
     <ValidationMessage For="@(() => Model.Title)" />
-    <MudTextField @bind-Value="Model.Description" Label="Description" Variant="Variant.Outlined" Lines="4" TextFieldStyle="MudBlazor.TextFieldStyle.TextArea" />
+    <MudTextField ReadOnly="@IsReadOnly" @bind-Value="Model.Description" Label="Description" Variant="Variant.Outlined" Lines="4" TextFieldStyle="MudBlazor.TextFieldStyle.TextArea" />
     <ValidationMessage For="@(() => Model.Description)" />
-    <MudCheckBox @bind-Value="Model.IsActive" Label="Aktiv"></MudCheckBox>
+    <MudCheckBox ReadOnly="@IsReadOnly" @bind-Value="Model.IsActive" Label="Aktiv"></MudCheckBox>
     <ValidationMessage For="@(() => Model.IsActive)" />
     </MudPaper>
 

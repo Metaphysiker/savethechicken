@@ -10,15 +10,18 @@
 @code {
     [Parameter, EditorRequired]
     public ItemWithBrowserFiles<DriverDto> EntityWithFiles { get; set; } = default!;
+
+    [Parameter]
+    public bool IsReadOnly { get; set; } = false;
 }
 
-    <ContactForm Contact="EntityWithFiles.Item.Contact" />
-    <AddressForm Address="EntityWithFiles.Item.Address" />
+    <ContactForm Contact="EntityWithFiles.Item.Contact" IsReadOnly="@IsReadOnly" />
+    <AddressForm Address="EntityWithFiles.Item.Address" IsReadOnly="@IsReadOnly" />
 
     <MudPaper Class="pa-4 my-4" Elevation="2">
         <MudText Typo="Typo.h6">Allgemeine Informationen</MudText>
 
-        <MudTextField @bind-Value="EntityWithFiles.Item.CarMake" Label="@L["CarMake"]" Variant="Variant.Outlined" />
+        <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.CarMake" Label="@L["CarMake"]" Variant="Variant.Outlined" />
         <ValidationMessage For="@(() => EntityWithFiles.Item.CarMake)" />
     </MudPaper>
 

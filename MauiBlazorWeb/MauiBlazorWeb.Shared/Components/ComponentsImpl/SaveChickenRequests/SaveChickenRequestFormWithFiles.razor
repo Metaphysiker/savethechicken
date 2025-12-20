@@ -13,19 +13,22 @@
 @code {
     [Parameter, EditorRequired]
     public ItemWithBrowserFiles<SaveChickenRequestDto> EntityWithFiles { get; set; } = default!;
+
+    [Parameter]
+    public bool IsReadOnly { get; set; } = false;
 }
 
-<ContactForm Contact="EntityWithFiles.Item.Contact" />
-<AddressForm Address="EntityWithFiles.Item.Address" />
+<ContactForm Contact="EntityWithFiles.Item.Contact" IsReadOnly="@IsReadOnly" />
+<AddressForm Address="EntityWithFiles.Item.Address" IsReadOnly="@IsReadOnly" />
 
 <MudPaper Class="pa-4 my-4">
     <MudText Typo="Typo.h6">Allgemeine Informationen</MudText>
     <MudItem>
-        <MudNumericField T="int" @bind-Value="EntityWithFiles.Item.NumberOfChickensToBeSaved" Label="@L["NumberOfChickens"]" Variant="Variant.Outlined" />
+        <MudNumericField ReadOnly="@IsReadOnly" T="int" @bind-Value="EntityWithFiles.Item.NumberOfChickensToBeSaved" Label="@L["NumberOfChickens"]" Variant="Variant.Outlined" />
         <ValidationMessage For="@(() => EntityWithFiles.Item.NumberOfChickensToBeSaved)" />
     </MudItem>
         <MudItem>
-        <MudNumericField T="int" @bind-Value="EntityWithFiles.Item.NumberOfRoostersToBeSaved" Label="@L["NumberOfRoostersToBeSaved"]" Variant="Variant.Outlined" />
+        <MudNumericField ReadOnly="@IsReadOnly" T="int" @bind-Value="EntityWithFiles.Item.NumberOfRoostersToBeSaved" Label="@L["NumberOfRoostersToBeSaved"]" Variant="Variant.Outlined" />
         <ValidationMessage For="@(() => EntityWithFiles.Item.NumberOfRoostersToBeSaved)" />
     </MudItem>
 
@@ -35,7 +38,7 @@
         <MudText>
             Bitte beschreiben Sie kurz  Ihr Hühnerzuhause (Stall, Auslauf m2) , Anzahl bestehende Hühner, Erfahrung etc.
         </MudText>
-        <MudTextField @bind-Value="EntityWithFiles.Item.DescriptionOfPlaceForChickens" Label="@L["Description"]" Variant="Variant.Outlined" Lines="3" />
+        <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.DescriptionOfPlaceForChickens" Label="@L["Description"]" Variant="Variant.Outlined" Lines="3" />
         <ValidationMessage For="@(() => EntityWithFiles.Item.DescriptionOfPlaceForChickens)" />
     </MudItem>
 
@@ -53,13 +56,13 @@
 
 
 <MudPaper Class="pa-4 my-4">
-    <MudCheckBox @bind-Value="EntityWithFiles.Item.ConfirmThatIFulfillCriteria" Label="@L["ConfirmThatIFulfillCriteria"]"></MudCheckBox>
+    <MudCheckBox ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.ConfirmThatIFulfillCriteria" Label="@L["ConfirmThatIFulfillCriteria"]"></MudCheckBox>
     <ValidationMessage For="@(() => EntityWithFiles.Item.ConfirmThatIFulfillCriteria)" />
 
-    <MudCheckBox @bind-Value="EntityWithFiles.Item.AlreadyReceivedChickenPreviously" Label="@L["AlreadyReceivedChickenPreviously"]"></MudCheckBox>
+    <MudCheckBox ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.AlreadyReceivedChickenPreviously" Label="@L["AlreadyReceivedChickenPreviously"]"></MudCheckBox>
     <ValidationMessage For="@(() => EntityWithFiles.Item.AlreadyReceivedChickenPreviously)" />
 
-    <MudCheckBox @bind-Value="EntityWithFiles.Item.AcceptTermsAndConditions" Label="@L["AcceptTermsAndConditions"]"></MudCheckBox>
+    <MudCheckBox ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.AcceptTermsAndConditions" Label="@L["AcceptTermsAndConditions"]"></MudCheckBox>
     <ValidationMessage For="@(() => EntityWithFiles.Item.AcceptTermsAndConditions)" />
 
      <MudDivider Class="my-2"></MudDivider>
@@ -68,7 +71,7 @@
         <MudText>
             Was ich noch sagen möchte:
         </MudText>
-        <MudTextField @bind-Value="EntityWithFiles.Item.Message" Label="@L["Message"]" Variant="Variant.Outlined" Lines="3" />
+        <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.Message" Label="@L["Message"]" Variant="Variant.Outlined" Lines="3" />
         <ValidationMessage For="@(() => EntityWithFiles.Item.Message)" />
     </MudItem>
 </MudPaper>

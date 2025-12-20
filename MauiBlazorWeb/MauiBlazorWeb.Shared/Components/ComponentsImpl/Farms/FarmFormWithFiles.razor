@@ -11,34 +11,37 @@
 @code {
     [Parameter, EditorRequired]
     public ItemWithBrowserFiles<FarmDto> EntityWithFiles { get; set; } = default!;
+
+    [Parameter]
+    public bool IsReadOnly { get; set; } = false;
 }
 
-<ContactForm Contact="EntityWithFiles.Item.Contact" />
-<AddressForm Address="EntityWithFiles.Item.Address" />
+<ContactForm Contact="EntityWithFiles.Item.Contact" IsReadOnly="@IsReadOnly" />
+<AddressForm Address="EntityWithFiles.Item.Address" IsReadOnly="@IsReadOnly" />
 
 <MudPaper Class="pa-4 my-4" Elevation="2">
     <MudText Typo="Typo.h6">Allgemeine Informationen</MudText>
 
-    <MudTextField @bind-Value="EntityWithFiles.Item.Name" Label="@L["Farm_Name"]" Variant="Variant.Outlined" />
+    <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.Name" Label="@L["Farm_Name"]" Variant="Variant.Outlined" />
     <ValidationMessage For="@(() => EntityWithFiles.Item.Name)" />
 
-    <MudNumericField T="int" @bind-Value="EntityWithFiles.Item.NumberOfChickens" Label="@L["NumberOfChickens"]" Variant="Variant.Outlined" />
+    <MudNumericField ReadOnly="@IsReadOnly" T="int" @bind-Value="EntityWithFiles.Item.NumberOfChickens" Label="@L["NumberOfChickens"]" Variant="Variant.Outlined" />
     <ValidationMessage For="@(() => EntityWithFiles.Item.NumberOfChickens)" />
 
-    <MudNumericField T="int" @bind-Value="EntityWithFiles.Item.NumberOfRoosters" Label="@L["NumberOfRoosters"]" Variant="Variant.Outlined" />
+    <MudNumericField ReadOnly="@IsReadOnly" T="int" @bind-Value="EntityWithFiles.Item.NumberOfRoosters" Label="@L["NumberOfRoosters"]" Variant="Variant.Outlined" />
     <ValidationMessage For="@(() => EntityWithFiles.Item.NumberOfRoosters)" />
 
-    <MudTextField @bind-Value="EntityWithFiles.Item.Size" Label="@L["Farm_Size"]" Variant="Variant.Outlined" />
+    <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.Size" Label="@L["Farm_Size"]" Variant="Variant.Outlined" />
     <ValidationMessage For="@(() => EntityWithFiles.Item.Size)" />
 
-    <MudTextField @bind-Value="EntityWithFiles.Item.Color" Label="@L["Color"]" Variant="Variant.Outlined" />
+    <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.Color" Label="@L["Color"]" Variant="Variant.Outlined" />
     <ValidationMessage For="@(() => EntityWithFiles.Item.Color)" />
 
     <MudDivider Class="my-2"></MudDivider>
 
     <MudText>Weitere Informationen:</MudText>
 
-    <MudTextField @bind-Value="EntityWithFiles.Item.GeneralInformation" Label="@L["GeneralInformation"]" Variant="Variant.Outlined" Lines="3" />
+    <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.GeneralInformation" Label="@L["GeneralInformation"]" Variant="Variant.Outlined" Lines="3" />
     <ValidationMessage For="@(() => EntityWithFiles.Item.GeneralInformation)" />
 </MudPaper>
 

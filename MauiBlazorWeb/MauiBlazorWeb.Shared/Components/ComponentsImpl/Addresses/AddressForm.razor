@@ -5,6 +5,9 @@
 
 @code {
     [Parameter, EditorRequired] public AddressDto Address { get; set; }
+
+    [Parameter]
+    public bool IsReadOnly { get; set; } = false;
 }
 
 <MudPaper Class="pa-4 my-4" Elevation="2">
@@ -12,11 +15,11 @@
 
 <MudGrid>
     <MudItem xs="12" sm="6">
-        <MudTextField @bind-Value="Address.City" Label="@L["Address_City"]" Variant="Variant.Outlined" />
+        <MudTextField ReadOnly="@IsReadOnly" @bind-Value="Address.City" Label="@L["Address_City"]" Variant="Variant.Outlined" />
         <ValidationMessage For="@(() => Address.City)" />
     </MudItem>
     <MudItem xs="12" sm="6">
-        <MudTextField @bind-Value="Address.PostalCode" Label="@L["Address_PostalCode"]" Variant="Variant.Outlined" />
+        <MudTextField ReadOnly="@IsReadOnly" @bind-Value="Address.PostalCode" Label="@L["Address_PostalCode"]" Variant="Variant.Outlined" />
         <ValidationMessage For="@(() => Address.PostalCode)" />
     </MudItem>
 </MudGrid>
@@ -24,7 +27,7 @@
 <MudGrid>
 
     <MudItem xs="12">
-        <MudTextField @bind-Value="Address.Street" Label="@L["Address_Street"]" Variant="Variant.Outlined" />
+        <MudTextField ReadOnly="@IsReadOnly" @bind-Value="Address.Street" Label="@L["Address_Street"]" Variant="Variant.Outlined" />
         <ValidationMessage For="@(() => Address.Street)" />
     </MudItem>
 </MudGrid>

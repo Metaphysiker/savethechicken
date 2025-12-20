@@ -1,0 +1,46 @@
+﻿@page "/{dtoType:string}/{Id:int}/edit"
+
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Drivers
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Farms
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using Microsoft.AspNetCore.Components
+@inject GenericDtoServiceFactory DtoServiceFactory
+
+<MudContainer>
+    <MudText Typo="Typo.h1">Read</MudText>
+    @if (componentType != null)
+    {
+        <DynamicComponent Type="componentType" Parameters="formParameters" />
+    }
+    else
+    {
+        <MudText Color="Color.Error">Unbekannter Typ: @dtoType</MudText>
+    }
+</MudContainer>
+
+@code {
+    [Parameter, EditorRequired]
+    public string dtoType { get; set; } = default!;
+    [Parameter, EditorRequired]
+    public int Id { get; set; }
+
+    private Type? componentType;
+    private Dictionary<string, object>? formParameters;
+
+    protected override void OnParametersSet()
+    {
+        var typeMap = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase)
+        {
+            { "drivers", typeof(DriverFormWithFiles) },
+            { "save-chicken-requests", typeof(SaveChickenRequestFormWithFiles) },
+            { "farms", typeof(FarmFormWithFiles) }
+            // Add more mappings as needed
+        };
+
+        componentType = typeMap.TryGetValue(dtoType, out var t) ? t : null;
+        formParameters = componentType != null
+            ? new() { ["Id"] = Id }
+            : null;
+    }
+}

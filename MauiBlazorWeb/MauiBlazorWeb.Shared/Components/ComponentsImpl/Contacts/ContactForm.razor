@@ -5,6 +5,9 @@
 
 @code {
     [Parameter, EditorRequired] public ContactDto Contact { get; set; }
+
+    [Parameter]
+    public bool IsReadOnly { get; set; } = false;
 }
 
 
@@ -13,21 +16,21 @@
 
     <MudGrid>
         <MudItem xs="12" sm="6">
-            <MudTextField @bind-Value="Contact.FirstName" Label="@L["Contact_FirstName"]" Variant="Variant.Outlined" />
+            <MudTextField ReadOnly="@IsReadOnly" @bind-Value="Contact.FirstName" Label="@L["Contact_FirstName"]" Variant="Variant.Outlined" />
             <ValidationMessage For="@(() => Contact.FirstName)" />
         </MudItem>
         <MudItem xs="12" sm="6">
-            <MudTextField @bind-Value="Contact.LastName" Label="@L["Contact_LastName"]" Variant="Variant.Outlined" />
+            <MudTextField ReadOnly="@IsReadOnly" @bind-Value="Contact.LastName" Label="@L["Contact_LastName"]" Variant="Variant.Outlined" />
             <ValidationMessage For="@(() => Contact.LastName)" />
         </MudItem>
     </MudGrid>
     <MudGrid>
         <MudItem xs="12" sm="6">
-            <MudTextField @bind-Value="Contact.Email" Label="@L["Contact_Email"]" Variant="Variant.Outlined" />
+            <MudTextField ReadOnly="@IsReadOnly" @bind-Value="Contact.Email" Label="@L["Contact_Email"]" Variant="Variant.Outlined" />
             <ValidationMessage For="@(() => Contact.Email)" />
         </MudItem>
         <MudItem xs="12" sm="6">
-            <MudTextField @bind-Value="Contact.PhoneNumber" Label="@L["Contact_Phone"]" Variant="Variant.Outlined" />
+            <MudTextField ReadOnly="@IsReadOnly" @bind-Value="Contact.PhoneNumber" Label="@L["Contact_Phone"]" Variant="Variant.Outlined" />
             <ValidationMessage For="@(() => Contact.PhoneNumber)" />
         </MudItem>
     </MudGrid>
