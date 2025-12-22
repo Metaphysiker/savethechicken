@@ -9,6 +9,8 @@ namespace WebApi.Database.Includes
         {
             r => r.Contact,
             r => r.Address,
+            r => r.SaveChickenAction,
+
         };
     }
 }

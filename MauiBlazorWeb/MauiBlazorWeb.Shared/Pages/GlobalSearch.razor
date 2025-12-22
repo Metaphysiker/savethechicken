@@ -1,0 +1,49 @@
+﻿@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Drivers
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Farms
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
+@using global::Shared.Dtos.DtosImpl
+
+@page "/global-search"
+
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+    <h3>Globale Suche</h3>
+        <MudPaper Class="pa-4">
+            <MudText Typo="Typo.h6">Abnehmer</MudText>
+
+            <GenericSearch TDto="SaveChickenRequestDto" TSearchDto="SaveChickenRequestSearch">
+                <SearchForm Context="search">
+                    <SaveChickenRequestSearchForm Model="search" />
+                </SearchForm>
+                <Table Context="ctx">
+                    <SaveChickenRequestTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" />
+                </Table>
+            </GenericSearch>
+        </MudPaper>
+
+        <MudPaper Class="pa-4 my-4">
+            <MudText Typo="Typo.h6">Fahrer</MudText>
+
+            <GenericSearch TDto="DriverDto" TSearchDto="DriverSearch">
+                <SearchForm Context="search">
+                    <DriverSearchForm Model="search" />
+                </SearchForm>
+                <Table Context="ctx">
+                    <DriverTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" />
+                </Table>
+            </GenericSearch>
+        </MudPaper>
+
+        <MudPaper Class="pa-4 my-4">
+            <MudText Typo="Typo.h6">Betriebe</MudText>
+
+            <GenericSearch TDto="FarmDto" TSearchDto="FarmSearch">
+                <SearchForm Context="search">
+                    <FarmSearchForm Model="search" />
+                </SearchForm>
+                <Table Context="ctx">
+                    <FarmTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" />
+                </Table>
+            </GenericSearch>
+        </MudPaper>
+</MudContainer>

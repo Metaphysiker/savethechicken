@@ -219,4 +219,7 @@
   <data name="AvailableDates" xml:space="preserve">
     <value>Daten</value>
   </data>
+  <data name="SaveChickenAction" xml:space="preserve">
+    <value>Rettungs-Aktion</value>
+  </data>
 </root>

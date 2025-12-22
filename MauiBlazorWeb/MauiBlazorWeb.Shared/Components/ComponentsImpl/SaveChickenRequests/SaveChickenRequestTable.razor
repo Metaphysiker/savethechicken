@@ -187,6 +187,25 @@
             <CellTemplate>@context.Item.Message</CellTemplate>
         </TemplateColumn>
 
+            <TemplateColumn>
+                <HeaderTemplate>
+                    <MudButton OnClick="@(() => OnHeaderClick("SaveChickenActionId"))" Variant="Variant.Text" Style="text-transform: none;">
+                        @L["SaveChickenAction"]
+                        @if (GetSortIcon("SaveChickenActionId") != null)
+                        {
+                            <MudIcon Icon="@GetSortIcon("SaveChickenActionId")" Size="Size.Small" />
+                        }
+                    </MudButton>
+                </HeaderTemplate>
+                <CellTemplate>
+                    @{
+                        var action = context.Item.SaveChickenAction;
+                        var actionId = context.Item.SaveChickenActionId;
+                    }
+                    @(action?.Title ?? actionId?.ToString() ?? string.Empty)
+                </CellTemplate>
+            </TemplateColumn>
+
         <TemplateColumn>
             <HeaderTemplate>
                 <MudButton OnClick="@(() => OnHeaderClick("DatesForHandOver"))" Variant="Variant.Text" Style="text-transform: none;">

@@ -340,6 +340,15 @@ namespace MauiBlazorWeb.Shared.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rettungs-Aktion.
+        /// </summary>
+        public static string SaveChickenAction {
+            get {
+                return ResourceManager.GetString("SaveChickenAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rettet das Huhn.
         /// </summary>
         public static string SaveTheChicken {
