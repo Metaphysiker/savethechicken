@@ -1,0 +1,86 @@
+﻿@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
+@using global::Shared.Dtos.DtosImpl
+@inject IStringLocalizer<AppResources> L
+
+@typeparam TDto
+<MudGrid Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="my-2">
+    <MudItem xs="2" Class="d-flex justify-start">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@OnPreviousClicked" Disabled="@IsPreviousDisabled">
+            <MudIcon Icon="@Icons.Material.Filled.ChevronLeft" /> @L["Previous"]
+        </MudButton>
+    </MudItem>
+    <MudItem xs="3" Class="d-flex justify-center">
+        <MudText Typo="Typo.subtitle1">@L["Page"]</MudText>
+        <div style="max-width: 120px;" class="mx-5">
+            <MudSelect Dense="true"
+                       T="int" Value="@Pagination.Page" ValueChanged="@OnPageSelected">
+                @for (int i = 1; i <= @Pagination.TotalPages; i++)
+                {
+                    var currentValue = i;
+                    <MudSelectItem Value="@currentValue">@currentValue</MudSelectItem>
+                }
+            </MudSelect>
+        </div>
+
+        <MudText Typo="Typo.subtitle1"> @L["of"] @Pagination.TotalPages</MudText>
+
+    </MudItem>
+    <MudItem xs="3" Class="d-flex justify-center">
+        <MudText>
+            Anzahl angezeigte Einträge
+        </MudText>
+        <div style="max-width: 120px;" class="mx-5">
+
+        <MudSelect T="int" Value="@Pagination.PageSize" ValueChanged="@OnPageSizeSelected">
+            @for (int i = 25; i <= 1000; i += 25)
+            {
+                var currentValue = i;
+                <MudSelectItem Value="@currentValue">@currentValue</MudSelectItem>
+            }
+        </MudSelect>
+        </div>
+
+    </MudItem>
+    <MudItem xs="2" Class="d-flex justify-center">
+        <MudText>
+            <strong>Total: </strong>@Pagination.TotalItems Einträge
+        </MudText>
+    </MudItem>
+    <MudItem xs="2" Class="d-flex justify-end">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@OnNextClicked" Disabled="@IsNextDisabled">
+            @L["Next"] <MudIcon Icon="@Icons.Material.Filled.ChevronRight" />
+        </MudButton>
+    </MudItem>
+</MudGrid>
+
+@code {
+    [Parameter, EditorRequired] public PaginationDto<TDto> Pagination { get; set; }
+    [Parameter] public EventCallback<int> OnPageChanged { get; set; }
+    [Parameter] public EventCallback<int> OnPageSizeChanged { get; set; }
+
+    private bool IsPreviousDisabled => Pagination.Page <= 1;
+    private bool IsNextDisabled => Pagination.Page >= Pagination.TotalPages;
+
+    private async Task OnPageSelected(int page)
+    {
+        await OnPageChanged.InvokeAsync(page);
+    }
+
+    private async Task OnPageSizeSelected(int pageSize)
+    {
+        await OnPageSizeChanged.InvokeAsync(pageSize);
+    }
+
+    private async Task OnPreviousClicked()
+    {
+        if (!IsPreviousDisabled)
+            await OnPageChanged.InvokeAsync(Pagination.Page - 1);
+    }
+
+    private async Task OnNextClicked()
+    {
+        if (!IsNextDisabled)
+            await OnPageChanged.InvokeAsync(Pagination.Page + 1);
+    }
+}

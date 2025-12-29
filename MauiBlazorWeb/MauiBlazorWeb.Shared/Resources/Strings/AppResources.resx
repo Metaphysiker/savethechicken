@@ -159,7 +159,7 @@
   <data name="Message" xml:space="preserve">
     <value>Nachricht</value>
   </data>
-  <data name="AcceptTermsAndConditions" xml:space="preserve">
+  <data name="Se" xml:space="preserve">
     <value>Ich akzeptiere die Datenschutzerklärung</value>
   </data>
   <data name="CarMake" xml:space="preserve">
@@ -224,5 +224,17 @@
   </data>
   <data name="BlackListedPersonIds" xml:space="preserve">
     <value>Schwarze Liste</value>
+  </data>
+  <data name="Page" xml:space="preserve">
+    <value>Seite</value>
+  </data>
+  <data name="of" xml:space="preserve">
+    <value>von</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>Zurück</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Weiter</value>
   </data>
 </root>
