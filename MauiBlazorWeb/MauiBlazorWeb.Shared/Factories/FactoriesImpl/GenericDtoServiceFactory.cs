@@ -35,7 +35,12 @@ namespace MauiBlazorWeb.Shared.Factories.FactoriesImpl
             {
                 resource = "SaveChickenAction";
             }
-            return new GenericDtoService<TDto, TSearchDto>(_httpClient, resource);
+            else if (typeof(TDto).Name.EndsWith(typeof(BlackListedPersonDto).Name))
+            {
+                resource = "BlackListedPerson";
+            }
+
+                return new GenericDtoService<TDto, TSearchDto>(_httpClient, resource);
         }
     }
 }

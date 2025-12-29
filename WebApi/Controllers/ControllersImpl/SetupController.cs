@@ -158,8 +158,10 @@ public class SetupController : ControllerBase
         var admin = await _userManager.FindByNameAsync(UserRole.Admin.ToString());
         if (admin == null)
         {
-            admin = new IdentityUser { UserName = UserRole.Admin.ToString() };
-            string? password = Environment.GetEnvironmentVariable("ADMIN_PASSWORD");
+            admin = new IdentityUser { UserName = "s.raess@me.com" };
+            var isDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
+            string? password = "password";
+            if (isDocker) { password = Environment.GetEnvironmentVariable("ADMIN_PASSWORD"); }
             await _userManager.CreateAsync(admin, password!);
         }
 

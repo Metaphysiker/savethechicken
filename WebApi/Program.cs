@@ -16,7 +16,7 @@ builder.Services.AddLogging();
 builder.Services.AddScoped<AutoMapperService>();
 builder.Services.AddScoped<GenericModelServiceFactory>();
 builder.Services.AddScoped<ModelSearchFactory>();
-
+builder.Services.AddScoped<BlackListDetectorService>();
 builder.Services.AddDbContext<DatabaseContext>();
 builder.Services.AddEndpointsApiExplorer();
 
@@ -48,18 +48,7 @@ builder.Services
     })
     .AddJwtBearer(options =>
     {
-        var key = Environment.GetEnvironmentVariable("SIGNING_KEY");
-
-        if (string.IsNullOrEmpty(key))
-        {
-            // Generate a random 64-character base64 string
-            var randomBytes = new byte[48];
-            using (var rng = System.Security.Cryptography.RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(randomBytes);
-            }
-            key = Convert.ToBase64String(randomBytes);
-        }
+        var key = Environment.GetEnvironmentVariable("SIGNING_KEY") ?? "THIS_IS_A_DEFAULT_SIGNING_KEY_1234567890_ABCDEFGH";
 
         options.TokenValidationParameters = new TokenValidationParameters()
         {

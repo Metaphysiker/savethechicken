@@ -28,6 +28,7 @@ namespace WebApi.Models.ModelsImpl
         public List<DateOnly> DatesForHandOver { get; set; } = new List<DateOnly>();
         public string Color { get; set; } = string.Empty;
         public List<StoredFile> Files { get; set; }
+        public List<int> BlackListedPersonIds { get; set; } = new List<int>();
 
         public SaveChickenRequest()
         {

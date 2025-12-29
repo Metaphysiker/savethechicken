@@ -17,5 +17,11 @@ namespace MauiBlazorWeb.Shared.Singletons.SingletonsImpl
                 NotifyStateChanged();
             }
         }
+
+        public bool IsLoggedIn =>
+            _authResponse is not null &&
+            _authResponse.ExpiresAt > DateTime.UtcNow;
+
+
     }
 }

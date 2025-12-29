@@ -54,6 +54,8 @@ namespace Shared.Dtos.DtosImpl
 
         public List<StoredFileDto> Files { get; set; }
 
+        public List<int> BlackListedPersonIds { get; set; } = new List<int>();
+
         public SaveChickenRequestDto()
         {
             Contact = new ContactDto();

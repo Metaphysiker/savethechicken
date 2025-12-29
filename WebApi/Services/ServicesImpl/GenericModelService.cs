@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shared.Dtos.DtosImpl;
 using System.Linq.Expressions;
+using WebApi.Database.Includes;
 using WebApi.Interfaces;
 using WebApi.Models.ModelsImpl;
 
@@ -12,6 +13,8 @@ namespace WebApi.Services.ServicesImpl
     {
         private ModelSearchFactory _modelSearchFactory;
         private GeoLocatorService _geoLocatorService;
+        private BlackListDetectorService _blackListDetectorService;
+
 
         private readonly DatabaseContext _db;
         public GenericModelService(DatabaseContext db, ModelSearchFactory modelSearchFactory)
@@ -19,6 +22,7 @@ namespace WebApi.Services.ServicesImpl
             _db = db;
             _modelSearchFactory = modelSearchFactory;
             _geoLocatorService = new GeoLocatorService();
+            _blackListDetectorService = new BlackListDetectorService();
         }
 
         public async Task UpdateCoordinatesAsync(TModel model)
@@ -45,6 +49,25 @@ namespace WebApi.Services.ServicesImpl
                         .Where(a => a.Id != saveChickenAction.Id && a.IsActive);
 
                     await others.ForEachAsync(a => a.IsActive = false);
+                }
+            }
+        }
+
+        public async Task CheckForBlackListMatches(TModel model)
+        {
+            if (model is SaveChickenRequest saveChickenRequest)
+            {
+                if (saveChickenRequest.Address != null)
+                {
+                    var query = _db.Set<BlackListedPerson>().AsQueryable();
+                    foreach (var include in BlackListedPersonIncludes.Default)
+                    {
+                        query = query.Include(include);
+                    }
+                    var allBlackListedPersons = await query.ToListAsync();
+                    var blackListedPersonsThatMatch = _blackListDetectorService.CheckIfEntityMatchesBlackListedPersons(allBlackListedPersons, saveChickenRequest.Address, saveChickenRequest.Contact);
+                    List<int> blackListedPersonThatMatchIds = blackListedPersonsThatMatch.Select(p => p.Id).ToList();
+                    saveChickenRequest.BlackListedPersonIds = blackListedPersonThatMatchIds;
                 }
             }
         }
@@ -102,6 +125,7 @@ namespace WebApi.Services.ServicesImpl
             await UpdateCoordinatesAsync(model);
             await UpdateIsActiveInSaveChickenActions(model);
             await UpdateFiles(model);
+            await CheckForBlackListMatches(model);
 
             _db.Set<TModel>().Add(model);
             await _db.SaveChangesAsync();

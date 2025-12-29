@@ -1,0 +1,35 @@
+﻿@page "/black-listed-persons"
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.BlackListedPersons
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Drivers
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Farms
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Shared.Services.ServicesImpl
+@using MauiBlazorWeb.Web.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+@inject GenericDtoServiceFactory DtoServiceFactory
+@inject SaveChickenActionService saveChickenActionService
+
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+        <MudPaper Class="pa-4">
+            <MudText Typo="Typo.h6">Schwarze Liste</MudText>
+            <GenericSearch TDto="BlackListedPersonDto" TSearchDto="BlackListedPersonSearch" search="blackListedSearch">
+                <SearchForm Context="search">
+                    <BlackListedPersonSearchForm Model="search" />
+                </SearchForm>
+                <Table Context="ctx">
+                    <BlackListedPersonTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" />
+                </Table>
+            </GenericSearch>
+        </MudPaper>
+</MudContainer>
+
+
+@code {
+    private GenericDtoService<BlackListedPersonDto, BlackListedPersonSearch>? _service;
+    private BlackListedPersonDto? selectedAction;
+    private int? selectedActionId;
+    private BlackListedPersonSearch blackListedSearch = new BlackListedPersonSearch();
+    private List<BlackListedPersonDto> items = new();
+}

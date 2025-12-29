@@ -124,6 +124,15 @@ namespace MauiBlazorWeb.Shared.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Schwarze Liste.
+        /// </summary>
+        public static string BlackListedPersonIds {
+            get {
+                return ResourceManager.GetString("BlackListedPersonIds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Automarke.
         /// </summary>
         public static string CarMake {

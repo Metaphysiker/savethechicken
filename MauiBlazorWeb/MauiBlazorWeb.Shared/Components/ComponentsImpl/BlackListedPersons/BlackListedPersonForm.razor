@@ -1,0 +1,20 @@
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Addresses
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Contacts
+@inject IStringLocalizer<AppResources> L
+
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.FileUploads
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
+@using global::Shared.Dtos.DtosImpl
+@code {
+    [Parameter, EditorRequired]
+    public BlackListedPersonDto Entity { get; set; } = default!;
+
+    [Parameter]
+    public bool IsReadOnly { get; set; } = false;
+}
+
+    <ContactForm Contact="Entity.Contact" IsReadOnly="@IsReadOnly" />
+    <AddressForm Address="Entity.Address" IsReadOnly="@IsReadOnly" />
+

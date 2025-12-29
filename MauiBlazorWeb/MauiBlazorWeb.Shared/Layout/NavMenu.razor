@@ -1,18 +1,51 @@
-﻿<MudNavMenu>
+﻿@using MauiBlazorWeb.Shared.Singletons.SingletonsImpl
+@inject AuthResponseSingleton authResponseSingleton
+@inject NavigationManager navigationManager
+@inject AuthService authService
+
+<MudNavMenu>
     <MudNavLink Href="/" Class="nav-link-entry" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
     <MudNavLink Href="/save-chicken-requests/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Support">Platz für Hühner anbieten</MudNavLink>
     <MudNavLink Href="/drivers/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.DirectionsCar">Fahrer werden</MudNavLink>
     <MudNavLink Href="/farms/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Agriculture">Betrieb anmelden</MudNavLink>
     <MudDivider Class="my-2" />
-    <MudNavLink Href="/save-chicken-actions" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Dashboard">Rettungs-Aktionen</MudNavLink>
-    <MudNavLink Href="/save-chicken-actions/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Neue Rettungs-Aktion</MudNavLink>
-    <MudDivider Class="my-2" />
-    <MudNavLink Href="/global-search" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Search">Globale Suche</MudNavLink>
+
+
+    @if (authService.isLoading == true)
+    {
+        <MudNavLink Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Downloading">Bitte warten ...</MudNavLink>
+
+    } else
+    {
+        @if (!authResponseSingleton.IsLoggedIn)
+        {
+            <MudNavLink Href="/login" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Login">Login</MudNavLink>
+        }
+        else
+        {
+
+            <MudNavLink Href="/save-chicken-actions" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Dashboard">Rettungs-Aktionen</MudNavLink>
+            <MudNavLink Href="/save-chicken-actions/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Neue Rettungs-Aktion</MudNavLink>
+            <MudDivider Class="my-2" />
+            <MudNavLink Href="/black-listed-persons" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Cancel">Schwarze Liste</MudNavLink>
+
+            <MudNavLink Href="/black-listed-persons/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Neuer Eintrag</MudNavLink>
+            <MudDivider Class="my-2" />
+
+            <MudNavLink Href="/global-search" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Search">Globale Suche</MudNavLink>
+            <MudDivider Class="my-2" />
+            <MudButton Class="nav-link-entry ml-4" StartIcon="@Icons.Material.Filled.Logout" Color="Color.Inherit" Variant="Variant.Text" Style="justify-content: flex-start; width: 100%;" OnClick="logout">
+                Logout
+            </MudButton>
+        }
+    }
 
     <MudDivider Class="my-2" />
     @if (_drawerOpen)
     {
         <MudNavLink OnClick="@HandleCloseDrawer" Icon="@Icons.Material.Filled.ArrowLeft">Schliessen</MudNavLink>
+    } else {
+        <MudNavLink OnClick="@HandleOpenDrawer" Icon="@Icons.Material.Filled.ArrowRight">Öffnen</MudNavLink>
     }
 </MudNavMenu>
 
@@ -26,9 +59,21 @@
 @code {
     [Parameter] public bool _drawerOpen { get; set; }
     [Parameter] public EventCallback OnCloseDrawer { get; set; }
+    [Parameter] public EventCallback OnOpenDrawer { get; set; }
 
     private async Task HandleCloseDrawer()
     {
         await OnCloseDrawer.InvokeAsync();
+    }
+
+    private async Task HandleOpenDrawer()
+    {
+        await OnOpenDrawer.InvokeAsync();
+    }
+
+    private async Task logout()
+    {
+        await authService.LogoutAsync();
+        navigationManager.NavigateTo("/");
     }
 }

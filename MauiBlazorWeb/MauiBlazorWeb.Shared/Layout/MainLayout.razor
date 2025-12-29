@@ -1,6 +1,9 @@
-﻿@using MudBlazor
+﻿@using MauiBlazorWeb.Shared.Singletons.SingletonsImpl
+@using MudBlazor
 @inherits LayoutComponentBase
 @inject AuthService AuthService
+@inject AuthResponseSingleton authResponseSingleton
+
 
 <MudThemeProvider />
 <MudPopoverProvider />
@@ -18,11 +21,23 @@
         <NavMenu
             _drawerOpen="@_drawerOpen"
             OnCloseDrawer="CloseDrawer"
+            OnOpenDrawer="OpenDrawer"
         ></NavMenu>
     </MudDrawer>
-    <MudMainContent Class="main-content-spacing">
-        @Body
-    </MudMainContent>
+    @if (!AuthService.isLoading)
+    {
+        <MudMainContent Class="main-content-spacing">
+            @Body
+        </MudMainContent>
+    } else
+    {
+        <MudMainContent Class="main-content-spacing">
+            <MudContainer MaxWidth="MaxWidth.Small">
+                 <MudProgressCircular Size="Size.Large" Indeterminate="true" />
+            </MudContainer>
+        </MudMainContent>
+    }
+
 </MudLayout>
 
 <style>
@@ -59,5 +74,9 @@
     void CloseDrawer()
     {
         _drawerOpen = false;
+    }
+    void OpenDrawer()
+    {
+        _drawerOpen = true;
     }
 }

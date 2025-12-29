@@ -36,6 +36,11 @@ public class ModelSearchFactory
             return (IModelSearcher<ModelT, SearchDtoT>)new FarmSearcher(_db);
         }
 
+        if (typeof(ModelT) == typeof(BlackListedPerson) && typeof(SearchDtoT) == typeof(BlackListedPersonSearch))
+        {
+            return (IModelSearcher<ModelT, SearchDtoT>)new BlackListedPersonSearcher(_db);
+        }
+
         throw new NotImplementedException($"No searcher implemented for model type {typeof(ModelT)} and search dto type {typeof(SearchDtoT)}");
     }
 }

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Dtos.DtosImpl;
 using System.Linq.Expressions;
@@ -31,6 +32,7 @@ namespace WebApi.Controllers.ControllersImpl
             return CreatedAtAction(nameof(Read), new { id = resultDto.Id }, resultDto);
         }
 
+        [Authorize(Roles = nameof(UserRole.Admin))]
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
@@ -38,6 +40,7 @@ namespace WebApi.Controllers.ControllersImpl
             return NoContent();
         }
 
+        [Authorize(Roles = nameof(UserRole.Admin))]
         [HttpGet("{id}")]
         public async Task<ActionResult<FarmDto>> Read(int id)
         {
@@ -47,6 +50,7 @@ namespace WebApi.Controllers.ControllersImpl
             return Ok(resultDto);
         }
 
+        [Authorize(Roles = nameof(UserRole.Admin))]
         [HttpGet]
         public async Task<ActionResult<List<FarmDto>>> ReadAll()
         {
@@ -55,6 +59,7 @@ namespace WebApi.Controllers.ControllersImpl
             return Ok(resultDto);
         }
 
+        [Authorize(Roles = nameof(UserRole.Admin))]
         [HttpPost("search")]
         public async Task<ActionResult<PaginationDto<FarmDto>>> Search([FromBody] FarmSearch search)
         {
@@ -70,6 +75,7 @@ namespace WebApi.Controllers.ControllersImpl
             return Ok(resultDto);
         }
 
+        [Authorize(Roles = nameof(UserRole.Admin))]
         [HttpPut]
         public async Task<ActionResult<FarmDto>> Update([FromBody] FarmDto dto)
         {

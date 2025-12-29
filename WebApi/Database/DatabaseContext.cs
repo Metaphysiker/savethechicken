@@ -12,6 +12,7 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
     public DbSet<Address> Addresses { get; set; }
     public DbSet<Driver> Drivers { get; set; }
     public DbSet<StoredFile> Files { get; set; }
+    public DbSet<BlackListedPerson> BlackListedPersons { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -55,6 +56,13 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
                     v => string.Join(";", v.Select(d => d.ToString("yyyy-MM-dd"))),
                     v => v.Split(';', StringSplitOptions.RemoveEmptyEntries)
                         .Select(s => DateOnly.Parse(s)).ToList()
+                );
+
+            entity.Property(e => e.BlackListedPersonIds)
+                .HasConversion(
+                    v => string.Join(";", v),
+                    v => v.Split(';', StringSplitOptions.RemoveEmptyEntries)
+                        .Select(int.Parse).ToList()
                 );
         });
 

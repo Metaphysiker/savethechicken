@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Dtos.DtosImpl;
 using WebApi.Database.Includes;
@@ -30,6 +31,7 @@ namespace WebApi.Controllers.ControllersImpl
             return CreatedAtAction(nameof(Read), new { id = resultDto.Id }, resultDto);
         }
 
+        [Authorize(Roles = nameof(UserRole.Admin))]
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
@@ -37,6 +39,7 @@ namespace WebApi.Controllers.ControllersImpl
             return NoContent();
         }
 
+        [Authorize(Roles = nameof(UserRole.Admin))]
         [HttpGet("{id}")]
         public async Task<ActionResult<SaveChickenActionDto>> Read(int id)
         {
@@ -46,6 +49,7 @@ namespace WebApi.Controllers.ControllersImpl
             return Ok(resultDto);
         }
 
+        [Authorize(Roles = nameof(UserRole.Admin))]
         [HttpGet]
         public async Task<ActionResult<List<SaveChickenActionDto>>> ReadAll()
         {
@@ -54,6 +58,7 @@ namespace WebApi.Controllers.ControllersImpl
             return Ok(resultDto);
         }
 
+        [Authorize(Roles = nameof(UserRole.Admin))]
         [HttpPost("search")]
         public async Task<ActionResult<PaginationDto<SaveChickenActionDto>>> Search([FromBody] SaveChickenActionSearch search)
         {
@@ -69,6 +74,7 @@ namespace WebApi.Controllers.ControllersImpl
             return Ok(resultDto);
         }
 
+        [Authorize(Roles = nameof(UserRole.Admin))]
         [HttpPut]
         public async Task<ActionResult<SaveChickenActionDto>> Update([FromBody] SaveChickenActionDto dto)
         {

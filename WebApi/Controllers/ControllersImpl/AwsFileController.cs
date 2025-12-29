@@ -48,6 +48,7 @@ public class AwsFileController : ControllerBase
         return Ok(fileKey);
     }
 
+    [Authorize(Roles = nameof(UserRole.Admin))]
     [HttpGet("get-all")]
     public async Task<IActionResult> GetAllFilesAsync(string? prefix)
     {
@@ -102,6 +103,7 @@ public class AwsFileController : ControllerBase
         return Ok(_s3Client.GetPreSignedURL(urlRequest));
     }
 
+    [Authorize(Roles = nameof(UserRole.Admin))]
     [HttpDelete("delete")]
     public async Task<IActionResult> DeleteFileAsync(string key)
     {

@@ -90,11 +90,7 @@ public class TokenService
     private SigningCredentials CreateSigningCredentials()
     {
 
-        var key = Environment.GetEnvironmentVariable("SIGNING_KEY");
-        if (key == null)
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
+        var key = Environment.GetEnvironmentVariable("SIGNING_KEY") ?? "THIS_IS_A_DEFAULT_SIGNING_KEY_1234567890_ABCDEFGH";
 
         return new SigningCredentials(
             new SymmetricSecurityKey(

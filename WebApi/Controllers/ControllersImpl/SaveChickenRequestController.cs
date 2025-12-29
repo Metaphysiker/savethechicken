@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Dtos.DtosImpl;
 using System.Linq.Expressions;
@@ -22,6 +23,7 @@ namespace WebApi.Controllers.ControllersImpl
             _mapper = mapper;
         }
 
+        [Authorize(Roles = nameof(UserRole.Admin))]
         [HttpPost]
         public async Task<ActionResult<SaveChickenRequestDto>> Create([FromBody] SaveChickenRequestDto dto)
         {
@@ -31,6 +33,7 @@ namespace WebApi.Controllers.ControllersImpl
             return CreatedAtAction(nameof(Read), new { id = resultDto.Id }, resultDto);
         }
 
+        [Authorize(Roles = nameof(UserRole.Admin))]
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
@@ -70,6 +73,7 @@ namespace WebApi.Controllers.ControllersImpl
             return Ok(resultDto);
         }
 
+        [Authorize(Roles = nameof(UserRole.Admin))]
         [HttpPut]
         public async Task<ActionResult<SaveChickenRequestDto>> Update([FromBody] SaveChickenRequestDto dto)
         {

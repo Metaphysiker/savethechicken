@@ -49,3 +49,12 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+
+
+.row-blacklisted {
+    background-color: #ffebee !important; /* Light red background */
+    color: #b71c1c !important; /* Dark red text for contrast */
+    font-weight: 500; /* Slightly bolder text */
+    /* Optional: add a left border for extra emphasis */
+    border-left: 4px solid #b71c1c;
+}

@@ -1,10 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace WebApi.Controllers.ControllersImpl
 {
+    [Authorize(Roles = nameof(UserRole.Admin))]
     [ApiController]
     [Route("api/[controller]")]
     public class UserController : ControllerBase

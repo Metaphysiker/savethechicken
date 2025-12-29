@@ -3,44 +3,87 @@
 @inject TokenService TokenService
 @inject HttpClient HttpClient
 @using global::Shared.Dtos.DtosImpl
+@using MudBlazor
 
+<MudPaper Class="pa-6 mx-auto my-12" MaxWidth="400px" Elevation="4">
+    <MudText Typo="Typo.h5" Align="Align.Center" Class="mb-4">Login</MudText>
+    <MudForm @ref="form">
+        <MudTextField @bind-Value="loginModel.Email"
+                      Label="Email"
+                      For="@(() => loginModel.Email)"
+                      Variant="Variant.Outlined"
+                      Margin="Margin.Dense"
+                      Required="true"
+                      Class="mb-2" />
+        <MudTextField @bind-Value="loginModel.Password"
+                      Label="Password"
+                      For="@(() => loginModel.Password)"
+                      Variant="Variant.Outlined"
+                      Margin="Margin.Dense"
+                      InputType="InputType.Password"
+                      Required="true"
+                      Class="mb-2" />
 
-<EditForm Model="loginModel" OnValidSubmit="HandleLogin">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <div>
-        <label for="email">Email:</label>
-        <InputText id="email" @bind-Value="loginModel.Email" class="form-control" />
-        <ValidationMessage For="@(() => loginModel.Email)" />
-    </div>
-    <div>
-        <label for="password">Password:</label>
-        <InputText id="password" @bind-Value="loginModel.Password" type="password" class="form-control" />
-        <ValidationMessage For="@(() => loginModel.Password)" />
-    </div>
-    <button type="submit" class="btn btn-primary">Login</button>
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <MudAlert Severity="Severity.Error" Class="mb-2">@errorMessage</MudAlert>
+        }
 
-</EditForm>
+        <MudButton OnClick="HandleLogin" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Disabled="isLoading">
+            @if (isLoading)
+            {
+                <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+            }
+            else
+            {
+                <span>Login</span>
+            }
+        </MudButton>
+    </MudForm>
+</MudPaper>
 
 @code {
     private AuthRequestDto loginModel = new();
     private string errorMessage = string.Empty;
+    private MudForm? form;
+    private bool isLoading = false;
+
     private async Task HandleLogin()
     {
-        var result = await AuthService.AuthenticateAsync(loginModel);
-        if (result != null)
+        // Basic validation
+        if (string.IsNullOrWhiteSpace(loginModel.Email) || string.IsNullOrWhiteSpace(loginModel.Password))
         {
-            await TokenService.SaveTokenAsync(result.Token);
-            // Set jwt token in HttpClient for future requests
-            HttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", result.Token);
+            errorMessage = "Please fill in all fields.";
             StateHasChanged();
-            NavigationManager.NavigateTo("/");
-
+            return;
         }
-        else
+
+        isLoading = true;
+        errorMessage = string.Empty;
+        StateHasChanged();
+
+        try
         {
-            // Optionally show error message
-            errorMessage = "Login failed. Please check your credentials.";
+            var result = await AuthService.AuthenticateAsync(loginModel);
+            if (result != null)
+            {
+                await TokenService.SaveTokenAsync(result.Token);
+                HttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", result.Token);
+                NavigationManager.NavigateTo("/");
+            }
+            else
+            {
+                errorMessage = "Login failed. Please check your credentials.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
         }
     }
 

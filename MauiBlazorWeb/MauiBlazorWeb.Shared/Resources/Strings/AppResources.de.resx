@@ -222,4 +222,7 @@
   <data name="SaveChickenAction" xml:space="preserve">
     <value>Rettungs-Aktion</value>
   </data>
+  <data name="BlackListedPersonIds" xml:space="preserve">
+    <value>Schwarze Liste</value>
+  </data>
 </root>

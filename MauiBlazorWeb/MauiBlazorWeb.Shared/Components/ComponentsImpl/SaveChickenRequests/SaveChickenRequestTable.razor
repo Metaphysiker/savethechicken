@@ -39,10 +39,18 @@
         NavigationManager.NavigateTo($"/save-chicken-requests/{saveChickenRequestDto.Id}/edit");
 
     }
+
+    private string GetRowClass(SaveChickenRequestDto item, int rowNumber)
+    {
+        // Example: highlight if there are any blacklisted person IDs
+        return item.BlackListedPersonIds != null && item.BlackListedPersonIds.Any()
+            ? "row-blacklisted"
+            : string.Empty;
+    }
 }
 
 <div style="overflow-x: auto; max-width: 100%;">
-<MudDataGrid Items="@items" Hover="true" Dense="true" Striped="true" Bordered="true" SortMode="SortMode.None">
+    <MudDataGrid Items="@items" Hover="true" Dense="true" Striped="true" Bordered="true" SortMode="SortMode.None" RowClassFunc="GetRowClass">
     <Columns>
         <TemplateColumn>
             <HeaderTemplate>
@@ -233,6 +241,19 @@
             </CellTemplate>
         </TemplateColumn>
 
+            <TemplateColumn>
+                <HeaderTemplate>
+                    @L["BlackListedPersonIds"]
+                </HeaderTemplate>
+                <CellTemplate>
+                    @foreach (var id in context.Item.BlackListedPersonIds)
+                    {
+                        <MudChip>@id</MudChip>
+                    }
+                    
+                </CellTemplate>
+            </TemplateColumn>
+
         <TemplateColumn>
             <HeaderTemplate>Aktionen</HeaderTemplate>
             <CellTemplate>
@@ -243,3 +264,4 @@
     </Columns>
 </MudDataGrid>
 </div>
+
