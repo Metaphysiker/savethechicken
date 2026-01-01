@@ -7,8 +7,12 @@
     [Parameter, EditorRequired]
     public List<MapMarker> markers { get; set; } = default!;
 
+    [Parameter]
+    public List<MapArrow> arrows { get; set; } = new();
+
     private ElementReference mapDiv;
     private List<MapMarker> previousMarkers = new();
+    private List<MapArrow> previousArrows = new();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -16,11 +20,34 @@
         {
             await JS.InvokeVoidAsync("initMap", mapDiv, markers);
             previousMarkers = markers.ToList();
+            previousArrows = arrows.ToList();
+            await DrawArrowsAsync();
         }
-        else if (!AreMarkersEqual(previousMarkers, markers))
+        else
         {
-            await JS.InvokeVoidAsync("updateMarkers", mapDiv, markers);
-            previousMarkers = markers.ToList();
+            bool markersChanged = !AreMarkersEqual(previousMarkers, markers);
+            bool arrowsChanged = !AreArrowsEqual(previousArrows, arrows);
+
+            if (markersChanged)
+            {
+                await JS.InvokeVoidAsync("updateMarkers", mapDiv, markers);
+                previousMarkers = markers.ToList();
+            }
+            if (arrowsChanged || markersChanged)
+            {
+                await DrawArrowsAsync();
+                previousArrows = arrows.ToList();
+            }
+        }
+    }
+
+    private async Task DrawArrowsAsync()
+    {
+        foreach (var arrow in arrows)
+        {
+            var from = new { latitude = arrow.LatitudeFrom, longitude = arrow.LongitudeFrom };
+            var to = new { latitude = arrow.LatitudeTo, longitude = arrow.LongitudeTo };
+            await JS.InvokeVoidAsync("drawArrow", mapDiv, from, to);
         }
     }
 
@@ -32,6 +59,20 @@
             if (oldList[i].Latitude != newList[i].Latitude ||
                 oldList[i].Longitude != newList[i].Longitude ||
                 oldList[i].Info != newList[i].Info)
+                return false;
+        }
+        return true;
+    }
+
+    private bool AreArrowsEqual(List<MapArrow> oldList, List<MapArrow> newList)
+    {
+        if (oldList.Count != newList.Count) return false;
+        for (int i = 0; i < oldList.Count; i++)
+        {
+            if (oldList[i].LatitudeFrom != newList[i].LatitudeFrom ||
+                oldList[i].LongitudeFrom != newList[i].LongitudeFrom ||
+                oldList[i].LatitudeTo != newList[i].LatitudeTo ||
+                oldList[i].LongitudeTo != newList[i].LongitudeTo)
                 return false;
         }
         return true;

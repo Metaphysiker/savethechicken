@@ -17,6 +17,8 @@
     [Parameter] public EventCallback<(string? SortBy, bool? SortDescending)> OnSortSelected { get; set; }
     void SortByColumn(string columnName, bool? descending) => OnSortSelected.InvokeAsync((columnName, descending));
 
+    [Parameter] public EventCallback OnItemsChanged { get; set; }
+
     private string? currentColumnName = null;
     private bool? currentSortDescending = null;
 
@@ -138,7 +140,14 @@
         <TemplateColumn>
             <HeaderTemplate>Aktionen</HeaderTemplate>
             <CellTemplate>
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => EditItem(context.Item))">@L["edit"]</MudButton>
+                <MudGrid>
+                    <MudItem xs="12" sm="6">
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => EditItem(context.Item))">@L["edit"]</MudButton>
+                    </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <GenericDeleteDialog TDto="BlackListedPersonDto" Model="context.Item" OnDeleted="@(() => OnItemsChanged.InvokeAsync())"></GenericDeleteDialog>
+                        </MudItem>
+                </MudGrid>
             </CellTemplate>
         </TemplateColumn>
     </Columns>

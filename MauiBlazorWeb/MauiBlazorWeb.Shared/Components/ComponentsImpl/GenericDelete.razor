@@ -1,0 +1,45 @@
+﻿@using MudBlazor
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Web.Services.ServicesImpl
+@using global::Shared.Dtos
+@using global::Shared.Dtos.DtosImpl
+@typeparam TDto where TDto : class, IDto
+@inject GenericDtoServiceFactory DtoServiceFactory
+@inject IDialogService DialogService
+
+<MudContainer MaxWidth="MaxWidth.Small">
+    <MudCard Elevation="4" Class="py-4">
+        <MudCardContent>
+            <MudText><strong>@Model?.GenericName</strong> wirklich löschen?</MudText>
+            <MudText>ID: @Model.Id</MudText>
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="DeleteAsync">Löschen</MudButton>
+        </MudCardActions>
+    </MudCard>
+</MudContainer>
+
+@code {
+    private GenericDtoService<TDto, ISearchDto>? _service;
+
+    [Parameter]
+    [EditorRequired]
+    public TDto Model { get; set; }
+
+    [Parameter]
+    public EventCallback OnDeleted { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _service = DtoServiceFactory.Create<TDto, ISearchDto>();
+    }
+
+    private async Task DeleteAsync()
+    {
+        if (_service != null)
+        {
+            await _service.DeleteAsync(Model.Id);
+            await OnDeleted.InvokeAsync();
+        }
+    }
+}

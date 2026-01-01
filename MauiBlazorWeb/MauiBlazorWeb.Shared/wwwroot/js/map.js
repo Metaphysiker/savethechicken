@@ -33,3 +33,27 @@ function updateMarkers(element, markers) {
         map.fitBounds(bounds, { padding: [50, 50] });
     }
 }
+
+function getAngle(from, to) {
+    const dy = to.latitude - from.latitude;
+    const dx = to.longitude - from.longitude;
+    const rad = Math.atan2(dy, dx);
+    return rad * (180 / Math.PI);
+}
+
+function drawArrow(element, from, to, options = {}) {
+    const map = maps.get(element);
+    if (!map) return;
+
+    // Draw a polyline from 'from' to 'to'
+    const arrowLine = L.polyline([
+        [from.latitude, from.longitude],
+        [to.latitude, to.longitude]
+    ], {
+        color: options.color || 'red',
+        weight: options.weight || 4,
+        ...options
+    }).addTo(map);
+
+    return arrowLine;
+}

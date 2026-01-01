@@ -21,6 +21,7 @@ namespace Shared.Dtos.DtosImpl
         [ValidateComplexType]
         public AddressDto Address { get; set; }
         public int AddressId { get; set; }
+        public string GenericName { get; set; } = string.Empty;
 
         public BlackListedPersonDto()
         {

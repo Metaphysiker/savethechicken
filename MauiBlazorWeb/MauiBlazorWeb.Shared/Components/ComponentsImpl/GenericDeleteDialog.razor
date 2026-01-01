@@ -1,0 +1,33 @@
+﻿@typeparam TDto where TDto : class, IDto
+
+@using MudBlazor
+@using global::Shared.Dtos
+@inject IDialogService DialogService
+
+<MudButton Variant="Variant.Filled" OnClick="OpenDialog" Color="Color.Error">Löschen</MudButton>
+
+@code {
+    private IDialogReference? _dialogReference; // Store the reference
+    [Parameter, EditorRequired]
+    public TDto Model { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback OnDeleted { get; set; }
+
+    private async Task OpenDialog()
+    {
+        var parameters = new DialogParameters
+        {
+            { "Model", Model },
+            { "OnDeleted", EventCallback.Factory.Create(this, HandleDeleted) }
+        };
+        var options = new DialogOptions { FullScreen = true, CloseButton = true, MaxWidth = MaxWidth.False };
+        _dialogReference = await DialogService.ShowAsync<GenericDelete<TDto>>("Löschen bestätigen", parameters, options);
+    }
+
+    private async Task HandleDeleted()
+    {
+        _dialogReference?.Close();
+        await OnDeleted.InvokeAsync();
+    }
+}

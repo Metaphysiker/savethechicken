@@ -15,4 +15,5 @@ public class StoredFileDto : IDto
         public FarmDto? Farm { get; set; }
         public int? SaveChickenRequestId { get; set; }
         public SaveChickenRequestDto? SaveChickenRequest { get; set; }
-    }
+        public string GenericName { get; set; } = string.Empty;
+}

@@ -24,5 +24,6 @@ namespace Shared.Dtos.DtosImpl
         public List<ContactCategory> Categories { get; set; } = new List<ContactCategory>();
         public String CarMake { get; set; } = String.Empty;
         public List<DateOnly> AvailableDates { get; set; } = new List<DateOnly>();
+        public string GenericName { get; set; } = String.Empty;
     }
 }

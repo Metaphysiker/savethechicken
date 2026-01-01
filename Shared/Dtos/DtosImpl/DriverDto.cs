@@ -21,6 +21,7 @@ namespace Shared.Dtos.DtosImpl
         public List<StoredFileDto> Files { get; set; }
         public SaveChickenActionDto? SaveChickenAction { get; set; }
         public int? SaveChickenActionId { get; set; }
+        public string GenericName { get; set; } = string.Empty;
 
         public DriverDto()
         {
