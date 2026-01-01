@@ -17,6 +17,8 @@
     [Parameter] public EventCallback<(string? SortBy, bool? SortDescending)> OnSortSelected { get; set; }
     void SortByColumn(string columnName, bool? descending) => OnSortSelected.InvokeAsync((columnName, descending));
 
+    [Parameter] public EventCallback OnItemsChanged { get; set; }
+
     private string? currentColumnName = null;
     private bool? currentSortDescending = null;
 
@@ -254,13 +256,26 @@
                 </CellTemplate>
             </TemplateColumn>
 
-        <TemplateColumn>
-            <HeaderTemplate>Aktionen</HeaderTemplate>
-            <CellTemplate>
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => EditItem(context.Item))">@L["edit"]</MudButton>
+            <TemplateColumn>
+                <HeaderTemplate>@L["edit"]</HeaderTemplate>
+                <CellTemplate>
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Size="Size.Small"
+                               OnClick="@(() => EditItem(context.Item))">
+                        <MudIcon Icon="@Icons.Material.Filled.Edit" />
+                    </MudButton>
+                </CellTemplate>
+            </TemplateColumn>
 
-            </CellTemplate>
-        </TemplateColumn>
+            <TemplateColumn>
+                <HeaderTemplate>@L["delete"]</HeaderTemplate>
+                <CellTemplate>
+                    <GenericDeleteDialog TDto="SaveChickenRequestDto"
+                                         Model="context.Item"
+                                         OnDeleted="@(() => OnItemsChanged.InvokeAsync())" />
+                </CellTemplate>
+            </TemplateColumn>
     </Columns>
 </MudDataGrid>
 </div>

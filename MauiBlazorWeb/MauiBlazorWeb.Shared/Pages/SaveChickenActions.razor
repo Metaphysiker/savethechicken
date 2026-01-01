@@ -26,7 +26,7 @@
                     <SaveChickenRequestSearchForm Model="search" />
                 </SearchForm>
                 <Table Context="ctx">
-                    <SaveChickenRequestTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" />
+                    <SaveChickenRequestTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" OnItemsChanged="ctx.Item4.InvokeAsync" />
                 </Table>
             </GenericSearch>
         </MudPaper>
@@ -43,7 +43,7 @@
                     <DriverSearchForm Model="search" />
                 </SearchForm>
                 <Table Context="ctx">
-                    <DriverTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" />
+                    <DriverTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" OnItemsChanged="ctx.Item4.InvokeAsync" />
                 </Table>
             </GenericSearch>
         </MudPaper>
@@ -56,7 +56,7 @@
                     <FarmSearchForm Model="search" />
                 </SearchForm>
                 <Table Context="ctx">
-                    <FarmTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" />
+                    <FarmTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" OnItemsChanged="ctx.Item4.InvokeAsync" />
                 </Table>
             </GenericSearch>
         </MudPaper>

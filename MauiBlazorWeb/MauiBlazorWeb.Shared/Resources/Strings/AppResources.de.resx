@@ -237,4 +237,7 @@
   <data name="Next" xml:space="preserve">
     <value>Weiter</value>
   </data>
+  <data name="delete" xml:space="preserve">
+    <value>löschen</value>
+  </data>
 </root>

@@ -11,8 +11,11 @@
     <MudCard Elevation="4" Class="py-4">
         <MudCardContent>
             <MudText><strong>@Model?.GenericName</strong> wirklich löschen?</MudText>
-            <MudText>ID: @Model.Id</MudText>
+            <MudText Class="my-4">
+                Diese Aktion kann nicht rückgängig gemacht werden.
+            </MudText>
         </MudCardContent>
+
         <MudCardActions>
             <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="DeleteAsync">Löschen</MudButton>
         </MudCardActions>
