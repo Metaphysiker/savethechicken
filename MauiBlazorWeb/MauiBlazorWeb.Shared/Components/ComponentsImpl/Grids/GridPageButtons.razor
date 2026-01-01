@@ -33,7 +33,7 @@
         <div style="max-width: 120px;" class="mx-5">
 
         <MudSelect T="int" Value="@Pagination.PageSize" ValueChanged="@OnPageSizeSelected">
-            @for (int i = 25; i <= 1000; i += 25)
+            @for (int i = 5; i <= 1000; i += 25)
             {
                 var currentValue = i;
                 <MudSelectItem Value="@currentValue">@currentValue</MudSelectItem>

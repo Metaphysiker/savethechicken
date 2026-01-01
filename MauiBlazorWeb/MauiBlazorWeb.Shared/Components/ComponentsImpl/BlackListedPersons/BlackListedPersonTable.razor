@@ -137,19 +137,26 @@
             <CellTemplate>@context.Item.Contact.Email</CellTemplate>
         </TemplateColumn>
 
-        <TemplateColumn>
-            <HeaderTemplate>Aktionen</HeaderTemplate>
-            <CellTemplate>
-                <MudGrid>
-                    <MudItem xs="12" sm="6">
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => EditItem(context.Item))">@L["edit"]</MudButton>
-                    </MudItem>
-                        <MudItem xs="12" sm="6">
-                            <GenericDeleteDialog TDto="BlackListedPersonDto" Model="context.Item" OnDeleted="@(() => OnItemsChanged.InvokeAsync())"></GenericDeleteDialog>
-                        </MudItem>
-                </MudGrid>
-            </CellTemplate>
-        </TemplateColumn>
+            <TemplateColumn>
+                <HeaderTemplate>@L["edit"]</HeaderTemplate>
+                <CellTemplate>
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Size="Size.Small"
+                               OnClick="@(() => EditItem(context.Item))">
+                        <MudIcon Icon="@Icons.Material.Filled.Edit" />
+                    </MudButton>
+                </CellTemplate>
+            </TemplateColumn>
+
+            <TemplateColumn>
+                <HeaderTemplate>@L["delete"]</HeaderTemplate>
+                <CellTemplate>
+                    <GenericDeleteDialog TDto="BlackListedPersonDto"
+                                         Model="context.Item"
+                                         OnDeleted="@(() => OnItemsChanged.InvokeAsync())" />
+                </CellTemplate>
+            </TemplateColumn>
     </Columns>
 </MudDataGrid>
 </div>
