@@ -1,0 +1,103 @@
+﻿@using global::Shared.Dtos.DtosImpl
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+    <MudText Typo="Typo.h3">Statistik der Rettungs-Aktion: @saveChickenActionDto.Title</MudText>
+
+    <MudPaper Class="pa-4">
+        <MudText Typo="Typo.h6">Betriebe</MudText>
+
+        <MudTable T="FarmDto" Items="Farms" Dense="true" Bordered="true" Striped="true">
+            <HeaderContent>
+                <MudTh>Name</MudTh>
+                <MudTh>Anzahl Hühner</MudTh>
+                <MudTh>Anzahl Hähne</MudTh>
+            </HeaderContent>
+            <RowTemplate Context="context">
+                <MudTd DataLabel="Name">@context.Name</MudTd>
+                <MudTd DataLabel="Anzahl Hühner">@context.NumberOfChickens</MudTd>
+                <MudTd DataLabel="Anzahl Hähne">@context.NumberOfRoosters</MudTd>
+            </RowTemplate>
+            <FooterContent>
+                <MudTd><b>Summe</b></MudTd>
+                <MudTd>
+                    <b>@Farms.Sum(f => f.NumberOfChickens)</b>
+                </MudTd>
+                <MudTd>
+                    <b>@Farms.Sum(f => f.NumberOfRoosters)</b>
+                </MudTd>
+            </FooterContent>
+        </MudTable>
+    </MudPaper>
+
+    <MudPaper Class="pa-4">
+        <MudText Typo="Typo.h6">Abnehmer</MudText>
+
+        <MudTable T="SaveChickenRequestDto" Items="SaveChickenRequests" Dense="true" Bordered="true" Striped="true">
+            <HeaderContent>
+                <MudTh>Name</MudTh>
+                <MudTh>Anzahl Hühner</MudTh>
+                <MudTh>Anzahl Hähne</MudTh>
+            </HeaderContent>
+            <RowTemplate Context="context">
+                <MudTd DataLabel="Name">@context.Contact.FirstName @context.Contact.LastName</MudTd>
+                <MudTd DataLabel="Anzahl Hühner">@context.NumberOfChickensToBeSaved</MudTd>
+                <MudTd DataLabel="Anzahl Hähne">@context.NumberOfRoostersToBeSaved</MudTd>
+            </RowTemplate>
+            <FooterContent>
+                <MudTd><b>Summe</b></MudTd>
+                <MudTd>
+                    <b>@SaveChickenRequests.Sum(f => f.NumberOfChickensToBeSaved)</b>
+                </MudTd>
+                <MudTd>
+                    <b>@SaveChickenRequests.Sum(f => f.NumberOfRoostersToBeSaved)</b>
+                </MudTd>
+            </FooterContent>
+        </MudTable>
+    </MudPaper>
+
+<MudPaper Class="pa-4">
+    <MudSimpleTable Dense="true" Bordered="true" Striped="true">
+        <thead>
+            <tr>
+                <th>Rettung</th>
+                <th>Anzahl</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Gerettete Hühner</td>
+                    <td>@SaveChickenRequests.Sum(r => r.NumberOfChickensToBeSaved)</td>
+            </tr>
+            <tr>
+                <td>Zurückgelassene Hühner</td>
+                <td>
+                    @(Farms.Sum(f => f.NumberOfChickens) - SaveChickenRequests.Sum(r => r.NumberOfChickensToBeSaved))
+                </td>
+            </tr>
+            <tr>
+                <td>Gerettete Hähne</td>
+                <td>@(SaveChickenRequests.Sum(r => r.NumberOfRoostersToBeSaved))</td>
+            </tr>
+            <tr>
+                <td>Zurückgelassene Hähne</td>
+                <td>
+                        @(Farms.Sum(f => f.NumberOfRoosters) - SaveChickenRequests.Sum(r => r.NumberOfRoostersToBeSaved))
+                </td>
+            </tr>
+        </tbody>
+    </MudSimpleTable>
+</MudPaper>
+
+</MudContainer>
+@code {
+    [Parameter, EditorRequired]
+    public SaveChickenActionDto saveChickenActionDto { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public List<DriverDto> Drivers { get; set; } = new();
+
+    [Parameter, EditorRequired]
+    public List<FarmDto> Farms { get; set; } = new();
+
+    [Parameter, EditorRequired]
+    public List<SaveChickenRequestDto> SaveChickenRequests { get; set; } = new();
+}

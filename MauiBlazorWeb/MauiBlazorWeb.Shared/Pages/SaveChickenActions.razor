@@ -32,13 +32,13 @@
         </MudPaper>
 
         <MudPaper Class="pa-4 my-4">
-            <SaveChickenRequestMap saveChickenRequestDtos="items" />
+            <SaveChickenRequestMap saveChickenRequestDtos="foundSaveChickenRequests" />
         </MudPaper>
 
         <MudPaper Class="pa-4 my-4">
             <MudText Typo="Typo.h6">Fahrer</MudText>
 
-            <GenericSearch TDto="DriverDto" TSearchDto="DriverSearch" search="driverSearch">
+            <GenericSearch TDto="DriverDto" TSearchDto="DriverSearch" search="driverSearch" OnItemsFound="OnDriverItemsFound">
                 <SearchForm Context="search">
                     <DriverSearchForm Model="search" />
                 </SearchForm>
@@ -64,6 +64,13 @@
         <MudPaper Class="pa-4 my-4">
             <FarmMap farmDtos="foundFarms" />
         </MudPaper>
+
+        <MudDivider Class="my-4"></MudDivider>
+
+        @if (selectedAction != null)
+        {
+            <MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions.SaveChickenActionStatistic saveChickenActionDto="selectedAction" Farms="foundFarms" SaveChickenRequests="foundSaveChickenRequests" Drivers="drivers" />
+        }
     }
 </MudContainer>
 
@@ -75,18 +82,25 @@
     private SaveChickenRequestSearch saveChickenRequestSearch = new SaveChickenRequestSearch();
     private DriverSearch driverSearch = new DriverSearch();
     private FarmSearch farmSearch = new FarmSearch();
-    private List<SaveChickenRequestDto> items = new();
+    private List<SaveChickenRequestDto> foundSaveChickenRequests = new();
     private List<FarmDto> foundFarms = new();
+    private List<DriverDto> drivers = new();
 
     private void OnItemsFound(List<SaveChickenRequestDto> foundItems)
     {
-        items = foundItems;
+        foundSaveChickenRequests = foundItems;
         StateHasChanged();
     }
 
     private void OnFarmItemsFound(List<FarmDto> farms)
     {
         foundFarms = farms;
+        StateHasChanged();
+    }
+
+    private void OnDriverItemsFound(List<DriverDto> driverDtos)
+    {
+        drivers = driverDtos;
         StateHasChanged();
     }
 
