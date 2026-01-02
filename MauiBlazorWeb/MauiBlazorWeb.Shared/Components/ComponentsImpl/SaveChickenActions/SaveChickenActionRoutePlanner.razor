@@ -35,12 +35,6 @@
     [Parameter, EditorRequired]
     public List<SaveChickenRequestDto> SaveChickenRequests { get; set; } = new();
 
-    protected async override Task OnInitializedAsync()
-    {
-        // Here you could implement logic to set the 'from' and 'to' markers based on the saveChickenActionDto data.
-        PlanRoutes();
-    }
-
     protected override void OnParametersSet()
     {
         PlanRoutes();
@@ -54,6 +48,9 @@
 
     private void PlanRoutes()
     {
+        if (Drivers.Count == 0 || SaveChickenRequests.Count == 0)
+            return;
+
         driverRoutePlans.Clear();
         var driversCount = Drivers.Count;
 
