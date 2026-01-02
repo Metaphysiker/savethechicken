@@ -53,6 +53,7 @@
 
     private void PlanRoutes()
     {
+        driverRoutePlans.Clear();
         var copyOfRequests = new List<SaveChickenRequestDto>(SaveChickenRequests);
         uniqueDates = GetAllUniqueRescueDates(Farms);
 
