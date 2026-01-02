@@ -12,6 +12,7 @@
 @inject NavigationManager NavigationManager
 
 @if(model != null){
+    <div class="form-wrapper-div">
     <EditForm Model="model" OnValidSubmit="HandleValidSubmit">
         <ObjectGraphDataAnnotationsValidator />
 
@@ -21,6 +22,7 @@
             @L["Create"]
         </MudButton>
     </EditForm>
+    </div>
 }
 
 @code {

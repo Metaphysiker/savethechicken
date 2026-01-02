@@ -58,3 +58,7 @@ h1:focus {
     /* Optional: add a left border for extra emphasis */
     border-left: 4px solid #b71c1c;
 }
+
+.form-wrapper-div {
+    margin-bottom: 4rem;
+}
