@@ -252,19 +252,28 @@
                     {
                         <MudChip>@id</MudChip>
                     }
-                    
+
                 </CellTemplate>
             </TemplateColumn>
 
             <TemplateColumn>
                 <HeaderTemplate>@L["edit"]</HeaderTemplate>
                 <CellTemplate>
-                    <MudButton Variant="Variant.Filled"
-                               Color="Color.Primary"
-                               Size="Size.Small"
-                               OnClick="@(() => EditItem(context.Item))">
-                        <MudIcon Icon="@Icons.Material.Filled.Edit" />
-                    </MudButton>
+                    @if (context.Item != null)
+                    {
+                        var itemWithFiles = new ItemWithBrowserFiles<SaveChickenRequestDto> { Item = context.Item };
+    <GenericUpdateWithFilesDialog TDto="SaveChickenRequestDto"
+        model="itemWithFiles"
+        OnEdited="@(() => OnItemsChanged.InvokeAsync())">
+        <ChildContent>
+            <GenericUpdateWithFiles TDto="SaveChickenRequestDto" model="itemWithFiles">
+                <ChildContent Context="editModel">
+                    <SaveChickenRequestFormWithFiles EntityWithFiles="editModel" />
+                </ChildContent>
+            </GenericUpdateWithFiles>
+        </ChildContent>
+    </GenericUpdateWithFilesDialog>
+                    }
                 </CellTemplate>
             </TemplateColumn>
 

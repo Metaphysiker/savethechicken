@@ -25,7 +25,8 @@
 @code {
     [Parameter, EditorRequired] public ItemWithBrowserFiles<TDto> model { get; set; } = default!;
     [Parameter, EditorRequired] public RenderFragment<ItemWithBrowserFiles<TDto>> ChildContent { get; set; } = default!;
-
+    [Parameter]
+    public EventCallback OnEdited { get; set; }
     private GenericDtoService<TDto, ISearchDto>? _service;
 
     protected override void OnInitialized()
@@ -40,6 +41,7 @@
             var storedFiles = await UploadFilesAsync(model);
             model.Item.Files.AddRange(storedFiles);
             await _service.UpdateAsync(model.Item);
+            await OnEdited.InvokeAsync();
         }
     }
 

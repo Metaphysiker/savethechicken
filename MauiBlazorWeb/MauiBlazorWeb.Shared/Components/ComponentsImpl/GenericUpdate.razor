@@ -24,6 +24,9 @@
     [Parameter, EditorRequired] public TDto model { get; set; } = default!;
     [Parameter, EditorRequired] public RenderFragment<TDto> ChildContent { get; set; } = default!;
 
+    [Parameter]
+    public EventCallback OnEdited { get; set; }
+
     private GenericDtoService<TDto, ISearchDto>? _service;
 
     protected override void OnInitialized()
@@ -36,6 +39,7 @@
         if (_service != null)
         {
             await _service.UpdateAsync(model);
+            await OnEdited.InvokeAsync();
         }
     }
 }

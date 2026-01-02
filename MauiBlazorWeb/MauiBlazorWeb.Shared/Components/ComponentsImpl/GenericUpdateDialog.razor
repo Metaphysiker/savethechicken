@@ -1,0 +1,35 @@
+﻿@typeparam TDto where TDto : class, IDto
+
+@using MudBlazor
+@using global::Shared.Dtos
+@inject IDialogService DialogService
+
+<MudButton Variant="Variant.Filled" OnClick="OpenDialog" Color="Color.Primary" Size="Size.Small">
+    <MudIcon Icon="@Icons.Material.Filled.Edit" />
+</MudButton>
+
+@code {
+    private IDialogReference? _dialogReference;
+    [Parameter, EditorRequired]
+    public TDto Model { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback OnEdited { get; set; }
+
+    private async Task OpenDialog()
+    {
+        var parameters = new DialogParameters
+        {
+            { "Model", Model },
+            { "OnEdited", EventCallback.Factory.Create(this, HandleEdited) }
+        };
+        var options = new DialogOptions { FullScreen = true, CloseButton = true, MaxWidth = MaxWidth.False };
+        _dialogReference = await DialogService.ShowAsync<GenericUpdate<TDto>>("Bearbeitung", parameters, options);
+    }
+
+    private async Task HandleEdited()
+    {
+        _dialogReference?.Close();
+        await OnEdited.InvokeAsync();
+    }
+}
