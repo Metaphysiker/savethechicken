@@ -53,6 +53,8 @@
     [Parameter] public List<DateOnly> selectedDates { get; set; } = new();
     [Parameter] public EventCallback<List<DateOnly>> selectedDatesChanged { get; set; }
     [Parameter] public string Text { get; set; } = "Daten auswählen:";
+    [Parameter] public DateOnly? MinDate { get; set; }
+    [Parameter] public DateOnly? MaxDate { get; set; }
 
     private DateTime currentMonth = DateTime.Today;
     private static readonly string[] dayNames = GetMondayFirstDayNames();
