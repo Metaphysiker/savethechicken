@@ -9,16 +9,20 @@ namespace MauiBlazorWeb.Shared.Classes
 {
     public class DriverRoutePlan
     {
+        public FarmDto Farm { get; set; }
         public DriverDto Driver { get; set; }
+        public DateOnly RouteDate { get; set; }
         public List<SaveChickenRequestDto> SaveChickenRequests { get; set; }
 
         public List<MapMarker> RouteMarkers { get; set; } = new List<MapMarker>();
 
         public List<MapArrow> RouteArrows { get; set; } = new List<MapArrow>();
 
-        public DriverRoutePlan() { 
+        public DriverRoutePlan() {
+            Farm = new FarmDto();
             Driver = new DriverDto();
             SaveChickenRequests = new List<SaveChickenRequestDto>();
+            RouteDate = DateOnly.FromDateTime(DateTime.Now);
         }
 
     }
