@@ -1,4 +1,6 @@
 ﻿@page "/save-chicken-actions"
+@page "/save-chicken-actions/{id:int}"
+
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Drivers
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Farms
@@ -86,6 +88,9 @@
     private List<FarmDto> foundFarms = new();
     private List<DriverDto> drivers = new();
 
+    [Parameter]
+    public int? id { get; set; }
+
     private void OnItemsFound(List<SaveChickenRequestDto> foundItems)
     {
         foundSaveChickenRequests = foundItems;
@@ -121,13 +126,23 @@
     protected override async Task OnInitializedAsync()
     {
 
-        var activeSaveChickenAction = await saveChickenActionService.GetActiveSaveChickenAction();
-        if(activeSaveChickenAction != null)
+        if (id.HasValue)
         {
-            selectedAction = activeSaveChickenAction;
-            selectedActionId = activeSaveChickenAction.Id;
+            selectedActionId = id.Value;
             UpdateSearches();
         }
+        else
+        {
+            var activeSaveChickenAction = await saveChickenActionService.GetActiveSaveChickenAction();
+            if (activeSaveChickenAction != null)
+            {
+                selectedAction = activeSaveChickenAction;
+                selectedActionId = activeSaveChickenAction.Id;
+                UpdateSearches();
+            }
+        }
+
+
     }
 
     private void UpdateSaveChickenRequestSearch()

@@ -1,0 +1,129 @@
+﻿@using MauiBlazorWeb.Shared.Components.ComponentsImpl.StoredFiles
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
+@using MudBlazor
+@using MudBlazor.Components
+@using global::Shared.Dtos.DtosImpl
+@inject NavigationManager NavigationManager
+@inject IStringLocalizer<AppResources> L
+
+@code {
+    [Parameter]
+    public List<SaveChickenActionDto> items { get; set; } = new List<SaveChickenActionDto>();
+
+    [Parameter] public EventCallback<SaveChickenActionDto> OnItemSelected { get; set; }
+    void SelectItem(SaveChickenActionDto item) => OnItemSelected.InvokeAsync(item);
+
+    [Parameter] public EventCallback<(string? SortBy, bool? SortDescending)> OnSortSelected { get; set; }
+    void SortByColumn(string columnName, bool? descending) => OnSortSelected.InvokeAsync((columnName, descending));
+
+    [Parameter] public EventCallback OnItemsChanged { get; set; }
+
+    private string? currentColumnName = null;
+    private bool? currentSortDescending = null;
+
+    private void OnHeaderClick(string columnName)
+    {
+        bool? descending = currentColumnName == columnName ? !currentSortDescending : false;
+        currentColumnName = columnName;
+        currentSortDescending = descending;
+        SortByColumn(columnName, descending);
+    }
+
+    private string? GetSortIcon(string columnName)
+    {
+        if (currentColumnName != columnName) return null;
+        return currentSortDescending == true ? Icons.Material.Filled.ArrowDownward : Icons.Material.Filled.ArrowUpward;
+    }
+
+    private string GetRowClass(SaveChickenActionDto item, int rowNumber)
+    {
+        return string.Empty;
+    }
+
+    private void ShowItem(int id)
+    {
+        NavigationManager.NavigateTo($"/save-chicken-actions/{id}");
+    }
+}
+
+<div style="overflow-x: auto; max-width: 100%;">
+    <MudDataGrid Items="@items" Hover="true" Dense="true" Striped="true" Bordered="true" SortMode="SortMode.None" RowClassFunc="GetRowClass">
+    <Columns>
+        <TemplateColumn>
+            <HeaderTemplate>
+                <MudButton OnClick="@(() => OnHeaderClick("Title"))" Variant="Variant.Text" Style="text-transform: none;">
+                        @L["Title"]
+                        @if (GetSortIcon("Title") != null)
+                    {
+                            <MudIcon Icon="@GetSortIcon("Title")" Size="Size.Small" />
+                    }
+                </MudButton>
+            </HeaderTemplate>
+            <CellTemplate>@context.Item.Title</CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn>
+            <HeaderTemplate>
+                    <MudButton OnClick="@(() => OnHeaderClick("Description"))" Variant="Variant.Text" Style="text-transform: none;">
+                        @L["Description"]
+                        @if (GetSortIcon("Description") != null)
+                    {
+                            <MudIcon Icon="@GetSortIcon("Description")" Size="Size.Small" />
+                    }
+                </MudButton>
+            </HeaderTemplate>
+            <CellTemplate>@context.Item.Description</CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn>
+            <HeaderTemplate>
+                    <MudButton OnClick="@(() => OnHeaderClick("IsActive"))" Variant="Variant.Text" Style="text-transform: none;">
+                        @L["IsActive"]
+                        @if (GetSortIcon("IsActive") != null)
+                    {
+                            <MudIcon Icon="@GetSortIcon("IsActive")" Size="Size.Small" />
+                    }
+                </MudButton>
+            </HeaderTemplate>
+            <CellTemplate>
+                @(context.Item.IsActive ? L["yes"] : L["no"])
+            </CellTemplate>
+        </TemplateColumn>
+
+            <TemplateColumn>
+                <HeaderTemplate>@L["show"]</HeaderTemplate>
+                <CellTemplate>
+                    <MudButton Variant="Variant.Filled" OnClick="@(() => ShowItem(context.Item.Id))">
+                        <MudIcon Icon="@Icons.Material.Filled.Visibility" />
+                    </MudButton>
+                </CellTemplate>
+            </TemplateColumn>
+
+        <TemplateColumn>
+            <HeaderTemplate>@L["edit"]</HeaderTemplate>
+            <CellTemplate>
+                @if (context.Item != null)
+                {
+                    <GenericUpdateDialogLauncher TDto="SaveChickenActionDto"
+                                                    model="context.Item"
+                                                    OnEdited="@(() => OnItemsChanged.InvokeAsync())">
+                        <ChildContent Context="editModel">
+                            <SaveChickenActionForm Model="editModel" />
+                        </ChildContent>
+                    </GenericUpdateDialogLauncher>
+                }
+            </CellTemplate>
+        </TemplateColumn>
+
+            <TemplateColumn>
+                <HeaderTemplate>@L["delete"]</HeaderTemplate>
+                <CellTemplate>
+                    <GenericDeleteDialog TDto="SaveChickenActionDto"
+                                         Model="context.Item"
+                                         OnDeleted="@(() => OnItemsChanged.InvokeAsync())" />
+                </CellTemplate>
+            </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+</div>

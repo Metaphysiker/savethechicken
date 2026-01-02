@@ -1,0 +1,120 @@
+﻿@page "/save-chicken-actions-list"
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Drivers
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Farms
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Shared.Services.ServicesImpl
+@using MauiBlazorWeb.Web.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+@inject GenericDtoServiceFactory DtoServiceFactory
+@inject SaveChickenActionService saveChickenActionService
+
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+    <h3>Rettungs-Aktionen</h3>
+
+    <MudPaper Class="pa-4">
+        <MudText Typo="Typo.h6">Rettungs-Aktionen</MudText>
+
+        <GenericSearch TDto="SaveChickenActionDto" TSearchDto="SaveChickenActionSearch">
+            <SearchForm Context="search">
+                <SaveChickenActionSearchForm Model="search" />
+            </SearchForm>
+            <Table Context="ctx">
+                <MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions.SaveChickenActionTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" OnItemsChanged="ctx.Item4.InvokeAsync" />
+            </Table>
+        </GenericSearch>
+    </MudPaper>
+</MudContainer>
+
+
+@code {
+    private GenericDtoService<SaveChickenActionDto, SaveChickenActionSearch>? _service;
+    private SaveChickenActionDto? selectedAction;
+    private int? selectedActionId;
+    private SaveChickenRequestSearch saveChickenRequestSearch = new SaveChickenRequestSearch();
+    private DriverSearch driverSearch = new DriverSearch();
+    private FarmSearch farmSearch = new FarmSearch();
+    private List<SaveChickenRequestDto> foundSaveChickenRequests = new();
+    private List<FarmDto> foundFarms = new();
+    private List<DriverDto> drivers = new();
+
+    private void OnItemsFound(List<SaveChickenRequestDto> foundItems)
+    {
+        foundSaveChickenRequests = foundItems;
+        StateHasChanged();
+    }
+
+    private void OnFarmItemsFound(List<FarmDto> farms)
+    {
+        foundFarms = farms;
+        StateHasChanged();
+    }
+
+    private void OnDriverItemsFound(List<DriverDto> driverDtos)
+    {
+        drivers = driverDtos;
+        StateHasChanged();
+    }
+
+    private void OnActionSelected(SaveChickenActionDto action)
+    {
+        selectedAction = action;
+        UpdateSearches();
+        StateHasChanged();
+    }
+
+    private void UpdateSearches()
+    {
+        UpdateSaveChickenRequestSearch();
+        UpdateDriverSearch();
+        UpdateFarmSearch();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var activeSaveChickenAction = await saveChickenActionService.GetActiveSaveChickenAction();
+        if(activeSaveChickenAction != null)
+        {
+            selectedAction = activeSaveChickenAction;
+            selectedActionId = activeSaveChickenAction.Id;
+            UpdateSearches();
+        }
+    }
+
+    private void UpdateSaveChickenRequestSearch()
+    {
+       var saveChickenActionIds = selectedAction != null
+        ? new List<int> { selectedAction.Id }
+        : new List<int>();
+
+            saveChickenRequestSearch = new SaveChickenRequestSearch
+            {
+                SaveChickenActionIds = saveChickenActionIds
+            };
+    }
+
+    private void UpdateFarmSearch()
+    {
+        var saveChickenActionIds = selectedAction != null
+         ? new List<int> { selectedAction.Id }
+         : new List<int>();
+        farmSearch = new FarmSearch
+        {
+            SaveChickenActionIds = saveChickenActionIds
+        };
+    }
+
+    private void UpdateDriverSearch()
+    {
+        var saveChickenActionIds = selectedAction != null
+         ? new List<int> { selectedAction.Id }
+         : new List<int>();
+        driverSearch = new DriverSearch
+        {
+            SaveChickenActionIds = saveChickenActionIds
+        };
+    }
+}

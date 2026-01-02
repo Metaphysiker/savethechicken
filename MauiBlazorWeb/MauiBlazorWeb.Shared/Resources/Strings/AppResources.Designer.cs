@@ -61,6 +61,15 @@ namespace MauiBlazorWeb.Shared.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ich akzeptiere die Datenschutzerklärung.
+        /// </summary>
+        public static string AcceptTermsAndConditions {
+            get {
+                return ResourceManager.GetString("AcceptTermsAndConditions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ort.
         /// </summary>
         public static string Address_City {
@@ -304,6 +313,15 @@ namespace MauiBlazorWeb.Shared.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to aktiv.
+        /// </summary>
+        public static string isActive {
+            get {
+                return ResourceManager.GetString("isActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Nachricht.
         /// </summary>
         public static string Message {
@@ -318,6 +336,15 @@ namespace MauiBlazorWeb.Shared.Resources.Strings {
         public static string Next {
             get {
                 return ResourceManager.GetString("Next", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to nein.
+        /// </summary>
+        public static string no {
+            get {
+                return ResourceManager.GetString("no", resourceCulture);
             }
         }
         
@@ -403,15 +430,6 @@ namespace MauiBlazorWeb.Shared.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ich akzeptiere die Datenschutzerklärung.
-        /// </summary>
-        public static string Se {
-            get {
-                return ResourceManager.GetString("Se", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to suchen.
         /// </summary>
         public static string search {
@@ -421,11 +439,29 @@ namespace MauiBlazorWeb.Shared.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to zeigen.
+        /// </summary>
+        public static string show {
+            get {
+                return ResourceManager.GetString("show", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to aktualisieren.
         /// </summary>
         public static string update {
             get {
                 return ResourceManager.GetString("update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ja.
+        /// </summary>
+        public static string yes {
+            get {
+                return ResourceManager.GetString("yes", resourceCulture);
             }
         }
     }

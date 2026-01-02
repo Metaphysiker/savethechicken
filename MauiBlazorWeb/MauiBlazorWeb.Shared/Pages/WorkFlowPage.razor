@@ -1,0 +1,60 @@
+﻿@page "/workflow"
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="pa-4">
+    <MudText Typo="Typo.h3">Workflow</MudText>
+
+    <MudPaper Class="pa-4 my-2">
+        <MudText Typo="Typo.h6">
+            1. Rettungs-Aktion erstellen
+        </MudText>
+        <MudText Class="my-2">
+            Als erstes muss eine Rettungs-Aktion erstellt werden.
+        </MudText>
+        <MudText Class="my-2">
+            Beim Erstellen der Aktion gibt es die Option "Aktiv". Wenn diese aktiviert ist, dann werden neue Einträge für Abnehmer, Betriebe und Fahrer automatisch mit dieser Rettungs-Aktion verknüpft.
+        </MudText>
+        <MudText Class="my-2">
+            Es kann nur eine Aktion zur gleichen Zeit aktiv sein. Wenn eine Aktion mit aktiv erstellt oder aktualisiert wird, werden alle anderen Aktionen automatisch auf nicht-aktiv gesetzt.
+        </MudText>
+    </MudPaper>
+
+    <MudPaper Class="pa-4 my-2">
+        <MudText Typo="Typo.h6">
+            2. Betriebe hinzufügen
+        </MudText>
+        <MudText Class="my-2">
+            Für die Routenplanung und Statistik die Betriebe hinzufügen.
+        </MudText>
+    </MudPaper>
+
+    <MudPaper Class="pa-4 my-2">
+        <MudText Typo="Typo.h6">
+            3. Abnehmer und Fahrer tragen sich ein
+        </MudText>
+        <MudText Class="my-2">
+            Über die Formulare tragen sich Abnehmer und Fahrer ein.
+        </MudText>
+    </MudPaper>
+
+    <MudPaper Class="pa-4 my-2">
+        <MudText Typo="Typo.h6">
+            4. Routenplanung
+        </MudText>
+        <MudText Class="my-2">
+            Der Algorithmus für die Routenplanung funktioniert so:
+        </MudText>
+        <MudText Class="my-2">
+           1. Abnehmer werden nach Postleitzahlen pro Tag gruppiert.
+        </MudText>
+        <MudText Class="my-2">
+            2. Die Postleitzahl-Gruppen werden unter den Fahrern aufgeteilt, die an diesem Tag vorhanden sind.
+        </MudText>
+        <MudText Class="my-2">
+            
+        </MudText>
+    </MudPaper>
+    </MudContainer>
+
+@code {
+
+}

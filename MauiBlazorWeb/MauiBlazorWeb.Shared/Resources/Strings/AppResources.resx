@@ -159,7 +159,7 @@
   <data name="Message" xml:space="preserve">
     <value>Nachricht</value>
   </data>
-  <data name="Se" xml:space="preserve">
+  <data name="AcceptTermsAndConditions" xml:space="preserve">
     <value>Ich akzeptiere die Datenschutzerklärung</value>
   </data>
   <data name="CarMake" xml:space="preserve">
@@ -182,9 +182,6 @@
   </data>
   <data name="search" xml:space="preserve">
     <value>suchen</value>
-  </data>
-  <data name="edit" xml:space="preserve">
-    <value>bearbeiten</value>
   </data>
   <data name="update" xml:space="preserve">
     <value>aktualisieren</value>
@@ -239,5 +236,20 @@
   </data>
   <data name="delete" xml:space="preserve">
     <value>löschen</value>
+  </data>
+  <data name="show" xml:space="preserve">
+    <value>zeigen</value>
+  </data>
+  <data name="isActive" xml:space="preserve">
+    <value>aktiv</value>
+  </data>
+  <data name="edit" xml:space="preserve">
+    <value>bearbeiten</value>
+  </data>
+  <data name="yes" xml:space="preserve">
+    <value>ja</value>
+  </data>
+  <data name="no" xml:space="preserve">
+    <value>nein</value>
   </data>
 </root>
