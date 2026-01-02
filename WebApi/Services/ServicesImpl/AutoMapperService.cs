@@ -4,39 +4,97 @@ using WebApi.Models.ModelsImpl;
 
 public class AutoMapperService
 {
-
-    public IMapper mapper { get; set; }
+    public IMapper mapper { get; }
 
     public AutoMapperService()
     {
-
-        var config = new MapperConfiguration(cfg => {
+        var config = new MapperConfiguration(cfg =>
+        {
+            // Contact
             cfg.CreateMap<Contact, ContactDto>()
-                .ForMember(dest => dest.GenericName, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}, {src.Email}".Trim()))
-                .ReverseMap();
+                .ForMember(
+                    dest => dest.GenericName,
+                    opt => opt.MapFrom(src =>
+                        $"{src.FirstName} {src.LastName}, {src.Email}".Trim()
+                    )
+                );
+
+            cfg.CreateMap<ContactDto, Contact>();
+
+            // Address
             cfg.CreateMap<Address, AddressDto>()
-                .ForMember(dest => dest.GenericName, opt => opt.MapFrom(src => $"{src.Street} {src.City} {src.PostalCode}".Trim()))
-                .ReverseMap();
+                .ForMember(
+                    dest => dest.GenericName,
+                    opt => opt.MapFrom(src =>
+                        $"{src.Street} {src.City} {src.PostalCode}".Trim()
+                    )
+                );
+
+            cfg.CreateMap<AddressDto, Address>();
+
+            // Farm
             cfg.CreateMap<Farm, FarmDto>()
-                .ForMember(dest => dest.GenericName, opt => opt.MapFrom(src => $"{src.Name}, {src.Contact.FirstName} {src.Contact.LastName}, {src.Address.City}".Trim()))
-                .ReverseMap();
+                .ForMember(
+                    dest => dest.GenericName,
+                    opt => opt.MapFrom(src =>
+                        $"{src.Name}, {src.Contact.FirstName} {src.Contact.LastName}, {src.Address.City}".Trim()
+                    )
+                );
+
+            cfg.CreateMap<FarmDto, Farm>();
+
+            // SaveChickenRequest
             cfg.CreateMap<SaveChickenRequest, SaveChickenRequestDto>()
-                .ForMember(dest => dest.GenericName, opt => opt.MapFrom(src => $"{src.Contact.FirstName} {src.Contact.LastName}, {src.Contact.Email}, {src.Address.City}".Trim()))
-                .ReverseMap();
+                .ForMember(
+                    dest => dest.GenericName,
+                    opt => opt.MapFrom(src =>
+                        $"{src.Contact.FirstName} {src.Contact.LastName}, {src.Contact.Email}, {src.Address.City}".Trim()
+                    )
+                );
+
+            cfg.CreateMap<SaveChickenRequestDto, SaveChickenRequest>();
+
+            // SaveChickenAction
             cfg.CreateMap<SaveChickenAction, SaveChickenActionDto>()
-                .ForMember(dest => dest.GenericName, opt => opt.MapFrom(src => src.Title))
-                .ReverseMap();
+                .ForMember(
+                    dest => dest.GenericName,
+                    opt => opt.MapFrom(src => src.Title)
+                );
+
+            cfg.CreateMap<SaveChickenActionDto, SaveChickenAction>();
+
+            // StoredFile
             cfg.CreateMap<StoredFile, StoredFileDto>()
-                .ForMember(dest => dest.GenericName, opt => opt.MapFrom(src => src.FileName))
-                .ReverseMap();
+                .ForMember(
+                    dest => dest.GenericName,
+                    opt => opt.MapFrom(src => src.FileName)
+                );
+
+            cfg.CreateMap<StoredFileDto, StoredFile>();
+
+            // Driver
             cfg.CreateMap<Driver, DriverDto>()
-                .ForMember(dest => dest.GenericName, opt => opt.MapFrom(src => $"{src.Contact.FirstName} {src.Contact.LastName}".Trim()))
-                .ReverseMap();
+                .ForMember(
+                    dest => dest.GenericName,
+                    opt => opt.MapFrom(src =>
+                        $"{src.Contact.FirstName} {src.Contact.LastName}".Trim()
+                    )
+                );
+
+            cfg.CreateMap<DriverDto, Driver>();
+
+            // BlackListedPerson
             cfg.CreateMap<BlackListedPerson, BlackListedPersonDto>()
-                .ForMember(dest => dest.GenericName, opt => opt.MapFrom(src => $"{src.Contact.FirstName} {src.Contact.LastName}".Trim()))
-                .ReverseMap();
+                .ForMember(
+                    dest => dest.GenericName,
+                    opt => opt.MapFrom(src =>
+                        $"{src.Contact.FirstName} {src.Contact.LastName}".Trim()
+                    )
+                );
+
+            cfg.CreateMap<BlackListedPersonDto, BlackListedPerson>();
         });
 
-        mapper = new Mapper(config);
+        mapper = config.CreateMapper();
     }
 }
