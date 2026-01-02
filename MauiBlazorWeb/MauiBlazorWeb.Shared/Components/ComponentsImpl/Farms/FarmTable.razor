@@ -267,12 +267,17 @@
             <TemplateColumn>
                 <HeaderTemplate>@L["edit"]</HeaderTemplate>
                 <CellTemplate>
-                    <MudButton Variant="Variant.Filled"
-                               Color="Color.Primary"
-                               Size="Size.Small"
-                               OnClick="@(() => EditItem(context.Item))">
-                        <MudIcon Icon="@Icons.Material.Filled.Edit" />
-                    </MudButton>
+                    @if (context.Item != null)
+                    {
+                        var itemWithFiles = new ItemWithBrowserFiles<FarmDto> { Item = context.Item };
+                        <GenericUpdateWithFilesDialogLauncher TDto="FarmDto"
+                                                        model="itemWithFiles"
+                                                        OnEdited="@(() => OnItemsChanged.InvokeAsync())">
+                            <ChildContent Context="editModel">
+                                <FarmFormWithFiles EntityWithFiles="editModel" />
+                            </ChildContent>
+                        </GenericUpdateWithFilesDialogLauncher>
+                    }
                 </CellTemplate>
             </TemplateColumn>
 

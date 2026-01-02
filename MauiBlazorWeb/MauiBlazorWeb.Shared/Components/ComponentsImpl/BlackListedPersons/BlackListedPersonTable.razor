@@ -140,12 +140,16 @@
             <TemplateColumn>
                 <HeaderTemplate>@L["edit"]</HeaderTemplate>
                 <CellTemplate>
-                    <MudButton Variant="Variant.Filled"
-                               Color="Color.Primary"
-                               Size="Size.Small"
-                               OnClick="@(() => EditItem(context.Item))">
-                        <MudIcon Icon="@Icons.Material.Filled.Edit" />
-                    </MudButton>
+                    @if (context.Item != null)
+                    {
+                        <GenericUpdateDialogLauncher TDto="BlackListedPersonDto"
+                                                        model="context.Item"
+                                                        OnEdited="@(() => OnItemsChanged.InvokeAsync())">
+                            <ChildContent Context="editModel">
+                                <BlackListedPersonForm Entity="editModel" />
+                            </ChildContent>
+                        </GenericUpdateDialogLauncher>
+                    }
                 </CellTemplate>
             </TemplateColumn>
 

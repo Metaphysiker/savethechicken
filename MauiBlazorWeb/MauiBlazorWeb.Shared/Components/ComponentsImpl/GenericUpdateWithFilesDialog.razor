@@ -1,42 +1,28 @@
-﻿@typeparam TDto where TDto : class, IDto, IEntityWithFileDtos
+﻿@using MudBlazor
+@typeparam TDto where TDto : class, IEntityWithFileDtos
 
-@using MudBlazor
-@using global::Shared.Dtos
-@inject IDialogService DialogService
-
-
-@if (model != null && ChildContent != null)
-{
-    <MudButton Variant="Variant.Filled" OnClick="OpenDialog" Color="Color.Primary" Size="Size.Small">
-        <MudIcon Icon="@Icons.Material.Filled.Edit" />
-    </MudButton>
-}
+<MudDialog>
+    <DialogContent>
+        @if(Model != null && ChildContent != null)
+        {
+            <GenericUpdateWithFiles TDto="TDto" 
+                                   model="@Model" 
+                                   ChildContent="@ChildContent"
+                                   OnEdited="@HandleEdited" />
+        }
+    </DialogContent>
+</MudDialog>
 
 @code {
-    private IDialogReference? _dialogReference;
-    [Parameter, EditorRequired] public ItemWithBrowserFiles<TDto> model { get; set; } = default!;
+    [CascadingParameter] IMudDialogInstance? MudDialog { get; set; }
+
+    [Parameter, EditorRequired] public ItemWithBrowserFiles<TDto> Model { get; set; } = default!;
     [Parameter, EditorRequired] public RenderFragment<ItemWithBrowserFiles<TDto>> ChildContent { get; set; } = default!;
-    [Parameter]
-    public EventCallback OnEdited { get; set; }
-
-
-    private async Task OpenDialog()
-    {
-        if (model == null || ChildContent == null)
-            return;
-        var parameters = new DialogParameters
-        {
-            { "Model", model },
-            { "ChildContent", ChildContent },
-            { "OnEdited", EventCallback.Factory.Create(this, HandleEdited) }
-        };
-        var options = new DialogOptions { FullScreen = true, CloseButton = true, MaxWidth = MaxWidth.False };
-        _dialogReference = await DialogService.ShowAsync<GenericUpdateWithFiles<TDto>>("Bearbeitung", parameters, options);
-    }
-
+    [Parameter] public EventCallback OnEdited { get; set; }
+    
     private async Task HandleEdited()
     {
-        _dialogReference?.Close();
         await OnEdited.InvokeAsync();
+        MudDialog?.Close(DialogResult.Ok(true));
     }
 }

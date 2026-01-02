@@ -199,12 +199,17 @@
             <TemplateColumn>
                 <HeaderTemplate>@L["edit"]</HeaderTemplate>
                 <CellTemplate>
-                    <MudButton Variant="Variant.Filled"
-                               Color="Color.Primary"
-                               Size="Size.Small"
-                               OnClick="@(() => EditItem(context.Item))">
-                        <MudIcon Icon="@Icons.Material.Filled.Edit" />
-                    </MudButton>
+                    @if (context.Item != null)
+                    {
+                        var itemWithFiles = new ItemWithBrowserFiles<DriverDto> { Item = context.Item };
+                        <GenericUpdateWithFilesDialogLauncher TDto="DriverDto"
+                                                        model="itemWithFiles"
+                                                        OnEdited="@(() => OnItemsChanged.InvokeAsync())">
+                            <ChildContent Context="editModel">
+                                <DriverFormWithFiles EntityWithFiles="editModel" />
+                            </ChildContent>
+                        </GenericUpdateWithFilesDialogLauncher>
+                    }
                 </CellTemplate>
             </TemplateColumn>
 

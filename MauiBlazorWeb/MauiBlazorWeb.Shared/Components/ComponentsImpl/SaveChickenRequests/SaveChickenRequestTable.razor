@@ -262,17 +262,13 @@
                     @if (context.Item != null)
                     {
                         var itemWithFiles = new ItemWithBrowserFiles<SaveChickenRequestDto> { Item = context.Item };
-    <GenericUpdateWithFilesDialog TDto="SaveChickenRequestDto"
-        model="itemWithFiles"
-        OnEdited="@(() => OnItemsChanged.InvokeAsync())">
-        <ChildContent>
-            <GenericUpdateWithFiles TDto="SaveChickenRequestDto" model="itemWithFiles">
-                <ChildContent Context="editModel">
-                    <SaveChickenRequestFormWithFiles EntityWithFiles="editModel" />
-                </ChildContent>
-            </GenericUpdateWithFiles>
-        </ChildContent>
-    </GenericUpdateWithFilesDialog>
+                        <GenericUpdateWithFilesDialogLauncher TDto="SaveChickenRequestDto"
+                                                        model="itemWithFiles"
+                                                        OnEdited="@(() => OnItemsChanged.InvokeAsync())">
+                            <ChildContent Context="editModel">
+                                <SaveChickenRequestFormWithFiles EntityWithFiles="editModel" />
+                            </ChildContent>
+                        </GenericUpdateWithFilesDialogLauncher>
                     }
                 </CellTemplate>
             </TemplateColumn>
