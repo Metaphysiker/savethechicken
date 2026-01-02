@@ -1,0 +1,125 @@
+﻿@using MauiBlazorWeb.Shared.Classes
+@using global::Shared.Dtos.DtosImpl
+    <MudPaper Class="pa-4 my-4" Elevation="2">
+        <MudText Typo="Typo.h3">Routen-Planer</MudText>
+
+    @foreach (var driver in driverRoutePlans)
+        {
+            <MudText Typo="Typo.h6">Fahrer: @driver.Driver.Contact.FirstName @driver.Driver.Contact.LastName</MudText>
+
+            <OpenStreetMap markers="driver.RouteMarkers" arrows="driver.RouteArrows" />
+            <MudDivider/>
+        }
+    </MudPaper>
+@code {
+    List<DriverRoutePlan> driverRoutePlans = new();
+    MapMarker from = new MapMarker { Latitude = 52.5200, Longitude = 13.4050, Info = "Berlin" };
+    MapMarker to = new MapMarker { Latitude = 48.1351, Longitude = 11.5820, Info = "München" };
+    MapArrow arrow = new MapArrow
+    {
+        LatitudeFrom = 52.5200,
+        LongitudeFrom = 13.4050,
+        LatitudeTo = 48.1351,
+        LongitudeTo = 11.5820,
+    };
+
+    [Parameter, EditorRequired]
+    public SaveChickenActionDto saveChickenActionDto { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public List<DriverDto> Drivers { get; set; } = new();
+
+    [Parameter, EditorRequired]
+    public List<FarmDto> Farms { get; set; } = new();
+
+    [Parameter, EditorRequired]
+    public List<SaveChickenRequestDto> SaveChickenRequests { get; set; } = new();
+
+    protected async override Task OnInitializedAsync()
+    {
+        // Here you could implement logic to set the 'from' and 'to' markers based on the saveChickenActionDto data.
+        PlanRoutes();
+    }
+
+    protected override void OnParametersSet()
+    {
+        PlanRoutes();
+    }
+
+    private Dictionary<string, List<SaveChickenRequestDto>> groupedRequestsByPostalCode =>
+        SaveChickenRequests
+            .Where(r => r.Address != null && !string.IsNullOrWhiteSpace(r.Address.PostalCode))
+            .GroupBy(r => r.Address.PostalCode)
+            .ToDictionary(g => g.Key, g => g.ToList());
+
+    private void PlanRoutes()
+    {
+        driverRoutePlans.Clear();
+        var driversCount = Drivers.Count;
+
+        // Sort SaveChickenRequests by PostalCode before assigning
+        var sortedRequests = SaveChickenRequests
+            .Where(r => r.Address != null && !string.IsNullOrWhiteSpace(r.Address.PostalCode))
+            .OrderBy(r => r.Address.PostalCode)
+            .ToList();
+
+        for (int i = 0; i < sortedRequests.Count; i++)
+        {
+            var driver = Drivers[i % driversCount];
+            var request = sortedRequests[i];
+            var routePlan = driverRoutePlans.FirstOrDefault(drp => drp.Driver.Id == driver.Id);
+            if (routePlan == null)
+            {
+                routePlan = new DriverRoutePlan { Driver = driver, SaveChickenRequests = new List<SaveChickenRequestDto>() };
+                driverRoutePlans.Add(routePlan);
+            }
+            routePlan.SaveChickenRequests.Add(request);
+        }
+
+        setMapMarkers();
+        SetMapArrows();
+        StateHasChanged();
+    }
+
+    private void setMapMarkers()
+    {
+        foreach(var driverPlan in driverRoutePlans)
+        {
+            // Logic to set map markers for each driver's route based on their assigned SaveChickenRequests
+            foreach (var request in driverPlan.SaveChickenRequests)
+            {
+                if (request.Address?.GeoCoordinate != null)
+                {
+                    var marker = new MapMarker
+                    {
+                        Latitude = request.Address.GeoCoordinate.Latitude,
+                        Longitude = request.Address.GeoCoordinate.Longitude,
+                        Info = $"Huhn retten: {request.Id}"
+                    };
+                    driverPlan.RouteMarkers.Add(marker);
+                }
+            }
+        }
+    }
+
+    private void SetMapArrows()
+    {
+        // Logic to set map arrows for routes
+        foreach(var driverPlan in driverRoutePlans)
+        {
+            for(int i = 0; i < driverPlan.RouteMarkers.Count - 1; i++)
+            {
+                var fromMarker = driverPlan.RouteMarkers[i];
+                var toMarker = driverPlan.RouteMarkers[i + 1];
+                var arrow = new MapArrow
+                {
+                    LatitudeFrom = fromMarker.Latitude,
+                    LongitudeFrom = fromMarker.Longitude,
+                    LatitudeTo = toMarker.Latitude,
+                    LongitudeTo = toMarker.Longitude,
+                };
+                driverPlan.RouteArrows.Add(arrow);
+            }
+        }
+    }
+}
