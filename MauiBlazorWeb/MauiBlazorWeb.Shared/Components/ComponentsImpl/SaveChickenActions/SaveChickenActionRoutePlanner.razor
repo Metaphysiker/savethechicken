@@ -12,7 +12,7 @@
 
             @foreach (var driver in GetDriversByDateAndFarm(date, farm))
             {
-                <MudText Typo="Typo.h6">Fahrer: @driver.Driver.Contact.FirstName @driver.Driver.Contact.LastName</MudText>
+                <MudText Typo="Typo.h6">Fahrer: @driver.Driver.Contact.FirstName @driver.Driver.Contact.LastName, ArrowCount: @driver.RouteArrows.Count, Markercount: @driver.RouteMarkers.Count</MudText>
 
                 <OpenStreetMap markers="driver.RouteMarkers" arrows="driver.RouteArrows" />
                 <MudDivider />
@@ -60,7 +60,7 @@
         {
             @foreach(var farm in Farms)
             {
-        
+
                 if(!farm.DatesForRescues.Contains(date))
                     continue;
 
@@ -87,13 +87,18 @@
                 {
                     var driver = driversForDate[i % driversCount];
                     var request = sortedRequests[i];
-                    var routePlan = driverRoutePlans.FirstOrDefault(drp => drp.Driver.Id == driver.Id);
+                    var routePlan = driverRoutePlans
+                        .FirstOrDefault(drp => drp.Driver.Id == driver.Id && drp.RouteDate == date && drp.Farm.Id == farm.Id);
                     if (routePlan == null)
                     {
                         routePlan = new DriverRoutePlan { Driver = driver, SaveChickenRequests = new List<SaveChickenRequestDto>(), RouteDate = date, Farm = farm };
                         driverRoutePlans.Add(routePlan);
                     }
-                    routePlan.SaveChickenRequests.Add(request);
+                    // Only add request if not already present in any routePlan
+                    if (!driverRoutePlans.Any(drp => drp.SaveChickenRequests.Any(r => r.Id == request.Id)))
+                    {
+                        routePlan.SaveChickenRequests.Add(request);
+                    }
                 }
             }
         }
@@ -119,6 +124,8 @@
     {
         foreach(var driverPlan in driverRoutePlans)
         {
+            // Clear existing markers to prevent duplicates
+            driverPlan.RouteMarkers.Clear();
             // Logic to set map markers for each driver's route based on their assigned SaveChickenRequests
             foreach (var request in driverPlan.SaveChickenRequests)
             {
@@ -138,10 +145,15 @@
 
     private void SetMapArrows()
     {
-        // Logic to set map arrows for routes
-        foreach(var driverPlan in driverRoutePlans)
+        // Logic to set map arrows for routes, skipping the last marker (no arrow from last to nowhere)
+        foreach (var driverPlan in driverRoutePlans)
         {
-            for(int i = 0; i < driverPlan.RouteMarkers.Count - 1; i++)
+            driverPlan.RouteArrows.Clear();
+            int markerCount = driverPlan.RouteMarkers.Count;
+            if (markerCount < 2)
+                continue;
+            // Only set arrows up to the second-to-last marker
+            for (int i = 0; i < markerCount - 1; i++)
             {
                 var fromMarker = driverPlan.RouteMarkers[i];
                 var toMarker = driverPlan.RouteMarkers[i + 1];
