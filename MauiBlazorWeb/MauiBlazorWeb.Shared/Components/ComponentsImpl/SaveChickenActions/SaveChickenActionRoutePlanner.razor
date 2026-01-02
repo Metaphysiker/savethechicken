@@ -3,16 +3,28 @@
     <MudPaper Class="pa-4 my-4" Elevation="2">
         <MudText Typo="Typo.h3">Routen-Planer</MudText>
 
-    @foreach (var driver in driverRoutePlans)
-        {
-            <MudText Typo="Typo.h6">Fahrer: @driver.Driver.Contact.FirstName @driver.Driver.Contact.LastName</MudText>
+    @foreach (var date in uniqueDates)
+    {
 
-            <OpenStreetMap markers="driver.RouteMarkers" arrows="driver.RouteArrows" />
-            <MudDivider/>
+        @foreach (var farm in GetFarmByDate(date))
+        {
+            <MudText Typo="Typo.h5" Class="mt-4 mb-2">Betrieb: @farm.Name, Datum: @date.ToString("dd.MM.yyyy")</MudText>
+
+            @foreach (var driver in GetDriversByDateAndFarm(date, farm))
+            {
+                <MudText Typo="Typo.h6">Fahrer: @driver.Driver.Contact.FirstName @driver.Driver.Contact.LastName</MudText>
+
+                <OpenStreetMap markers="driver.RouteMarkers" arrows="driver.RouteArrows" />
+                <MudDivider />
+            }
         }
+    }
+
+
     </MudPaper>
 @code {
     List<DriverRoutePlan> driverRoutePlans = new();
+    HashSet<DateOnly> uniqueDates = new();
 
     [Parameter, EditorRequired]
     public SaveChickenActionDto saveChickenActionDto { get; set; } = default!;
@@ -31,42 +43,76 @@
         PlanRoutes();
     }
 
-    private Dictionary<string, List<SaveChickenRequestDto>> groupedRequestsByPostalCode =>
-        SaveChickenRequests
-            .Where(r => r.Address != null && !string.IsNullOrWhiteSpace(r.Address.PostalCode))
-            .GroupBy(r => r.Address.PostalCode)
-            .ToDictionary(g => g.Key, g => g.ToList());
+    public HashSet<DateOnly> GetAllUniqueRescueDates(IEnumerable<FarmDto> farms)
+    {
+        return farms
+            .Where(f => f.DatesForRescues != null)
+            .SelectMany(f => f.DatesForRescues)
+            .ToHashSet();
+    }
 
     private void PlanRoutes()
     {
-        if (Drivers.Count == 0 || SaveChickenRequests.Count == 0)
-            return;
+        var copyOfRequests = new List<SaveChickenRequestDto>(SaveChickenRequests);
+        uniqueDates = GetAllUniqueRescueDates(Farms);
 
-        driverRoutePlans.Clear();
-        var driversCount = Drivers.Count;
-
-        // Sort SaveChickenRequests by PostalCode before assigning
-        var sortedRequests = SaveChickenRequests
-            .Where(r => r.Address != null && !string.IsNullOrWhiteSpace(r.Address.PostalCode))
-            .OrderBy(r => r.Address.PostalCode)
-            .ToList();
-
-        for (int i = 0; i < sortedRequests.Count; i++)
+        @foreach(var date in uniqueDates)
         {
-            var driver = Drivers[i % driversCount];
-            var request = sortedRequests[i];
-            var routePlan = driverRoutePlans.FirstOrDefault(drp => drp.Driver.Id == driver.Id);
-            if (routePlan == null)
+            @foreach(var farm in Farms)
             {
-                routePlan = new DriverRoutePlan { Driver = driver, SaveChickenRequests = new List<SaveChickenRequestDto>() };
-                driverRoutePlans.Add(routePlan);
+        
+                if(!farm.DatesForRescues.Contains(date))
+                    continue;
+
+            var saveChickenRequestsForDate = copyOfRequests
+                .Where(r => r.DatesForHandOver.Contains(date))
+                .ToList();
+
+            var sortedRequests = saveChickenRequestsForDate
+                .Where(r => r.Address != null && !string.IsNullOrWhiteSpace(r.Address.PostalCode))
+                .OrderBy(r => r.Address.PostalCode)
+                .ToList();
+
+            var driversForDate = Drivers.Where(d => d.AvailableDates.Contains(date)).ToList();
+
+            var driversCount = driversForDate.Count;
+
+            if (driversCount == 0)
+                continue;
+
+            if(sortedRequests.Count == 0)
+                continue;
+
+                for (int i = 0; i < sortedRequests.Count; i++)
+                {
+                    var driver = driversForDate[i % driversCount];
+                    var request = sortedRequests[i];
+                    var routePlan = driverRoutePlans.FirstOrDefault(drp => drp.Driver.Id == driver.Id);
+                    if (routePlan == null)
+                    {
+                        routePlan = new DriverRoutePlan { Driver = driver, SaveChickenRequests = new List<SaveChickenRequestDto>(), RouteDate = date, Farm = farm };
+                        driverRoutePlans.Add(routePlan);
+                    }
+                    routePlan.SaveChickenRequests.Add(request);
+                }
             }
-            routePlan.SaveChickenRequests.Add(request);
         }
 
         setMapMarkers();
         SetMapArrows();
         StateHasChanged();
+    }
+
+    private List<FarmDto> GetFarmByDate(DateOnly date)
+    {
+        return Farms.Where(f => f.DatesForRescues.Contains(date)).ToList();
+    }
+
+    private List<DriverRoutePlan> GetDriversByDateAndFarm(DateOnly date, FarmDto farm)
+    {
+        return driverRoutePlans
+            .Where(drp => drp.RouteDate == date && drp.Farm.Id == farm.Id)
+            .ToList();
     }
 
     private void setMapMarkers()

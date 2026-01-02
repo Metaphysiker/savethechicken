@@ -30,9 +30,10 @@
     "message": "Freue mich auf die Hühner.",
     "saveChickenActionId": null,
     "saveChickenAction": null,
-    "datesForHandOver": ["2026-03-10", "2026-03-24"],
+    "datesForHandOver": ["2026-03-10", "2026-03-11", "2026-03-12"],
     "color": "Gelb",
-    "files": []
+    "files": [],
+    "blackListedPersonIds": []
   },
   {
     "createdAt": "2025-11-16T09:15:00",
@@ -65,9 +66,10 @@
     "message": "Habe bereits Erfahrung.",
     "saveChickenActionId": null,
     "saveChickenAction": null,
-    "datesForHandOver": ["2026-03-10"],
+    "datesForHandOver": ["2026-03-10", "2026-03-11", "2026-03-12"],
     "color": "Weiß",
-    "files": []
+    "files": [],
+    "blackListedPersonIds": []
   },
   {
     "createdAt": "2025-11-17T14:20:00",
@@ -105,9 +107,10 @@
     "message": "Handover bitte an anderer Adresse.",
     "saveChickenActionId": null,
     "saveChickenAction": null,
-    "datesForHandOver": ["2026-03-24"],
+    "datesForHandOver": ["2026-03-10", "2026-03-11", "2026-03-12"],
     "color": "Braun",
-    "files": []
+    "files": [],
+    "blackListedPersonIds": []
   },
   {
     "createdAt": "2025-11-18T08:45:00",
@@ -140,9 +143,10 @@
     "message": "Platz für mehrere Hühner vorhanden.",
     "saveChickenActionId": null,
     "saveChickenAction": null,
-    "datesForHandOver": ["2026-03-10", "2026-03-24"],
+    "datesForHandOver": ["2026-03-10", "2026-03-11", "2026-03-12"],
     "color": "Schwarz",
-    "files": []
+    "files": [],
+    "blackListedPersonIds": []
   },
   {
     "createdAt": "2025-11-19T11:10:00",
@@ -175,8 +179,9 @@
     "message": "Wir freuen uns auf neue Hühner.",
     "saveChickenActionId": null,
     "saveChickenAction": null,
-    "datesForHandOver": ["2026-03-24"],
+    "datesForHandOver": ["2026-03-10", "2026-03-11", "2026-03-12"],
     "color": "Rot",
-    "files": []
+    "files": [],
+    "blackListedPersonIds": []
   }
 ]
