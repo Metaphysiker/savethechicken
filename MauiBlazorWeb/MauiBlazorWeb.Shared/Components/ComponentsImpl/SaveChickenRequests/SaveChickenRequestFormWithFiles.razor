@@ -4,11 +4,16 @@
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.StoredFiles
 @using MauiBlazorWeb.Shared.Components.MultiDateSelecters
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
 @using MauiBlazorWeb.Shared.Resources.Strings
+@using MauiBlazorWeb.Shared.Services.ServicesImpl
+@using MauiBlazorWeb.Web.Services.ServicesImpl
 @using Microsoft.Extensions.Localization
 @using MudBlazor
 @using global::Shared.Dtos.DtosImpl
 @inject IStringLocalizer<AppResources> L
+@inject GenericDtoServiceFactory DtoServiceFactory
+
 
 @code {
     [Parameter, EditorRequired]
@@ -49,13 +54,18 @@
 
 </MudPaper>
 
-<MultiDateOnlySelector @bind-SelectedDates="EntityWithFiles.Item.DatesForHandOver" Text="Ich bin an diesen Tagen erreichbar:" />
+<div style="background-color: red">
+
+    @minDate - @maxDate
+</div>
+<MultiDateOnlySelector @bind-SelectedDates="EntityWithFiles.Item.DatesForHandOver" Text="Ich bin an diesen Tagen erreichbar:" MinDate="@minDate" MaxDate="@maxDate" />
 
 <StoredFilesEdit @bind-Files="EntityWithFiles.Item.Files" />
 
 <FilesUploadForm @bind-Value="EntityWithFiles.Files" Label="Dateien hochladen" Text="" />
 
-<SaveChickenActionSelector @bind-SelectedActionId="EntityWithFiles.Item.SaveChickenActionId" />
+<SaveChickenActionSelector SelectedActionId="EntityWithFiles.Item.SaveChickenActionId"
+                          SelectedActionIdChanged="OnSaveChickenActionIdChanged" />
 
 
 <MudPaper Class="pa-4 my-4">
@@ -75,3 +85,49 @@
         <ValidationMessage For="@(() => EntityWithFiles.Item.Message)" />
     </MudItem>
 </MudPaper>
+
+
+@code {
+    private GenericDtoService<SaveChickenActionDto, SaveChickenActionSearch>? _saveChickenActionService;
+    private SaveChickenActionDto? _saveChickenActionDto;
+    private DateOnly? minDate =>
+    _saveChickenActionDto != null && _saveChickenActionDto.Dates != null && _saveChickenActionDto.Dates.Count > 0
+        ? _saveChickenActionDto.Dates.Min()
+        : null;
+
+    private DateOnly? maxDate =>
+    _saveChickenActionDto != null && _saveChickenActionDto.Dates != null && _saveChickenActionDto.Dates.Count > 0
+        ? _saveChickenActionDto.Dates.Max()
+        : null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _saveChickenActionService = DtoServiceFactory.Create<SaveChickenActionDto, SaveChickenActionSearch>();
+        await Task.CompletedTask;
+    }
+
+    private async Task getSaveChickenAction()
+    {
+        if(_saveChickenActionService == null)
+        {
+            return;
+        }
+
+        if (EntityWithFiles.Item.SaveChickenActionId.HasValue)
+        {
+            var saveChickenActionIds = new List<int> { EntityWithFiles.Item.SaveChickenActionId.Value };
+            SaveChickenActionSearch saveChickenActionSearch = new();
+            saveChickenActionSearch.Ids = saveChickenActionIds;
+
+            var saveChickenActionSearchResults = await _saveChickenActionService.SearchAsync(saveChickenActionSearch);
+            _saveChickenActionDto = saveChickenActionSearchResults.Data.FirstOrDefault();
+        }
+    }
+
+    private async Task OnSaveChickenActionIdChanged(int? newId)
+    {
+        EntityWithFiles.Item.SaveChickenActionId = newId;
+        await getSaveChickenAction();
+        StateHasChanged();
+    }
+}

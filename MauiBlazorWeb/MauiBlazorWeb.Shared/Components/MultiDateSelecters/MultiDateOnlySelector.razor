@@ -23,8 +23,10 @@
                 }
                 else
                 {
-                    <div class="calendar-day @(selectedDates.Contains(date) ? "selected" : "")"
-                        @onclick="() => ToggleDate(date)">
+                    <div class="calendar-day
+                        @(selectedDates.Contains(date) ? "selected" : "")
+                        @(!IsWithinAllowedRange(date) ? "disabled" : "")"
+                        @onclick="() => OnDayClicked(date)">
                         @date.Day
                     </div>
                 }
@@ -59,6 +61,14 @@
     private DateTime currentMonth = DateTime.Today;
     private static readonly string[] dayNames = GetMondayFirstDayNames();
 
+    protected override void OnParametersSet()
+    {
+        if (MinDate.HasValue)
+        {
+            currentMonth = new DateTime(MinDate.Value.Year, MinDate.Value.Month, 1);
+        }
+    }
+
     private static string[] GetMondayFirstDayNames()
     {
         var days = CultureInfo.CurrentCulture.DateTimeFormat.AbbreviatedDayNames;
@@ -87,17 +97,48 @@
 
     private void ToggleDate(DateOnly date)
     {
-        if (date == DateOnly.MinValue) return;
+        if (date == DateOnly.MinValue)
+            return;
+
         if (selectedDates.Contains(date))
+        {
             selectedDates.Remove(date);
+        }
         else
+        {
+            if (!IsWithinAllowedRange(date))
+                return;
+
             selectedDates.Add(date);
+        }
 
         selectedDatesChanged.InvokeAsync(selectedDates);
     }
 
+
+    private bool IsWithinAllowedRange(DateOnly date)
+    {
+        if (MinDate.HasValue && date < MinDate.Value)
+            return false;
+
+        if (MaxDate.HasValue && date > MaxDate.Value)
+            return false;
+
+        return true;
+    }
+
+
+
     private void PrevMonth() => currentMonth = currentMonth.AddMonths(-1);
     private void NextMonth() => currentMonth = currentMonth.AddMonths(1);
+
+    private void OnDayClicked(DateOnly date)
+    {
+        if (IsWithinAllowedRange(date))
+        {
+            ToggleDate(date);
+        }
+    }
 }
 <style>
     .mud-calendar {
@@ -144,4 +185,13 @@
         display: block;
         width: fit-content;
     }
+
+    .calendar-day.disabled {
+        color: #999;
+        background-color: #f0f0f0;
+        cursor: not-allowed;
+        pointer-events: none;
+        opacity: 0.6;
+    }
+
 </style>
