@@ -1,27 +1,61 @@
 ﻿@using MauiBlazorWeb.Shared.Classes
 @using global::Shared.Dtos.DtosImpl
-    <MudPaper Class="pa-4 my-4" Elevation="2">
-        <MudText Typo="Typo.h3">Routen-Planer</MudText>
+<MudPaper Class="pa-4 my-4" Elevation="2">
+    <MudText Typo="Typo.h3">Routen-Planer</MudText>
 
-    @foreach (var date in uniqueDates)
-    {
-
-        @foreach (var farm in GetFarmByDate(date))
-        {
-            <MudText Typo="Typo.h5" Class="mt-4 mb-2">Betrieb: @farm.Name, Datum: @date.ToString("dd.MM.yyyy")</MudText>
-
-            @foreach (var driver in GetDriversByDateAndFarm(date, farm))
+    <MudDropContainer T="DropItem"
+                      Items="_items"
+                      ItemsSelector="@((item, dropzone) => item.Selector == dropzone)"
+                      ItemDropped="ItemUpdated"
+                      Class="d-flex flex-column">
+        <ChildContent>
+            @foreach (var date in uniqueDates)
             {
-                <MudText Typo="Typo.h6">Fahrer: @driver.Driver.Contact.FirstName @driver.Driver.Contact.LastName, ArrowCount: @driver.RouteArrows.Count, Markercount: @driver.RouteMarkers.Count</MudText>
+                @foreach (var farm in GetFarmByDate(date))
+                {
+                    <MudText Typo="Typo.h5" Class="mt-4 mb-2">Betrieb: @farm.Name, Datum: @date.ToString("dd.MM.yyyy")</MudText>
 
-                <OpenStreetMap markers="driver.RouteMarkers" arrows="driver.RouteArrows" />
-                <MudDivider />
+                    @foreach (var driver in GetDriversByDateAndFarm(date, farm))
+                    {
+                        <MudText Typo="Typo.h6">Fahrt: #@driver.NumberOfDrive - Fahrer: @driver.Driver.Contact.FirstName @driver.Driver.Contact.LastName Kapazität: @driver.Driver.CapacityForChickens</MudText>
+
+                        <MudGrid>
+                            <MudItem xs="12" md="6">
+                                var dropzone = driver.Id.ToString();
+                                <MudPaper Class="ma-4 flex-grow-1">
+                                    <MudList T="string" Class="d-flex flex-column mud-height-full">
+                                        <MudListSubheader>Drop Zone @driver.Id</MudListSubheader>
+                                        <MudDropZone T="DropItem" Identifier="@driver.Id.ToString()" Class="flex-grow-1" AllowReorder="true" />
+                                    </MudList>
+                                </MudPaper>
+                            </MudItem>
+                            <MudItem xs="12" md="6">
+                                <OpenStreetMap markers="driver.RouteMarkers" arrows="driver.RouteArrows" />
+
+                            </MudItem>
+                        </MudGrid>
+                        <MudDivider></MudDivider>
+                    }
+                }
+                <MudDivider Class="my-2" Style="border-color: red; border-width: 3px;" />
             }
-        }
-    }
 
+            <!-- Unassigned dropzone -->
+            <MudPaper Class="ma-4 flex-grow-1">
+                <MudList T="string" Class="d-flex flex-column mud-height-full">
+                    <MudListSubheader>Ablage</MudListSubheader>
+                    <MudDropZone T="DropItem" Identifier="unassigned" Class="flex-grow-1" AllowReorder="true" />
+                </MudList>
+            </MudPaper>
+        </ChildContent>
 
-    </MudPaper>
+        <ItemRenderer>
+            <MudPaper Class="pa-2 ma-1" Elevation="1">
+                <MudText>@context.Name</MudText>
+            </MudPaper>
+        </ItemRenderer>
+    </MudDropContainer>
+</MudPaper>
 @code {
     List<DrivePlan> drivePlans = new();
     HashSet<DateOnly> uniqueDates = new();
@@ -38,9 +72,80 @@
     [Parameter, EditorRequired]
     public List<SaveChickenRequestDto> SaveChickenRequests { get; set; } = new();
 
+    private void ItemUpdated(MudItemDropInfo<DropItem> dropItem)
+    {
+        if (dropItem.Item == null || dropItem.Item.saveChickenRequest == null)
+            return;
+
+        // Identify source and target drive plans
+        var targetDrivePlan = drivePlans.FirstOrDefault(p => p.Id.ToString() == dropItem.DropzoneIdentifier);
+        var sourceDrivePlan = drivePlans.FirstOrDefault(p =>
+            p.SaveChickenRequests.Any(r => r.Id == dropItem.Item.saveChickenRequest.Id));
+
+        // Prevent moving between different dates
+        if (targetDrivePlan != null && sourceDrivePlan != null &&
+            targetDrivePlan.RouteDate != sourceDrivePlan.RouteDate)
+            return;
+
+        // Remove from source list
+        if (sourceDrivePlan != null)
+        {
+            sourceDrivePlan.SaveChickenRequests.RemoveAll(r => r.Id == dropItem.Item.saveChickenRequest.Id);
+        }
+
+        // Insert into target list at drop index
+        if (targetDrivePlan != null)
+        {
+            // Remove duplicates if any
+            targetDrivePlan.SaveChickenRequests.RemoveAll(r => r.Id == dropItem.Item.saveChickenRequest.Id);
+
+            int index = dropItem.IndexInZone;
+            if (index >= 0 && index <= targetDrivePlan.SaveChickenRequests.Count)
+            {
+                targetDrivePlan.SaveChickenRequests.Insert(index, dropItem.Item.saveChickenRequest);
+            }
+            else
+            {
+                targetDrivePlan.SaveChickenRequests.Add(dropItem.Item.saveChickenRequest);
+            }
+        }
+
+        // Update selector for UI
+        dropItem.Item.Selector = dropItem.DropzoneIdentifier;
+
+        // Rebuild markers and arrows
+        setMap();
+    }
+
+
+
+    private List<DropItem> _items = new();
+
+    public class DropItem
+    {
+        public string Name { get; init; }
+        public string Selector { get; set; }
+        public SaveChickenRequestDto saveChickenRequest { get; set; }
+    }
+
     protected override void OnParametersSet()
     {
         PlanRoutes();
+
+        // Add real items from SaveChickenRequests
+
+        foreach(var drivePlan in drivePlans)
+        {
+            foreach(var request in drivePlan.SaveChickenRequests)
+            {
+                _items.Add(new DropItem
+                {
+                    Name = $"{request.Contact.FirstName} {request.Contact.LastName} - {request.NumberOfChickensToBeSaved} Hühner, {request.NumberOfRoostersToBeSaved} Hähne",
+                    Selector = drivePlan.Id.ToString(),
+                    saveChickenRequest = request
+                });
+            }
+        }
     }
 
     public HashSet<DateOnly> GetAllUniqueRescueDates(IEnumerable<FarmDto> farms)
@@ -89,7 +194,15 @@
                 for (int i = 0; i < sortedRequests.Count; i++)
                 {
                     var driver = driversForDate[currentDriverIndex];
-                    var totalAnimals = sortedRequests[i].NumberOfChickensToBeSaved + sortedRequests[i].NumberOfRoostersToBeSaved;
+
+                    var routePlan = drivePlans
+                        .FirstOrDefault(drp => drp.Driver.Id == driver.Id && drp.RouteDate == date && drp.Farm.Id == farm.Id);
+
+                    var sumOfAnimalsInCurrentRoute = routePlan != null
+                        ? routePlan.SaveChickenRequests.Sum(r => r.NumberOfChickensToBeSaved + r.NumberOfRoostersToBeSaved)
+                        : 0;
+
+                    var totalAnimals = sortedRequests[i].NumberOfChickensToBeSaved + sortedRequests[i].NumberOfRoostersToBeSaved + sumOfAnimalsInCurrentRoute;
                     if(totalAnimals > driver.CapacityForChickens)
                     {
                         // If the current driver can't take all animals, move to the next driver
@@ -98,11 +211,15 @@
                     }
 
                     var request = sortedRequests[i];
-                    var routePlan = drivePlans
-                        .FirstOrDefault(drp => drp.Driver.Id == driver.Id && drp.RouteDate == date && drp.Farm.Id == farm.Id);
+
                     if (routePlan == null)
                     {
-                        routePlan = new DrivePlan { Driver = driver, SaveChickenRequests = new List<SaveChickenRequestDto>(), RouteDate = date, Farm = farm };
+                        int NumberOfDrive = drivePlans
+                            .Where(drp => drp.RouteDate == date && drp.Farm.Id == farm.Id)
+                            .Select(drp => drp.NumberOfDrive)
+                            .DefaultIfEmpty(0)
+                            .Max() + 1;
+                        routePlan = new DrivePlan { Driver = driver, SaveChickenRequests = new List<SaveChickenRequestDto>(), RouteDate = date, Farm = farm, NumberOfDrive = NumberOfDrive };
                         drivePlans.Add(routePlan);
                     }
                     // Only add request if not already present in any routePlan
@@ -114,6 +231,11 @@
             }
         }
 
+        setMap();
+    }
+
+    private void setMap()
+    {
         setMapMarkers();
         SetMapArrows();
         StateHasChanged();
@@ -137,6 +259,17 @@
         {
             // Clear existing markers to prevent duplicates
             drivePlan.RouteMarkers.Clear();
+
+            //first marker is farm
+            var farmMarker = new MapMarker
+                {
+                    Latitude = drivePlan.Farm.Address.GeoCoordinate.Latitude,
+                    Longitude = drivePlan.Farm.Address.GeoCoordinate.Longitude,
+                    Info = $"Start: {drivePlan.Farm.Name}"
+                };
+
+            drivePlan.RouteMarkers.Add(farmMarker);
+
             // Logic to set map markers for each driver's route based on their assigned SaveChickenRequests
             foreach (var request in drivePlan.SaveChickenRequests)
             {
@@ -146,7 +279,7 @@
                     {
                         Latitude = request.Address.GeoCoordinate.Latitude,
                         Longitude = request.Address.GeoCoordinate.Longitude,
-                        Info = $"Huhn retten: {request.Id}"
+                        Info = $"{request.Contact.FirstName} {request.Contact.LastName}, {request.Address.Street}, {request.Address.PostalCode} {request.Address.City}, {request.NumberOfChickensToBeSaved} Hühner, {request.NumberOfRoostersToBeSaved} Hähne"
                     };
                     drivePlan.RouteMarkers.Add(marker);
                 }
@@ -156,6 +289,7 @@
 
     private void SetMapArrows()
     {
+
         // Logic to set map arrows for routes, skipping the last marker (no arrow from last to nowhere)
         foreach (var drivePlan in drivePlans)
         {

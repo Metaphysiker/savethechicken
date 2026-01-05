@@ -31,12 +31,13 @@ public class SetupController : ControllerBase
 
         var saveChickenRequestSeedPath = Path.Combine(Directory.GetCurrentDirectory(), "SeedData", "SaveChickenRequestSeed.json");
         Console.WriteLine($"Checking SaveChickenRequestSeed.json at: {saveChickenRequestSeedPath}");
+        var requests = new List<SaveChickenRequest>();
         if (System.IO.File.Exists(saveChickenRequestSeedPath))
         {
             var json = System.IO.File.ReadAllText(saveChickenRequestSeedPath);
-            var requests = JsonSerializer.Deserialize<List<SaveChickenRequest>>(json, options);
-            Console.WriteLine($"Loaded {requests?.Count ?? 0} SaveChickenRequests from seed file.");
-            if (requests != null)
+            requests = JsonSerializer.Deserialize<List<SaveChickenRequest>>(json, options) ?? new List<SaveChickenRequest>();
+            Console.WriteLine($"Loaded {requests.Count} SaveChickenRequests from seed file.");
+            if (requests.Count > 0)
             {
                 _db.SaveChickenRequests.AddRange(requests);
                 await _db.SaveChangesAsync();
@@ -50,12 +51,13 @@ public class SetupController : ControllerBase
 
         var driverSeedPath = Path.Combine(Directory.GetCurrentDirectory(), "SeedData", "DriverSeed.json");
         Console.WriteLine($"Checking DriverSeed.json at: {driverSeedPath}");
+        var drivers = new List<Driver>();
         if (System.IO.File.Exists(driverSeedPath))
         {
             var json = System.IO.File.ReadAllText(driverSeedPath);
-            var drivers = JsonSerializer.Deserialize<List<Driver>>(json, options);
-            Console.WriteLine($"Loaded {drivers?.Count ?? 0} Drivers from seed file.");
-            if (drivers != null)
+            drivers = JsonSerializer.Deserialize<List<Driver>>(json, options) ?? new List<Driver>();
+            Console.WriteLine($"Loaded {drivers.Count} Drivers from seed file.");
+            if (drivers.Count > 0)
             {
                 _db.Drivers.AddRange(drivers);
                 await _db.SaveChangesAsync();
@@ -69,12 +71,13 @@ public class SetupController : ControllerBase
 
         var farmPath = Path.Combine(Directory.GetCurrentDirectory(), "SeedData", "FarmSeed.json");
         Console.WriteLine($"Checking FarmSeed.json at: {farmPath}");
+        var farms = new List<Farm>();
         if (System.IO.File.Exists(farmPath))
         {
             var json = System.IO.File.ReadAllText(farmPath);
-            var farms = JsonSerializer.Deserialize<List<Farm>>(json, options);
-            Console.WriteLine($"Loaded {farms?.Count ?? 0} Farms from seed file.");
-            if (farms != null)
+            farms = JsonSerializer.Deserialize<List<Farm>>(json, options) ?? new List<Farm>();
+            Console.WriteLine($"Loaded {farms.Count} Farms from seed file.");
+            if (farms.Count > 0)
             {
                 _db.Farms.AddRange(farms);
                 await _db.SaveChangesAsync();
@@ -95,8 +98,8 @@ public class SetupController : ControllerBase
                 new DateOnly(2026, 3, 10),
                 new DateOnly(2026, 3, 24)
             },
-            Title = "Rettungsaktion März 2026 xxx",
-            Description = "Rette Hühner im März 2026! Melde dich jetzt an, um Hühner von befreiten Höfen aufzunehmen und ihnen ein liebevolles Zuhause zu bieten.",
+            Title = "Rettungsaktion April 2026 xxx",
+            Description = "Rette Hühner im April 2026! Melde dich jetzt an, um Hühner von befreiten Höfen aufzunehmen und ihnen ein liebevolles Zuhause zu bieten.",
             IsActive = true
         };
 
@@ -104,7 +107,8 @@ public class SetupController : ControllerBase
         await _db.SaveChangesAsync();
         Console.WriteLine("Seeded SaveChickenAction.");
 
-        foreach (var driver in _db.Drivers)
+        // Only link the newly added drivers, farms, and requests
+        foreach (var driver in drivers)
         {
             driver.SaveChickenAction = action;
             driver.SaveChickenActionId = action.Id;
@@ -112,7 +116,7 @@ public class SetupController : ControllerBase
         await _db.SaveChangesAsync();
         Console.WriteLine("Linked SaveChickenAction to Drivers.");
 
-        foreach (var farm in _db.Farms)
+        foreach (var farm in farms)
         {
             farm.SaveChickenAction = action;
             farm.SaveChickenActionId = action.Id;
@@ -120,7 +124,7 @@ public class SetupController : ControllerBase
         await _db.SaveChangesAsync();
         Console.WriteLine("Linked SaveChickenAction to Farms.");
 
-        foreach (var req in _db.SaveChickenRequests)
+        foreach (var req in requests)
         {
             req.SaveChickenAction = action;
             req.SaveChickenActionId = action.Id;

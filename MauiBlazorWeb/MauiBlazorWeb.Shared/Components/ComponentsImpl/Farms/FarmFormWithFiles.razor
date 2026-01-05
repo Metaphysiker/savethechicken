@@ -48,10 +48,11 @@
     <ValidationMessage For="@(() => EntityWithFiles.Item.GeneralInformation)" />
 </MudPaper>
 
-<MauiBlazorWeb.Shared.Components.MultiDateSelecters.MultiDateOnlySelector @bind-SelectedDates="EntityWithFiles.Item.DatesForRescues" Text="Hühner können an diesen Tagen abgeholt werden:" MinDate="@minDate" MaxDate="@maxDate" />
+<MauiBlazorWeb.Shared.Components.MultiDateSelecters.MultiDateOnlySelector MinDate="@minDate" MaxDate="@maxDate" @bind-SelectedDates="EntityWithFiles.Item.DatesForRescues" Text="Hühner können an diesen Tagen abgeholt werden:" />
 <ValidationMessage For="@(() => EntityWithFiles.Item.DatesForRescues)" />
 
-<SaveChickenActionSelector @bind-SelectedActionId="EntityWithFiles.Item.SaveChickenActionId" />
+<SaveChickenActionSelector SelectedActionId="EntityWithFiles.Item.SaveChickenActionId"
+                           SelectedActionIdChanged="OnSaveChickenActionIdChanged" />
 
 <FilesUploadForm @bind-Value="EntityWithFiles.Files" Label="Dateien hochladen" Text="Routenpläne" />
 
@@ -71,7 +72,7 @@
     protected override async Task OnInitializedAsync()
     {
         _saveChickenActionService = DtoServiceFactory.Create<SaveChickenActionDto, SaveChickenActionSearch>();
-        await Task.CompletedTask;
+        await getSaveChickenAction();
     }
 
     private async Task getSaveChickenAction()

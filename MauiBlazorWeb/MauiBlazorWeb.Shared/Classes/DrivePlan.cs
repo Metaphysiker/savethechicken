@@ -9,6 +9,8 @@ namespace MauiBlazorWeb.Shared.Classes
 {
     public class DrivePlan
     {
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public int NumberOfDrive { get; set; } = 1;
         public FarmDto Farm { get; set; }
         public DriverDto Driver { get; set; }
         public DateOnly RouteDate { get; set; }

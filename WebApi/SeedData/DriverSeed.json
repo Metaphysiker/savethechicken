@@ -18,10 +18,11 @@
       "postalCode": "8000"
     },
     "carMake": "VW",
-    "availableDates": ["2026-03-10", "2026-03-11", "2026-03-12"],
+    "availableDates": [ "2026-03-10", "2026-03-11", "2026-03-12" ],
     "files": [],
     "saveChickenActionId": null,
-    "saveChickenAction": null
+    "saveChickenAction": null,
+    "capacityForChickens": 20
   },
   {
     "createdAt": "2025-10-02T09:30:00",
@@ -42,9 +43,10 @@
       "postalCode": "3000"
     },
     "carMake": "Toyota",
-    "availableDates": ["2026-03-10", "2026-03-11", "2026-03-12"],
+    "availableDates": [ "2026-03-10", "2026-03-11", "2026-03-12" ],
     "files": [],
     "saveChickenActionId": null,
-    "saveChickenAction": null
+    "saveChickenAction": null,
+    "capacityForChickens": 10
   }
 ]

@@ -5,76 +5,44 @@
 
 @code {
     [Parameter, EditorRequired]
-    public List<MapMarker> markers { get; set; } = default!;
+    public List<MapMarker> Markers { get; set; } = default!;
 
     [Parameter]
-    public List<MapArrow> arrows { get; set; } = new();
+    public List<MapArrow> Arrows { get; set; } = new();
 
     private ElementReference mapDiv;
-    private List<MapMarker> previousMarkers = new();
-    private List<MapArrow> previousArrows = new();
+    private bool _mapInitialized;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await JS.InvokeVoidAsync("initMap", mapDiv, markers);
-            previousMarkers = markers.ToList();
-            previousArrows = arrows.ToList();
-            await DrawArrowsAsync();
+            await JS.InvokeVoidAsync("initMap", mapDiv, Markers);
+            _mapInitialized = true;
         }
-        else
-        {
-            bool markersChanged = !AreMarkersEqual(previousMarkers, markers);
-            bool arrowsChanged = !AreArrowsEqual(previousArrows, arrows);
 
-            if (markersChanged)
-            {
-                await JS.InvokeVoidAsync("updateMarkers", mapDiv, markers);
-                previousMarkers = markers.ToList();
-            }
-            if (arrowsChanged || markersChanged)
-            {
-                await DrawArrowsAsync();
-                previousArrows = arrows.ToList();
-            }
-        }
+        if (!_mapInitialized)
+            return;
+
+        await UpdateMapAsync();
     }
 
-    private async Task DrawArrowsAsync()
+    private async Task UpdateMapAsync()
     {
-        foreach (var arrow in arrows)
-        {
-            var from = new { latitude = arrow.LatitudeFrom, longitude = arrow.LongitudeFrom };
-            var to = new { latitude = arrow.LatitudeTo, longitude = arrow.LongitudeTo };
-            await JS.InvokeVoidAsync("drawArrow", mapDiv, from, to);
-        }
-    }
+        // Always update markers (cheap and safe)
+        await JS.InvokeVoidAsync("updateMarkers", mapDiv, Markers);
 
-    private bool AreMarkersEqual(List<MapMarker> oldList, List<MapMarker> newList)
-    {
-        if (oldList.Count != newList.Count) return false;
-        for (int i = 0; i < oldList.Count; i++)
-        {
-            if (oldList[i].Latitude != newList[i].Latitude ||
-                oldList[i].Longitude != newList[i].Longitude ||
-                oldList[i].Info != newList[i].Info)
-                return false;
-        }
-        return true;
-    }
+        // Always clear and redraw arrows (prevents JS state leaks)
+        await JS.InvokeVoidAsync("clearArrows", mapDiv);
 
-    private bool AreArrowsEqual(List<MapArrow> oldList, List<MapArrow> newList)
-    {
-        if (oldList.Count != newList.Count) return false;
-        for (int i = 0; i < oldList.Count; i++)
+        foreach (var arrow in Arrows)
         {
-            if (oldList[i].LatitudeFrom != newList[i].LatitudeFrom ||
-                oldList[i].LongitudeFrom != newList[i].LongitudeFrom ||
-                oldList[i].LatitudeTo != newList[i].LatitudeTo ||
-                oldList[i].LongitudeTo != newList[i].LongitudeTo)
-                return false;
+            await JS.InvokeVoidAsync(
+                "drawArrow",
+                mapDiv,
+                new { latitude = arrow.LatitudeFrom, longitude = arrow.LongitudeFrom },
+                new { latitude = arrow.LatitudeTo, longitude = arrow.LongitudeTo }
+            );
         }
-        return true;
     }
 }

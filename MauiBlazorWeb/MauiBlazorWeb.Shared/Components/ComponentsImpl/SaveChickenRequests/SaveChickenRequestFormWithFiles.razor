@@ -99,7 +99,7 @@
     protected override async Task OnInitializedAsync()
     {
         _saveChickenActionService = DtoServiceFactory.Create<SaveChickenActionDto, SaveChickenActionSearch>();
-        await Task.CompletedTask;
+        await getSaveChickenAction();
     }
 
     private async Task getSaveChickenAction()
