@@ -1,6 +1,7 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
+using System.Reflection.Metadata;
 using WebApi.Models.ModelsImpl;
 
 public class DatabaseContext : IdentityDbContext<IdentityUser>
@@ -26,8 +27,51 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
+        modelBuilder.Entity<Driver>(entity =>
+        {
+            entity
+            .Property(b => b.SearchVector)
+            .HasComputedColumnSql(
+                @"to_tsvector('german', 
+                                coalesce(""CarMake"", '')
+                            )", stored: true);
+
+            entity.HasIndex(e => e.SearchVector)
+                .HasMethod("GIN");
+
+        });
+
+        modelBuilder.Entity<Farm>(entity =>
+        {
+            entity
+            .Property(b => b.SearchVector)
+            .HasComputedColumnSql(
+                @"to_tsvector('german', 
+                                coalesce(""Size"", '') || ' ' ||
+                                coalesce(""Color"", '') || ' ' ||
+                                coalesce(""GeneralInformation"", '') || ' ' ||
+                                coalesce(""Name"", '')
+                            )", stored: true);
+            entity.HasIndex(e => e.SearchVector)
+    .HasMethod("GIN");
+        });
+
         modelBuilder.Entity<Contact>(entity =>
         {
+            entity
+            .Property(b => b.SearchVector)
+            .HasComputedColumnSql(
+                @"to_tsvector('german', 
+                                coalesce(""FirstName"", '') || ' ' ||
+                                coalesce(""LastName"", '') || ' ' ||
+                                coalesce(""Email"", '') || ' ' ||
+                                coalesce(""PhoneNumber"", '')
+                            )", stored: true);
+
+            entity.HasIndex(e => e.SearchVector)
+    .HasMethod("GIN");
+
             entity.Property(e => e.Categories)
                 .HasConversion(
                     v => string.Join(";", v.Select(e => e.ToString())),
@@ -46,11 +90,35 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
 
         modelBuilder.Entity<Address>(entity =>
         {
+            entity
+            .Property(b => b.SearchVector)
+            .HasComputedColumnSql(
+                @"to_tsvector('german', 
+                                coalesce(""Street"", '') || ' ' ||
+                                coalesce(""City"", '') || ' ' ||
+                                coalesce(""PostalCode"", '')
+                            )", stored: true);
+
+            entity.HasIndex(e => e.SearchVector)
+    .HasMethod("GIN");
+
             entity.OwnsOne(e => e.GeoCoordinate);
         });
 
         modelBuilder.Entity<SaveChickenRequest>(entity =>
         {
+            entity
+                .Property(b => b.SearchVector)
+                .HasComputedColumnSql(
+                    @"to_tsvector('german', 
+                        coalesce(""DescriptionOfPlaceForChickens"", '') || ' ' ||
+                        coalesce(""Message"", '') || ' ' ||
+                        coalesce(""Color"", '')
+                    )", stored: true);
+
+            entity.HasIndex(e => e.SearchVector)
+    .HasMethod("GIN");
+
             entity.Property(e => e.DatesForHandOver)
                 .HasConversion(
                     v => string.Join(";", v.Select(d => d.ToString("yyyy-MM-dd"))),

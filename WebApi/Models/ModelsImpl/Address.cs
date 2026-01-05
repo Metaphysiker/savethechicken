@@ -1,4 +1,6 @@
-﻿using Shared.Dtos.DtosImpl;
+﻿using NpgsqlTypes;
+using Shared.Dtos.DtosImpl;
+using System.ComponentModel.DataAnnotations.Schema;
 using WebApi.Interfaces;
 
 namespace WebApi.Models.ModelsImpl
@@ -12,5 +14,8 @@ namespace WebApi.Models.ModelsImpl
         public String City { get; set; } = String.Empty;
         public String PostalCode { get; set; } = String.Empty;
         public GeoCoordinate? GeoCoordinate { get; set; }
-        }
+
+        [Column(TypeName = "tsvector")]
+        public NpgsqlTsVector SearchVector { get; set; }
+    }
 }

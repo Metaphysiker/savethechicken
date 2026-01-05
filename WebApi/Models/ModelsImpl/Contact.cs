@@ -1,4 +1,7 @@
-﻿namespace WebApi.Models.ModelsImpl
+﻿using NpgsqlTypes;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace WebApi.Models.ModelsImpl
 {
     public class Contact : IModel
     {
@@ -10,7 +13,9 @@
         public String PhoneNumber { get; set; } = String.Empty;
         public String Email { get; set; } = String.Empty;
         public List<ContactCategory> Categories { get; set; } = new List<ContactCategory>();
-        public String CarMake { get; set; } = String.Empty;
         public List<DateOnly> AvailableDates { get; set; } = new List<DateOnly>();
+
+        [Column(TypeName = "tsvector")]
+        public NpgsqlTsVector SearchVector { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿using WebApi.Interfaces;
+﻿using NpgsqlTypes;
+using System.ComponentModel.DataAnnotations.Schema;
+using WebApi.Interfaces;
 using WebApi.Models.ModelsImpl;
 
 namespace WebApi.Models.ModelsImpl
@@ -29,6 +31,9 @@ namespace WebApi.Models.ModelsImpl
         public string Color { get; set; } = string.Empty;
         public List<StoredFile> Files { get; set; }
         public List<int> BlackListedPersonIds { get; set; } = new List<int>();
+        
+        [Column(TypeName = "tsvector")]
+        public NpgsqlTsVector SearchVector { get; set; }
 
         public SaveChickenRequest()
         {

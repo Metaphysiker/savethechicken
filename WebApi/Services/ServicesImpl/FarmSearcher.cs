@@ -31,22 +31,12 @@ namespace Services.ServicesImpl
             if (search.SaveChickenActionIds != null && search.SaveChickenActionIds.Any())
                 query = query.Where(x => x.SaveChickenActionId.HasValue && search.SaveChickenActionIds.Contains(x.SaveChickenActionId.Value));
 
-            if (!string.IsNullOrEmpty(search.SearchTerm))
+            if (!string.IsNullOrWhiteSpace(search.SearchTerm))
             {
-                var term = $"%{search.SearchTerm.ToLower()}%";
-
                 query = query.Where(x =>
-                    EF.Functions.Like(x.Contact.FirstName.ToLower(), term) ||
-                    EF.Functions.Like(x.Contact.LastName.ToLower(), term) ||
-                    EF.Functions.Like(x.Address.Street.ToLower(), term) ||
-                    EF.Functions.Like(x.Address.City.ToLower(), term) ||
-                    EF.Functions.Like(x.Address.PostalCode.ToLower(), term) ||
-                    EF.Functions.Like(x.Contact.PhoneNumber.ToLower(), term) ||
-                    EF.Functions.Like(x.Contact.Email.ToLower(), term) ||
-                    EF.Functions.Like(x.Name.ToLower(), term) ||
-                    EF.Functions.Like(x.GeneralInformation.ToLower(), term) ||
-                    EF.Functions.Like(x.Size.ToLower(), term) || 
-                    EF.Functions.Like(x.Color.ToLower(), term)
+                    x.SearchVector.Matches(EF.Functions.PlainToTsQuery("german", search.SearchTerm))
+                    || x.Contact.SearchVector.Matches(EF.Functions.PlainToTsQuery("german", search.SearchTerm))
+                    || x.Address.SearchVector.Matches(EF.Functions.PlainToTsQuery("german", search.SearchTerm))
                 );
             }
 

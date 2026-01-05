@@ -1,4 +1,6 @@
 
+using NpgsqlTypes;
+using System.ComponentModel.DataAnnotations.Schema;
 using WebApi.Interfaces;
 
 namespace WebApi.Models.ModelsImpl
@@ -22,6 +24,9 @@ namespace WebApi.Models.ModelsImpl
         public List<StoredFile> Files { get; set; }
         public int? SaveChickenActionId { get; set; }
         public SaveChickenAction? SaveChickenAction { get; set; }
+
+        [Column(TypeName = "tsvector")]
+        public NpgsqlTsVector SearchVector { get; set; }
         public Farm()
         {
             Files = new List<StoredFile>();

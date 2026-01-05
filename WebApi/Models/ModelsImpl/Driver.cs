@@ -1,3 +1,5 @@
+using NpgsqlTypes;
+using System.ComponentModel.DataAnnotations.Schema;
 using WebApi.Interfaces;
 
 namespace WebApi.Models.ModelsImpl
@@ -17,6 +19,9 @@ namespace WebApi.Models.ModelsImpl
         public int? SaveChickenActionId { get; set; }
         public SaveChickenAction? SaveChickenAction { get; set; }
         public int CapacityForChickens { get; set; } = 20;
+
+        [Column(TypeName = "tsvector")]
+        public NpgsqlTsVector SearchVector { get; set; }
         public Driver()
         {
             Contact = new Contact();
