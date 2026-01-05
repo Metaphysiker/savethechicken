@@ -54,10 +54,6 @@
 
 </MudPaper>
 
-<div style="background-color: red">
-
-    @minDate - @maxDate
-</div>
 <MultiDateOnlySelector @bind-SelectedDates="EntityWithFiles.Item.DatesForHandOver" Text="Ich bin an diesen Tagen erreichbar:" MinDate="@minDate" MaxDate="@maxDate" />
 
 <StoredFilesEdit @bind-Files="EntityWithFiles.Item.Files" />
@@ -115,12 +111,7 @@
 
         if (EntityWithFiles.Item.SaveChickenActionId.HasValue)
         {
-            var saveChickenActionIds = new List<int> { EntityWithFiles.Item.SaveChickenActionId.Value };
-            SaveChickenActionSearch saveChickenActionSearch = new();
-            saveChickenActionSearch.Ids = saveChickenActionIds;
-
-            var saveChickenActionSearchResults = await _saveChickenActionService.SearchAsync(saveChickenActionSearch);
-            _saveChickenActionDto = saveChickenActionSearchResults.Data.FirstOrDefault();
+            _saveChickenActionDto = await _saveChickenActionService.GetByIdAsync(EntityWithFiles.Item.SaveChickenActionId.Value);
         }
     }
 

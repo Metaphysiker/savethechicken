@@ -1,10 +1,12 @@
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Addresses
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Contacts
 @inject IStringLocalizer<AppResources> L
-
+@inject GenericDtoServiceFactory DtoServiceFactory
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.FileUploads
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
 @using MauiBlazorWeb.Shared.Resources.Strings
+@using MauiBlazorWeb.Web.Services.ServicesImpl
 @using Microsoft.Extensions.Localization
 @using global::Shared.Dtos.DtosImpl
 @code {
@@ -30,3 +32,44 @@
      <SaveChickenActionSelector @bind-SelectedActionId="EntityWithFiles.Item.SaveChickenActionId" />
 
     <FilesUploadForm @bind-Value="EntityWithFiles.Files" Label="Dateien hochladen" Text="Routenplan" />
+
+
+@code {
+    private GenericDtoService<SaveChickenActionDto, SaveChickenActionSearch>? _saveChickenActionService;
+    private SaveChickenActionDto? _saveChickenActionDto;
+    private DateOnly? minDate =>
+    _saveChickenActionDto != null && _saveChickenActionDto.Dates != null && _saveChickenActionDto.Dates.Count > 0
+        ? _saveChickenActionDto.Dates.Min()
+        : null;
+
+    private DateOnly? maxDate =>
+    _saveChickenActionDto != null && _saveChickenActionDto.Dates != null && _saveChickenActionDto.Dates.Count > 0
+        ? _saveChickenActionDto.Dates.Max()
+        : null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _saveChickenActionService = DtoServiceFactory.Create<SaveChickenActionDto, SaveChickenActionSearch>();
+        await Task.CompletedTask;
+    }
+
+    private async Task getSaveChickenAction()
+    {
+        if(_saveChickenActionService == null)
+        {
+            return;
+        }
+
+        if (EntityWithFiles.Item.SaveChickenActionId.HasValue)
+        {
+            _saveChickenActionDto = await _saveChickenActionService.GetByIdAsync(EntityWithFiles.Item.SaveChickenActionId.Value);
+        }
+    }
+
+    private async Task OnSaveChickenActionIdChanged(int? newId)
+    {
+        EntityWithFiles.Item.SaveChickenActionId = newId;
+        await getSaveChickenAction();
+        StateHasChanged();
+    }
+}
