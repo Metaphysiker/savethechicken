@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MauiBlazorWeb.Shared.Classes
 {
-    public class DriverRoutePlan
+    public class DrivePlan
     {
         public FarmDto Farm { get; set; }
         public DriverDto Driver { get; set; }
@@ -18,7 +18,7 @@ namespace MauiBlazorWeb.Shared.Classes
 
         public List<MapArrow> RouteArrows { get; set; } = new List<MapArrow>();
 
-        public DriverRoutePlan() {
+        public DrivePlan() {
             Farm = new FarmDto();
             Driver = new DriverDto();
             SaveChickenRequests = new List<SaveChickenRequestDto>();

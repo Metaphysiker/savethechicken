@@ -22,6 +22,7 @@ namespace Shared.Dtos.DtosImpl
         public SaveChickenActionDto? SaveChickenAction { get; set; }
         public int? SaveChickenActionId { get; set; }
         public string GenericName { get; set; } = string.Empty;
+        public int CapacityForChickens { get; set; } = 20;
 
         public DriverDto()
         {

@@ -23,7 +23,7 @@
 
     </MudPaper>
 @code {
-    List<DriverRoutePlan> driverRoutePlans = new();
+    List<DrivePlan> drivePlans = new();
     HashSet<DateOnly> uniqueDates = new();
 
     [Parameter, EditorRequired]
@@ -53,7 +53,7 @@
 
     private void PlanRoutes()
     {
-        driverRoutePlans.Clear();
+        drivePlans.Clear();
         var copyOfRequests = new List<SaveChickenRequestDto>(SaveChickenRequests);
         uniqueDates = GetAllUniqueRescueDates(Farms);
 
@@ -84,19 +84,29 @@
             if(sortedRequests.Count == 0)
                 continue;
 
+                var currentDriverIndex = 0;
+
                 for (int i = 0; i < sortedRequests.Count; i++)
                 {
-                    var driver = driversForDate[i % driversCount];
+                    var driver = driversForDate[currentDriverIndex];
+                    var totalAnimals = sortedRequests[i].NumberOfChickensToBeSaved + sortedRequests[i].NumberOfRoostersToBeSaved;
+                    if(totalAnimals > driver.CapacityForChickens)
+                    {
+                        // If the current driver can't take all animals, move to the next driver
+                        currentDriverIndex = (currentDriverIndex + 1) % driversCount;
+                        driver = driversForDate[currentDriverIndex];
+                    }
+
                     var request = sortedRequests[i];
-                    var routePlan = driverRoutePlans
+                    var routePlan = drivePlans
                         .FirstOrDefault(drp => drp.Driver.Id == driver.Id && drp.RouteDate == date && drp.Farm.Id == farm.Id);
                     if (routePlan == null)
                     {
-                        routePlan = new DriverRoutePlan { Driver = driver, SaveChickenRequests = new List<SaveChickenRequestDto>(), RouteDate = date, Farm = farm };
-                        driverRoutePlans.Add(routePlan);
+                        routePlan = new DrivePlan { Driver = driver, SaveChickenRequests = new List<SaveChickenRequestDto>(), RouteDate = date, Farm = farm };
+                        drivePlans.Add(routePlan);
                     }
                     // Only add request if not already present in any routePlan
-                    if (!driverRoutePlans.Any(drp => drp.SaveChickenRequests.Any(r => r.Id == request.Id)))
+                    if (!drivePlans.Any(drp => drp.SaveChickenRequests.Any(r => r.Id == request.Id)))
                     {
                         routePlan.SaveChickenRequests.Add(request);
                     }
@@ -114,21 +124,21 @@
         return Farms.Where(f => f.DatesForRescues.Contains(date)).ToList();
     }
 
-    private List<DriverRoutePlan> GetDriversByDateAndFarm(DateOnly date, FarmDto farm)
+    private List<DrivePlan> GetDriversByDateAndFarm(DateOnly date, FarmDto farm)
     {
-        return driverRoutePlans
+        return drivePlans
             .Where(drp => drp.RouteDate == date && drp.Farm.Id == farm.Id)
             .ToList();
     }
 
     private void setMapMarkers()
     {
-        foreach(var driverPlan in driverRoutePlans)
+        foreach(var drivePlan in drivePlans)
         {
             // Clear existing markers to prevent duplicates
-            driverPlan.RouteMarkers.Clear();
+            drivePlan.RouteMarkers.Clear();
             // Logic to set map markers for each driver's route based on their assigned SaveChickenRequests
-            foreach (var request in driverPlan.SaveChickenRequests)
+            foreach (var request in drivePlan.SaveChickenRequests)
             {
                 if (request.Address?.GeoCoordinate != null)
                 {
@@ -138,7 +148,7 @@
                         Longitude = request.Address.GeoCoordinate.Longitude,
                         Info = $"Huhn retten: {request.Id}"
                     };
-                    driverPlan.RouteMarkers.Add(marker);
+                    drivePlan.RouteMarkers.Add(marker);
                 }
             }
         }
@@ -147,17 +157,17 @@
     private void SetMapArrows()
     {
         // Logic to set map arrows for routes, skipping the last marker (no arrow from last to nowhere)
-        foreach (var driverPlan in driverRoutePlans)
+        foreach (var drivePlan in drivePlans)
         {
-            driverPlan.RouteArrows.Clear();
-            int markerCount = driverPlan.RouteMarkers.Count;
+            drivePlan.RouteArrows.Clear();
+            int markerCount = drivePlan.RouteMarkers.Count;
             if (markerCount < 2)
                 continue;
             // Only set arrows up to the second-to-last marker
             for (int i = 0; i < markerCount - 1; i++)
             {
-                var fromMarker = driverPlan.RouteMarkers[i];
-                var toMarker = driverPlan.RouteMarkers[i + 1];
+                var fromMarker = drivePlan.RouteMarkers[i];
+                var toMarker = drivePlan.RouteMarkers[i + 1];
                 var arrow = new MapArrow
                 {
                     LatitudeFrom = fromMarker.Latitude,
@@ -165,7 +175,7 @@
                     LatitudeTo = toMarker.Latitude,
                     LongitudeTo = toMarker.Longitude,
                 };
-                driverPlan.RouteArrows.Add(arrow);
+                drivePlan.RouteArrows.Add(arrow);
             }
         }
     }

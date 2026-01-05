@@ -16,7 +16,7 @@ namespace WebApi.Models.ModelsImpl
         public List<StoredFile> Files { get; set; }
         public int? SaveChickenActionId { get; set; }
         public SaveChickenAction? SaveChickenAction { get; set; }
-
+        public int CapacityForChickens { get; set; } = 20;
         public Driver()
         {
             Contact = new Contact();

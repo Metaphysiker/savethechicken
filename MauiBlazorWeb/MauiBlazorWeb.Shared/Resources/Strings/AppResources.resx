@@ -252,4 +252,7 @@
   <data name="no" xml:space="preserve">
     <value>nein</value>
   </data>
+  <data name="CapacityForChickens" xml:space="preserve">
+    <value>Wie viele Hühner kannst du mitnehmen?</value>
+  </data>
 </root>
