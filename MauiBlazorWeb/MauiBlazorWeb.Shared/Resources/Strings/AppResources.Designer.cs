@@ -133,6 +133,15 @@ namespace MauiBlazorWeb.Shared.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Wie viele Hühner kannst du mitnehmen?.
+        /// </summary>
+        public static string CapacityForChickens {
+            get {
+                return ResourceManager.GetString("CapacityForChickens", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Automarke.
         /// </summary>
         public static string CarMake {

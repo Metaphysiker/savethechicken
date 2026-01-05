@@ -54,10 +54,6 @@
 
 </MudPaper>
 
-<div style="background-color: red">
-
-    @minDate - @maxDate
-</div>
 <MultiDateOnlySelector @bind-SelectedDates="EntityWithFiles.Item.DatesForHandOver" Text="Ich bin an diesen Tagen erreichbar:" MinDate="@minDate" MaxDate="@maxDate" />
 
 <StoredFilesEdit @bind-Files="EntityWithFiles.Item.Files" />
