@@ -152,6 +152,19 @@
 
             <TemplateColumn>
                 <HeaderTemplate>
+                    <MudButton OnClick="@(() => OnHeaderClick("CapacityForChickens"))" Variant="Variant.Text" Style="text-transform: none;">
+                        @L["CapacityForChickens"]
+                        @if (GetSortIcon("CapacityForChickens") != null)
+                        {
+                            <MudIcon Icon="@GetSortIcon("CapacityForChickens")" Size="Size.Small" />
+                        }
+                    </MudButton>
+                </HeaderTemplate>
+                <CellTemplate>@context.Item.CapacityForChickens</CellTemplate>
+            </TemplateColumn>
+
+            <TemplateColumn>
+                <HeaderTemplate>
                     <MudButton OnClick="@(() => OnHeaderClick("AvailableDates"))" Variant="Variant.Text" Style="text-transform: none;">
                         @L["AvailableDates"]
                         @if (GetSortIcon("AvailableDates") != null)

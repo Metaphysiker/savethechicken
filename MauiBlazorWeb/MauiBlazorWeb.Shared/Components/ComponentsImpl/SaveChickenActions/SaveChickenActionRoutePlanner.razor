@@ -17,14 +17,12 @@
 
                     @foreach (var driver in GetDriversByDateAndFarm(date, farm))
                     {
-                        <MudText Typo="Typo.h6">Fahrt: #@driver.NumberOfDrive - Fahrer: @driver.Driver.Contact.FirstName @driver.Driver.Contact.LastName Kapazität: @driver.Driver.CapacityForChickens</MudText>
+                        <MudText Typo="Typo.h6">Fahrt: #@driver.NumberOfDrive - Fahrer: @driver.Driver.Contact.FirstName @driver.Driver.Contact.LastName, Kapazität: @driver.Driver.CapacityForChickens</MudText>
 
                         <MudGrid>
                             <MudItem xs="12" md="6">
-                                var dropzone = driver.Id.ToString();
                                 <MudPaper Class="ma-4 flex-grow-1">
                                     <MudList T="string" Class="d-flex flex-column mud-height-full">
-                                        <MudListSubheader>Drop Zone @driver.Id</MudListSubheader>
                                         <MudDropZone T="DropItem" Identifier="@driver.Id.ToString()" Class="flex-grow-1" AllowReorder="true" />
                                     </MudList>
                                 </MudPaper>
@@ -51,7 +49,17 @@
 
         <ItemRenderer>
             <MudPaper Class="pa-2 ma-1" Elevation="1">
-                <MudText>@context.Name</MudText>
+                <MudGrid Class="item-table-grid" Style="width:100%;">
+                    <MudItem xs="12" md="4" Class="item-table-cell">
+                        @context.Name
+                    </MudItem>
+                    <MudItem xs="12" md="5" Class="item-table-cell">
+                            @context.saveChickenRequest.Address.PostalCode @context.saveChickenRequest.Address.City
+                    </MudItem>
+                    <MudItem xs="12" md="3" Class="item-table-cell">
+                        @context.saveChickenRequest.NumberOfChickensToBeSaved Hühner, @context.saveChickenRequest.NumberOfRoostersToBeSaved Hähne
+                    </MudItem>
+                </MudGrid>
             </MudPaper>
         </ItemRenderer>
     </MudDropContainer>
@@ -140,7 +148,7 @@
             {
                 _items.Add(new DropItem
                 {
-                    Name = $"{request.Contact.FirstName} {request.Contact.LastName} - {request.NumberOfChickensToBeSaved} Hühner, {request.NumberOfRoostersToBeSaved} Hähne",
+                    Name = $"{request.Contact.FirstName} {request.Contact.LastName}",
                     Selector = drivePlan.Id.ToString(),
                     saveChickenRequest = request
                 });
@@ -190,16 +198,14 @@
                 continue;
 
                 var currentDriverIndex = 0;
+                DrivePlan? currentDrivePlan = null;
 
                 for (int i = 0; i < sortedRequests.Count; i++)
                 {
                     var driver = driversForDate[currentDriverIndex];
 
-                    var routePlan = drivePlans
-                        .FirstOrDefault(drp => drp.Driver.Id == driver.Id && drp.RouteDate == date && drp.Farm.Id == farm.Id);
-
-                    var sumOfAnimalsInCurrentRoute = routePlan != null
-                        ? routePlan.SaveChickenRequests.Sum(r => r.NumberOfChickensToBeSaved + r.NumberOfRoostersToBeSaved)
+                    var sumOfAnimalsInCurrentRoute = currentDrivePlan != null
+                        ? currentDrivePlan.SaveChickenRequests.Sum(r => r.NumberOfChickensToBeSaved + r.NumberOfRoostersToBeSaved)
                         : 0;
 
                     var totalAnimals = sortedRequests[i].NumberOfChickensToBeSaved + sortedRequests[i].NumberOfRoostersToBeSaved + sumOfAnimalsInCurrentRoute;
@@ -208,24 +214,21 @@
                         // If the current driver can't take all animals, move to the next driver
                         currentDriverIndex = (currentDriverIndex + 1) % driversCount;
                         driver = driversForDate[currentDriverIndex];
+                        currentDrivePlan = null; // Reset current drive plan for the new driver
                     }
 
                     var request = sortedRequests[i];
 
-                    if (routePlan == null)
+                    if (currentDrivePlan == null)
                     {
-                        int NumberOfDrive = drivePlans
-                            .Where(drp => drp.RouteDate == date && drp.Farm.Id == farm.Id)
-                            .Select(drp => drp.NumberOfDrive)
-                            .DefaultIfEmpty(0)
-                            .Max() + 1;
-                        routePlan = new DrivePlan { Driver = driver, SaveChickenRequests = new List<SaveChickenRequestDto>(), RouteDate = date, Farm = farm, NumberOfDrive = NumberOfDrive };
-                        drivePlans.Add(routePlan);
+                        int NumberOfDrive = drivePlans.Count();
+                        currentDrivePlan = new DrivePlan { Driver = driver, SaveChickenRequests = new List<SaveChickenRequestDto>(), RouteDate = date, Farm = farm, NumberOfDrive = NumberOfDrive };
+                        drivePlans.Add(currentDrivePlan);
                     }
                     // Only add request if not already present in any routePlan
                     if (!drivePlans.Any(drp => drp.SaveChickenRequests.Any(r => r.Id == request.Id)))
                     {
-                        routePlan.SaveChickenRequests.Add(request);
+                        currentDrivePlan.SaveChickenRequests.Add(request);
                     }
                 }
             }

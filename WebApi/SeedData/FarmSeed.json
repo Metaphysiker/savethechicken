@@ -28,35 +28,5 @@
     "files": [],
     "saveChickenActionId": null,
     "saveChickenAction": null
-  },
-  {
-    "createdAt": "2025-12-02T08:30:00",
-    "updatedAt": "2025-12-02T08:30:00",
-    "numberOfChickens": 80,
-    "numberOfRoosters": 5,
-    "size": "medium",
-    "color": "#00B894",
-    "datesForRescues": ["2026-03-10", "2026-03-11", "2026-03-12"],
-    "generalInformation": "Familienbetrieb mit Fokus auf Tierwohl.",
-    "name": "Hof am Aareufer",
-    "contact": {
-      "createdAt": "2025-12-02T08:30:00",
-      "updatedAt": "2025-12-02T08:30:00",
-      "firstName": "Martina",
-      "lastName": "Fischer",
-      "phoneNumber": "+41 78 234 56 78",
-      "email": "martina.fischer@hofamaar.ch"
-    },
-    "address": {
-      "createdAt": "2025-12-02T08:30:00",
-      "updatedAt": "2025-12-02T08:30:00",
-      "street": "Aareweg 5",
-      "city": "Bern",
-      "postalCode": "3005",
-      "geoCoordinate": { "latitude": 46.9439, "longitude": 7.4476 }
-    },
-    "files": [],
-    "saveChickenActionId": null,
-    "saveChickenAction": null
   }
 ]

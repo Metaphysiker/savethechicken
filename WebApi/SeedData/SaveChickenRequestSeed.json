@@ -517,5 +517,317 @@
     "color": "Schwarz",
     "files": [],
     "blackListedPersonIds": []
+  },
+  {
+    "createdAt": "2025-11-22T12:45:00",
+    "updatedAt": "2025-11-22T12:45:00",
+    "contact": {
+      "createdAt": "2025-11-22T12:30:00",
+      "updatedAt": "2025-11-22T12:30:00",
+      "firstName": "Patrick",
+      "lastName": "Lehmann",
+      "email": "patrick.lehmann@example.ch",
+      "phoneNumber": "+41 44 812 34 56"
+    },
+    "address": {
+      "createdAt": "2025-12-05T11:30:00",
+      "updatedAt": "2025-12-05T11:30:00",
+      "street": "Hauptstrasse 67",
+      "city": "Regensdorf",
+      "postalCode": "8105",
+      "geoCoordinate": {
+        "latitude": 47.432,
+        "longitude": 8.465
+      }
+    },
+    "isHandoverAtDifferentAddress": false,
+    "addressForHandOver": null,
+    "numberOfChickensToBeSaved": 6,
+    "numberOfRoostersToBeSaved": 2,
+    "numberOfBoxes": 2,
+    "descriptionOfPlaceForChickens": "Großzügiger Hof mit Freilauf",
+    "acceptTermsAndConditions": true,
+    "alreadyReceivedChickenPreviously": true,
+    "confirmThatIFulfillCriteria": true,
+    "message": "Erfahrene Hühnerhalter.",
+    "saveChickenActionId": null,
+    "saveChickenAction": null,
+    "datesForHandOver": [ "2026-03-10", "2026-03-11", "2026-03-12" ],
+    "color": "Schwarz",
+    "files": [],
+    "blackListedPersonIds": []
+  },
+  {
+    "createdAt": "2025-12-01T09:15:00",
+    "updatedAt": "2025-12-01T09:15:00",
+    "contact": {
+      "createdAt": "2025-12-01T09:00:00",
+      "updatedAt": "2025-12-01T09:00:00",
+      "firstName": "Sandra",
+      "lastName": "Müller",
+      "email": "sandra.mueller@example.ch",
+      "phoneNumber": "+41 62 823 45 12"
+    },
+    "address": {
+      "createdAt": "2025-12-01T09:05:00",
+      "updatedAt": "2025-12-01T09:05:00",
+      "street": "Dorfstrasse 12",
+      "city": "Aarau",
+      "postalCode": "5000",
+      "geoCoordinate": {
+        "latitude": 47.392,
+        "longitude": 8.045
+      }
+    },
+    "isHandoverAtDifferentAddress": false,
+    "addressForHandOver": null,
+    "numberOfChickensToBeSaved": 8,
+    "numberOfRoostersToBeSaved": 1,
+    "numberOfBoxes": 3,
+    "descriptionOfPlaceForChickens": "Hof mit kleinem Garten und Auslauf",
+    "acceptTermsAndConditions": true,
+    "alreadyReceivedChickenPreviously": false,
+    "confirmThatIFulfillCriteria": true,
+    "message": "Haben Erfahrung mit Hühnerhaltung.",
+    "saveChickenActionId": null,
+    "saveChickenAction": null,
+    "datesForHandOver": [ "2026-03-10", "2026-03-11", "2026-03-12" ],
+    "color": "Weiß",
+    "files": [],
+    "blackListedPersonIds": []
+  },
+  {
+    "createdAt": "2025-12-02T10:20:00",
+    "updatedAt": "2025-12-02T10:20:00",
+    "contact": {
+      "createdAt": "2025-12-02T10:00:00",
+      "updatedAt": "2025-12-02T10:00:00",
+      "firstName": "Martin",
+      "lastName": "Keller",
+      "email": "martin.keller@example.ch",
+      "phoneNumber": "+41 56 712 34 78"
+    },
+    "address": {
+      "createdAt": "2025-12-02T10:05:00",
+      "updatedAt": "2025-12-02T10:05:00",
+      "street": "Birkenweg 8",
+      "city": "Baden",
+      "postalCode": "5400",
+      "geoCoordinate": {
+        "latitude": 47.477,
+        "longitude": 8.306
+      }
+    },
+    "isHandoverAtDifferentAddress": false,
+    "addressForHandOver": null,
+    "numberOfChickensToBeSaved": 5,
+    "numberOfRoostersToBeSaved": 2,
+    "numberOfBoxes": 2,
+    "descriptionOfPlaceForChickens": "Kleiner Hof mit Auslauf",
+    "acceptTermsAndConditions": true,
+    "alreadyReceivedChickenPreviously": false,
+    "confirmThatIFulfillCriteria": true,
+    "message": "Bereits Hühner gehalten.",
+    "saveChickenActionId": null,
+    "saveChickenAction": null,
+    "datesForHandOver": [ "2026-03-10", "2026-03-11", "2026-03-12" ],
+    "color": "Braun",
+    "files": [],
+    "blackListedPersonIds": []
+  },
+  {
+    "createdAt": "2025-12-03T11:10:00",
+    "updatedAt": "2025-12-03T11:10:00",
+    "contact": {
+      "createdAt": "2025-12-03T11:00:00",
+      "updatedAt": "2025-12-03T11:00:00",
+      "firstName": "Claudia",
+      "lastName": "Frei",
+      "email": "claudia.frei@example.ch",
+      "phoneNumber": "+41 62 723 98 21"
+    },
+    "address": {
+      "createdAt": "2025-12-03T11:05:00",
+      "updatedAt": "2025-12-03T11:05:00",
+      "street": "Kirchweg 5",
+      "city": "Zofingen",
+      "postalCode": "4800",
+      "geoCoordinate": {
+        "latitude": 47.316,
+        "longitude": 7.942
+      }
+    },
+    "isHandoverAtDifferentAddress": false,
+    "addressForHandOver": null,
+    "numberOfChickensToBeSaved": 7,
+    "numberOfRoostersToBeSaved": 3,
+    "numberOfBoxes": 3,
+    "descriptionOfPlaceForChickens": "Großes Grundstück mit Auslauf",
+    "acceptTermsAndConditions": true,
+    "alreadyReceivedChickenPreviously": true,
+    "confirmThatIFulfillCriteria": true,
+    "message": "Langjährige Erfahrung mit Hühnern.",
+    "saveChickenActionId": null,
+    "saveChickenAction": null,
+    "datesForHandOver": [ "2026-03-10", "2026-03-11", "2026-03-12" ],
+    "color": "Schwarz-Weiß",
+    "files": [],
+    "blackListedPersonIds": []
+  },
+  {
+    "createdAt": "2025-12-04T08:30:00",
+    "updatedAt": "2025-12-04T08:30:00",
+    "contact": {
+      "createdAt": "2025-12-04T08:00:00",
+      "updatedAt": "2025-12-04T08:00:00",
+      "firstName": "Peter",
+      "lastName": "Hofmann",
+      "email": "peter.hofmann@example.ch",
+      "phoneNumber": "+41 62 814 56 90"
+    },
+    "address": {
+      "createdAt": "2025-12-04T08:05:00",
+      "updatedAt": "2025-12-04T08:05:00",
+      "street": "Wiesenstrasse 20",
+      "city": "Lenzburg",
+      "postalCode": "5600",
+      "geoCoordinate": {
+        "latitude": 47.390,
+        "longitude": 8.164
+      }
+    },
+    "isHandoverAtDifferentAddress": false,
+    "addressForHandOver": null,
+    "numberOfChickensToBeSaved": 4,
+    "numberOfRoostersToBeSaved": 1,
+    "numberOfBoxes": 2,
+    "descriptionOfPlaceForChickens": "Hof mit Freilauf für Hühner",
+    "acceptTermsAndConditions": true,
+    "alreadyReceivedChickenPreviously": false,
+    "confirmThatIFulfillCriteria": true,
+    "message": "Freilandhaltung möglich.",
+    "saveChickenActionId": null,
+    "saveChickenAction": null,
+    "datesForHandOver": [ "2026-03-10", "2026-03-11", "2026-03-12" ],
+    "color": "Rot",
+    "files": [],
+    "blackListedPersonIds": []
+  },
+  {
+    "createdAt": "2025-12-05T09:50:00",
+    "updatedAt": "2025-12-05T09:50:00",
+    "contact": {
+      "createdAt": "2025-12-05T09:45:00",
+      "updatedAt": "2025-12-05T09:45:00",
+      "firstName": "Laura",
+      "lastName": "Schneider",
+      "email": "laura.schneider@example.ch",
+      "phoneNumber": "+41 62 835 67 89"
+    },
+    "address": {
+      "createdAt": "2025-12-05T09:48:00",
+      "updatedAt": "2025-12-05T09:48:00",
+      "street": "Mühlenstrasse 3",
+      "city": "Bremgarten",
+      "postalCode": "5620",
+      "geoCoordinate": {
+        "latitude": 47.361,
+        "longitude": 8.298
+      }
+    },
+    "isHandoverAtDifferentAddress": false,
+    "addressForHandOver": null,
+    "numberOfChickensToBeSaved": 6,
+    "numberOfRoostersToBeSaved": 2,
+    "numberOfBoxes": 2,
+    "descriptionOfPlaceForChickens": "Großer Garten mit Auslauf",
+    "acceptTermsAndConditions": true,
+    "alreadyReceivedChickenPreviously": true,
+    "confirmThatIFulfillCriteria": true,
+    "message": "Erfahrene Hühnerhalterin.",
+    "saveChickenActionId": null,
+    "saveChickenAction": null,
+    "datesForHandOver": [ "2026-03-10", "2026-03-11", "2026-03-12" ],
+    "color": "Gold",
+    "files": [],
+    "blackListedPersonIds": []
+  },
+  {
+    "createdAt": "2025-12-06T10:10:00",
+    "updatedAt": "2025-12-06T10:10:00",
+    "contact": {
+      "createdAt": "2025-12-06T10:00:00",
+      "updatedAt": "2025-12-06T10:00:00",
+      "firstName": "Thomas",
+      "lastName": "Meier",
+      "email": "thomas.meier@example.ch",
+      "phoneNumber": "+41 62 845 12 34"
+    },
+    "address": {
+      "createdAt": "2025-12-06T10:05:00",
+      "updatedAt": "2025-12-06T10:05:00",
+      "street": "Lindenweg 15",
+      "city": "Suhr",
+      "postalCode": "5034",
+      "geoCoordinate": {
+        "latitude": 47.367,
+        "longitude": 8.066
+      }
+    },
+    "isHandoverAtDifferentAddress": false,
+    "addressForHandOver": null,
+    "numberOfChickensToBeSaved": 5,
+    "numberOfRoostersToBeSaved": 1,
+    "numberOfBoxes": 2,
+    "descriptionOfPlaceForChickens": "Kleiner Hof mit Freilauf",
+    "acceptTermsAndConditions": true,
+    "alreadyReceivedChickenPreviously": false,
+    "confirmThatIFulfillCriteria": true,
+    "message": "Freilandhaltung möglich.",
+    "saveChickenActionId": null,
+    "saveChickenAction": null,
+    "datesForHandOver": [ "2026-03-10", "2026-03-11", "2026-03-12" ],
+    "color": "Schwarz",
+    "files": [],
+    "blackListedPersonIds": []
+  },
+  {
+    "createdAt": "2025-12-07T11:00:00",
+    "updatedAt": "2025-12-07T11:00:00",
+    "contact": {
+      "createdAt": "2025-12-07T10:50:00",
+      "updatedAt": "2025-12-07T10:50:00",
+      "firstName": "Stefan",
+      "lastName": "Zimmermann",
+      "email": "stefan.zimmermann@example.ch",
+      "phoneNumber": "+41 62 854 12 78"
+    },
+    "address": {
+      "createdAt": "2025-12-07T10:55:00",
+      "updatedAt": "2025-12-07T10:55:00",
+      "street": "Schulstrasse 7",
+      "city": "Muri",
+      "postalCode": "5630",
+      "geoCoordinate": {
+        "latitude": 47.349,
+        "longitude": 8.303
+      }
+    },
+    "isHandoverAtDifferentAddress": false,
+    "addressForHandOver": null,
+    "numberOfChickensToBeSaved": 7,
+    "numberOfRoostersToBeSaved": 2,
+    "numberOfBoxes": 3,
+    "descriptionOfPlaceForChickens": "Hof mit Auslauf und Garten",
+    "acceptTermsAndConditions": true,
+    "alreadyReceivedChickenPreviously": true,
+    "confirmThatIFulfillCriteria": true,
+    "message": "Erfahrene Hühnerhalter.",
+    "saveChickenActionId": null,
+    "saveChickenAction": null,
+    "datesForHandOver": [ "2026-03-10", "2026-03-11", "2026-03-12" ],
+    "color": "Braun",
+    "files": [],
+    "blackListedPersonIds": []
   }
 ]
