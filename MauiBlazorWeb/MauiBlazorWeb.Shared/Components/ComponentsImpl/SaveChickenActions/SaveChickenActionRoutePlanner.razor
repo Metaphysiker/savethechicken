@@ -23,7 +23,11 @@
                             <MudItem xs="12" md="6">
                                 <MudPaper Class="ma-4 flex-grow-1">
                                     <MudList T="string" Class="d-flex flex-column mud-height-full">
-                                        <MudDropZone T="DropItem" Identifier="@driver.Id.ToString()" Class="flex-grow-1" AllowReorder="true" />
+                                        <MudDropZone T="DropItem" Identifier="@driver.Id.ToString()" Class="flex-grow-1 always-dropzone" AllowReorder="true" />
+                                        @if (!_items.Any(i => i.Selector == driver.Id.ToString()))
+                                        {
+                                            <div class="empty-dropzone-placeholder">Hier ablegen</div>
+                                        }
                                     </MudList>
                                 </MudPaper>
                             </MudItem>
@@ -317,3 +321,19 @@
         }
     }
 }
+<style>
+    .always-dropzone {
+    min-height: 64px;
+}
+
+.empty-dropzone-placeholder {
+    color: #bbb;
+    text-align: center;
+    padding: 16px 0;
+    font-style: italic;
+    pointer-events: none;
+    margin-top: -48px; /* adjust if needed to center text in dropzone */
+    z-index: 1;
+    position: relative;
+}
+</style>
