@@ -2,11 +2,11 @@
   {
     "createdAt": "2025-12-01T07:00:00",
     "updatedAt": "2025-12-01T07:00:00",
-    "numberOfChickens": 120,
-    "numberOfRoosters": 8,
+    "numberOfChickens": 600,
+    "numberOfRoosters": 100,
     "size": "large",
     "color": "#A3CB38",
-    "datesForRescues": ["2026-03-10", "2026-03-11", "2026-03-12"],
+    "datesForRescues": ["2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30"],
     "generalInformation": "Biohof mit großem Freilauf und moderner Ausstattung.",
     "name": "Biohof Zürichberg",
     "contact": {

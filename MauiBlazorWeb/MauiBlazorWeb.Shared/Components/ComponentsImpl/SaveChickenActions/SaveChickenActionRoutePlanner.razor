@@ -1,5 +1,10 @@
 ﻿@using MauiBlazorWeb.Shared.Classes
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Web.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
+@inject GenericDtoServiceFactory DtoServiceFactory
+
+
 <MudPaper Class="pa-4 my-4" Elevation="2">
     <MudText Typo="Typo.h3">Routen-Planer</MudText>
 
@@ -15,16 +20,21 @@
                 {
                     <MudText Typo="Typo.h5" Class="mt-4 mb-2">Betrieb: @farm.Name, Datum: @date.ToString("dd.MM.yyyy")</MudText>
 
-                    @foreach (var driver in GetDriversByDateAndFarm(date, farm))
+                    @foreach (var drivePlan in GetDriversByDateAndFarm(date, farm))
                     {
-                        <MudText Typo="Typo.h6">Fahrt: #@driver.NumberOfDrive - Fahrer: @driver.Driver.Contact.FirstName @driver.Driver.Contact.LastName, Kapazität: @driver.Driver.CapacityForChickens</MudText>
+                        <MudText Typo="Typo.h6">Fahrt: #@drivePlan.NumberOfDrive - Fahrer: @drivePlan.Driver.Contact.FirstName @drivePlan.Driver.Contact.LastName, Kapazität: @drivePlan.Driver.CapacityForChickens</MudText>
 
                         <MudGrid>
                             <MudItem xs="12" md="6">
                                 <MudPaper Class="ma-4 flex-grow-1">
-                                    <MudList T="string" Class="d-flex flex-column mud-height-full">
-                                        <MudDropZone T="DropItem" Identifier="@driver.Id.ToString()" Class="flex-grow-1 always-dropzone" AllowReorder="true" />
-                                        @if (!_items.Any(i => i.Selector == driver.Id.ToString()))
+                                    @foreach(var request in drivePlan.SaveChickenRequests)
+                                    {
+                                        <MudText>@request.Contact.FirstName @request.Contact.LastName, @request.Address.Street, @request.Address.PostalCode @request.Address.City, @request.NumberOfChickensToBeSaved Hühner, @request.NumberOfRoostersToBeSaved Hähne</MudText>
+                                    }
+            
+                                    <MudList T="DropItem" Class="d-flex flex-column mud-height-full">
+                                        <MudDropZone T="DropItem" Identifier="@drivePlan.Id.ToString()" Class="flex-grow-1 always-dropzone" AllowReorder="true" />
+                                        @if (!_items.Any(i => i.Selector == drivePlan.Id.ToString()))
                                         {
                                             <div class="empty-dropzone-placeholder">Hier ablegen</div>
                                         }
@@ -32,7 +42,7 @@
                                 </MudPaper>
                             </MudItem>
                             <MudItem xs="12" md="6">
-                                <OpenStreetMap markers="driver.RouteMarkers" arrows="driver.RouteArrows" />
+                                <OpenStreetMap markers="drivePlan.RouteMarkers" arrows="drivePlan.RouteArrows" />
 
                             </MudItem>
                         </MudGrid>
@@ -44,7 +54,7 @@
 
             <!-- Unassigned dropzone -->
             <MudPaper Class="ma-4 flex-grow-1">
-                <MudList T="string" Class="d-flex flex-column mud-height-full">
+                <MudList T="DropItem" Class="d-flex flex-column mud-height-full">
                     <MudListSubheader>Ablage</MudListSubheader>
                     <MudDropZone T="DropItem" Identifier="unassigned" Class="flex-grow-1" AllowReorder="true" />
                 </MudList>
@@ -58,7 +68,7 @@
                         @context.Name
                     </MudItem>
                     <MudItem xs="12" md="5" Class="item-table-cell">
-                            @context.saveChickenRequest.Address.PostalCode @context.saveChickenRequest.Address.City
+                        @context.saveChickenRequest.Address.PostalCode @context.saveChickenRequest.Address.City, @context.saveChickenRequest.Address.Street
                     </MudItem>
                     <MudItem xs="12" md="3" Class="item-table-cell">
                         @context.saveChickenRequest.NumberOfChickensToBeSaved Hühner, @context.saveChickenRequest.NumberOfRoostersToBeSaved Hähne
@@ -75,14 +85,24 @@
     [Parameter, EditorRequired]
     public SaveChickenActionDto saveChickenActionDto { get; set; } = default!;
 
-    [Parameter, EditorRequired]
     public List<DriverDto> Drivers { get; set; } = new();
 
-    [Parameter, EditorRequired]
     public List<FarmDto> Farms { get; set; } = new();
 
-    [Parameter, EditorRequired]
     public List<SaveChickenRequestDto> SaveChickenRequests { get; set; } = new();
+
+    private GenericDtoService<SaveChickenActionDto, SaveChickenActionSearch>? _saveChickenActionService;
+    private GenericDtoService<SaveChickenRequestDto, SaveChickenRequestSearch>? _saveChickenRequestService;
+    private GenericDtoService<DriverDto, DriverSearch>? _driverService;
+    private GenericDtoService<FarmDto, FarmSearch>? _farmService;
+
+    protected override void OnInitialized()
+    {
+        _saveChickenActionService = DtoServiceFactory.Create<SaveChickenActionDto, SaveChickenActionSearch>();
+        _driverService = DtoServiceFactory.Create<DriverDto, DriverSearch>();
+        _farmService = DtoServiceFactory.Create<FarmDto, FarmSearch>();
+        _saveChickenRequestService = DtoServiceFactory.Create<SaveChickenRequestDto, SaveChickenRequestSearch>();
+    }
 
     private void ItemUpdated(MudItemDropInfo<DropItem> dropItem)
     {
@@ -140,15 +160,52 @@
         public SaveChickenRequestDto saveChickenRequest { get; set; }
     }
 
-    protected override void OnParametersSet()
+    private async Task GetAndSetDriversRequestsAndFarms()
     {
+        if(_driverService == null || _saveChickenRequestService == null || _farmService == null)
+        {
+            return;
+        }
+
+        var pageSize = 5;
+
+        var driverSearch = new DriverSearch
+        {
+            SaveChickenActionIds = new List<int> { saveChickenActionDto.Id },
+            PageSize = pageSize
+        };
+        var driverResults = await _driverService.SearchAsync(driverSearch);
+        Drivers = driverResults.Data;
+
+        var saveChickenRequestSearch = new SaveChickenRequestSearch
+        {
+            SaveChickenActionIds = new List<int> { saveChickenActionDto.Id },
+            PageSize = pageSize
+        };
+        var saveChickenRequestResults = await _saveChickenRequestService.SearchAsync(saveChickenRequestSearch);
+        SaveChickenRequests = saveChickenRequestResults.Data;
+
+        var farmSearch = new FarmSearch
+        {
+            SaveChickenActionIds = new List<int> { saveChickenActionDto.Id },
+            PageSize = pageSize
+        };
+        var farmResults = await _farmService.SearchAsync(farmSearch);
+        Farms = farmResults.Data;
+    }
+
+    // Change the return type from async Task to void and use async void for the override
+    protected override async Task OnParametersSetAsync()
+    {
+        await GetAndSetDriversRequestsAndFarms();
+
         PlanRoutes();
 
-        // Add real items from SaveChickenRequests
+        _items.Clear();
 
-        foreach(var drivePlan in drivePlans)
+        foreach (var drivePlan in drivePlans)
         {
-            foreach(var request in drivePlan.SaveChickenRequests)
+            foreach (var request in drivePlan.SaveChickenRequests)
             {
                 _items.Add(new DropItem
                 {
@@ -158,6 +215,8 @@
                 });
             }
         }
+
+        StateHasChanged();
     }
 
     public HashSet<DateOnly> GetAllUniqueRescueDates(IEnumerable<FarmDto> farms)

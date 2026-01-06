@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Shared.Dtos.DtosImpl;
 using System.Text.Json;
 using WebApi.Models.ModelsImpl;
@@ -13,81 +14,22 @@ public class SetupController : ControllerBase
     private readonly UserManager<IdentityUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
 
-    public SetupController(DatabaseContext db, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+    public SetupController(
+        DatabaseContext db,
+        UserManager<IdentityUser> userManager,
+        RoleManager<IdentityRole> roleManager)
     {
         _db = db;
         _userManager = userManager;
         _roleManager = roleManager;
     }
 
+    // ---------------------------------------------------------------------
+    // SEED DOMAIN DATA
+    // ---------------------------------------------------------------------
     [HttpGet("seed")]
     public async Task<ActionResult> Seed()
     {
-        var options = new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        };
-        options.Converters.Add(new UtcDateTimeConverter());
-
-        var saveChickenRequestSeedPath = Path.Combine(Directory.GetCurrentDirectory(), "SeedData", "SaveChickenRequestSeed.json");
-        Console.WriteLine($"Checking SaveChickenRequestSeed.json at: {saveChickenRequestSeedPath}");
-        var requests = new List<SaveChickenRequest>();
-        if (System.IO.File.Exists(saveChickenRequestSeedPath))
-        {
-            var json = System.IO.File.ReadAllText(saveChickenRequestSeedPath);
-            requests = JsonSerializer.Deserialize<List<SaveChickenRequest>>(json, options) ?? new List<SaveChickenRequest>();
-            Console.WriteLine($"Loaded {requests.Count} SaveChickenRequests from seed file.");
-            if (requests.Count > 0)
-            {
-                _db.SaveChickenRequests.AddRange(requests);
-                await _db.SaveChangesAsync();
-                Console.WriteLine($"Seeded {requests.Count} SaveChickenRequests.");
-            }
-        }
-        else
-        {
-            Console.WriteLine("SaveChickenRequestSeed.json not found.");
-        }
-
-        var driverSeedPath = Path.Combine(Directory.GetCurrentDirectory(), "SeedData", "DriverSeed.json");
-        Console.WriteLine($"Checking DriverSeed.json at: {driverSeedPath}");
-        var drivers = new List<Driver>();
-        if (System.IO.File.Exists(driverSeedPath))
-        {
-            var json = System.IO.File.ReadAllText(driverSeedPath);
-            drivers = JsonSerializer.Deserialize<List<Driver>>(json, options) ?? new List<Driver>();
-            Console.WriteLine($"Loaded {drivers.Count} Drivers from seed file.");
-            if (drivers.Count > 0)
-            {
-                _db.Drivers.AddRange(drivers);
-                await _db.SaveChangesAsync();
-                Console.WriteLine($"Seeded {drivers.Count} Drivers.");
-            }
-        }
-        else
-        {
-            Console.WriteLine("DriverSeed.json not found.");
-        }
-
-        var farmPath = Path.Combine(Directory.GetCurrentDirectory(), "SeedData", "FarmSeed.json");
-        Console.WriteLine($"Checking FarmSeed.json at: {farmPath}");
-        var farms = new List<Farm>();
-        if (System.IO.File.Exists(farmPath))
-        {
-            var json = System.IO.File.ReadAllText(farmPath);
-            farms = JsonSerializer.Deserialize<List<Farm>>(json, options) ?? new List<Farm>();
-            Console.WriteLine($"Loaded {farms.Count} Farms from seed file.");
-            if (farms.Count > 0)
-            {
-                _db.Farms.AddRange(farms);
-                await _db.SaveChangesAsync();
-                Console.WriteLine($"Seeded {farms.Count} Farms.");
-            }
-        }
-        else
-        {
-            Console.WriteLine("FarmSeed.json not found.");
-        }
 
         var action = new SaveChickenAction
         {
@@ -95,8 +37,10 @@ public class SetupController : ControllerBase
             UpdatedAt = DateTime.UtcNow,
             Dates = new List<DateOnly>
             {
-                new DateOnly(2026, 3, 10),
-                new DateOnly(2026, 3, 24)
+                new DateOnly(2026, 4, 27),
+                new DateOnly(2026, 4, 28),
+                new DateOnly(2026, 4, 29),
+                new DateOnly(2026, 4, 30)
             },
             Title = "Test - Rettungsaktion April 2026",
             Description = "Test",
@@ -105,71 +49,164 @@ public class SetupController : ControllerBase
 
         _db.SaveChickenActions.Add(action);
         await _db.SaveChangesAsync();
-        Console.WriteLine("Seeded SaveChickenAction.");
 
-        // Only link the newly added drivers, farms, and requests
-        foreach (var driver in drivers)
+        var options = new JsonSerializerOptions
         {
-            driver.SaveChickenAction = action;
-            driver.SaveChickenActionId = action.Id;
-        }
-        await _db.SaveChangesAsync();
-        Console.WriteLine("Linked SaveChickenAction to Drivers.");
+            PropertyNameCaseInsensitive = true
+        };
+        options.Converters.Add(new UtcDateTimeConverter());
 
-        foreach (var farm in farms)
+        // Read and seed SaveChickenRequests
+        var saveChickenRequests = await ReadSeedFile<SaveChickenRequest>("SaveChickenRequestSeed.json", options);
+        if (saveChickenRequests != null && saveChickenRequests.Count > 0)
         {
-            farm.SaveChickenAction = action;
-            farm.SaveChickenActionId = action.Id;
-        }
-        await _db.SaveChangesAsync();
-        Console.WriteLine("Linked SaveChickenAction to Farms.");
+            // Assign the action ID to each request
+            foreach (var req in saveChickenRequests)
+            {
+                req.SaveChickenActionId = action.Id;
+            }
 
-        foreach (var req in requests)
-        {
-            req.SaveChickenAction = action;
-            req.SaveChickenActionId = action.Id;
+            _db.SaveChickenRequests.AddRange(saveChickenRequests);
+            await _db.SaveChangesAsync();
         }
-        await _db.SaveChangesAsync();
-        Console.WriteLine("Linked SaveChickenAction to SaveChickenRequests.");
+
+        // Read and seed Drivers
+        var drivers = await ReadSeedFile<Driver>("DriverSeed.json", options);
+        if (drivers != null && drivers.Count > 0)
+        {
+            // Assign the action ID to each driver
+            foreach (var driver in drivers)
+            {
+                driver.SaveChickenActionId = action.Id;
+            }
+
+            _db.Drivers.AddRange(drivers);
+            await _db.SaveChangesAsync();
+        }
+
+        // Read and seed Farms
+        var farms = await ReadSeedFile<Farm>("FarmSeed.json", options);
+        if (farms != null && farms.Count > 0)
+        {
+            // Assign the action ID to each farm
+            foreach (var farm in farms)
+            {
+                farm.SaveChickenActionId = action.Id;
+            }
+
+            _db.Farms.AddRange(farms);
+            await _db.SaveChangesAsync();
+        }
 
         return Ok();
     }
 
+    private async Task<List<T>?> ReadSeedFile<T>(string fileName, JsonSerializerOptions options) where T : class
+    {
+        var path = Path.Combine(Directory.GetCurrentDirectory(), "SeedData", fileName);
+        if (!System.IO.File.Exists(path))
+            return null;
+
+        var json = await System.IO.File.ReadAllTextAsync(path);
+        var items = JsonSerializer.Deserialize<List<T>>(json, options);
+
+        return items;
+    }
+
+    // ---------------------------------------------------------------------
+    // SETUP IDENTITY
+    // ---------------------------------------------------------------------
     [HttpGet("setup")]
     public async Task<ActionResult> Setup()
     {
         await CreateRoles();
         await CreateAdminUser();
+        await CreateRettetDasHuhnUser();
         return Ok();
     }
 
-        private async Task CreateRoles()
+    private async Task CreateRoles()
     {
-        UserRole[] roles = (UserRole[])Enum.GetValues(typeof(UserRole));
-        foreach (var role in roles)
+        foreach (UserRole role in Enum.GetValues(typeof(UserRole)))
         {
-            var found = await _roleManager.FindByNameAsync(role.ToString());
-            if (found == null)
+            if (!await _roleManager.RoleExistsAsync(role.ToString()))
             {
-                var identityRole = new IdentityRole { Name = role.ToString() };
-                await _roleManager.CreateAsync(identityRole);
+                var result = await _roleManager.CreateAsync(
+                    new IdentityRole(role.ToString()));
+
+                if (!result.Succeeded)
+                {
+                    throw new InvalidOperationException(
+                        $"Failed to create role '{role}': {string.Join(", ", result.Errors.Select(e => e.Description))}");
+                }
             }
         }
     }
 
     private async Task CreateAdminUser()
     {
-        var admin = await _userManager.FindByNameAsync(UserRole.Admin.ToString());
-        if (admin == null)
+        const string email = "s.raess@me.com";
+        var user = await EnsureUserExists(email, "ADMIN_PASSWORD");
+        if (user != null)
         {
-            admin = new IdentityUser { UserName = "s.raess@me.com" };
-            var isDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
-            string? password = "password";
-            if (isDocker) { password = Environment.GetEnvironmentVariable("ADMIN_PASSWORD"); }
-            await _userManager.CreateAsync(admin, password!);
+            await EnsureRole(user, UserRole.Admin);
+            await EnsureRole(user, UserRole.User);
+        }
+    }
+
+    private async Task CreateRettetDasHuhnUser()
+    {
+        const string email = "rettetdashuhn@stinah.ch";
+        var user = await EnsureUserExists(email, "RETTET_DAS_HUHN_PASSWORD");
+
+        if (user != null)
+        {
+            await EnsureRole(user, UserRole.Admin);
+            await EnsureRole(user, UserRole.User);
+        }
+    }
+
+    // ---------------------------------------------------------------------
+    // HELPERS
+    // ---------------------------------------------------------------------
+    private async Task<IdentityUser?> EnsureUserExists(string email, string passwordEnvVar)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user != null)
+            return user;
+
+        var isDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
+        var password = isDocker
+            ? Environment.GetEnvironmentVariable(passwordEnvVar)
+            : "password";
+
+        user = new IdentityUser
+        {
+            UserName = email,
+            Email = email,
+            EmailConfirmed = true
+        };
+
+        var result = await _userManager.CreateAsync(user, password!);
+        if (!result.Succeeded)
+        {
+            return null;
         }
 
-        await _userManager.AddToRoleAsync(admin, UserRole.Admin.ToString());
-        await _userManager.AddToRoleAsync(admin, UserRole.User.ToString());
+        return user;
+    }
+
+    private async Task EnsureRole(IdentityUser user, UserRole role)
+    {
+        var roleName = role.ToString();
+        if (!await _userManager.IsInRoleAsync(user, roleName))
+        {
+            var result = await _userManager.AddToRoleAsync(user, roleName);
+            if (!result.Succeeded)
+            {
+                throw new InvalidOperationException(
+                    $"Failed to add role '{roleName}' to '{user.Email}': {string.Join(", ", result.Errors.Select(e => e.Description))}");
+            }
+        }
     }
 }
