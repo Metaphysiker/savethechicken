@@ -55,31 +55,39 @@ namespace WebApi.Controllers.ControllersImpl
 
             foreach (var record in records)
             {
-                var saveChickenRequest = new SaveChickenRequest();
-                saveChickenRequest.Message = record.Bemerkungen + " " + record.Zusatz;
-                saveChickenRequest.Contact = new Contact
+                var saveChickenRequest = new SaveChickenRequest
                 {
-                    FirstName = record.Vorname,
-                    LastName = record.Name,
-                    Email = record.Email,
-                    PhoneNumber = record.Telefon1 ?? record.Telefon2
-                };
-                saveChickenRequest.Address = new Address
-                {
-                    Street = record.Strasse,
-                    City = record.Ort,
-                    PostalCode = record.PLZ
+                    Message = record.Bemerkungen + " " + record.Zusatz,
+                    SaveChickenActionId = archive.Id,
+                    Contact = new Contact
+                    {
+                        FirstName = record.Vorname,
+                        LastName = record.Name,
+                        Email = record.Email,
+                        PhoneNumber = record.Telefon1 ?? record.Telefon2
+                    },
+                    Address = new Address
+                    {
+                        Street = record.Strasse,
+                        City = record.Ort,
+                        PostalCode = record.PLZ
+                    }
                 };
                 saveChickenRequests.Add(saveChickenRequest);
             }
 
-            foreach (var request in saveChickenRequests)
+            // Process in batches to avoid timeout
+            const int batchSize = 100;
+            for (int i = 0; i < saveChickenRequests.Count; i += batchSize)
             {
-                request.SaveChickenActionId = archive.Id;
-                await _saveChickenRequestService.Create(request);
+                var batch = saveChickenRequests.Skip(i).Take(batchSize);
+                foreach (var request in batch)
+                {
+                    await _saveChickenRequestService.Create(request);
+                }
             }
 
-            return Ok("CSV processed successfully.");
+            return Ok($"CSV processed successfully. {saveChickenRequests.Count} records imported.");
         }
 
         [HttpPost("upload/farm")]
