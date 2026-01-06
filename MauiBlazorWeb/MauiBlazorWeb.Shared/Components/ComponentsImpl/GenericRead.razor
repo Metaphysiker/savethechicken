@@ -19,6 +19,4 @@
 @code {
     [Parameter, EditorRequired] public TDto model { get; set; } = default!;
     [Parameter] public RenderFragment<TDto> ChildContent { get; set; } = default!;
-
-    private GenericDtoService<TDto, ISearchDto>? _service;
 }

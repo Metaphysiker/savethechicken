@@ -1,4 +1,7 @@
-﻿@using global::Shared.Dtos.DtosImpl
+﻿@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Web.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+@inject GenericDtoServiceFactory DtoServiceFactory
 <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
     <MudText Typo="Typo.h3">Statistik der Rettungs-Aktion: @saveChickenActionDto.Title</MudText>
 
@@ -92,12 +95,57 @@
     [Parameter, EditorRequired]
     public SaveChickenActionDto saveChickenActionDto { get; set; } = default!;
 
-    [Parameter, EditorRequired]
     public List<DriverDto> Drivers { get; set; } = new();
 
-    [Parameter, EditorRequired]
     public List<FarmDto> Farms { get; set; } = new();
 
-    [Parameter, EditorRequired]
     public List<SaveChickenRequestDto> SaveChickenRequests { get; set; } = new();
+
+    private GenericDtoService<SaveChickenActionDto, SaveChickenActionSearch>? _saveChickenActionService;
+    private GenericDtoService<SaveChickenRequestDto, SaveChickenRequestSearch>? _saveChickenRequestService;
+    private GenericDtoService<DriverDto, DriverSearch>? _driverService;
+    private GenericDtoService<FarmDto, FarmSearch>? _farmService;
+
+    protected override async Task OnInitializedAsync()
+    {
+    _saveChickenActionService = DtoServiceFactory.Create<SaveChickenActionDto, SaveChickenActionSearch>();
+    _driverService = DtoServiceFactory.Create<DriverDto, DriverSearch>();
+    _farmService = DtoServiceFactory.Create<FarmDto, FarmSearch>();
+    _saveChickenRequestService = DtoServiceFactory.Create<SaveChickenRequestDto, SaveChickenRequestSearch>();
+    await GetAndSetDriversRequestsAndFarms();
+}
+
+    private async Task GetAndSetDriversRequestsAndFarms()
+    {
+        if (_driverService == null || _saveChickenRequestService == null || _farmService == null)
+        {
+            return;
+        }
+
+        var pageSize = 2000;
+
+        var driverSearch = new DriverSearch
+        {
+            SaveChickenActionIds = new List<int> { saveChickenActionDto.Id },
+            PageSize = pageSize
+        };
+        var driverResults = await _driverService.SearchAsync(driverSearch);
+        Drivers = driverResults.Data;
+
+        var saveChickenRequestSearch = new SaveChickenRequestSearch
+        {
+            SaveChickenActionIds = new List<int> { saveChickenActionDto.Id },
+            PageSize = pageSize
+        };
+        var saveChickenRequestResults = await _saveChickenRequestService.SearchAsync(saveChickenRequestSearch);
+        SaveChickenRequests = saveChickenRequestResults.Data;
+
+        var farmSearch = new FarmSearch
+        {
+            SaveChickenActionIds = new List<int> { saveChickenActionDto.Id },
+            PageSize = pageSize
+        };
+        var farmResults = await _farmService.SearchAsync(farmSearch);
+        Farms = farmResults.Data;
+    }
 }

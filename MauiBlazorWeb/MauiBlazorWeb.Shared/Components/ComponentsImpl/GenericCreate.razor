@@ -48,7 +48,7 @@
                 await _service.CreateAsync(model);
                 NavigationManager.NavigateTo("/thank-you"); // Only runs if CreateAsync succeeds
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Optionally show an error message to the user
                 // e.g., set an error flag or log the exception

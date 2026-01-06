@@ -71,7 +71,7 @@
 
         @if (selectedAction != null)
         {
-            <MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions.SaveChickenActionStatistic saveChickenActionDto="selectedAction" Farms="foundFarms" SaveChickenRequests="foundSaveChickenRequests" Drivers="drivers" />
+            <MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions.SaveChickenActionStatistic saveChickenActionDto="selectedAction" />
         }
 
         @if (selectedAction != null)
@@ -83,7 +83,6 @@
 
 
 @code {
-    private GenericDtoService<SaveChickenActionDto, SaveChickenActionSearch>? _service;
     private SaveChickenActionDto? selectedAction;
     private int? selectedActionId;
     private SaveChickenRequestSearch saveChickenRequestSearch = new SaveChickenRequestSearch();
