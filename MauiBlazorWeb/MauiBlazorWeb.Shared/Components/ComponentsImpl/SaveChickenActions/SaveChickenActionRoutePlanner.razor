@@ -76,6 +76,7 @@
     List<DrivePlan> drivePlans = new();
     HashSet<DateOnly> uniqueDates = new();
     private bool _isLoading = false;
+    private int _lastLoadedActionId = 0;
 
     [Parameter, EditorRequired]
     public SaveChickenActionDto saveChickenActionDto { get; set; } = default!;
@@ -99,12 +100,16 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        if (saveChickenActionDto?.Id == _lastLoadedActionId)
+            return;
+
         if (_isLoading)
             return;
 
         _isLoading = true;
         try
         {
+            _lastLoadedActionId = saveChickenActionDto?.Id ?? 0;
             await LoadDataAndBuildItems();
         }
         finally
@@ -115,6 +120,13 @@
 
     private async Task LoadDataAndBuildItems()
     {
+        drivePlans.Clear();
+        Drivers.Clear();
+        Farms.Clear();
+        SaveChickenRequests.Clear();
+        _items = new List<DropItem>();
+        uniqueDates = new HashSet<DateOnly>();
+
         await GetAndSetDriversRequestsAndFarms();
 
         PlanRoutes();
