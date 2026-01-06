@@ -98,8 +98,8 @@ public class SetupController : ControllerBase
                 new DateOnly(2026, 3, 10),
                 new DateOnly(2026, 3, 24)
             },
-            Title = "Rettungsaktion April 2026 xxx",
-            Description = "Rette Hühner im April 2026! Melde dich jetzt an, um Hühner von befreiten Höfen aufzunehmen und ihnen ein liebevolles Zuhause zu bieten.",
+            Title = "Test - Rettungsaktion April 2026",
+            Description = "Test",
             IsActive = true
         };
 

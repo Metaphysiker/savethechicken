@@ -26,7 +26,12 @@ public class AuthService
     public async Task<AuthResponseDto?> AuthenticateAsync(AuthRequestDto request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/auth/login", request);
-        if (!response.IsSuccessStatusCode) return null;
+        if (!response.IsSuccessStatusCode)
+        {
+            await _tokenService.RemoveTokenAsync();
+            _authResponseSingleton.AuthResponse = null;
+            return null;
+        }
         var authResponse = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
         if (authResponse != null)
         {

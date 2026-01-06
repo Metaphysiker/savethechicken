@@ -137,6 +137,24 @@ namespace WebApi.Services.ServicesImpl
             var entity = await _db.Set<TModel>().FindAsync(id);
             if (entity != null)
             {
+                if (entity is SaveChickenAction saveChickenAction)
+                {
+                    // Remove association from related SaveChickenRequests
+                    var relatedSaveChickenRequests = _db.Set<SaveChickenRequest>()
+                        .Where(r => r.SaveChickenActionId == saveChickenAction.Id);
+                    await relatedSaveChickenRequests.ForEachAsync(r => r.SaveChickenActionId = null);
+
+                    var relatedFarms = _db.Set<Farm>()
+                        .Where(f => f.SaveChickenActionId == saveChickenAction.Id);
+                    await relatedFarms.ForEachAsync(f => f.SaveChickenActionId = null);
+
+                    var relatedDrivers = _db.Set<Driver>()
+                        .Where(d => d.SaveChickenActionId == saveChickenAction.Id);
+                    await relatedDrivers.ForEachAsync(d => d.SaveChickenActionId = null);
+
+                    await _db.SaveChangesAsync();
+                }
+
                 _db.Set<TModel>().Remove(entity);
                 await _db.SaveChangesAsync();
             }

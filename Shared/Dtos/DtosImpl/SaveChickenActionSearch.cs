@@ -8,6 +8,7 @@ namespace Shared.Dtos.DtosImpl
 {
     public class SaveChickenActionSearch : ISearchDto
     {
+        public string? Title { get; set; }
         public bool? IsActive { get; set; }
     }
 }

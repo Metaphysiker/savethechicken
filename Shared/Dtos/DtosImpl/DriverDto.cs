@@ -17,6 +17,8 @@ namespace Shared.Dtos.DtosImpl
         public AddressDto Address { get; set; }
         public int AddressId { get; set; }
         public String CarMake { get; set; } = String.Empty;
+        public String Message { get; set; } = String.Empty;
+
         public List<DateOnly> AvailableDates { get; set; } = new List<DateOnly>();
         public List<StoredFileDto> Files { get; set; }
         public SaveChickenActionDto? SaveChickenAction { get; set; }

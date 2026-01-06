@@ -31,6 +31,11 @@ namespace Services.ServicesImpl
             if (search.IsActive != null)
                 query = query.Where(x => x.IsActive == search.IsActive.Value);
 
+            if (!string.IsNullOrEmpty(search.Title))
+            {
+                query = query.Where(x => EF.Functions.ILike(x.Title, $"%{search.Title}%"));
+            }
+
             // Sorting
             if (!string.IsNullOrEmpty(search.SortBy))
             {

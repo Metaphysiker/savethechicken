@@ -14,6 +14,7 @@ namespace WebApi.Models.ModelsImpl
         public Address Address { get; set; }
         public int AddressId { get; set; }
         public String CarMake { get; set; } = String.Empty;
+        public String Message { get; set; } = String.Empty;
         public List<DateOnly> AvailableDates { get; set; } = new List<DateOnly>();
         public List<StoredFile> Files { get; set; }
         public int? SaveChickenActionId { get; set; }
