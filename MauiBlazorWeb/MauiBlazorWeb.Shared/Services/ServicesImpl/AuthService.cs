@@ -87,14 +87,31 @@ public class AuthService
         {
             var token = await _tokenService.GetTokenAsync();
             if (string.IsNullOrWhiteSpace(token))
+            {
+                _authResponseSingleton.AuthResponse = null;
                 return false;
+            }
 
             using var request = new HttpRequestMessage(HttpMethod.Get, "api/auth/is-logged-in");
             request.Headers.Authorization =
                 new AuthenticationHeaderValue("Bearer", token);
 
             var response = await _httpClient.SendAsync(request, cancellationToken);
-            return response.IsSuccessStatusCode;
+            
+            if (!response.IsSuccessStatusCode)
+            {
+                await _tokenService.RemoveTokenAsync();
+                _authResponseSingleton.AuthResponse = null;
+                return false;
+            }
+            
+            return true;
+        }
+        catch (Exception)
+        {
+            await _tokenService.RemoveTokenAsync();
+            _authResponseSingleton.AuthResponse = null;
+            return false;
         }
         finally
         {
