@@ -1,4 +1,5 @@
-﻿@using MauiBlazorWeb.Shared.Components.ComponentsImpl.StoredFiles
+﻿@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.StoredFiles
 @using MauiBlazorWeb.Shared.Resources.Strings
 @using Microsoft.Extensions.Localization
 @using MudBlazor
@@ -253,6 +254,18 @@
                         <MudChip>@id</MudChip>
                     }
 
+                </CellTemplate>
+            </TemplateColumn>
+
+            <TemplateColumn>
+                <HeaderTemplate>@L["copy"]</HeaderTemplate>
+                <CellTemplate>
+                    @if (context.Item != null)
+                    {
+                        <SaveChickenActionSelectorDialogLauncher TDto="SaveChickenRequestDto"
+                                                                 Model="context.Item"
+                                                                 OnCopied="@(() => OnItemsChanged.InvokeAsync())" />
+                    }
                 </CellTemplate>
             </TemplateColumn>
 
