@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Shared.Dtos.DtosImpl
 {
-    public class SaveChickenRequestDto : IDto, IEntityWithFileDtos
+    public class SaveChickenRequestDto : IDto, IEntityWithFileDtos, IEntityWithSaveChickenActionDto
     {
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }

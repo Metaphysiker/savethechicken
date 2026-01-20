@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Shared.Dtos.DtosImpl
 {
-    public class DriverDto : IDto, IEntityWithFileDtos
+    public class DriverDto : IDto, IEntityWithFileDtos, IEntityWithSaveChickenActionDto
     {
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }

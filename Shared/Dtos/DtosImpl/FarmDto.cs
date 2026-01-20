@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Shared.Dtos.DtosImpl
 {
-    public class FarmDto :IDto, IEntityWithFileDtos
+    public class FarmDto :IDto, IEntityWithFileDtos, IEntityWithSaveChickenActionDto
     {
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }
