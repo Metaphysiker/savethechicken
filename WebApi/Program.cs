@@ -2,6 +2,7 @@ using Amazon.Extensions.NETCore.Setup;
 using Amazon.S3;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using System.Text;
@@ -111,6 +112,14 @@ if (!isDocker)
 builder.Services.AddAWSService<IAmazonS3>();
 
 var app = builder.Build();
+
+// Automatically apply migrations on startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+    db.Database.Migrate();
+}
+
 app.MapIdentityApi<IdentityUser>();
 
 // Enable Swagger in production
