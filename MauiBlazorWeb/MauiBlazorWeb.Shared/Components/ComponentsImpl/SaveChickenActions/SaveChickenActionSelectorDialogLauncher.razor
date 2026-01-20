@@ -7,7 +7,7 @@
 @if (Model != null)
 {
     <MudButton Variant="Variant.Filled" OnClick="OpenDialog" Color="Color.Primary" Size="Size.Small">
-        <MudIcon Icon="@Icons.Material.Filled.AssignmentTurnedIn" />
+        <MudIcon Icon="@Icons.Material.Filled.ContentCopy" />
     </MudButton>
 }
 
@@ -16,6 +16,8 @@
     [Parameter, EditorRequired] public TDto Model { get; set; } = default!;
     [Parameter]
     public EventCallback OnCopied { get; set; }
+    [Parameter]
+    public List<int>? ExcludeIds { get; set; }
 
 
     private async Task OpenDialog()
@@ -25,10 +27,11 @@
         var parameters = new DialogParameters
         {
             { "Model", Model },
-            { "OnCopied", EventCallback.Factory.Create(this, HandleCopied) }
+            { "OnCopied", EventCallback.Factory.Create(this, HandleCopied) },
+            { "ExcludeIds", ExcludeIds }
         };
         var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true };
-        _dialogReference = await DialogService.ShowAsync<SaveChickenActionSelectorDialog<TDto>>("Rettungsaktion zuweisen", parameters, options);
+        _dialogReference = await DialogService.ShowAsync<SaveChickenActionSelectorDialog<TDto>>("Kopieren", parameters, options);
     }
 
     private async Task HandleCopied()

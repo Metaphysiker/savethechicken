@@ -13,7 +13,10 @@
 <MudDialog>
     <DialogContent>
         <MudStack Spacing="3" Class="mt-4">
+            <MudText Typo="Typo.body1">Kopiere zu Aktion:</MudText>
+
             <SaveChickenActionSelector @bind-SelectedActionId="selectedActionId"
+                                      ExcludeIds="ExcludeIds"
                                       OnActionSelected="OnActionSelected" />
 
             @if (selectedAction != null)
@@ -55,6 +58,7 @@
 
     [Parameter, EditorRequired] public TDto Model { get; set; } = default!;
     [Parameter] public EventCallback OnCopied { get; set; }
+    [Parameter] public List<int>? ExcludeIds { get; set; }
 
     private int? selectedActionId;
     private SaveChickenActionDto? selectedAction;

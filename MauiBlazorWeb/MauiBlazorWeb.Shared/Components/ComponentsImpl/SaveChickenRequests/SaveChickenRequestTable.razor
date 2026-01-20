@@ -264,7 +264,8 @@
                     {
                         <SaveChickenActionSelectorDialogLauncher TDto="SaveChickenRequestDto"
                                                                  Model="context.Item"
-                                                                 OnCopied="@(() => OnItemsChanged.InvokeAsync())" />
+                                                                 OnCopied="@(() => OnItemsChanged.InvokeAsync())"
+                                                                 ExcludeIds="@(context.Item.SaveChickenActionId.HasValue ? new List<int> { context.Item.SaveChickenActionId.Value } : null)" />
                     }
                 </CellTemplate>
             </TemplateColumn>
