@@ -6,6 +6,7 @@ using WebApi.Database.Includes;
 using WebApi.Factories;
 using WebApi.Factories.FactoriesImpl;
 using WebApi.Models.ModelsImpl;
+using WebApi.Services;
 using WebApi.Services.ServicesImpl;
 
 namespace WebApi.Controllers.ControllersImpl
@@ -16,11 +17,22 @@ namespace WebApi.Controllers.ControllersImpl
     {
         private readonly GenericModelService<Farm, FarmSearch> _service;
         private readonly AutoMapperService _mapper;
+        private readonly IEmailService _emailService;
+        private readonly IConfiguration _configuration;
+        private readonly ILogger<FarmController> _logger;
 
-        public FarmController(GenericModelServiceFactory genericModelServiceFactory, AutoMapperService mapper)
+        public FarmController(
+            GenericModelServiceFactory genericModelServiceFactory,
+            AutoMapperService mapper,
+            IEmailService emailService,
+            IConfiguration configuration,
+            ILogger<FarmController> logger)
         {
             _service = genericModelServiceFactory.Create<Farm, FarmSearch>();
             _mapper = mapper;
+            _emailService = emailService;
+            _configuration = configuration;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -29,6 +41,18 @@ namespace WebApi.Controllers.ControllersImpl
             var model = _mapper.mapper.Map<Farm>(dto);
             var result = await _service.Create(model, FarmIncludes.Default);
             var resultDto = _mapper.mapper.Map<FarmDto>(result);
+
+            // Send notification email
+            try
+            {
+                await SendNewFarmNotificationEmail(resultDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to send notification email for Farm {Id}", resultDto.Id);
+                // Don't fail the request creation if email fails
+            }
+
             return CreatedAtAction(nameof(Read), new { id = resultDto.Id }, resultDto);
         }
 
@@ -83,6 +107,37 @@ namespace WebApi.Controllers.ControllersImpl
             var result = await _service.Update(model, FarmIncludes.Default);
             var resultDto = _mapper.mapper.Map<FarmDto>(result);
             return Ok(resultDto);
+        }
+
+        private async Task SendNewFarmNotificationEmail(FarmDto farm)
+        {
+            var recipients = _configuration.GetSection("Email:NotificationRecipients").Get<List<string>>();
+            if (recipients == null || !recipients.Any())
+            {
+                _logger.LogWarning("No notification recipients configured");
+                return;
+            }
+
+            var subject = $"Neuer Betrieb #{farm.Id}";
+            var body = $@"
+                <html>
+                <body>
+                    <h2>Neuer Betrieb registriert</h2>
+                    <p><strong>Betriebs-ID:</strong> {farm.Id}</p>
+                    <p><strong>Name:</strong> {farm.Contact?.FirstName} {farm.Contact?.LastName}</p>
+                    <p><strong>E-Mail:</strong> {farm.Contact?.Email}</p>
+                    <p><strong>Telefon:</strong> {farm.Contact?.PhoneNumber}</p>
+                    <p><strong>Adresse:</strong> {farm.Address?.Street}, {farm.Address?.PostalCode} {farm.Address?.City}</p>
+                    <p><strong>Anzahl Hühner:</strong> {farm.NumberOfChickens}</p>
+                    <p><strong>Anzahl Hähne:</strong> {farm.NumberOfRoosters}</p>
+                    <p><strong>Verfügbare Termine:</strong> {string.Join(", ", farm.DatesForRescues?.Select(d => d.ToString("dd.MM.yyyy")) ?? new List<string>())}</p>
+                    <p><strong>Erstellt:</strong> {DateTime.Now:dd.MM.yyyy HH:mm}</p>
+                    {(farm.SaveChickenActionId.HasValue ? $"<p><strong>Zugewiesen zu Aktion:</strong> {farm.SaveChickenAction?.Title ?? farm.SaveChickenActionId.ToString()}</p>" : "")}
+                </body>
+                </html>
+            ";
+
+            await _emailService.SendEmailAsync(recipients, subject, body, isHtml: true);
         }
 
     }

@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using System.Text;
 using WebApi.Factories.FactoriesImpl;
+using WebApi.Services;
 using WebApi.Services.ServicesImpl;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,7 @@ builder.Services.AddScoped<AutoMapperService>();
 builder.Services.AddScoped<GenericModelServiceFactory>();
 builder.Services.AddScoped<ModelSearchFactory>();
 builder.Services.AddScoped<BlackListDetectorService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddDbContext<DatabaseContext>();
 builder.Services.AddEndpointsApiExplorer();
 
