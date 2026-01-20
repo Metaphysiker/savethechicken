@@ -1,4 +1,5 @@
-﻿@using MauiBlazorWeb.Shared.Components.ComponentsImpl.StoredFiles
+﻿@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.StoredFiles
 @using MauiBlazorWeb.Shared.Resources.Strings
 @using Microsoft.Extensions.Localization
 @using MudBlazor
@@ -205,6 +206,19 @@
                     @foreach (var file in context.Item.Files)
                     {
                         <StoredFileDialog StoredFile="file" />
+                    }
+                </CellTemplate>
+            </TemplateColumn>
+
+            <TemplateColumn>
+                <HeaderTemplate>@L["copy"]</HeaderTemplate>
+                <CellTemplate>
+                    @if (context.Item != null)
+                    {
+                        <SaveChickenActionSelectorDialogLauncher TDto="DriverDto"
+                                                                 Model="context.Item"
+                                                                 OnCopied="@(() => OnItemsChanged.InvokeAsync())"
+                                                                 ExcludeIds="@(context.Item.SaveChickenActionId.HasValue ? new List<int> { context.Item.SaveChickenActionId.Value } : null)" />
                     }
                 </CellTemplate>
             </TemplateColumn>

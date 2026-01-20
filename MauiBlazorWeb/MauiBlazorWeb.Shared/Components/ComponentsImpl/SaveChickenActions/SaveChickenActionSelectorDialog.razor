@@ -47,7 +47,7 @@
             }
             else
             {
-                <text>@L["assign"]</text>
+                <text>@L["copy"]</text>
             }
         </MudButton>
     </DialogActions>
@@ -108,7 +108,7 @@
         }
         catch (Exception ex)
         {
-            Snackbar.Add($"Fehler beim Zuweisen: {ex.Message}", Severity.Error);
+            Snackbar.Add($"Fehler beim Kopieren: {ex.Message}", Severity.Error);
         }
         finally
         {
