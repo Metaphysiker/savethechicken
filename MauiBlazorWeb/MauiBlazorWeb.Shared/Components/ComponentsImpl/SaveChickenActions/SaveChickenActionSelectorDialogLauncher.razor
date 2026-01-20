@@ -1,0 +1,39 @@
+@typeparam TDto where TDto : class, IEntityWithSaveChickenActionDto
+
+@using MudBlazor
+@using global::Shared.Dtos.DtosImpl
+@inject IDialogService DialogService
+
+@if (Model != null)
+{
+    <MudButton Variant="Variant.Filled" OnClick="OpenDialog" Color="Color.Primary" Size="Size.Small">
+        <MudIcon Icon="@Icons.Material.Filled.AssignmentTurnedIn" />
+    </MudButton>
+}
+
+@code {
+    private IDialogReference? _dialogReference;
+    [Parameter, EditorRequired] public TDto Model { get; set; } = default!;
+    [Parameter]
+    public EventCallback OnCopied { get; set; }
+
+
+    private async Task OpenDialog()
+    {
+        if (Model == null)
+            return;
+        var parameters = new DialogParameters
+        {
+            { "Model", Model },
+            { "OnCopied", EventCallback.Factory.Create(this, HandleCopied) }
+        };
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true };
+        _dialogReference = await DialogService.ShowAsync<SaveChickenActionSelectorDialog<TDto>>("Rettungsaktion zuweisen", parameters, options);
+    }
+
+    private async Task HandleCopied()
+    {
+        _dialogReference?.Close();
+        await OnCopied.InvokeAsync();
+    }
+}
