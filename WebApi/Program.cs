@@ -115,11 +115,24 @@ builder.Services.AddAWSService<IAmazonS3>();
 
 var app = builder.Build();
 
-// Automatically apply migrations on startup
+// Automatically create database and apply migrations on startup
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
-    db.Database.Migrate();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    
+    try
+    {
+        // Ensure the database exists and apply migrations
+        logger.LogInformation("Ensuring database exists and applying migrations...");
+        db.Database.Migrate();
+        logger.LogInformation("Database migrations completed successfully");
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "An error occurred while creating/migrating the database");
+        throw;
+    }
 }
 
 app.MapIdentityApi<IdentityUser>();
