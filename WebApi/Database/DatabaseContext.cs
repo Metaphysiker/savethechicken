@@ -22,7 +22,8 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
         var Password = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD") ?? "savethechicken";
         var isDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
         var Host = isDocker ? "postgres" : "localhost";
-        optionsBuilder.UseNpgsql($"Host={Host};Username={Username};Password={Password};Database={Database}");
+        optionsBuilder.UseNpgsql($"Host={Host};Username={Username};Password={Password};Database={Database}")
+            .ConfigureWarnings(warnings => warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

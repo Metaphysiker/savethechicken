@@ -257,7 +257,7 @@ namespace WebApi.Migrations
 
                     NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("SearchVector"), "GIN");
 
-                    b.ToTable("Addresses");
+                    b.ToTable("Addresses", (string)null);
                 });
 
             modelBuilder.Entity("WebApi.Models.ModelsImpl.BlackListedPerson", b =>
@@ -286,7 +286,7 @@ namespace WebApi.Migrations
 
                     b.HasIndex("ContactId");
 
-                    b.ToTable("BlackListedPersons");
+                    b.ToTable("BlackListedPersons", (string)null);
                 });
 
             modelBuilder.Entity("WebApi.Models.ModelsImpl.Contact", b =>
@@ -339,7 +339,7 @@ namespace WebApi.Migrations
 
                     NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("SearchVector"), "GIN");
 
-                    b.ToTable("Contacts");
+                    b.ToTable("Contacts", (string)null);
                 });
 
             modelBuilder.Entity("WebApi.Models.ModelsImpl.Driver", b =>
@@ -398,7 +398,7 @@ namespace WebApi.Migrations
 
                     NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("SearchVector"), "GIN");
 
-                    b.ToTable("Drivers");
+                    b.ToTable("Drivers", (string)null);
                 });
 
             modelBuilder.Entity("WebApi.Models.ModelsImpl.Farm", b =>
@@ -468,7 +468,7 @@ namespace WebApi.Migrations
 
                     NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("SearchVector"), "GIN");
 
-                    b.ToTable("Farms");
+                    b.ToTable("Farms", (string)null);
                 });
 
             modelBuilder.Entity("WebApi.Models.ModelsImpl.SaveChickenAction", b =>
@@ -502,7 +502,7 @@ namespace WebApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SaveChickenActions");
+                    b.ToTable("SaveChickenActions", (string)null);
                 });
 
             modelBuilder.Entity("WebApi.Models.ModelsImpl.SaveChickenRequest", b =>
@@ -592,7 +592,7 @@ namespace WebApi.Migrations
 
                     NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("SearchVector"), "GIN");
 
-                    b.ToTable("SaveChickenRequests");
+                    b.ToTable("SaveChickenRequests", (string)null);
                 });
 
             modelBuilder.Entity("WebApi.Models.ModelsImpl.StoredFile", b =>
@@ -638,7 +638,7 @@ namespace WebApi.Migrations
 
                     b.HasIndex("SaveChickenRequestId");
 
-                    b.ToTable("Files");
+                    b.ToTable("Files", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -707,7 +707,7 @@ namespace WebApi.Migrations
 
                             b1.HasKey("AddressId");
 
-                            b1.ToTable("Addresses");
+                            b1.ToTable("Addresses", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("AddressId");
