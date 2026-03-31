@@ -18,6 +18,13 @@ public class ConfigController : ControllerBase
         var apiBaseUrl = Environment.GetEnvironmentVariable("API_BASE_URL")
             ?? _configuration["API_BASE_URL"]
             ?? "https://localhost:7101/";
+
+        // Ensure trailing slash for proper URL combination
+        if (!apiBaseUrl.EndsWith("/"))
+        {
+            apiBaseUrl += "/";
+        }
+
         return Ok(new { ApiBaseUrl = apiBaseUrl });
     }
 }

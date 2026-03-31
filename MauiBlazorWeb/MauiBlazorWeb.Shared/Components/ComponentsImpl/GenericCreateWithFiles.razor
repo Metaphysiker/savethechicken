@@ -3,6 +3,7 @@
 @using MauiBlazorWeb.Shared.Services.ServicesImpl
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @inject AwsFileService AwsFileService
+@inject AuthService AuthService
 @using Microsoft.Extensions.Localization
 @using global::Shared.Dtos.DtosImpl
 @inject IJSRuntime JS
@@ -18,7 +19,7 @@
 
         @ChildContent(model)
 
-        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
+        <MudButton data-testid="submit-button" ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
             @L["Create"]
         </MudButton>
     </EditForm>
@@ -48,14 +49,25 @@
     {
         if (_service != null && model != null)
         {
-
-
             try
             {
                 var storedFiles = await UploadFilesAsync(model);
                 model.Item.Files.AddRange(storedFiles);
-                await _service.CreateAsync(model.Item);
-                NavigationManager.NavigateTo("/thank-you"); // Only runs if CreateAsync succeeds
+                
+                // Check if user is logged in
+                bool isLoggedIn = await AuthService.CheckIfLoggedInAsync();
+                
+                if (isLoggedIn)
+                {
+                    await _service.CreateAsync(model.Item);
+                }
+                else
+                {
+                    // Use public endpoint for non-authenticated users
+                    await _service.CreatePublicAsync(model.Item);
+                }
+                
+                NavigationManager.NavigateTo("/thank-you"); // Only runs if create succeeds
             }
             catch (Exception)
             {

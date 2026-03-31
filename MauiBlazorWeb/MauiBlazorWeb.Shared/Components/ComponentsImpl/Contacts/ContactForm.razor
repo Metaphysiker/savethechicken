@@ -16,21 +16,21 @@
 
     <MudGrid>
         <MudItem xs="12" sm="6">
-            <MudTextField ReadOnly="@IsReadOnly" @bind-Value="Contact.FirstName" Label="@L["Contact_FirstName"]" Variant="Variant.Outlined" />
+            <MudTextField ReadOnly="@IsReadOnly" @bind-Value="Contact.FirstName" Label="@L["Contact_FirstName"]" Variant="Variant.Outlined" UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "contact-firstname" })" />
             <ValidationMessage For="@(() => Contact.FirstName)" />
         </MudItem>
         <MudItem xs="12" sm="6">
-            <MudTextField ReadOnly="@IsReadOnly" @bind-Value="Contact.LastName" Label="@L["Contact_LastName"]" Variant="Variant.Outlined" />
+            <MudTextField ReadOnly="@IsReadOnly" @bind-Value="Contact.LastName" Label="@L["Contact_LastName"]" Variant="Variant.Outlined" UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "contact-lastname" })" />
             <ValidationMessage For="@(() => Contact.LastName)" />
         </MudItem>
     </MudGrid>
     <MudGrid>
         <MudItem xs="12" sm="6">
-            <MudTextField ReadOnly="@IsReadOnly" @bind-Value="Contact.Email" Label="@L["Contact_Email"]" Variant="Variant.Outlined" />
+            <MudTextField ReadOnly="@IsReadOnly" @bind-Value="Contact.Email" Label="@L["Contact_Email"]" Variant="Variant.Outlined" UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "contact-email" })" />
             <ValidationMessage For="@(() => Contact.Email)" />
         </MudItem>
         <MudItem xs="12" sm="6">
-            <MudTextField ReadOnly="@IsReadOnly" @bind-Value="Contact.PhoneNumber" Label="@L["Contact_Phone"]" Variant="Variant.Outlined" />
+            <MudTextField ReadOnly="@IsReadOnly" @bind-Value="Contact.PhoneNumber" Label="@L["Contact_Phone"]" Variant="Variant.Outlined" UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "contact-phone" })" />
             <ValidationMessage For="@(() => Contact.PhoneNumber)" />
         </MudItem>
     </MudGrid>

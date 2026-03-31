@@ -11,6 +11,7 @@ namespace MauiBlazorWeb.Web.Services
         Task<TDto> GetByIdAsync(int id);
         Task<List<TDto>> GetAllAsync();
         Task<TDto> CreateAsync(TDto dto);
+        Task<TDto> CreatePublicAsync(TDto dto);
         Task<TDto> UpdateAsync(TDto dto);
         Task DeleteAsync(int id);
         Task<PaginationDto<TDto>> SearchAsync(TSearchDto searchDto);

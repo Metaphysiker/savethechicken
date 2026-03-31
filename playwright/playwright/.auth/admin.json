@@ -1,0 +1,29 @@
+{
+  "cookies": [
+    {
+      "name": ".AspNetCore.Antiforgery.VyLW6ORzMgk",
+      "value": "CfDJ8IrSTUTfcuVKvFMFF-UnkmEyh65NcghvHSMFhdLa15ffZx90Pbfi6rh7p7WWUuN-_c7Ypy9oWNYcTFvWQOZFKeHVpN6zGXu3Qa0RunOdic4zbtNG-_S8RKq8sij2fSQ8G35fTvJLSsbg_FGZcd4H4GY",
+      "domain": "localhost",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": false,
+      "sameSite": "Strict"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "http://localhost:8080",
+      "localStorage": [
+        {
+          "name": "blazor-resource-hash:MauiBlazorWeb.Web.Client",
+          "value": "sha256-3+i9A1kf1G7ji3zgi2MBoHfoWwgFu5+8JyUBR40WUFs="
+        },
+        {
+          "name": "jwt_token",
+          "value": "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJUb2tlbkZvclRoZUFwaVdpdGhBdXRoIiwianRpIjoiOWFkN2RmMDEtMzlhYS00Mzc5LWE3ZDktYzVlNDM2MTY1ZGI5IiwiaWF0IjoiMTc3NDk4NzMyNCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiYTkwYTc0NjktMmQwMi00YTA1LTgzNDQtZjI2OTNmNTVhMDUxIiwiVXNlcklkIjoiYTkwYTc0NjktMmQwMi00YTA1LTgzNDQtZjI2OTNmNTVhMDUxIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6InRlc3RAZXhhbXBsZS5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJ0ZXN0QGV4YW1wbGUuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjpbIkFkbWluIiwiVXNlciJdLCJleHAiOjE4MDY1MjMzMjQsImlzcyI6ImFwaVdpdGhBdXRoQmFja2VuZCIsImF1ZCI6ImFwaVdpdGhBdXRoQmFja2VuZCJ9.8OF4WWytaYvtfJZkWIwlzqbfXzWJWMlTFTfvUHSkn-U\""
+        }
+      ]
+    }
+  ]
+}

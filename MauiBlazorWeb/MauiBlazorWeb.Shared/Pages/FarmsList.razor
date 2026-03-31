@@ -1,0 +1,27 @@
+@page "/farms-list"
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Farms
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using global::Shared.Dtos.DtosImpl
+@inject GenericDtoServiceFactory DtoServiceFactory
+
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+    <h3>Betriebe</h3>
+
+    <MudPaper Class="pa-4">
+        <MudText Typo="Typo.h6">Betriebe</MudText>
+
+        <GenericSearch TDto="FarmDto" TSearchDto="FarmSearch">
+            <SearchForm Context="search">
+                <FarmSearchForm Model="search" />
+            </SearchForm>
+            <Table Context="ctx">
+                <FarmTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" OnItemsChanged="ctx.Item4.InvokeAsync" />
+            </Table>
+        </GenericSearch>
+    </MudPaper>
+</MudContainer>
+
+@code {
+
+}

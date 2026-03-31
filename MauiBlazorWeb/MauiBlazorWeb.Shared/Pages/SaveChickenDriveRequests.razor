@@ -1,0 +1,111 @@
+@page "/save-chicken-drive-requests"
+@page "/save-chicken-drive-requests/{id:int}"
+
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenDriveRequests
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Shared.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+@inject GenericDtoServiceFactory DtoServiceFactory
+
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+    <h3>Fahrangebot Details</h3>
+
+    @if (item != null)
+    {
+        <MudPaper Class="pa-4 my-4">
+            <MudText Typo="Typo.h5" Class="mb-2">@item.Person?.Contact?.FirstName @item.Person?.Contact?.LastName</MudText>
+
+            @if (item.Person?.Contact?.Email != null)
+            {
+                <MudText Typo="Typo.body1"><strong>Email:</strong> @item.Person.Contact.Email</MudText>
+            }
+
+            @if (item.Person?.Contact?.PhoneNumber != null)
+            {
+                <MudText Typo="Typo.body1"><strong>Telefon:</strong> @item.Person.Contact.PhoneNumber</MudText>
+            }
+
+            @if (item.Person?.Address != null)
+            {
+                <MudText Typo="Typo.body1" Class="mt-2">
+                    <strong>Adresse:</strong><br />
+                    @item.Person.Address.Street<br />
+                    @item.Person.Address.PostalCode @item.Person.Address.City
+                </MudText>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(item.CarMake))
+            {
+                <MudText Typo="Typo.body1" Class="mt-2">
+                    <strong>Automarke:</strong> @item.CarMake
+                </MudText>
+            }
+
+            @if (item.CapacityForChickens > 0)
+            {
+                <MudText Typo="Typo.body1" Class="mt-2">
+                    <strong>Kapazität für Hühner:</strong> @item.CapacityForChickens
+                </MudText>
+            }
+
+            @if (item.AvailableDates != null && item.AvailableDates.Any())
+            {
+                <MudText Typo="Typo.body2" Class="mt-3">
+                    <strong>Verfügbare Daten:</strong>
+                </MudText>
+                <div>
+                    @foreach (var date in item.AvailableDates.OrderBy(d => d))
+                    {
+                        <MudChip T="string" Size="Size.Small" Class="mr-1">@date.ToString("dd.MM.yyyy")</MudChip>
+                    }
+                </div>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(item.Message))
+            {
+                <MudText Typo="Typo.body1" Class="mt-2">
+                    <strong>Nachricht:</strong> @item.Message
+                </MudText>
+            }
+        </MudPaper>
+
+        <MudPaper Class="pa-4 my-4">
+            <GenericUpdateDialogLauncher TDto="SaveChickenDriveRequestDto"
+                                         model="item">
+                <ChildContent Context="editModel">
+                    <SaveChickenDriveRequestFormWithFiles EntityWithFiles="@(new ItemWithBrowserFiles<SaveChickenDriveRequestDto> { Item = editModel })" />
+                </ChildContent>
+            </GenericUpdateDialogLauncher>
+            <GenericDeleteDialog TDto="SaveChickenDriveRequestDto" Model="item" />
+        </MudPaper>
+    }
+    else if (Id.HasValue)
+    {
+        <MudPaper Class="pa-4">
+            <MudText>Laden...</MudText>
+        </MudPaper>
+    }
+    else
+    {
+        <MudPaper Class="pa-4">
+            <MudText>Kein Fahrangebot ausgewählt.</MudText>
+        </MudPaper>
+    }
+</MudContainer>
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    private SaveChickenDriveRequestDto? item;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id.HasValue)
+        {
+            var service = DtoServiceFactory.Create<SaveChickenDriveRequestDto, SaveChickenDriveRequestSearch>();
+            item = await service.GetByIdAsync(Id.Value);
+        }
+    }
+}

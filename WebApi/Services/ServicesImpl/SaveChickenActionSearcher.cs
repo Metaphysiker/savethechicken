@@ -31,6 +31,13 @@ namespace Services.ServicesImpl
             if (search.IsActive != null)
                 query = query.Where(x => x.IsActive == search.IsActive.Value);
 
+            // Use SearchTerm from ISearchDto for consistency
+            if (!string.IsNullOrEmpty(search.SearchTerm))
+            {
+                query = query.Where(x => EF.Functions.ILike(x.Title, $"%{search.SearchTerm}%"));
+            }
+
+            // Also support Title for backward compatibility
             if (!string.IsNullOrEmpty(search.Title))
             {
                 query = query.Where(x => EF.Functions.ILike(x.Title, $"%{search.Title}%"));

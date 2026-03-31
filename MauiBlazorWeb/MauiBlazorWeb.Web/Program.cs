@@ -25,11 +25,14 @@ builder.Services.AddRazorComponents()
 // Add device-specific services used by the MauiBlazorWeb.Shared project
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
 
-var isDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
-var baseUrl = isDocker ? "http://webapi:8080/" : "http://localhost:8081/";
+// Server-side API calls use internal Docker hostname
+// Client-side (browser) gets API URL from /api/config endpoint
+var serverApiUrl = Environment.GetEnvironmentVariable("SERVER_API_BASE_URL") 
+    ?? builder.Configuration["SERVER_API_BASE_URL"] 
+    ?? "http://localhost:8081/";
 
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseUrl) });
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(serverApiUrl) });
 builder.Services.AddScoped<GenericDtoServiceFactory>(sp =>
 {
     var httpClient = sp.GetRequiredService<HttpClient>();

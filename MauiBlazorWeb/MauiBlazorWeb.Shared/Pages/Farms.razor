@@ -1,0 +1,136 @@
+@page "/farms"
+@page "/farms/{id:int}"
+
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Farms
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Shared.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+@inject GenericDtoServiceFactory DtoServiceFactory
+
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+    <h3>Betrieb Details</h3>
+
+    @if (item != null)
+    {
+        <MudPaper Class="pa-4 my-4">
+            @if (!string.IsNullOrWhiteSpace(item.Name))
+            {
+                <MudText Typo="Typo.h5" Class="mb-2">@item.Name</MudText>
+            }
+            else
+            {
+                <MudText Typo="Typo.h5" Class="mb-2">Betrieb</MudText>
+            }
+
+            @if (item.Contact != null)
+            {
+                <MudText Typo="Typo.h6" Class="mt-2">Kontakt</MudText>
+
+                @if (!string.IsNullOrWhiteSpace(item.Contact.FirstName) || !string.IsNullOrWhiteSpace(item.Contact.LastName))
+                {
+                    <MudText Typo="Typo.body1"><strong>Name:</strong> @item.Contact.FirstName @item.Contact.LastName</MudText>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(item.Contact.Email))
+                {
+                    <MudText Typo="Typo.body1"><strong>Email:</strong> @item.Contact.Email</MudText>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(item.Contact.PhoneNumber))
+                {
+                    <MudText Typo="Typo.body1"><strong>Telefon:</strong> @item.Contact.PhoneNumber</MudText>
+                }
+            }
+
+            @if (item.Address != null)
+            {
+                <MudText Typo="Typo.body1" Class="mt-2">
+                    <strong>Adresse:</strong><br />
+                    @item.Address.Street<br />
+                    @item.Address.PostalCode @item.Address.City
+                </MudText>
+            }
+
+            @if (item.NumberOfChickens > 0 || item.NumberOfRoosters > 0)
+            {
+                <MudText Typo="Typo.body1" Class="mt-2">
+                    <strong>Anzahl Hühner:</strong> @item.NumberOfChickens<br />
+                    <strong>Anzahl Hähne:</strong> @item.NumberOfRoosters
+                </MudText>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(item.Size))
+            {
+                <MudText Typo="Typo.body1" Class="mt-2">
+                    <strong>Grösse:</strong> @item.Size
+                </MudText>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(item.Color))
+            {
+                <MudText Typo="Typo.body1" Class="mt-2">
+                    <strong>Farbe:</strong> @item.Color
+                </MudText>
+            }
+
+            @if (item.DatesForRescues != null && item.DatesForRescues.Any())
+            {
+                <MudText Typo="Typo.body2" Class="mt-3">
+                    <strong>Rettungsdaten:</strong>
+                </MudText>
+                <div>
+                    @foreach (var date in item.DatesForRescues.OrderBy(d => d))
+                    {
+                        <MudChip T="string" Size="Size.Small" Class="mr-1">@date.ToString("dd.MM.yyyy")</MudChip>
+                    }
+                </div>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(item.GeneralInformation))
+            {
+                <MudText Typo="Typo.body1" Class="mt-2">
+                    <strong>Allgemeine Informationen:</strong> @item.GeneralInformation
+                </MudText>
+            }
+        </MudPaper>
+
+        <MudPaper Class="pa-4 my-4">
+            <GenericUpdateDialogLauncher TDto="FarmDto"
+                                         model="item">
+                <ChildContent Context="editModel">
+                    <FarmFormWithFiles EntityWithFiles="@(new ItemWithBrowserFiles<FarmDto> { Item = editModel })" />
+                </ChildContent>
+            </GenericUpdateDialogLauncher>
+            <GenericDeleteDialog TDto="FarmDto" Model="item" />
+        </MudPaper>
+    }
+    else if (Id.HasValue)
+    {
+        <MudPaper Class="pa-4">
+            <MudText>Laden...</MudText>
+        </MudPaper>
+    }
+    else
+    {
+        <MudPaper Class="pa-4">
+            <MudText>Kein Betrieb ausgewählt.</MudText>
+        </MudPaper>
+    }
+</MudContainer>
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    private FarmDto? item;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id.HasValue)
+        {
+            var service = DtoServiceFactory.Create<FarmDto, FarmSearch>();
+            item = await service.GetByIdAsync(Id.Value);
+        }
+    }
+}

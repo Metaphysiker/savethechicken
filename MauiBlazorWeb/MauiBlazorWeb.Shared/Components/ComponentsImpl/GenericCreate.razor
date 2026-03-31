@@ -15,7 +15,10 @@
 
             @ChildContent(model)
 
-            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
+            <MudButton ButtonType="ButtonType.Submit"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       data-testid="submit-button">
                 @L["Create"]
             </MudButton>
         </EditForm>
@@ -25,6 +28,7 @@
 @code {
     [Parameter] public TDto model { get; set; } = default!;
     [Parameter] public RenderFragment<TDto> ChildContent { get; set; } = default!;
+    [Parameter] public string? ResourceName { get; set; }
 
     private GenericDtoService<TDto, ISearchDto>? _service;
 
@@ -45,8 +49,22 @@
         {
             try
             {
-                await _service.CreateAsync(model);
-                NavigationManager.NavigateTo("/thank-you"); // Only runs if CreateAsync succeeds
+                var createdDto = await _service.CreateAsync(model);
+
+                // Navigate to detail page if ResourceName is provided and dto has Id property
+                if (!string.IsNullOrEmpty(ResourceName) && createdDto != null)
+                {
+                    var idProperty = createdDto.GetType().GetProperty("Id");
+                    if (idProperty != null)
+                    {
+                        var id = idProperty.GetValue(createdDto);
+                        NavigationManager.NavigateTo($"/{ResourceName}/{id}");
+                        return;
+                    }
+                }
+
+                // Fallback to thank-you page
+                NavigationManager.NavigateTo("/thank-you");
             }
             catch (Exception)
             {

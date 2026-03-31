@@ -1,0 +1,118 @@
+@page "/save-chicken-requests"
+@page "/save-chicken-requests/{id:int}"
+
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Shared.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+@inject GenericDtoServiceFactory DtoServiceFactory
+
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+    <h3>Platzangebot Details</h3>
+
+    @if (item != null)
+    {
+        <MudPaper Class="pa-4 my-4">
+            <MudText Typo="Typo.h5" Class="mb-2">@item.Person?.Contact?.FirstName @item.Person?.Contact?.LastName</MudText>
+
+            @if (item.Person?.Contact?.Email != null)
+            {
+                <MudText Typo="Typo.body1"><strong>Email:</strong> @item.Person.Contact.Email</MudText>
+            }
+
+            @if (item.Person?.Contact?.PhoneNumber != null)
+            {
+                <MudText Typo="Typo.body1"><strong>Telefon:</strong> @item.Person.Contact.PhoneNumber</MudText>
+            }
+
+            @if (item.Person?.Address != null)
+            {
+                <MudText Typo="Typo.body1" Class="mt-2">
+                    <strong>Adresse:</strong><br />
+                    @item.Person.Address.Street<br />
+                    @item.Person.Address.PostalCode @item.Person.Address.City
+                </MudText>
+            }
+
+            @if (item.NumberOfChickensToBeSaved > 0)
+            {
+                <MudText Typo="Typo.body1" Class="mt-2">
+                    <strong>Anzahl Hühner:</strong> @item.NumberOfChickensToBeSaved
+                </MudText>
+            }
+
+            @if (item.NumberOfRoostersToBeSaved > 0)
+            {
+                <MudText Typo="Typo.body1" Class="mt-2">
+                    <strong>Anzahl Hähne:</strong> @item.NumberOfRoostersToBeSaved
+                </MudText>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(item.DescriptionOfPlaceForChickens))
+            {
+                <MudText Typo="Typo.body1" Class="mt-2">
+                    <strong>Beschreibung des Platzes:</strong> @item.DescriptionOfPlaceForChickens
+                </MudText>
+            }
+
+            @if (item.DatesForHandOver != null && item.DatesForHandOver.Any())
+            {
+                <MudText Typo="Typo.body2" Class="mt-3">
+                    <strong>Übergabedaten:</strong>
+                </MudText>
+                <div>
+                    @foreach (var date in item.DatesForHandOver.OrderBy(d => d))
+                    {
+                        <MudChip T="string" Size="Size.Small" Class="mr-1">@date.ToString("dd.MM.yyyy")</MudChip>
+                    }
+                </div>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(item.Message))
+            {
+                <MudText Typo="Typo.body1" Class="mt-2">
+                    <strong>Nachricht:</strong> @item.Message
+                </MudText>
+            }
+        </MudPaper>
+
+        <MudPaper Class="pa-4 my-4">
+            <GenericUpdateDialogLauncher TDto="SaveChickenRequestDto"
+                                         model="item">
+                <ChildContent Context="editModel">
+                    <AdminSaveChickenRequestFormWithFiles EntityWithFiles="@(new ItemWithBrowserFiles<SaveChickenRequestDto> { Item = editModel })" />
+                </ChildContent>
+            </GenericUpdateDialogLauncher>
+            <GenericDeleteDialog TDto="SaveChickenRequestDto" Model="item" />
+        </MudPaper>
+    }
+    else if (Id.HasValue)
+    {
+        <MudPaper Class="pa-4">
+            <MudText>Laden...</MudText>
+        </MudPaper>
+    }
+    else
+    {
+        <MudPaper Class="pa-4">
+            <MudText>Kein Platzangebot ausgewählt.</MudText>
+        </MudPaper>
+    }
+</MudContainer>
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    private SaveChickenRequestDto? item;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id.HasValue)
+        {
+            var service = DtoServiceFactory.Create<SaveChickenRequestDto, SaveChickenRequestSearch>();
+            item = await service.GetByIdAsync(Id.Value);
+        }
+    }
+}

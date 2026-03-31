@@ -4,7 +4,8 @@
 @using global::Shared.Dtos
 @inject IDialogService DialogService
 
-<MudButton Variant="Variant.Filled" OnClick="OpenDialog" Color="Color.Error" Size="Size.Small">
+<MudButton Variant="Variant.Filled" OnClick="OpenDialog" Color="Color.Error" Size="Size.Small"
+           UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "delete-button" })">
     <MudIcon Icon="@Icons.Material.Filled.Delete" />
 </MudButton>
 

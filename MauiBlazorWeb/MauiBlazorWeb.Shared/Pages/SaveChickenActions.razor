@@ -19,6 +19,33 @@
 
     @if(selectedAction != null)
     {
+        <MudPaper Class="pa-4 my-4" data-testid="action-details">
+            <MudText Typo="Typo.h5" Class="mb-2" data-testid="action-title">@selectedAction.Title</MudText>
+
+            @if (!string.IsNullOrWhiteSpace(selectedAction.Description))
+            {
+                <MudText Typo="Typo.body1" Class="mb-3" data-testid="action-description">@selectedAction.Description</MudText>
+            }
+
+            <MudChip T="string" Color="@(selectedAction.IsActive ? Color.Success : Color.Default)"
+                     Size="Size.Small"
+                     data-testid="action-active-status">
+                @(selectedAction.IsActive ? "Aktiv" : "Inaktiv")
+            </MudChip>
+
+            @if (selectedAction.Dates != null && selectedAction.Dates.Any())
+            {
+                <MudText Typo="Typo.body2" Class="mt-3">
+                    <strong>Übergabedaten:</strong>
+                </MudText>
+                <div data-testid="action-transfer-dates">
+                    @foreach (var date in selectedAction.Dates.OrderBy(d => d))
+                    {
+                        <MudChip T="string" Size="Size.Small" Class="mr-1">@date.ToString("dd.MM.yyyy")</MudChip>
+                    }
+                </div>
+            }
+        </MudPaper>
 
         <MudPaper Class="pa-4">
             <MudText Typo="Typo.h6">Abnehmer</MudText>

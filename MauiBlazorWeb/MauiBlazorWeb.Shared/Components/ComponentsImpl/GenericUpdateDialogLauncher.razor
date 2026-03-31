@@ -7,7 +7,8 @@
 
 @if (model != null && ChildContent != null)
 {
-    <MudButton Variant="Variant.Filled" OnClick="OpenDialog" Color="Color.Primary" Size="Size.Small">
+    <MudButton Variant="Variant.Filled" OnClick="OpenDialog" Color="Color.Primary" Size="Size.Small"
+               UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "edit-button" })">
         <MudIcon Icon="@Icons.Material.Filled.Edit" />
     </MudButton>
 }

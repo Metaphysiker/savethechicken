@@ -29,11 +29,16 @@ services:
       - RETTET_DAS_HUHN_PASSWORD=testhuhnpassword
       - TEST_PASSWORD=testpassword
       - ASPNETCORE_URLS=http://+:8081
+      - Email__SmtpHost=mailhog
+      - Email__SmtpPort=1025
+      - Email__FromEmail=noreply@savethechicken.test
     ports:
       - "8081:8081"
     depends_on:
       postgres:
         condition: service_healthy
+      mailhog:
+        condition: service_started
     restart: on-failure
 
   web-test:
@@ -44,9 +49,18 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
-      - API_BASE_URL=http://localhost:8081
+      - API_BASE_URL=http://localhost:8081/
+      - SERVER_API_BASE_URL=http://webapi-test:8081/
     ports:
       - "8080:8080"
+    restart: on-failure
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: savethechicken-mailhog-test
+    ports:
+      - "8025:8025"  # Web UI
+      - "1025:1025"  # SMTP server
     restart: on-failure
 
   # Optional: Run Playwright tests in a container

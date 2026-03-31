@@ -43,7 +43,7 @@ namespace WebApi.Controllers.ControllersImpl
             var result = await _service.Create(model, SaveChickenRequestIncludes.Default);
             var resultDto = _mapper.mapper.Map<SaveChickenRequestDto>(result);
 
-            // Send notification email
+            // Send notification email to admins
             try
             {
                 await SendNewRequestNotificationEmail(resultDto);
@@ -51,6 +51,53 @@ namespace WebApi.Controllers.ControllersImpl
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to send notification email for SaveChickenRequest {Id}", resultDto.Id);
+                // Don't fail the request creation if email fails
+            }
+
+            // Send confirmation email to requester
+            try
+            {
+                await SendConfirmationEmailToRequester(resultDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to send confirmation email to requester for SaveChickenRequest {Id}", resultDto.Id);
+                // Don't fail the request creation if email fails
+            }
+
+            return CreatedAtAction(nameof(Read), new { id = resultDto.Id }, resultDto);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("public")]
+        public async Task<ActionResult<SaveChickenRequestDto>> CreatePublic([FromBody] SaveChickenRequestDto dto)
+        {
+            // Ensure no sensitive data is set from public submission
+            dto.Id = 0; // Ensure new record
+            
+            var model = _mapper.mapper.Map<SaveChickenRequest>(dto);
+            var result = await _service.Create(model, SaveChickenRequestIncludes.Default);
+            var resultDto = _mapper.mapper.Map<SaveChickenRequestDto>(result);
+
+            // Send notification email to admins
+            try
+            {
+                await SendNewRequestNotificationEmail(resultDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to send notification email for SaveChickenRequest {Id}", resultDto.Id);
+                // Don't fail the request creation if email fails
+            }
+
+            // Send confirmation email to requester
+            try
+            {
+                await SendConfirmationEmailToRequester(resultDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to send confirmation email to requester for SaveChickenRequest {Id}", resultDto.Id);
                 // Don't fail the request creation if email fails
             }
 
@@ -135,6 +182,45 @@ namespace WebApi.Controllers.ControllersImpl
             ";
 
             await _emailService.SendEmailAsync(recipients, subject, body, isHtml: true);
+        }
+
+        private async Task SendConfirmationEmailToRequester(SaveChickenRequestDto request)
+        {
+            var email = request.Person?.Contact?.Email;
+            if (string.IsNullOrEmpty(email))
+            {
+                _logger.LogWarning("No email address for requester in SaveChickenRequest {Id}", request.Id);
+                return;
+            }
+
+            var subject = "Vielen Dank für Ihre Anfrage - Rettet das Huhn";
+            var body = $@"
+                <html>
+                <body>
+                    <h2>Vielen Dank für Ihre Anfrage!</h2>
+                    <p>Liebe/r {request.Person?.Contact?.FirstName} {request.Person?.Contact?.LastName},</p>
+                    
+                    <p>Vielen Dank, dass Sie Hühnern ein neues Zuhause geben möchten!</p>
+                    
+                    <p>Wir haben Ihre Anfrage erhalten und werden uns in Kürze bei Ihnen melden.</p>
+                    
+                    <h3>Ihre Angaben:</h3>
+                    <ul>
+                        <li><strong>Anfrage-Nr.:</strong> {request.Id}</li>
+                        <li><strong>Anzahl Hühner:</strong> {request.NumberOfChickensToBeSaved}</li>
+                        <li><strong>Anzahl Hähne:</strong> {request.NumberOfRoostersToBeSaved}</li>
+                        <li><strong>Ort:</strong> {request.Person?.Address?.PostalCode} {request.Person?.Address?.City}</li>
+                    </ul>
+                    
+                    <p>Wir werden Sie kontaktieren, sobald wir passende Hühner für Sie haben.</p>
+                    
+                    <p>Mit freundlichen Grüßen<br/>
+                    Ihr Team von Rettet das Huhn</p>
+                </body>
+                </html>
+            ";
+
+            await _emailService.SendEmailAsync(new List<string> { email }, subject, body, isHtml: true);
         }
 
     }

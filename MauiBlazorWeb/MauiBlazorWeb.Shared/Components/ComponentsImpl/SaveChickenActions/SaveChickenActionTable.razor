@@ -94,7 +94,9 @@
             <TemplateColumn>
                 <HeaderTemplate>@L["show"]</HeaderTemplate>
                 <CellTemplate>
-                    <MudButton Variant="Variant.Filled" OnClick="@(() => ShowItem(context.Item.Id))">
+                    <MudButton Variant="Variant.Filled"
+                               OnClick="@(() => ShowItem(context.Item.Id))"
+                               data-testid="view-button">
                         <MudIcon Icon="@Icons.Material.Filled.Visibility" />
                     </MudButton>
                 </CellTemplate>

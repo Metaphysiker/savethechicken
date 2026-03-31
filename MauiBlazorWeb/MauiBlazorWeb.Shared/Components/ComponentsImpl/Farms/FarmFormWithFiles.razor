@@ -44,7 +44,7 @@
 
     <MudText>Weitere Informationen:</MudText>
 
-    <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.GeneralInformation" Label="@L["GeneralInformation"]" Variant="Variant.Outlined" Lines="3" />
+    <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.GeneralInformation" Label="@L["GeneralInformation"]" Variant="Variant.Outlined" Lines="3" UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "farm-general-info" })" />
     <ValidationMessage For="@(() => EntityWithFiles.Item.GeneralInformation)" />
 </MudPaper>
 
