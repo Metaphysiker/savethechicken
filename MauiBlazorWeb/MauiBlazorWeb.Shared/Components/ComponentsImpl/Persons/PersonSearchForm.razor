@@ -1,0 +1,26 @@
+@using global::Shared.Dtos.DtosImpl
+
+<MudGrid>
+    <MudItem xs="12" sm="8">
+        <MudTextField @bind-Value="Model.SearchTerm" 
+                      Label="Search" 
+                      Variant="Variant.Outlined" 
+                      Placeholder="Search by name, email, phone, or address" />
+        <ValidationMessage For="@(() => Model.SearchTerm)" />
+    </MudItem>
+    
+    <MudItem xs="12" sm="4">
+        <MudSelect @bind-Value="Model.IsBlacklisted" 
+                   Label="Blacklist Filter" 
+                   Variant="Variant.Outlined"
+                   Clearable="true">
+            <MudSelectItem Value="@((bool?)null)">All</MudSelectItem>
+            <MudSelectItem Value="@((bool?)true)">Blacklisted Only</MudSelectItem>
+            <MudSelectItem Value="@((bool?)false)">Not Blacklisted</MudSelectItem>
+        </MudSelect>
+    </MudItem>
+</MudGrid>
+
+@code {
+    [Parameter] public PersonSearch Model { get; set; } = default!;
+}

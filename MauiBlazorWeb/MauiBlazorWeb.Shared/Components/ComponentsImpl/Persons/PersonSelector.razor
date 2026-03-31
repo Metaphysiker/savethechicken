@@ -1,0 +1,69 @@
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Web.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+@inject GenericDtoServiceFactory DtoServiceFactory
+
+<MudSelect T="int?"
+           Label="@Label"
+           @bind-Value="SelectedPersonId"
+           Variant="Variant.Outlined"
+           Disabled="@IsReadOnly"
+           Clearable="true">
+    @if (persons != null)
+    {
+        @foreach (var person in persons)
+        {
+            var displayText = $"{person.Contact?.FirstName} {person.Contact?.LastName}";
+            if (!string.IsNullOrWhiteSpace(person.Contact?.Email))
+            {
+                displayText += $" ({person.Contact.Email})";
+            }
+            <MudSelectItem T="int?" Value="@person.Id">@displayText</MudSelectItem>
+        }
+    }
+</MudSelect>
+
+@if (SelectedPersonId.HasValue && SelectedPersonId > 0)
+{
+    <MudButton OnClick="CreateNewPerson" Color="Color.Secondary" Variant="Variant.Text" Size="Size.Small" Class="mt-2">
+        Create New Person Instead
+    </MudButton>
+}
+else
+{
+    <MudAlert Severity="Severity.Info" Dense="true" Class="mt-2">
+        No person selected - a new person will be created with the form data below
+    </MudAlert>
+}
+
+@code {
+    [Parameter]
+    public int? SelectedPersonId { get; set; }
+
+    [Parameter]
+    public EventCallback<int?> SelectedPersonIdChanged { get; set; }
+
+    [Parameter]
+    public string Label { get; set; } = "Select Person";
+
+    [Parameter]
+    public bool IsReadOnly { get; set; } = false;
+
+    private List<PersonDto>? persons;
+    private GenericDtoService<PersonDto, PersonSearch>? _service;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _service = DtoServiceFactory.Create<PersonDto, PersonSearch>();
+
+        // Load all persons - you might want to add pagination or search functionality
+        var searchResult = await _service.GetAllAsync();
+        persons = searchResult?.ToList();
+    }
+
+    private async Task CreateNewPerson()
+    {
+        SelectedPersonId = null;
+        await SelectedPersonIdChanged.InvokeAsync(SelectedPersonId);
+    }
+}

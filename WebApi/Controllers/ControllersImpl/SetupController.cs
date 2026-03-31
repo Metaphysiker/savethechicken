@@ -108,6 +108,14 @@ public class SetupController : ControllerBase
         await CreateRoles();
         await CreateAdminUser();
         await CreateRettetDasHuhnUser();
+
+        // Only create test user in testing environment
+        var isTestingEnvironment = Environment.GetEnvironmentVariable("TESTING_ENVIRONMENT") == "true";
+        if (isTestingEnvironment)
+        {
+            await CreateTestUser();
+        }
+
         return Ok();
     }
 
@@ -144,6 +152,18 @@ public class SetupController : ControllerBase
     {
         const string email = "rettetdashuhn@stinah.ch";
         var user = await EnsureUserExists(email, "RETTET_DAS_HUHN_PASSWORD");
+
+        if (user != null)
+        {
+            await EnsureRole(user, UserRole.Admin);
+            await EnsureRole(user, UserRole.User);
+        }
+    }
+
+    private async Task CreateTestUser()
+    {
+        const string email = "test@example.com";
+        var user = await EnsureUserExists(email, "TEST_PASSWORD");
 
         if (user != null)
         {

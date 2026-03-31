@@ -1,0 +1,45 @@
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Contacts
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Addresses
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
+@using global::Shared.Dtos.DtosImpl
+@inject IStringLocalizer<AppResources> L
+
+@code {
+    [Parameter, EditorRequired] public PersonDto Person { get; set; }
+
+    [Parameter]
+    public bool IsReadOnly { get; set; } = false;
+
+    protected override void OnInitialized()
+    {
+        if (Person.Contact == null)
+        {
+            Person.Contact = new ContactDto();
+        }
+        if (Person.Address == null)
+        {
+            Person.Address = new AddressDto();
+        }
+    }
+}
+
+<MudPaper Class="pa-4 my-4" Elevation="2">
+    <MudText Typo="Typo.h6" Class="mb-4">Person Information</MudText>
+
+    <MudSwitch @bind-Value="Person.IsBlacklisted"
+               Label="Blacklisted"
+               Color="Color.Error"
+               Disabled="@IsReadOnly"
+               Class="mb-4" />
+
+    @if (Person.IsBlacklisted)
+    {
+        <MudAlert Severity="Severity.Warning" Class="mb-4">
+            This person is blacklisted and should not receive chickens or participate in drives.
+        </MudAlert>
+    }
+</MudPaper>
+
+<ContactForm Contact="Person.Contact" IsReadOnly="@IsReadOnly" />
+<AddressForm Address="Person.Address" IsReadOnly="@IsReadOnly" />

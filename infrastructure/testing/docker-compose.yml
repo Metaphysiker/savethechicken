@@ -1,0 +1,69 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: savethechicken-postgres-test
+    environment:
+      POSTGRES_DB: savethechicken
+      POSTGRES_USER: savethechicken
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-test-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U savethechicken"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  webapi-test:
+    build:
+      context: ../..
+      dockerfile: DockerfileWebApi
+    container_name: savethechicken-webapi-test
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - TESTING_ENVIRONMENT=true
+      - POSTGRES_PASSWORD=postgres
+      - ADMIN_PASSWORD=testadminpassword
+      - RETTET_DAS_HUHN_PASSWORD=testhuhnpassword
+      - TEST_PASSWORD=testpassword
+      - ASPNETCORE_URLS=http://+:8081
+    ports:
+      - "8081:8081"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: on-failure
+
+  web-test:
+    build:
+      context: ../..
+      dockerfile: DockerfileMauiBlazorWeb
+    container_name: savethechicken-web-test
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - API_BASE_URL=http://localhost:8081
+    ports:
+      - "8080:8080"
+    restart: on-failure
+
+  # Optional: Run Playwright tests in a container
+  # Uncomment if you want to run tests in Docker instead of from host
+  # playwright-tests:
+  #   build:
+  #     context: ../playwright
+  #     dockerfile: Dockerfile
+  #   container_name: savethechicken-playwright
+  #   depends_on:
+  #     web-test:
+  #       condition: service_healthy
+  #   environment:
+  #     - BASE_URL=http://web-test:8080
+  #   volumes:
+  #     - ../playwright:/app
+  #     - /app/node_modules
+
+volumes:
+  postgres-test-data:

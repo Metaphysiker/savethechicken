@@ -1,0 +1,53 @@
+@page "/admin/persons/{Id:int}/edit"
+@attribute [Authorize(Roles = "Admin")]
+@using Microsoft.AspNetCore.Authorization
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Persons
+@using MauiBlazorWeb.Web.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@inject GenericDtoServiceFactory DtoServiceFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Admin - Edit Person</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large">
+    <MudText Typo="Typo.h3" Class="mb-4">Edit Person</MudText>
+
+    <MudAlert Severity="Severity.Info" Dense="true" Class="my-4">
+        <strong>Admin Mode:</strong> Edit person information and manage blacklist status.
+    </MudAlert>
+
+    @if (model != null)
+    {
+        <GenericUpdate TDto="PersonDto" TSearchDto="PersonSearch" model="model" OnSuccess="OnSuccess">
+            <ChildContent Context="editModel">
+                <PersonForm Person="editModel" />
+            </ChildContent>
+        </GenericUpdate>
+    }
+    else
+    {
+        <MudProgressCircular Indeterminate="true" />
+        <MudText>Loading...</MudText>
+    }
+</MudContainer>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private PersonDto? model = null;
+
+    private GenericDtoService<PersonDto, PersonSearch>? _service;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _service = DtoServiceFactory.Create<PersonDto, PersonSearch>();
+        model = await _service.GetByIdAsync(Id);
+        StateHasChanged();
+    }
+
+    private void OnSuccess()
+    {
+        NavigationManager.NavigateTo("/admin/persons");
+    }
+}

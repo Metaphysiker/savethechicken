@@ -1,0 +1,157 @@
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
+@using MudBlazor
+@using global::Shared.Dtos.DtosImpl
+@inject NavigationManager NavigationManager
+@inject IStringLocalizer<AppResources> L
+
+@code {
+    [Parameter]
+    public List<PersonDto> items { get; set; } = new List<PersonDto>();
+
+    [Parameter] public EventCallback<PersonDto> OnItemSelected { get; set; }
+    void SelectItem(PersonDto item) => OnItemSelected.InvokeAsync(item);
+
+    [Parameter] public EventCallback<(string? SortBy, bool? SortDescending)> OnSortSelected { get; set; }
+    void SortByColumn(string columnName, bool? descending) => OnSortSelected.InvokeAsync((columnName, descending));
+
+    private string? currentColumnName = null;
+    private bool? currentSortDescending = null;
+
+    private void OnHeaderClick(string columnName)
+    {
+        bool? descending = currentColumnName == columnName ? !currentSortDescending : false;
+        currentColumnName = columnName;
+        currentSortDescending = descending;
+        SortByColumn(columnName, descending);
+    }
+
+    private string? GetSortIcon(string columnName)
+    {
+        if (currentColumnName != columnName) return null;
+        return currentSortDescending == true ? Icons.Material.Filled.ArrowDownward : Icons.Material.Filled.ArrowUpward;
+    }
+
+    private void EditItem(PersonDto person)
+    {
+        NavigationManager.NavigateTo($"/admin/persons/{person.Id}/edit");
+    }
+
+    private string GetRowClass(PersonDto item, int rowNumber)
+    {
+        return item.IsBlacklisted ? "row-blacklisted" : string.Empty;
+    }
+}
+
+<div style="overflow-x: auto; max-width: 100%;">
+    <MudDataGrid Items="@items" Hover="true" Dense="true" Striped="true" Bordered="true" SortMode="SortMode.None" RowClassFunc="GetRowClass">
+        <Columns>
+            <TemplateColumn>
+                <HeaderTemplate>
+                    <MudButton OnClick="@(() => OnHeaderClick("Contact.FirstName"))" Variant="Variant.Text" Style="text-transform: none;">
+                        @L["Contact_FirstName"]
+                        @if (GetSortIcon("Contact.FirstName") != null)
+                        {
+                            <MudIcon Icon="@GetSortIcon("Contact.FirstName")" Size="Size.Small" />
+                        }
+                    </MudButton>
+                </HeaderTemplate>
+                <CellTemplate>@context.Item.Contact?.FirstName</CellTemplate>
+            </TemplateColumn>
+
+            <TemplateColumn>
+                <HeaderTemplate>
+                    <MudButton OnClick="@(() => OnHeaderClick("Contact.LastName"))" Variant="Variant.Text" Style="text-transform: none;">
+                        @L["Contact_LastName"]
+                        @if (GetSortIcon("Contact.LastName") != null)
+                        {
+                            <MudIcon Icon="@GetSortIcon("Contact.LastName")" Size="Size.Small" />
+                        }
+                    </MudButton>
+                </HeaderTemplate>
+                <CellTemplate>@context.Item.Contact?.LastName</CellTemplate>
+            </TemplateColumn>
+
+            <TemplateColumn>
+                <HeaderTemplate>
+                    <MudButton OnClick="@(() => OnHeaderClick("Contact.Email"))" Variant="Variant.Text" Style="text-transform: none;">
+                        @L["Contact_Email"]
+                        @if (GetSortIcon("Contact.Email") != null)
+                        {
+                            <MudIcon Icon="@GetSortIcon("Contact.Email")" Size="Size.Small" />
+                        }
+                    </MudButton>
+                </HeaderTemplate>
+                <CellTemplate>@context.Item.Contact?.Email</CellTemplate>
+            </TemplateColumn>
+
+            <TemplateColumn>
+                <HeaderTemplate>
+                    <MudButton OnClick="@(() => OnHeaderClick("Contact.PhoneNumber"))" Variant="Variant.Text" Style="text-transform: none;">
+                        @L["Contact_Phone"]
+                        @if (GetSortIcon("Contact.PhoneNumber") != null)
+                        {
+                            <MudIcon Icon="@GetSortIcon("Contact.PhoneNumber")" Size="Size.Small" />
+                        }
+                    </MudButton>
+                </HeaderTemplate>
+                <CellTemplate>@context.Item.Contact?.PhoneNumber</CellTemplate>
+            </TemplateColumn>
+
+            <TemplateColumn>
+                <HeaderTemplate>
+                    <MudButton OnClick="@(() => OnHeaderClick("Address.City"))" Variant="Variant.Text" Style="text-transform: none;">
+                        @L["Address_City"]
+                        @if (GetSortIcon("Address.City") != null)
+                        {
+                            <MudIcon Icon="@GetSortIcon("Address.City")" Size="Size.Small" />
+                        }
+                    </MudButton>
+                </HeaderTemplate>
+                <CellTemplate>@context.Item.Address?.City</CellTemplate>
+            </TemplateColumn>
+
+            <TemplateColumn>
+                <HeaderTemplate>
+                    <MudButton OnClick="@(() => OnHeaderClick("Address.PostalCode"))" Variant="Variant.Text" Style="text-transform: none;">
+                        @L["Address_PostalCode"]
+                        @if (GetSortIcon("Address.PostalCode") != null)
+                        {
+                            <MudIcon Icon="@GetSortIcon("Address.PostalCode")" Size="Size.Small" />
+                        }
+                    </MudButton>
+                </HeaderTemplate>
+                <CellTemplate>@context.Item.Address?.PostalCode</CellTemplate>
+            </TemplateColumn>
+
+            <TemplateColumn>
+                <HeaderTemplate>
+                    Blacklisted
+                </HeaderTemplate>
+                <CellTemplate>
+                    @if (context.Item.IsBlacklisted)
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.Block" Color="Color.Error" Size="Size.Small" />
+                    }
+                </CellTemplate>
+            </TemplateColumn>
+
+            <TemplateColumn>
+                <HeaderTemplate>
+                    Actions
+                </HeaderTemplate>
+                <CellTemplate>
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                   Size="Size.Small"
+                                   OnClick="@(() => EditItem(context.Item))" />
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
+</div>
+
+<style>
+    .row-blacklisted {
+        background-color: #ffebee !important;
+    }
+</style>

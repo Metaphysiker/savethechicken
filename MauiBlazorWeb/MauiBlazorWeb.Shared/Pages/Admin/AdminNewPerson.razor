@@ -1,0 +1,29 @@
+@page "/admin/persons/new"
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Persons
+@using MauiBlazorWeb.Web.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@inject NavigationManager NavigationManager
+
+<PageTitle>Admin - Create New Person</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large">
+    <MudText Typo="Typo.h3" Class="mb-4">Create New Person</MudText>
+
+    <MudAlert Severity="Severity.Info" Dense="true" Class="my-4">
+        <strong>Admin Mode:</strong> Create a new person in the system.
+    </MudAlert>
+
+    <GenericCreate TDto="PersonDto" TSearchDto="PersonSearch" OnSuccess="OnSuccess">
+        <ChildContent Context="model">
+            <PersonForm Person="model" />
+        </ChildContent>
+    </GenericCreate>
+</MudContainer>
+
+@code {
+    private void OnSuccess()
+    {
+        NavigationManager.NavigateTo("/admin/persons");
+    }
+}

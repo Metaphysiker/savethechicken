@@ -14,6 +14,10 @@
 
     <h3>Ich biete Hühnern einen Lebensplatz an</h3>
 
+    <MudAlert Severity="Severity.Success" Dense="true" Class="my-4">
+        Vielen Dank, dass Sie Hühnern ein neues Zuhause geben möchten! Bitte füllen Sie das untenstehende Formular aus.
+    </MudAlert>
+
     @if (newRequestDtoWithFiles != null)
     {
         <GenericCreateWithFiles TDto="SaveChickenRequestDto" model="newRequestDtoWithFiles">
@@ -22,7 +26,7 @@
             </ChildContent>
         </GenericCreateWithFiles>
     }
-    
+
 </MudContainer>
 
 

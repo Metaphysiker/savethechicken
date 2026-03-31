@@ -1,4 +1,4 @@
-@page "/save-chicken-requests/{Id:int}/edit"
+@page "/admin/save-chicken-requests/{Id:int}/edit"
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
@@ -8,7 +8,7 @@
 
 <MudContainer>
 
-<h2>Edit Save Chicken Request</h2>
+<h2>Admin - Edit Save Chicken Request</h2>
 
 <MudAlert Severity="Severity.Info" Dense="true" Class="my-4">
     <strong>Admin Mode:</strong> You can link this request to an existing person or create a new person.
@@ -27,6 +27,7 @@ else
     <p>Loading...</p>
 }
 </MudContainer>
+
 @code {
     [Parameter] public int Id { get; set; }
     private SaveChickenRequestDto? model = null;
@@ -38,12 +39,13 @@ else
     {
         _service = DtoServiceFactory.Create<SaveChickenRequestDto, SaveChickenRequestSearch>();
         model = await _service.GetByIdAsync(Id);
+
         modelWithFiles = new ItemWithBrowserFiles<SaveChickenRequestDto>
         {
             Item = model,
             Files = new List<IBrowserFile>()
         };
+
         StateHasChanged();
     }
-
 }

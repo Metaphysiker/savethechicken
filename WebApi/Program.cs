@@ -68,7 +68,7 @@ builder.Services
         };
     });
 builder.Services.AddAuthorization();
-builder.Services.AddIdentityApiEndpoints<IdentityUser>();
+
 
 builder.Services.AddScoped<TokenService, TokenService>();
 
@@ -134,8 +134,6 @@ using (var scope = app.Services.CreateScope())
         throw;
     }
 }
-
-app.MapIdentityApi<IdentityUser>();
 
 // Enable Swagger in production
 app.UseSwagger();

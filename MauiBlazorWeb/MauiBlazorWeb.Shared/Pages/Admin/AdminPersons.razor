@@ -1,0 +1,33 @@
+@page "/admin/persons"
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Persons
+@using MauiBlazorWeb.Web.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@inject NavigationManager NavigationManager
+
+<PageTitle>Admin - Persons Management</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+    <MudText Typo="Typo.h3" Class="mb-4">Admin - Persons Management</MudText>
+
+    <MudAlert Severity="Severity.Info" Dense="true" Class="my-4">
+        <strong>Admin Mode:</strong> Manage all persons in the system. Create, edit, and blacklist persons.
+    </MudAlert>
+
+    <MudButton Variant="Variant.Filled" 
+               Color="Color.Primary" 
+               StartIcon="@Icons.Material.Filled.Add" 
+               OnClick="@(() => NavigationManager.NavigateTo("/admin/persons/new"))"
+               Class="mb-4">
+        Create New Person
+    </MudButton>
+
+    <GenericSearch TDto="PersonDto" TSearchDto="PersonSearch">
+        <SearchForm Context="search">
+            <PersonSearchForm Model="search" />
+        </SearchForm>
+        <Table Context="ctx">
+            <PersonTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" />
+        </Table>
+    </GenericSearch>
+</MudContainer>
