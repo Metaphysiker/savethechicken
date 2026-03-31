@@ -34,7 +34,7 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
             entity
             .Property(b => b.SearchVector)
             .HasComputedColumnSql(
-                @"to_tsvector('german', 
+                @"to_tsvector('german',
                                 coalesce(""CarMake"", '')
                             )", stored: true);
 
@@ -48,7 +48,7 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
             entity
             .Property(b => b.SearchVector)
             .HasComputedColumnSql(
-                @"to_tsvector('german', 
+                @"to_tsvector('german',
                                 coalesce(""Size"", '') || ' ' ||
                                 coalesce(""Color"", '') || ' ' ||
                                 coalesce(""GeneralInformation"", '') || ' ' ||
@@ -63,7 +63,7 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
             entity
             .Property(b => b.SearchVector)
             .HasComputedColumnSql(
-                @"to_tsvector('german', 
+                @"to_tsvector('german',
                                 coalesce(""FirstName"", '') || ' ' ||
                                 coalesce(""LastName"", '') || ' ' ||
                                 coalesce(""Email"", '') || ' ' ||
@@ -94,7 +94,7 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
             entity
             .Property(b => b.SearchVector)
             .HasComputedColumnSql(
-                @"to_tsvector('german', 
+                @"to_tsvector('german',
                                 coalesce(""Street"", '') || ' ' ||
                                 coalesce(""City"", '') || ' ' ||
                                 coalesce(""PostalCode"", '')
@@ -111,7 +111,7 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
             entity
                 .Property(b => b.SearchVector)
                 .HasComputedColumnSql(
-                    @"to_tsvector('german', 
+                    @"to_tsvector('german',
                         coalesce(""DescriptionOfPlaceForChickens"", '') || ' ' ||
                         coalesce(""Message"", '') || ' ' ||
                         coalesce(""Color"", '')
