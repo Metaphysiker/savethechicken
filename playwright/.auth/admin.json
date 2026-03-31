@@ -2,7 +2,7 @@
   "cookies": [
     {
       "name": ".AspNetCore.Antiforgery.VyLW6ORzMgk",
-      "value": "CfDJ8CBYsZZ7hyxMvXmiyiDZ9kGQ9Hqh5OYd8YxEZkfyUJgICzXK20l_7mWN8Oif66Hg5urlxpELBDtT18U5-IHS_xhIly8E8y-KyYiAmzQawLBLxF3xLiOemBlJFNlh3HJ3PyftOug56Ob_2fmnmYeR_bY",
+      "value": "CfDJ8CzBeSlwJ5ZIp3dYm3py9VY4iqLUEma18rVK4-ho52jxdYi7bf3WEQnDaWXs8Y3z0u3kCmbQg-ghy86mdsQQOJdHoVy4Y0RWeFUii3tY8tYqKM2AP1Ju3--nnEaQPSQAGxhWB0uKPhwAsLVUAQEZM0Q",
       "domain": "localhost",
       "path": "/",
       "expires": -1,
@@ -16,12 +16,12 @@
       "origin": "http://localhost:8080",
       "localStorage": [
         {
-          "name": "blazor-resource-hash:MauiBlazorWeb.Web.Client",
-          "value": "sha256-Sot/z79ZwHGiSUYbMpE3hfw5Bf8K5NAMq/C4ysrVnAo="
+          "name": "jwt_token",
+          "value": "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJUb2tlbkZvclRoZUFwaVdpdGhBdXRoIiwianRpIjoiMTIwY2M3YTYtYzQxOC00NjI4LWJjZWUtMjc4ZjlkMDE1MTM1IiwiaWF0IjoiMTc3NDk5NDAwNSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiYTkwYTc0NjktMmQwMi00YTA1LTgzNDQtZjI2OTNmNTVhMDUxIiwiVXNlcklkIjoiYTkwYTc0NjktMmQwMi00YTA1LTgzNDQtZjI2OTNmNTVhMDUxIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6InRlc3RAZXhhbXBsZS5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJ0ZXN0QGV4YW1wbGUuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjpbIkFkbWluIiwiVXNlciJdLCJleHAiOjE4MDY1MzAwMDUsImlzcyI6ImFwaVdpdGhBdXRoQmFja2VuZCIsImF1ZCI6ImFwaVdpdGhBdXRoQmFja2VuZCJ9._lwqwKZ6ypbjl6c9nEWsEs8_nRJMdU95M2qoMx3N7vo\""
         },
         {
-          "name": "jwt_token",
-          "value": "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJUb2tlbkZvclRoZUFwaVdpdGhBdXRoIiwianRpIjoiOTFiZGRjYzUtNzVmNC00MTA2LWEzZGQtMmRiNjYyYTMzZWE3IiwiaWF0IjoiMTc3NDk5MDEzNiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiYTkwYTc0NjktMmQwMi00YTA1LTgzNDQtZjI2OTNmNTVhMDUxIiwiVXNlcklkIjoiYTkwYTc0NjktMmQwMi00YTA1LTgzNDQtZjI2OTNmNTVhMDUxIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6InRlc3RAZXhhbXBsZS5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJ0ZXN0QGV4YW1wbGUuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjpbIkFkbWluIiwiVXNlciJdLCJleHAiOjE4MDY1MjYxMzYsImlzcyI6ImFwaVdpdGhBdXRoQmFja2VuZCIsImF1ZCI6ImFwaVdpdGhBdXRoQmFja2VuZCJ9.kFawqcRkGBb1SX1TsK_imN3HOFPSqHZLPqkeqzlnfe4\""
+          "name": "blazor-resource-hash:MauiBlazorWeb.Web.Client",
+          "value": "sha256-tDVPrAKkb3A3ErKKEXEcPkqn08uzazhdqTSfTCrF2EY="
         }
       ]
     }

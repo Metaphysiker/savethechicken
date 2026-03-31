@@ -90,14 +90,14 @@
 <ContactForm Contact="EntityWithFiles.Item.Person!.Contact" IsReadOnly="@IsReadOnly" />
 <AddressForm Address="EntityWithFiles.Item.Person!.Address" IsReadOnly="@IsReadOnly" />
 
-<MudPaper Class="pa-4 my-4">
+<MudPaper Class="pa-4 my-4" data-testid="save-chicken-request-general-info">
     <MudText Typo="Typo.h6">Allgemeine Informationen</MudText>
     <MudItem>
-        <MudNumericField ReadOnly="@IsReadOnly" T="int" @bind-Value="EntityWithFiles.Item.NumberOfChickensToBeSaved" Label="@L["NumberOfChickens"]" Variant="Variant.Outlined" />
+        <MudNumericField ReadOnly="@IsReadOnly" T="int" @bind-Value="EntityWithFiles.Item.NumberOfChickensToBeSaved" Label="@L["NumberOfChickens"]" Variant="Variant.Outlined" UserAttributes="@(new Dictionary<string, object> { { "data-testid", "chickens-count" } })" />
         <ValidationMessage For="@(() => EntityWithFiles.Item.NumberOfChickensToBeSaved)" />
     </MudItem>
         <MudItem>
-        <MudNumericField ReadOnly="@IsReadOnly" T="int" @bind-Value="EntityWithFiles.Item.NumberOfRoostersToBeSaved" Label="@L["NumberOfRoostersToBeSaved"]" Variant="Variant.Outlined" />
+        <MudNumericField ReadOnly="@IsReadOnly" T="int" @bind-Value="EntityWithFiles.Item.NumberOfRoostersToBeSaved" Label="@L["NumberOfRoostersToBeSaved"]" Variant="Variant.Outlined" UserAttributes="@(new Dictionary<string, object> { { "data-testid", "roosters-count" } })" />
         <ValidationMessage For="@(() => EntityWithFiles.Item.NumberOfRoostersToBeSaved)" />
     </MudItem>
 
@@ -107,7 +107,7 @@
         <MudText>
             Bitte beschreiben Sie kurz  Ihr Hühnerzuhause (Stall, Auslauf m2) , Anzahl bestehende Hühner, Erfahrung etc.
         </MudText>
-        <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.DescriptionOfPlaceForChickens" Label="@L["Description"]" Variant="Variant.Outlined" Lines="3" />
+        <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.DescriptionOfPlaceForChickens" Label="@L["Description"]" Variant="Variant.Outlined" Lines="3" UserAttributes="@(new Dictionary<string, object> { { "data-testid", "description" } })" />
         <ValidationMessage For="@(() => EntityWithFiles.Item.DescriptionOfPlaceForChickens)" />
     </MudItem>
 
@@ -141,7 +141,7 @@
         <MudText>
             Was ich noch sagen möchte:
         </MudText>
-        <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.Message" Label="@L["Message"]" Variant="Variant.Outlined" Lines="3" />
+        <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.Message" Label="@L["Message"]" Variant="Variant.Outlined" Lines="3" UserAttributes="@(new Dictionary<string, object> { { "data-testid", "message" } })" />
         <ValidationMessage For="@(() => EntityWithFiles.Item.Message)" />
     </MudItem>
 </MudPaper>

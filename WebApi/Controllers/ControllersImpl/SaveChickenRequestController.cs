@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Shared.Dtos.DtosImpl;
 using System.Linq.Expressions;
+using WebApi.Database;
 using WebApi.Database.Includes;
 using WebApi.Factories;
 using WebApi.Factories.FactoriesImpl;
@@ -20,19 +22,22 @@ namespace WebApi.Controllers.ControllersImpl
         private readonly IEmailService _emailService;
         private readonly IConfiguration _configuration;
         private readonly ILogger<SaveChickenRequestController> _logger;
+        private readonly DatabaseContext _db;
 
         public SaveChickenRequestController(
             GenericModelServiceFactory genericModelServiceFactory,
             AutoMapperService mapper,
             IEmailService emailService,
             IConfiguration configuration,
-            ILogger<SaveChickenRequestController> logger)
+            ILogger<SaveChickenRequestController> logger,
+            DatabaseContext db)
         {
             _service = genericModelServiceFactory.Create<SaveChickenRequest, SaveChickenRequestSearch>();
             _mapper = mapper;
             _emailService = emailService;
             _configuration = configuration;
             _logger = logger;
+            _db = db;
         }
 
         [AllowAnonymous]
@@ -148,8 +153,37 @@ namespace WebApi.Controllers.ControllersImpl
         [HttpPut]
         public async Task<ActionResult<SaveChickenRequestDto>> Update([FromBody] SaveChickenRequestDto dto)
         {
-            var model = _mapper.mapper.Map<SaveChickenRequest>(dto);
-            var result = await _service.Update(model, SaveChickenRequestIncludes.Default);
+            // Load the existing entity (basic properties only)
+            var existing = await _db.SaveChickenRequests
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.Id == dto.Id);
+            
+            if (existing == null)
+            {
+                return NotFound();
+            }
+
+            // Map only the properties we want to update
+            existing.NumberOfChickensToBeSaved = dto.NumberOfChickensToBeSaved;
+            existing.NumberOfRoostersToBeSaved = dto.NumberOfRoostersToBeSaved;
+            existing.NumberOfBoxes = dto.NumberOfBoxes;
+            existing.DescriptionOfPlaceForChickens = dto.DescriptionOfPlaceForChickens;
+            existing.AcceptTermsAndConditions = dto.AcceptTermsAndConditions;
+            existing.AlreadyReceivedChickenPreviously = dto.AlreadyReceivedChickenPreviously;
+            existing.ConfirmThatIFulfillCriteria = dto.ConfirmThatIFulfillCriteria;
+            existing.Message = dto.Message;
+            existing.SaveChickenActionId = dto.SaveChickenActionId;
+            existing.DatesForHandOver = dto.DatesForHandOver;
+            existing.Color = dto.Color;
+            existing.IsHandoverAtDifferentAddress = dto.IsHandoverAtDifferentAddress;
+            existing.UpdatedAt = DateTime.UtcNow;
+
+            // Attach and mark as modified
+            _db.SaveChickenRequests.Update(existing);
+            await _db.SaveChangesAsync();
+
+            // Reload with includes for the response
+            var result = await _service.Read(dto.Id, SaveChickenRequestIncludes.Default);
             var resultDto = _mapper.mapper.Map<SaveChickenRequestDto>(result);
             return Ok(resultDto);
         }

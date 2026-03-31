@@ -37,6 +37,11 @@
         return currentSortDescending == true ? Icons.Material.Filled.ArrowDownward : Icons.Material.Filled.ArrowUpward;
     }
 
+    private void ShowItem(int id)
+    {
+        NavigationManager.NavigateTo($"/save-chicken-requests/{id}");
+    }
+
     private void EditItem(SaveChickenRequestDto saveChickenRequestDto)
     {
         NavigationManager.NavigateTo($"/save-chicken-requests/{saveChickenRequestDto.Id}/edit");
@@ -267,6 +272,17 @@
                                                                  OnCopied="@(() => OnItemsChanged.InvokeAsync())"
                                                                  ExcludeIds="@(context.Item.SaveChickenActionId.HasValue ? new List<int> { context.Item.SaveChickenActionId.Value } : null)" />
                     }
+                </CellTemplate>
+            </TemplateColumn>
+
+            <TemplateColumn>
+                <HeaderTemplate>@L["show"]</HeaderTemplate>
+                <CellTemplate>
+                    <MudButton Variant="Variant.Filled"
+                               OnClick="@(() => ShowItem(context.Item.Id))"
+                               UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "view-button" })">
+                        <MudIcon Icon="@Icons.Material.Filled.Visibility" />
+                    </MudButton>
                 </CellTemplate>
             </TemplateColumn>
 
