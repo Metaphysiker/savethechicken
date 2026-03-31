@@ -39,7 +39,7 @@ namespace WebApi.Controllers.ControllersImpl
             return NoContent();
         }
 
-        [Authorize(Roles = nameof(UserRole.Admin))]
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<SaveChickenActionDto>> Read(int id)
         {
