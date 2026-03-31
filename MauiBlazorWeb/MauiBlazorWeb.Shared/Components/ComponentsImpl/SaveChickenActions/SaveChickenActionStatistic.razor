@@ -41,7 +41,7 @@
                 <MudTh>Anzahl Hähne</MudTh>
             </HeaderContent>
             <RowTemplate Context="context">
-                <MudTd DataLabel="Name">@context.Contact.FirstName @context.Contact.LastName</MudTd>
+                <MudTd DataLabel="Name">@context.Person?.Contact?.FirstName @context.Person?.Contact?.LastName</MudTd>
                 <MudTd DataLabel="Anzahl Hühner">@context.NumberOfChickensToBeSaved</MudTd>
                 <MudTd DataLabel="Anzahl Hähne">@context.NumberOfRoostersToBeSaved</MudTd>
             </RowTemplate>
@@ -95,7 +95,7 @@
     [Parameter, EditorRequired]
     public SaveChickenActionDto saveChickenActionDto { get; set; } = default!;
 
-    public List<DriverDto> Drivers { get; set; } = new();
+    public List<SaveChickenDriveRequestDto> Drivers { get; set; } = new();
 
     public List<FarmDto> Farms { get; set; } = new();
 
@@ -103,13 +103,13 @@
 
     private GenericDtoService<SaveChickenActionDto, SaveChickenActionSearch>? _saveChickenActionService;
     private GenericDtoService<SaveChickenRequestDto, SaveChickenRequestSearch>? _saveChickenRequestService;
-    private GenericDtoService<DriverDto, DriverSearch>? _driverService;
+    private GenericDtoService<SaveChickenDriveRequestDto, SaveChickenDriveRequestSearch>? _driverService;
     private GenericDtoService<FarmDto, FarmSearch>? _farmService;
 
     protected override async Task OnInitializedAsync()
     {
     _saveChickenActionService = DtoServiceFactory.Create<SaveChickenActionDto, SaveChickenActionSearch>();
-    _driverService = DtoServiceFactory.Create<DriverDto, DriverSearch>();
+    _driverService = DtoServiceFactory.Create<SaveChickenDriveRequestDto, SaveChickenDriveRequestSearch>();
     _farmService = DtoServiceFactory.Create<FarmDto, FarmSearch>();
     _saveChickenRequestService = DtoServiceFactory.Create<SaveChickenRequestDto, SaveChickenRequestSearch>();
     await GetAndSetDriversRequestsAndFarms();
@@ -124,7 +124,7 @@
 
         var pageSize = 2000;
 
-        var driverSearch = new DriverSearch
+        var driverSearch = new SaveChickenDriveRequestSearch
         {
             SaveChickenActionIds = new List<int> { saveChickenActionDto.Id },
             PageSize = pageSize

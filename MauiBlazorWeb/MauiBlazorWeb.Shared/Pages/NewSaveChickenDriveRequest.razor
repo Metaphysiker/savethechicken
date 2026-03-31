@@ -1,13 +1,14 @@
-﻿@using MauiBlazorWeb.Shared.Components.ComponentsImpl
-@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Drivers
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenDriveRequests
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
 @using MauiBlazorWeb.Shared.Services.ServicesImpl
 @using MauiBlazorWeb.Web.Services.ServicesImpl
+@using MudBlazor
 @inject SaveChickenActionService saveChickenActionService;
 @using global::Shared.Dtos.DtosImpl
 
-@page "/drivers/new"
+@page "/save-chicken-drive-requests/new"
 
 <PageTitle>Fahrer werden</PageTitle>
 
@@ -17,9 +18,9 @@
 
     @if(newItemWithBrowserFiles != null)
     {
-      <GenericCreateWithFiles TDto="DriverDto" model="newItemWithBrowserFiles" >
+      <GenericCreateWithFiles TDto="SaveChickenDriveRequestDto" model="newItemWithBrowserFiles" >
         <ChildContent Context="model">
-            <DriverFormWithFiles EntityWithFiles="model" />
+            <SaveChickenDriveRequestFormWithFiles EntityWithFiles="model" />
         </ChildContent>
     </GenericCreateWithFiles>
     }
@@ -29,8 +30,8 @@
 
 @code {
     @code {
-        private DriverDto driverDto = new();
-        private ItemWithBrowserFiles<DriverDto>? newItemWithBrowserFiles;
+        private SaveChickenDriveRequestDto saveChickenDriveRequestDto = new();
+        private ItemWithBrowserFiles<SaveChickenDriveRequestDto>? newItemWithBrowserFiles;
 
         protected override async Task OnInitializedAsync()
         {
@@ -38,16 +39,16 @@
 
             if (activeSaveChickenAction != null)
             {
-                driverDto.SaveChickenActionId = activeSaveChickenAction?.Id;
+                saveChickenDriveRequestDto.SaveChickenActionId = activeSaveChickenAction?.Id;
             }
 
-            newItemWithBrowserFiles = new ItemWithBrowserFiles<DriverDto>
+            newItemWithBrowserFiles = new ItemWithBrowserFiles<SaveChickenDriveRequestDto>
             {
-                Item = driverDto,
+                Item = saveChickenDriveRequestDto,
                 Files = new List<IBrowserFile>()
             };
 
-            newItemWithBrowserFiles.Item = driverDto;
+            newItemWithBrowserFiles.Item = saveChickenDriveRequestDto;
         }
     }
 }

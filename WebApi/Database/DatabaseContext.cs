@@ -11,9 +11,9 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
     public DbSet<Farm> Farms { get; set; }
     public DbSet<Contact> Contacts { get; set; }
     public DbSet<Address> Addresses { get; set; }
-    public DbSet<Driver> Drivers { get; set; }
     public DbSet<StoredFile> Files { get; set; }
-    public DbSet<BlackListedPerson> BlackListedPersons { get; set; }
+    public DbSet<Person> Persons { get; set; }
+    public DbSet<SaveChickenDriveRequest> SaveChickenDriveRequests { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -29,20 +29,6 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
 
-        modelBuilder.Entity<Driver>(entity =>
-        {
-            entity
-            .Property(b => b.SearchVector)
-            .HasComputedColumnSql(
-                @"to_tsvector('german',
-                                coalesce(""CarMake"", '')
-                            )", stored: true);
-
-            entity.HasIndex(e => e.SearchVector)
-                .HasMethod("GIN");
-
-        });
-
         modelBuilder.Entity<Farm>(entity =>
         {
             entity
@@ -56,6 +42,16 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
                             )", stored: true);
             entity.HasIndex(e => e.SearchVector)
     .HasMethod("GIN");
+
+            entity.HasOne(e => e.Contact)
+                .WithOne(c => c.Farm)
+                .HasForeignKey<Farm>(e => e.ContactId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Address)
+                .WithOne(a => a.Farm)
+                .HasForeignKey<Farm>(e => e.AddressId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<Contact>(entity =>
@@ -132,6 +128,78 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
                     v => string.Join(";", v),
                     v => v.Split(';', StringSplitOptions.RemoveEmptyEntries)
                         .Select(int.Parse).ToList()
+                );
+        });
+
+        modelBuilder.Entity<Person>(entity =>
+        {
+            entity
+                .Property(b => b.SearchVector)
+                .HasComputedColumnSql(
+                    @"to_tsvector('german', '')", stored: true);
+
+            entity.HasIndex(e => e.SearchVector)
+                .HasMethod("GIN");
+
+            entity.HasMany(e => e.SaveChickenRequests)
+                .WithOne(r => r.Person)
+                .HasForeignKey(e => e.PersonId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasMany(e => e.SaveChickenDriveRequests)
+                .WithOne(e => e.Person)
+                .HasForeignKey(e => e.PersonId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Contact)
+                .WithOne(c => c.Person)
+                .HasForeignKey<Person>(e => e.ContactId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Address)
+                .WithOne(a => a.Person)
+                .HasForeignKey<Person>(e => e.AddressId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<SaveChickenDriveRequest>(entity =>
+        {
+            entity
+                .Property(b => b.SearchVector)
+                .HasComputedColumnSql(
+                    @"to_tsvector('german',
+                        coalesce(""CarMake"", '') || ' ' ||
+                        coalesce(""Message"", '')
+                    )", stored: true);
+
+            entity.HasIndex(e => e.SearchVector)
+                .HasMethod("GIN");
+
+            entity.Property(e => e.AvailableDates)
+                .HasConversion(
+                    v => string.Join(";", v.Select(d => d.ToString("yyyy-MM-dd"))),
+                    v => v.Split(';', StringSplitOptions.RemoveEmptyEntries)
+                        .Select(s => DateOnly.Parse(s)).ToList()
+                );
+        });
+
+        modelBuilder.Entity<SaveChickenAction>(entity =>
+        {
+            entity.HasMany(e => e.Farms)
+                .WithOne(f => f.SaveChickenAction)
+                .HasForeignKey(f => f.SaveChickenActionId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasMany(e => e.SaveChickenDriveRequests)
+                .WithOne(r => r.SaveChickenAction)
+                .HasForeignKey(r => r.SaveChickenActionId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entity.Property(e => e.Dates)
+                .HasConversion(
+                    v => string.Join(";", v.Select(d => d.ToString("yyyy-MM-dd"))),
+                    v => v.Split(';', StringSplitOptions.RemoveEmptyEntries)
+                        .Select(s => DateOnly.Parse(s)).ToList()
                 );
         });
 

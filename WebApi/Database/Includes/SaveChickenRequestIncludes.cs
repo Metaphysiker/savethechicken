@@ -7,9 +7,10 @@ namespace WebApi.Database.Includes
     {
         public static readonly Expression<Func<SaveChickenRequest, object?>>[] Default = new Expression<Func<SaveChickenRequest, object?>>[]
         {
-            r => r.Contact,
-            r => r.Address,
-            r => r.Address.GeoCoordinate,
+            r => r.Person,
+            r => r.Person.Contact,
+            r => r.Person.Address,
+            r => r.Person.Address.GeoCoordinate,
             r => r.AddressForHandOver,
             r => r.SaveChickenAction,
             r => r.Files

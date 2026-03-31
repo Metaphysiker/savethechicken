@@ -22,7 +22,7 @@
 
                     @foreach (var drivePlan in GetDriversByDateAndFarm(date, farm))
                     {
-                        <MudText Typo="Typo.h6">Fahrt: #@drivePlan.NumberOfDrive - Fahrer: @drivePlan.Driver.Contact.FirstName @drivePlan.Driver.Contact.LastName, Kapazität: @drivePlan.Driver.CapacityForChickens</MudText>
+                        <MudText Typo="Typo.h6">Fahrt: #@drivePlan.NumberOfDrive - Fahrer: @drivePlan.Driver.Person?.Contact?.FirstName @drivePlan.Driver.Person?.Contact?.LastName, Kapazität: @drivePlan.Driver.CapacityForChickens</MudText>
 
                         <MudGrid>
                             <MudItem xs="12" md="6">
@@ -61,7 +61,7 @@
                         @context.Name
                     </MudItem>
                     <MudItem xs="12" md="5" Class="item-table-cell">
-                        @context.saveChickenRequest.Address.PostalCode @context.saveChickenRequest.Address.City, @context.saveChickenRequest.Address.Street
+                        @context.saveChickenRequest.Person?.Address?.PostalCode @context.saveChickenRequest.Person?.Address?.City, @context.saveChickenRequest.Person?.Address?.Street
                     </MudItem>
                     <MudItem xs="12" md="3" Class="item-table-cell">
                         @context.saveChickenRequest.NumberOfChickensToBeSaved Hühner, @context.saveChickenRequest.NumberOfRoostersToBeSaved Hähne
@@ -81,19 +81,19 @@
     [Parameter, EditorRequired]
     public SaveChickenActionDto saveChickenActionDto { get; set; } = default!;
 
-    public List<DriverDto> Drivers { get; set; } = new();
+    public List<SaveChickenDriveRequestDto> Drivers { get; set; } = new();
     public List<FarmDto> Farms { get; set; } = new();
     public List<SaveChickenRequestDto> SaveChickenRequests { get; set; } = new();
 
     private GenericDtoService<SaveChickenActionDto, SaveChickenActionSearch>? _saveChickenActionService;
     private GenericDtoService<SaveChickenRequestDto, SaveChickenRequestSearch>? _saveChickenRequestService;
-    private GenericDtoService<DriverDto, DriverSearch>? _driverService;
+    private GenericDtoService<SaveChickenDriveRequestDto, SaveChickenDriveRequestSearch>? _driverService;
     private GenericDtoService<FarmDto, FarmSearch>? _farmService;
 
     protected override void OnInitialized()
     {
         _saveChickenActionService = DtoServiceFactory.Create<SaveChickenActionDto, SaveChickenActionSearch>();
-        _driverService = DtoServiceFactory.Create<DriverDto, DriverSearch>();
+        _driverService = DtoServiceFactory.Create<SaveChickenDriveRequestDto, SaveChickenDriveRequestSearch>();
         _farmService = DtoServiceFactory.Create<FarmDto, FarmSearch>();
         _saveChickenRequestService = DtoServiceFactory.Create<SaveChickenRequestDto, SaveChickenRequestSearch>();
     }
@@ -139,7 +139,7 @@
             {
                 newItems.Add(new DropItem
                 {
-                    Name = $"{request.Contact.FirstName} {request.Contact.LastName}",
+                    Name = $"{request.Person?.Contact?.FirstName} {request.Person?.Contact?.LastName}",
                     Selector = drivePlan.Id.ToString(),
                     saveChickenRequest = request
                 });
@@ -221,7 +221,7 @@
 
         var pageSize = 2000;
 
-        var driverSearch = new DriverSearch
+        var driverSearch = new SaveChickenDriveRequestSearch
         {
             SaveChickenActionIds = new List<int> { saveChickenActionDto.Id },
             PageSize = pageSize
@@ -272,8 +272,8 @@
                     .ToList();
 
                 var sortedRequests = saveChickenRequestsForDate
-                    .Where(r => r.Address != null && !string.IsNullOrWhiteSpace(r.Address.PostalCode))
-                    .OrderBy(r => r.Address.PostalCode)
+                    .Where(r => r.Person?.Address != null && !string.IsNullOrWhiteSpace(r.Person.Address.PostalCode))
+                    .OrderBy(r => r.Person.Address.PostalCode)
                     .ToList();
 
                 var driversForDate = Drivers.Where(d => d.AvailableDates.Contains(date)).ToList();
@@ -358,13 +358,13 @@
 
             foreach (var request in drivePlan.SaveChickenRequests)
             {
-                if (request.Address?.GeoCoordinate != null)
+                if (request.Person?.Address?.GeoCoordinate != null)
                 {
                     var marker = new MapMarker
                     {
-                        Latitude = request.Address.GeoCoordinate.Latitude,
-                        Longitude = request.Address.GeoCoordinate.Longitude,
-                        Info = $"{request.Contact.FirstName} {request.Contact.LastName}, {request.Address.Street}, {request.Address.PostalCode} {request.Address.City}, {request.NumberOfChickensToBeSaved} Hühner, {request.NumberOfRoostersToBeSaved} Hähne"
+                        Latitude = request.Person.Address.GeoCoordinate.Latitude,
+                        Longitude = request.Person.Address.GeoCoordinate.Longitude,
+                        Info = $"{request.Person.Contact?.FirstName} {request.Person.Contact?.LastName}, {request.Person.Address.Street}, {request.Person.Address.PostalCode} {request.Person.Address.City}, {request.NumberOfChickensToBeSaved} Hühner, {request.NumberOfRoostersToBeSaved} Hähne"
                     };
                     drivePlan.RouteMarkers.Add(marker);
                 }

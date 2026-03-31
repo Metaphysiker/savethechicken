@@ -26,7 +26,7 @@ builder.Services.AddRazorComponents()
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
 
 var isDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
-var baseUrl = isDocker ? "http://webapi:8080/" : "https://localhost:7101/";
+var baseUrl = isDocker ? "http://webapi:8080/" : "http://localhost:8081/";
 
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseUrl) });

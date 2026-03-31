@@ -35,6 +35,7 @@ namespace WebApi.Controllers.ControllersImpl
             _logger = logger;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<FarmDto>> Create([FromBody] FarmDto dto)
         {

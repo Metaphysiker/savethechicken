@@ -70,20 +70,6 @@ public class SetupController : ControllerBase
             await _db.SaveChangesAsync();
         }
 
-        // Read and seed Drivers
-        var drivers = await ReadSeedFile<Driver>("DriverSeed.json", options);
-        if (drivers != null && drivers.Count > 0)
-        {
-            // Assign the action ID to each driver
-            foreach (var driver in drivers)
-            {
-                driver.SaveChickenActionId = action.Id;
-            }
-
-            _db.Drivers.AddRange(drivers);
-            await _db.SaveChangesAsync();
-        }
-
         // Read and seed Farms
         var farms = await ReadSeedFile<Farm>("FarmSeed.json", options);
         if (farms != null && farms.Count > 0)

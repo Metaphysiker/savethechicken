@@ -26,12 +26,10 @@ namespace WebApi.Models.ModelsImpl
         public SaveChickenAction? SaveChickenAction { get; set; }
 
         [Column(TypeName = "tsvector")]
-        public NpgsqlTsVector SearchVector { get; set; }
+        public NpgsqlTsVector SearchVector { get; set; } = null!;
         public Farm()
         {
             Files = new List<StoredFile>();
-            Contact = new Contact();
-            Address = new Address();
         }
     }
 }

@@ -48,7 +48,9 @@ public class AutoMapperService
                 .ForMember(
                     dest => dest.GenericName,
                     opt => opt.MapFrom(src =>
-                        $"{src.Contact.FirstName} {src.Contact.LastName}, {src.Contact.Email}, {src.Address.City}".Trim()
+                        src.Person != null 
+                            ? $"{src.Person.Contact.FirstName} {src.Person.Contact.LastName}, {src.Person.Contact.Email}, {src.Person.Address.City}".Trim()
+                            : string.Empty
                     )
                 );
 
@@ -72,8 +74,8 @@ public class AutoMapperService
 
             cfg.CreateMap<StoredFileDto, StoredFile>();
 
-            // Driver
-            cfg.CreateMap<Driver, DriverDto>()
+            // Person
+            cfg.CreateMap<Person, PersonDto>()
                 .ForMember(
                     dest => dest.GenericName,
                     opt => opt.MapFrom(src =>
@@ -81,18 +83,18 @@ public class AutoMapperService
                     )
                 );
 
-            cfg.CreateMap<DriverDto, Driver>();
+            cfg.CreateMap<PersonDto, Person>();
 
-            // BlackListedPerson
-            cfg.CreateMap<BlackListedPerson, BlackListedPersonDto>()
+            // SaveChickenDriveRequest
+            cfg.CreateMap<SaveChickenDriveRequest, SaveChickenDriveRequestDto>()
                 .ForMember(
                     dest => dest.GenericName,
                     opt => opt.MapFrom(src =>
-                        $"{src.Contact.FirstName} {src.Contact.LastName}".Trim()
+                        $"{src.Person.Contact.FirstName} {src.Person.Contact.LastName}, {src.CarMake}".Trim()
                     )
                 );
 
-            cfg.CreateMap<BlackListedPersonDto, BlackListedPerson>();
+            cfg.CreateMap<SaveChickenDriveRequestDto, SaveChickenDriveRequest>();
         });
 
         mapper = config.CreateMapper();

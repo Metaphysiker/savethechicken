@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Dtos.DtosImpl;
-using System.Linq.Expressions;
 using WebApi.Database.Includes;
 using WebApi.Factories;
 using WebApi.Factories.FactoriesImpl;
@@ -13,22 +12,22 @@ namespace WebApi.Controllers.ControllersImpl
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class SaveChickenRequestController : ControllerBase, IModelController<SaveChickenRequestDto, SaveChickenRequestSearch>
+    public class SaveChickenDriveRequestController : ControllerBase, IModelController<SaveChickenDriveRequestDto, SaveChickenDriveRequestSearch>
     {
-        private readonly GenericModelService<SaveChickenRequest, SaveChickenRequestSearch> _service;
+        private readonly GenericModelService<SaveChickenDriveRequest, SaveChickenDriveRequestSearch> _service;
         private readonly AutoMapperService _mapper;
         private readonly IEmailService _emailService;
         private readonly IConfiguration _configuration;
-        private readonly ILogger<SaveChickenRequestController> _logger;
+        private readonly ILogger<SaveChickenDriveRequestController> _logger;
 
-        public SaveChickenRequestController(
+        public SaveChickenDriveRequestController(
             GenericModelServiceFactory genericModelServiceFactory,
             AutoMapperService mapper,
             IEmailService emailService,
             IConfiguration configuration,
-            ILogger<SaveChickenRequestController> logger)
+            ILogger<SaveChickenDriveRequestController> logger)
         {
-            _service = genericModelServiceFactory.Create<SaveChickenRequest, SaveChickenRequestSearch>();
+            _service = genericModelServiceFactory.Create<SaveChickenDriveRequest, SaveChickenDriveRequestSearch>();
             _mapper = mapper;
             _emailService = emailService;
             _configuration = configuration;
@@ -37,20 +36,20 @@ namespace WebApi.Controllers.ControllersImpl
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult<SaveChickenRequestDto>> Create([FromBody] SaveChickenRequestDto dto)
+        public async Task<ActionResult<SaveChickenDriveRequestDto>> Create([FromBody] SaveChickenDriveRequestDto dto)
         {
-            var model = _mapper.mapper.Map<SaveChickenRequest>(dto);
-            var result = await _service.Create(model, SaveChickenRequestIncludes.Default);
-            var resultDto = _mapper.mapper.Map<SaveChickenRequestDto>(result);
+            var model = _mapper.mapper.Map<SaveChickenDriveRequest>(dto);
+            var result = await _service.Create(model, SaveChickenDriveRequestIncludes.Default);
+            var resultDto = _mapper.mapper.Map<SaveChickenDriveRequestDto>(result);
 
             // Send notification email
             try
             {
-                await SendNewRequestNotificationEmail(resultDto);
+                await SendNewDriverNotificationEmail(resultDto);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to send notification email for SaveChickenRequest {Id}", resultDto.Id);
+                _logger.LogError(ex, "Failed to send notification email for SaveChickenDriveRequest {Id}", resultDto.Id);
                 // Don't fail the request creation if email fails
             }
 
@@ -66,29 +65,29 @@ namespace WebApi.Controllers.ControllersImpl
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<SaveChickenRequestDto>> Read(int id)
+        public async Task<ActionResult<SaveChickenDriveRequestDto>> Read(int id)
         {
-            var result = await _service.Read(id, SaveChickenRequestIncludes.Default);
+            var result = await _service.Read(id, SaveChickenDriveRequestIncludes.Default);
             if (result == null) return NotFound();
-            var resultDto = _mapper.mapper.Map<SaveChickenRequestDto>(result);
+            var resultDto = _mapper.mapper.Map<SaveChickenDriveRequestDto>(result);
             return Ok(resultDto);
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<SaveChickenRequestDto>>> ReadAll()
+        public async Task<ActionResult<List<SaveChickenDriveRequestDto>>> ReadAll()
         {
-            var result = await _service.ReadAll(SaveChickenRequestIncludes.Default);
-            var resultDto = _mapper.mapper.Map<List<SaveChickenRequestDto>>(result);
+            var result = await _service.ReadAll(SaveChickenDriveRequestIncludes.Default);
+            var resultDto = _mapper.mapper.Map<List<SaveChickenDriveRequestDto>>(result);
             return Ok(resultDto);
         }
 
         [HttpPost("search")]
-        public async Task<ActionResult<PaginationDto<SaveChickenRequestDto>>> Search([FromBody] SaveChickenRequestSearch search)
+        public async Task<ActionResult<PaginationDto<SaveChickenDriveRequestDto>>> Search([FromBody] SaveChickenDriveRequestSearch search)
         {
-            var result = await _service.Search(search, SaveChickenRequestIncludes.Default);
-            var resultDto = new PaginationDto<SaveChickenRequestDto>
+            var result = await _service.Search(search, SaveChickenDriveRequestIncludes.Default);
+            var resultDto = new PaginationDto<SaveChickenDriveRequestDto>
             {
-                Data = _mapper.mapper.Map<List<SaveChickenRequestDto>>(result.Data),
+                Data = _mapper.mapper.Map<List<SaveChickenDriveRequestDto>>(result.Data),
                 Page = result.Page,
                 PageSize = result.PageSize,
                 TotalItems = result.TotalItems,
@@ -99,15 +98,15 @@ namespace WebApi.Controllers.ControllersImpl
 
         [Authorize(Roles = nameof(UserRole.Admin))]
         [HttpPut]
-        public async Task<ActionResult<SaveChickenRequestDto>> Update([FromBody] SaveChickenRequestDto dto)
+        public async Task<ActionResult<SaveChickenDriveRequestDto>> Update([FromBody] SaveChickenDriveRequestDto dto)
         {
-            var model = _mapper.mapper.Map<SaveChickenRequest>(dto);
-            var result = await _service.Update(model, SaveChickenRequestIncludes.Default);
-            var resultDto = _mapper.mapper.Map<SaveChickenRequestDto>(result);
+            var model = _mapper.mapper.Map<SaveChickenDriveRequest>(dto);
+            var result = await _service.Update(model, SaveChickenDriveRequestIncludes.Default);
+            var resultDto = _mapper.mapper.Map<SaveChickenDriveRequestDto>(result);
             return Ok(resultDto);
         }
 
-        private async Task SendNewRequestNotificationEmail(SaveChickenRequestDto request)
+        private async Task SendNewDriverNotificationEmail(SaveChickenDriveRequestDto request)
         {
             var recipients = _configuration.GetSection("Email:NotificationRecipients").Get<List<string>>();
             if (recipients == null || !recipients.Any())
@@ -116,18 +115,18 @@ namespace WebApi.Controllers.ControllersImpl
                 return;
             }
 
-            var subject = $"Neuer Abnehmer: {request.Person?.Contact?.FirstName} {request.Person?.Contact?.LastName}";
+            var subject = $"Neuer Fahrer: {request.Person?.Contact?.FirstName} {request.Person?.Contact?.LastName}";
             var body = $@"
                 <html>
                 <body>
-                    <h2>Neuer Abnehmer</h2>
+                    <h2>Neuer Fahrer</h2>
                     <p><strong>Anfrage-ID:</strong> {request.Id}</p>
                     <p><strong>Kontakt:</strong> {request.Person?.Contact?.FirstName} {request.Person?.Contact?.LastName}</p>
                     <p><strong>E-Mail:</strong> {request.Person?.Contact?.Email}</p>
                     <p><strong>Telefon:</strong> {request.Person?.Contact?.PhoneNumber}</p>
                     <p><strong>Adresse:</strong> {request.Person?.Address?.Street}, {request.Person?.Address?.PostalCode} {request.Person?.Address?.City}</p>
-                    <p><strong>Anzahl Hühner:</strong> {request.NumberOfChickensToBeSaved}</p>
-                    <p><strong>Anzahl Hähne:</strong> {request.NumberOfRoostersToBeSaved}</p>
+                    <p><strong>Auto:</strong> {request.CarMake}</p>
+                    <p><strong>Kapazität:</strong> {request.CapacityForChickens} Hühner</p>
                     <p><strong>Erstellt:</strong> {DateTime.Now:dd.MM.yyyy HH:mm}</p>
                     {(request.SaveChickenActionId.HasValue ? $"<p><strong>Zugewiesen zu Aktion:</strong> {request.SaveChickenAction?.Title ?? request.SaveChickenActionId.ToString()}</p>" : "")}
                 </body>
@@ -136,6 +135,5 @@ namespace WebApi.Controllers.ControllersImpl
 
             await _emailService.SendEmailAsync(recipients, subject, body, isHtml: true);
         }
-
     }
 }

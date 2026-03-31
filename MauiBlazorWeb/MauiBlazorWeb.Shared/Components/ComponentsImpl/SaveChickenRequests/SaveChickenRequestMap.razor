@@ -19,13 +19,13 @@
         markers = new List<MapMarker>();
         foreach (var dto in saveChickenRequestDtos)
         {
-            if (dto.Address != null && dto.Address.GeoCoordinate != null)
+            if (dto.Person?.Address != null && dto.Person.Address.GeoCoordinate != null)
             {
                 var marker = new MapMarker
                 {
-                    Latitude = dto.Address.GeoCoordinate.Latitude,
-                    Longitude = dto.Address.GeoCoordinate.Longitude,
-                    Info = $"{dto.Contact.FirstName} {dto.Contact.LastName}"
+                    Latitude = dto.Person.Address.GeoCoordinate.Latitude,
+                    Longitude = dto.Person.Address.GeoCoordinate.Longitude,
+                    Info = $"{dto.Person.Contact?.FirstName} {dto.Person.Contact?.LastName}"
                 };
                 markers.Add(marker);
             }

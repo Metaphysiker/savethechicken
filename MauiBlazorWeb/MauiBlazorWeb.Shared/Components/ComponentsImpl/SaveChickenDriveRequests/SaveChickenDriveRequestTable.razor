@@ -1,19 +1,19 @@
-﻿@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.StoredFiles
 @using MauiBlazorWeb.Shared.Resources.Strings
 @using Microsoft.Extensions.Localization
 @using MudBlazor
-@using MudBlazor.Components
 @using global::Shared.Dtos.DtosImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl
 @inject NavigationManager NavigationManager
 @inject IStringLocalizer<AppResources> L
 
 @code {
     [Parameter]
-    public List<DriverDto> items { get; set; } = new List<DriverDto>();
+    public List<SaveChickenDriveRequestDto> items { get; set; } = new List<SaveChickenDriveRequestDto>();
 
-    [Parameter] public EventCallback<DriverDto> OnItemSelected { get; set; }
-    void SelectItem(DriverDto item) => OnItemSelected.InvokeAsync(item);
+    [Parameter] public EventCallback<SaveChickenDriveRequestDto> OnItemSelected { get; set; }
+    void SelectItem(SaveChickenDriveRequestDto item) => OnItemSelected.InvokeAsync(item);
 
     [Parameter] public EventCallback<(string? SortBy, bool? SortDescending)> OnSortSelected { get; set; }
     void SortByColumn(string columnName, bool? descending) => OnSortSelected.InvokeAsync((columnName, descending));
@@ -37,9 +37,9 @@
         return currentSortDescending == true ? Icons.Material.Filled.ArrowDownward : Icons.Material.Filled.ArrowUpward;
     }
 
-    private void EditItem(DriverDto driverDto)
+    private void EditItem(SaveChickenDriveRequestDto saveChickenDriveRequestDto)
     {
-        NavigationManager.NavigateTo($"/drivers/{driverDto.Id}/edit");
+        NavigationManager.NavigateTo($"/save-chicken-drive-requests/{saveChickenDriveRequestDto.Id}/edit");
 
     }
 }
@@ -49,93 +49,93 @@
     <Columns>
         <TemplateColumn>
             <HeaderTemplate>
-                <MudButton OnClick="@(() => OnHeaderClick("Contact.FirstName"))" Variant="Variant.Text" Style="text-transform: none;">
+                <MudButton OnClick="@(() => OnHeaderClick("Person.Contact.FirstName"))" Variant="Variant.Text" Style="text-transform: none;">
                     @L["Contact_FirstName"]
-                        @if (GetSortIcon("Contact.FirstName") != null)
+                        @if (GetSortIcon("Person.Contact.FirstName") != null)
                     {
-                            <MudIcon Icon="@GetSortIcon("Contact.FirstName")" Size="Size.Small" />
+                            <MudIcon Icon="@GetSortIcon("Person.Contact.FirstName")" Size="Size.Small" />
                     }
                 </MudButton>
             </HeaderTemplate>
-            <CellTemplate>@context.Item.Contact.FirstName</CellTemplate>
+            <CellTemplate>@context.Item.Person?.Contact?.FirstName</CellTemplate>
         </TemplateColumn>
 
         <TemplateColumn>
             <HeaderTemplate>
-                <MudButton OnClick="@(() => OnHeaderClick("Contact.LastName"))" Variant="Variant.Text" Style="text-transform: none;">
+                <MudButton OnClick="@(() => OnHeaderClick("Person.Contact.LastName"))" Variant="Variant.Text" Style="text-transform: none;">
                     @L["Contact_LastName"]
-                        @if (GetSortIcon("Contact.LastName") != null)
+                        @if (GetSortIcon("Person.Contact.LastName") != null)
                     {
-                            <MudIcon Icon="@GetSortIcon("Contact.LastName")" Size="Size.Small" />
+                            <MudIcon Icon="@GetSortIcon("Person.Contact.LastName")" Size="Size.Small" />
                     }
                 </MudButton>
             </HeaderTemplate>
-            <CellTemplate>@context.Item.Contact.LastName</CellTemplate>
+            <CellTemplate>@context.Item.Person?.Contact?.LastName</CellTemplate>
         </TemplateColumn>
 
         <TemplateColumn>
             <HeaderTemplate>
-                <MudButton OnClick="@(() => OnHeaderClick("Address.Street"))" Variant="Variant.Text" Style="text-transform: none;">
+                <MudButton OnClick="@(() => OnHeaderClick("Person.Address.Street"))" Variant="Variant.Text" Style="text-transform: none;">
                         @L["Address_Street"]
-                        @if (GetSortIcon("Address.Street") != null)
+                        @if (GetSortIcon("Person.Address.Street") != null)
                     {
-                            <MudIcon Icon="@GetSortIcon("Address.Street")" Size="Size.Small" />
+                            <MudIcon Icon="@GetSortIcon("Person.Address.Street")" Size="Size.Small" />
                     }
                 </MudButton>
             </HeaderTemplate>
-            <CellTemplate>@context.Item.Address.Street</CellTemplate>
+            <CellTemplate>@context.Item.Person?.Address?.Street</CellTemplate>
         </TemplateColumn>
 
         <TemplateColumn>
             <HeaderTemplate>
-                    <MudButton OnClick="@(() => OnHeaderClick("Address.City"))" Variant="Variant.Text" Style="text-transform: none;">
+                    <MudButton OnClick="@(() => OnHeaderClick("Person.Address.City"))" Variant="Variant.Text" Style="text-transform: none;">
                         @L["Address_City"]
-                        @if (GetSortIcon("Address.City") != null)
+                        @if (GetSortIcon("Person.Address.City") != null)
                     {
-                            <MudIcon Icon="@GetSortIcon("Address.City")" Size="Size.Small" />
+                            <MudIcon Icon="@GetSortIcon("Person.Address.City")" Size="Size.Small" />
                     }
                 </MudButton>
             </HeaderTemplate>
-            <CellTemplate>@context.Item.Address.City</CellTemplate>
+            <CellTemplate>@context.Item.Person?.Address?.City</CellTemplate>
         </TemplateColumn>
 
         <TemplateColumn>
             <HeaderTemplate>
-                    <MudButton OnClick="@(() => OnHeaderClick("Address.PostalCode"))" Variant="Variant.Text" Style="text-transform: none;">
+                    <MudButton OnClick="@(() => OnHeaderClick("Person.Address.PostalCode"))" Variant="Variant.Text" Style="text-transform: none;">
                         @L["Address_PostalCode"]
-                        @if (GetSortIcon("Address.PostalCode") != null)
+                        @if (GetSortIcon("Person.Address.PostalCode") != null)
                     {
-                            <MudIcon Icon="@GetSortIcon("Address.PostalCode")" Size="Size.Small" />
+                            <MudIcon Icon="@GetSortIcon("Person.Address.PostalCode")" Size="Size.Small" />
                     }
                 </MudButton>
             </HeaderTemplate>
-            <CellTemplate>@context.Item.Address.PostalCode</CellTemplate>
+            <CellTemplate>@context.Item.Person?.Address?.PostalCode</CellTemplate>
         </TemplateColumn>
 
         <TemplateColumn>
             <HeaderTemplate>
-                    <MudButton OnClick="@(() => OnHeaderClick("Contact.PhoneNumber"))" Variant="Variant.Text" Style="text-transform: none;">
+                    <MudButton OnClick="@(() => OnHeaderClick("Person.Contact.PhoneNumber"))" Variant="Variant.Text" Style="text-transform: none;">
                         @L["Contact_Phone"]
-                        @if (GetSortIcon("Contact.PhoneNumber") != null)
+                        @if (GetSortIcon("Person.Contact.PhoneNumber") != null)
                     {
-                            <MudIcon Icon="@GetSortIcon("Contact.PhoneNumber")" Size="Size.Small" />
+                            <MudIcon Icon="@GetSortIcon("Person.Contact.PhoneNumber")" Size="Size.Small" />
                     }
                 </MudButton>
             </HeaderTemplate>
-            <CellTemplate>@context.Item.Contact.PhoneNumber</CellTemplate>
+            <CellTemplate>@context.Item.Person?.Contact?.PhoneNumber</CellTemplate>
         </TemplateColumn>
 
         <TemplateColumn>
             <HeaderTemplate>
-                    <MudButton OnClick="@(() => OnHeaderClick("Contact.Email"))" Variant="Variant.Text" Style="text-transform: none;">
+                    <MudButton OnClick="@(() => OnHeaderClick("Person.Contact.Email"))" Variant="Variant.Text" Style="text-transform: none;">
                     @L["Contact_Email"]
-                        @if (GetSortIcon("Contact.Email") != null)
+                        @if (GetSortIcon("Person.Contact.Email") != null)
                     {
-                            <MudIcon Icon="@GetSortIcon("Contact.Email")" Size="Size.Small" />
+                            <MudIcon Icon="@GetSortIcon("Person.Contact.Email")" Size="Size.Small" />
                     }
                 </MudButton>
             </HeaderTemplate>
-            <CellTemplate>@context.Item.Contact.Email</CellTemplate>
+            <CellTemplate>@context.Item.Person?.Contact?.Email</CellTemplate>
         </TemplateColumn>
 
             <TemplateColumn>
@@ -215,7 +215,7 @@
                 <CellTemplate>
                     @if (context.Item != null)
                     {
-                        <SaveChickenActionSelectorDialogLauncher TDto="DriverDto"
+                        <SaveChickenActionSelectorDialogLauncher TDto="SaveChickenDriveRequestDto"
                                                                  Model="context.Item"
                                                                  OnCopied="@(() => OnItemsChanged.InvokeAsync())"
                                                                  ExcludeIds="@(context.Item.SaveChickenActionId.HasValue ? new List<int> { context.Item.SaveChickenActionId.Value } : null)" />
@@ -228,12 +228,12 @@
                 <CellTemplate>
                     @if (context.Item != null)
                     {
-                        var itemWithFiles = new ItemWithBrowserFiles<DriverDto> { Item = context.Item };
-                        <GenericUpdateWithFilesDialogLauncher TDto="DriverDto"
+                        var itemWithFiles = new ItemWithBrowserFiles<SaveChickenDriveRequestDto> { Item = context.Item };
+                        <GenericUpdateWithFilesDialogLauncher TDto="SaveChickenDriveRequestDto"
                                                         model="itemWithFiles"
                                                         OnEdited="@(() => OnItemsChanged.InvokeAsync())">
                             <ChildContent Context="editModel">
-                                <DriverFormWithFiles EntityWithFiles="editModel" />
+                                <SaveChickenDriveRequestFormWithFiles EntityWithFiles="editModel" />
                             </ChildContent>
                         </GenericUpdateWithFilesDialogLauncher>
                     }
@@ -243,11 +243,12 @@
             <TemplateColumn>
                 <HeaderTemplate>@L["delete"]</HeaderTemplate>
                 <CellTemplate>
-                    <GenericDeleteDialog TDto="DriverDto"
+                    <GenericDeleteDialog TDto="SaveChickenDriveRequestDto"
                                          Model="context.Item"
                                          OnDeleted="@(() => OnItemsChanged.InvokeAsync())" />
                 </CellTemplate>
             </TemplateColumn>
+
     </Columns>
 </MudDataGrid>
 </div>

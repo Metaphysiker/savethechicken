@@ -36,8 +36,8 @@ namespace Services.ServicesImpl
             {
                 query = query.Where(x =>
                     x.SearchVector.Matches(EF.Functions.PlainToTsQuery("german", search.SearchTerm))
-                    || x.Contact.SearchVector.Matches(EF.Functions.PlainToTsQuery("german", search.SearchTerm))
-                    || x.Address.SearchVector.Matches(EF.Functions.PlainToTsQuery("german", search.SearchTerm))
+                    || x.Person.Contact.SearchVector.Matches(EF.Functions.PlainToTsQuery("german", search.SearchTerm))
+                    || x.Person.Address.SearchVector.Matches(EF.Functions.PlainToTsQuery("german", search.SearchTerm))
                 );
             }
 

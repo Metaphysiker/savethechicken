@@ -2,7 +2,7 @@
 @page "/save-chicken-actions/{id:int}"
 
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl
-@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Drivers
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenDriveRequests
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Farms
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
@@ -40,12 +40,12 @@
         <MudPaper Class="pa-4 my-4">
             <MudText Typo="Typo.h6">Fahrer</MudText>
 
-            <GenericSearch TDto="DriverDto" TSearchDto="DriverSearch" search="driverSearch" OnItemsFound="OnDriverItemsFound">
+            <GenericSearch TDto="SaveChickenDriveRequestDto" TSearchDto="SaveChickenDriveRequestSearch" search="saveChickenDriveRequestSearch" OnItemsFound="OnSaveChickenDriveRequestItemsFound">
                 <SearchForm Context="search">
-                    <DriverSearchForm Model="search" />
+                    <SaveChickenDriveRequestSearchForm Model="search" />
                 </SearchForm>
                 <Table Context="ctx">
-                    <DriverTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" OnItemsChanged="ctx.Item4.InvokeAsync" />
+                    <SaveChickenDriveRequestTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" OnItemsChanged="ctx.Item4.InvokeAsync" />
                 </Table>
             </GenericSearch>
         </MudPaper>
@@ -86,11 +86,11 @@
     private SaveChickenActionDto? selectedAction;
     private int? selectedActionId;
     private SaveChickenRequestSearch saveChickenRequestSearch = new SaveChickenRequestSearch();
-    private DriverSearch driverSearch = new DriverSearch();
+    private SaveChickenDriveRequestSearch saveChickenDriveRequestSearch = new SaveChickenDriveRequestSearch();
     private FarmSearch farmSearch = new FarmSearch();
     private List<SaveChickenRequestDto> foundSaveChickenRequests = new();
     private List<FarmDto> foundFarms = new();
-    private List<DriverDto> drivers = new();
+    private List<SaveChickenDriveRequestDto> saveChickenDriveRequests = new();
 
     [Parameter]
     public int? id { get; set; }
@@ -107,9 +107,9 @@
         StateHasChanged();
     }
 
-    private void OnDriverItemsFound(List<DriverDto> driverDtos)
+    private void OnSaveChickenDriveRequestItemsFound(List<SaveChickenDriveRequestDto> driveRequests)
     {
-        drivers = driverDtos;
+        saveChickenDriveRequests = driveRequests;
         StateHasChanged();
     }
 
@@ -123,7 +123,7 @@
     private void UpdateSearches()
     {
         UpdateSaveChickenRequestSearch();
-        UpdateDriverSearch();
+        UpdateSaveChickenDriveRequestSearch();
         UpdateFarmSearch();
     }
 
@@ -172,12 +172,12 @@
         };
     }
 
-    private void UpdateDriverSearch()
+    private void UpdateSaveChickenDriveRequestSearch()
     {
         var saveChickenActionIds = selectedAction != null
          ? new List<int> { selectedAction.Id }
          : new List<int>();
-        driverSearch = new DriverSearch
+        saveChickenDriveRequestSearch = new SaveChickenDriveRequestSearch
         {
             SaveChickenActionIds = saveChickenActionIds
         };

@@ -12,6 +12,7 @@ namespace Shared.Dtos.DtosImpl
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
+        public int? PersonId { get; set; }
 
         public int NumberOfChickensToBeSaved { get; set; } = 0;
         public int NumberOfRoostersToBeSaved { get; set; } = 0;
@@ -34,14 +35,6 @@ namespace Shared.Dtos.DtosImpl
         public SaveChickenActionDto? SaveChickenAction { get; set; }
         public int? SaveChickenActionId { get; set; }
 
-        [ValidateComplexType]
-        [Required]
-        public ContactDto Contact { get; set; }
-        public int ContactId { get; set; }
-        [ValidateComplexType]
-        [Required]
-        public AddressDto Address { get; set; }
-        public int AddressId { get; set; }
         public bool IsHandoverAtDifferentAddress { get; set; } = false;
 
         [ValidateComplexType]
@@ -55,12 +48,13 @@ namespace Shared.Dtos.DtosImpl
         public List<StoredFileDto> Files { get; set; }
 
         public List<int> BlackListedPersonIds { get; set; } = new List<int>();
+
+        public PersonDto? Person { get; set; }
+
         public string GenericName { get; set; } = string.Empty;
 
         public SaveChickenRequestDto()
         {
-            Contact = new ContactDto();
-            Address = new AddressDto();
             Files = new List<StoredFileDto>();
         }
 

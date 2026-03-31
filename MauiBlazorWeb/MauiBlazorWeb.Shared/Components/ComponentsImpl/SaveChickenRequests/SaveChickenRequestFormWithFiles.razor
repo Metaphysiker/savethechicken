@@ -21,10 +21,23 @@
 
     [Parameter]
     public bool IsReadOnly { get; set; } = false;
+
+    protected override void OnInitialized()
+    {
+        // Initialize Person if null
+        if (EntityWithFiles.Item.Person == null)
+        {
+            EntityWithFiles.Item.Person = new PersonDto
+            {
+                Contact = new ContactDto(),
+                Address = new AddressDto()
+            };
+        }
+    }
 }
 
-<ContactForm Contact="EntityWithFiles.Item.Contact" IsReadOnly="@IsReadOnly" />
-<AddressForm Address="EntityWithFiles.Item.Address" IsReadOnly="@IsReadOnly" />
+<ContactForm Contact="EntityWithFiles.Item.Person.Contact" IsReadOnly="@IsReadOnly" />
+<AddressForm Address="EntityWithFiles.Item.Person.Address" IsReadOnly="@IsReadOnly" />
 
 <MudPaper Class="pa-4 my-4">
     <MudText Typo="Typo.h6">Allgemeine Informationen</MudText>
