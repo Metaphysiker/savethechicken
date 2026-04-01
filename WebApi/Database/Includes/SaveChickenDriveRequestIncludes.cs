@@ -5,6 +5,17 @@ namespace WebApi.Database.Includes
 {
     public class SaveChickenDriveRequestIncludes
     {
+        // String-based includes for proper EF Core navigation property chaining
+        public static readonly string[] DefaultStrings = new string[]
+        {
+            "Person.Contact",
+            "Person.Address",
+            "Person.Address.GeoCoordinate",
+            "SaveChickenAction",
+            "Files",
+        };
+
+        // Keep expression-based for compatibility (use DefaultStrings for searches)
         public static readonly Expression<Func<SaveChickenDriveRequest, object?>>[] Default = new Expression<Func<SaveChickenDriveRequest, object?>>[]
         {
             r => r.Person,

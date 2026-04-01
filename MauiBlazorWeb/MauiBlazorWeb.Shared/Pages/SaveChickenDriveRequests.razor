@@ -2,6 +2,7 @@
 
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenDriveRequests
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Persons
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
 @using MauiBlazorWeb.Shared.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
@@ -12,37 +13,16 @@
 
     @if (item != null)
     {
-        <MudPaper Class="pa-4 my-4">
-            <MudText Typo="Typo.h5" Class="mb-2">
-                <span data-testid="contact-firstname">@person?.Contact?.FirstName</span>
-                <span> </span>
-                <span data-testid="contact-lastname">@person?.Contact?.LastName</span>
-            </MudText>
+        <!-- Use PersonDetailsDisplay with PersonId -->
+        @if (item.PersonId.HasValue)
+        {
+            <PersonDetailsDisplay PersonId="item.PersonId.Value"
+                                 ContactTitle="Kontaktperson"
+                                 AddressTitle="Adresse" />
+        }
 
-            @if (person?.Contact?.Email != null)
-            {
-                <MudText Typo="Typo.body1">
-                    <strong>Email:</strong> <span data-testid="contact-email">@person.Contact.Email</span>
-                </MudText>
-            }
-
-            @if (person?.Contact?.PhoneNumber != null)
-            {
-                <MudText Typo="Typo.body1">
-                    <strong>Telefon:</strong> <span data-testid="contact-phone">@person.Contact.PhoneNumber</span>
-                </MudText>
-            }
-
-            @if (person?.Address != null)
-            {
-                <MudText Typo="Typo.body1" Class="mt-2">
-                    <strong>Adresse:</strong><br />
-                    <span data-testid="address-street">@person.Address.Street</span><br />
-                    <span data-testid="address-postalcode">@person.Address.PostalCode</span>
-                    <span> </span>
-                    <span data-testid="address-city">@person.Address.City</span>
-                </MudText>
-            }
+        <MudPaper Class="pa-4 my-4" Elevation="2">
+            <MudText Typo="Typo.h6" Class="mb-3">Fahrangebot Information</MudText>
 
             @if (!string.IsNullOrWhiteSpace(item.CarMake))
             {
@@ -79,15 +59,18 @@
             }
         </MudPaper>
 
-        <MudPaper Class="pa-4 my-4">
-            <GenericUpdateDialogLauncher TDto="SaveChickenDriveRequestDto"
-                                         model="item"
-                                         OnEdited="RefreshItem">
-                <ChildContent Context="editModel">
-                    <SaveChickenDriveRequestFormWithFiles EntityWithFiles="@(new ItemWithBrowserFiles<SaveChickenDriveRequestDto> { Item = editModel })" />
-                </ChildContent>
-            </GenericUpdateDialogLauncher>
-            <GenericDeleteDialog TDto="SaveChickenDriveRequestDto" Model="item" />
+        <MudPaper Class="pa-4 my-4" Elevation="2">
+            <MudText Typo="Typo.h6" Class="mb-3">Actions</MudText>
+            <MudStack Direction="Row" Spacing="2">
+                <GenericUpdateDialogLauncher TDto="SaveChickenDriveRequestDto"
+                                             model="item"
+                                             OnEdited="RefreshItem">
+                    <ChildContent Context="editModel">
+                        <SaveChickenDriveRequestFormWithFiles EntityWithFiles="@(new ItemWithBrowserFiles<SaveChickenDriveRequestDto> { Item = editModel })" />
+                    </ChildContent>
+                </GenericUpdateDialogLauncher>
+                <GenericDeleteDialog TDto="SaveChickenDriveRequestDto" Model="item" />
+            </MudStack>
         </MudPaper>
     }
     else if (Id.HasValue)
@@ -109,7 +92,6 @@
     public int? Id { get; set; }
 
     private SaveChickenDriveRequestDto? item;
-    private PersonDto? person;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -122,14 +104,6 @@
         {
             var service = DtoServiceFactory.Create<SaveChickenDriveRequestDto, SaveChickenDriveRequestSearch>();
             item = await service.GetByIdAsync(Id.Value);
-
-            // Load person separately
-            if (item?.PersonId.HasValue == true)
-            {
-                var personService = DtoServiceFactory.Create<PersonDto, PersonSearch>();
-                person = await personService.GetByIdAsync(item.PersonId.Value);
-            }
-
             StateHasChanged();
         }
     }

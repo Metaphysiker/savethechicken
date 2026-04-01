@@ -1,6 +1,8 @@
 @using global::Shared.Dtos.DtosImpl
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@inject GenericDtoServiceFactory DtoServiceFactory
 
-@if (Contact != null)
+@if (displayContact != null)
 {
     <MudPaper Class="pa-4 my-4" Elevation="2">
         <MudText Typo="Typo.h6" Class="mb-3">
@@ -14,33 +16,33 @@
             }
         </MudText>
 
-        @if (!string.IsNullOrWhiteSpace(Contact.FirstName) || !string.IsNullOrWhiteSpace(Contact.LastName))
+        @if (!string.IsNullOrWhiteSpace(displayContact.FirstName) || !string.IsNullOrWhiteSpace(displayContact.LastName))
         {
             <MudText Typo="Typo.h5" Class="mb-2">
-                @if (!string.IsNullOrWhiteSpace(Contact.FirstName))
+                @if (!string.IsNullOrWhiteSpace(displayContact.FirstName))
                 {
-                    <span data-testid="contact-firstname">@Contact.FirstName</span>
+                    <span data-testid="contact-firstname">@displayContact.FirstName</span>
                 }
-                @if (!string.IsNullOrWhiteSpace(Contact.LastName))
+                @if (!string.IsNullOrWhiteSpace(displayContact.LastName))
                 {
-                    <span data-testid="contact-lastname"> @Contact.LastName</span>
+                    <span data-testid="contact-lastname"> @displayContact.LastName</span>
                 }
             </MudText>
         }
 
-        @if (!string.IsNullOrWhiteSpace(Contact.Email))
+        @if (!string.IsNullOrWhiteSpace(displayContact.Email))
         {
             <MudText Typo="Typo.body1" Class="mb-1">
                 <MudIcon Icon="@Icons.Material.Filled.Email" Size="Size.Small" Class="mr-2" />
-                <strong>Email:</strong> <span data-testid="contact-email">@Contact.Email</span>
+                <strong>Email:</strong> <span data-testid="contact-email">@displayContact.Email</span>
             </MudText>
         }
 
-        @if (!string.IsNullOrWhiteSpace(Contact.PhoneNumber))
+        @if (!string.IsNullOrWhiteSpace(displayContact.PhoneNumber))
         {
             <MudText Typo="Typo.body1" Class="mb-1">
                 <MudIcon Icon="@Icons.Material.Filled.Phone" Size="Size.Small" Class="mr-2" />
-                <strong>Telefon:</strong> <span data-testid="contact-phone">@Contact.PhoneNumber</span>
+                <strong>Telefon:</strong> <span data-testid="contact-phone">@displayContact.PhoneNumber</span>
             </MudText>
         }
     </MudPaper>
@@ -51,5 +53,33 @@
     public ContactDto? Contact { get; set; }
 
     [Parameter]
+    public int? PersonId { get; set; }
+
+    [Parameter]
     public string? Title { get; set; }
+
+    private ContactDto? displayContact;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadContact();
+    }
+
+    private async Task LoadContact()
+    {
+        // Use Contact parameter if provided
+        if (Contact != null)
+        {
+            displayContact = Contact;
+        }
+        // Otherwise, if PersonId is provided, fetch the person and use their contact
+        else if (PersonId.HasValue)
+        {
+            var personService = DtoServiceFactory.Create<PersonDto, PersonSearch>();
+            var person = await personService.GetByIdAsync(PersonId.Value);
+            displayContact = person?.Contact;
+        }
+
+        StateHasChanged();
+    }
 }

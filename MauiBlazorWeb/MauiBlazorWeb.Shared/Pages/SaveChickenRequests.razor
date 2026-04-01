@@ -13,7 +13,9 @@
 
     @if (item != null)
     {
+        <!-- Use PersonDetailsDisplay with both Person and PersonId for flexibility -->
         <PersonDetailsDisplay Person="item.Person"
+                             PersonId="item.PersonId"
                              ContactTitle="Kontaktperson"
                              AddressTitle="Adresse" />
 

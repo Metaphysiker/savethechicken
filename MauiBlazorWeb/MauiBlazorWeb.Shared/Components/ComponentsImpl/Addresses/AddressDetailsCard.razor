@@ -1,6 +1,8 @@
 @using global::Shared.Dtos.DtosImpl
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@inject GenericDtoServiceFactory DtoServiceFactory
 
-@if (Address != null)
+@if (displayAddress != null)
 {
     <MudPaper Class="pa-4 my-4" Elevation="2">
         <MudText Typo="Typo.h6" Class="mb-3">
@@ -16,18 +18,18 @@
 
         <MudText Typo="Typo.body1">
             <MudIcon Icon="@Icons.Material.Filled.LocationOn" Size="Size.Small" Class="mr-2" />
-            @if (!string.IsNullOrWhiteSpace(Address.Street))
+            @if (!string.IsNullOrWhiteSpace(displayAddress.Street))
             {
-                <span data-testid="address-street">@Address.Street</span><br />
+                <span data-testid="address-street">@displayAddress.Street</span><br />
             }
             <span style="margin-left: 32px;">
-                @if (!string.IsNullOrWhiteSpace(Address.PostalCode))
+                @if (!string.IsNullOrWhiteSpace(displayAddress.PostalCode))
                 {
-                    <span data-testid="address-postalcode">@Address.PostalCode </span>
+                    <span data-testid="address-postalcode">@displayAddress.PostalCode </span>
                 }
-                @if (!string.IsNullOrWhiteSpace(Address.City))
+                @if (!string.IsNullOrWhiteSpace(displayAddress.City))
                 {
-                    <span data-testid="address-city">@Address.City</span>
+                    <span data-testid="address-city">@displayAddress.City</span>
                 }
             </span>
         </MudText>
@@ -39,5 +41,33 @@
     public AddressDto? Address { get; set; }
 
     [Parameter]
+    public int? PersonId { get; set; }
+
+    [Parameter]
     public string? Title { get; set; }
+
+    private AddressDto? displayAddress;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadAddress();
+    }
+
+    private async Task LoadAddress()
+    {
+        // Use Address parameter if provided
+        if (Address != null)
+        {
+            displayAddress = Address;
+        }
+        // Otherwise, if PersonId is provided, fetch the person and use their address
+        else if (PersonId.HasValue)
+        {
+            var personService = DtoServiceFactory.Create<PersonDto, PersonSearch>();
+            var person = await personService.GetByIdAsync(PersonId.Value);
+            displayAddress = person?.Address;
+        }
+
+        StateHasChanged();
+    }
 }

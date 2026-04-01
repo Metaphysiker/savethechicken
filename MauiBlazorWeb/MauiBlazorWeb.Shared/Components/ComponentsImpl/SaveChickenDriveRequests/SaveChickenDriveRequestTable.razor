@@ -23,6 +23,18 @@
     private string? currentColumnName = null;
     private bool? currentSortDescending = null;
 
+    protected override void OnParametersSet()
+    {
+        // Debug: Log Person data status
+        foreach (var item in items)
+        {
+            Console.WriteLine($"DriveRequest ID={item.Id}, PersonId={item.PersonId}, " +
+                            $"Person={item.Person != null}, " +
+                            $"Contact={item.Person?.Contact != null}, " +
+                            $"FirstName={item.Person?.Contact?.FirstName ?? "null"}");
+        }
+    }
+
     private void OnHeaderClick(string columnName)
     {
         bool? descending = currentColumnName == columnName ? !currentSortDescending : false;
@@ -62,7 +74,16 @@
                     }
                 </MudButton>
             </HeaderTemplate>
-            <CellTemplate>@context.Item.Person?.Contact?.FirstName</CellTemplate>
+            <CellTemplate>
+                @if (context.Item.Person?.Contact?.FirstName != null)
+                {
+                    @context.Item.Person.Contact.FirstName
+                }
+                else
+                {
+                    <span style="color: red; font-style: italic;">N/A (Person:@(context.Item.Person != null ? "✓" : "✗") Contact:@(context.Item.Person?.Contact != null ? "✓" : "✗"))</span>
+                }
+            </CellTemplate>
         </TemplateColumn>
 
         <TemplateColumn>
@@ -75,7 +96,16 @@
                     }
                 </MudButton>
             </HeaderTemplate>
-            <CellTemplate>@context.Item.Person?.Contact?.LastName</CellTemplate>
+            <CellTemplate>
+                @if (context.Item.Person?.Contact?.LastName != null)
+                {
+                    @context.Item.Person.Contact.LastName
+                }
+                else
+                {
+                    <span style="color: red; font-style: italic;">N/A (Person:@(context.Item.Person != null ? "✓" : "✗") Contact:@(context.Item.Person?.Contact != null ? "✓" : "✗"))</span>
+                }
+            </CellTemplate>
         </TemplateColumn>
 
         <TemplateColumn>

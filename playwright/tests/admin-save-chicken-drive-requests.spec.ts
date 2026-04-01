@@ -90,9 +90,12 @@ test.describe('Admin Save Chicken Drive Request Management', () => {
     await test.step('Admin finds and views the drive request', async () => {
       await page.goto('/admin/save-chicken-drive-requests', { waitUntil: 'networkidle' });
 
+      // Wait for the page to load
+      await page.waitForSelector('h2', { state: 'visible', timeout: 10000 });
+
       // Search for the request
-      await page.getByLabel(/suche|search/i).fill(testFirstName);
-      await page.getByRole('button', { name: /suchen|search/i }).click();
+      await page.getByLabel('Suche').fill(testFirstName);
+      await page.getByTestId('search-button').click();
       await page.waitForTimeout(1000);
 
       // Click view button
@@ -188,8 +191,8 @@ test.describe('Admin Save Chicken Drive Request Management', () => {
     await test.step('Verify created drive request', async () => {
       await page.goto('/admin/save-chicken-drive-requests', { waitUntil: 'networkidle' });
 
-      await page.getByLabel(/suche|search/i).fill(originalFirstName);
-      await page.getByRole('button', { name: /suchen|search/i }).click();
+      await page.getByLabel('Suche').fill(originalFirstName);
+      await page.getByTestId('search-button').click();
       await page.waitForTimeout(1000);
 
       const showButton = page.getByTestId('view-button').first();
@@ -210,8 +213,8 @@ test.describe('Admin Save Chicken Drive Request Management', () => {
     await test.step('Update the drive request (SaveChickenDriveRequest fields only)', async () => {
       await page.goto('/admin/save-chicken-drive-requests', { waitUntil: 'networkidle' });
 
-      await page.getByLabel(/suche|search/i).fill(originalFirstName);
-      await page.getByRole('button', { name: /suchen|search/i }).click();
+      await page.getByLabel('Suche').fill(originalFirstName);
+      await page.getByTestId('search-button').click();
       await page.waitForTimeout(1000);
 
       const editButton = page.getByTestId('edit-button').first();
@@ -277,9 +280,9 @@ test.describe('Admin Save Chicken Drive Request Management', () => {
 
     await test.step('Verify updated drive request', async () => {
       // Search for the request using original name (Person data shouldn't change)
-      await page.getByLabel(/suche|search/i).clear();
-      await page.getByLabel(/suche|search/i).fill(originalFirstName);
-      await page.getByRole('button', { name: /suchen|search/i }).click();
+      await page.getByLabel('Suche').clear();
+      await page.getByLabel('Suche').fill(originalFirstName);
+      await page.getByTestId('search-button').click();
       await page.waitForTimeout(2000);
 
       const showButton = page.getByTestId('view-button').first();
@@ -313,9 +316,14 @@ test.describe('Admin Save Chicken Drive Request Management', () => {
     const testFirstName = `DeleteDrive${timestamp}`;
     const testLastName = 'DeleteLast';
     const testEmail = `deletedrive${timestamp}@example.com`;
+    const uniqueCarMake = `Ford-${timestamp}`; // Unique CarMake to avoid collisions with previous test runs
 
     let personId: number;
     let availableDates: number[];
+
+    // NOTE: Backend search doesn't include SaveChickenAction.Title, only searches:
+    // CarMake, Person.Contact fields, Person.Address fields
+    // Also, Person data appears null in table rows for some reason
 
     await test.step('Admin creates a SaveChickenAction first', async () => {
       const today = new Date();
@@ -359,7 +367,7 @@ test.describe('Admin Save Chicken Drive Request Management', () => {
       await fillAdminSaveChickenDriveRequestForm(page, {
         personId: personId,
         personEmail: testEmail,
-        carMake: 'Ford Focus',
+        carMake: uniqueCarMake,
         capacityForChickens: '10',
         availableDates: [dayOfMonth],
         message: 'This drive request will be deleted',
@@ -374,15 +382,21 @@ test.describe('Admin Save Chicken Drive Request Management', () => {
     await test.step('Navigate to list and find the created drive request', async () => {
       await page.goto('/admin/save-chicken-drive-requests', { waitUntil: 'networkidle' });
 
-      await page.getByLabel(/suche|search/i).fill(testFirstName);
-      await page.getByRole('button', { name: /suchen|search/i }).click();
+      // Wait for the page to load
+      await page.waitForSelector('h2', { state: 'visible', timeout: 10000 });
 
-      const requestRow = page.locator('tr').filter({ hasText: testFirstName });
+      // Search using unique CarMake
+      await page.getByLabel('Suche').fill(uniqueCarMake);
+      await page.getByTestId('search-button').click();
+      await page.waitForTimeout(1000); // Wait for search to filter results
+
+      // Find the row by unique CarMake
+      const requestRow = page.locator('tr').filter({ hasText: uniqueCarMake });
       await requestRow.waitFor({ state: 'visible', timeout: 5000 });
     });
 
     await test.step('Delete the drive request', async () => {
-      const requestRow = page.locator('tr').filter({ hasText: testFirstName });
+      const requestRow = page.locator('tr').filter({ hasText: uniqueCarMake });
       const deleteButton = requestRow.getByTestId('delete-button');
 
       await deleteButton.click();
@@ -402,12 +416,11 @@ test.describe('Admin Save Chicken Drive Request Management', () => {
     });
 
     await test.step('Verify drive request is deleted', async () => {
-      await page.getByLabel('Suche').fill(testFirstName);
-      await page.getByRole('button', { name: /suchen|search/i }).click();
+      await page.getByLabel('Suche').fill(uniqueCarMake);
+      await page.getByTestId('search-button').click();
+      await page.waitForTimeout(1000); // Wait for search to filter results
 
-      await page.waitForTimeout(1000);
-
-      const requestRow = page.locator('tr').filter({ hasText: testFirstName });
+      const requestRow = page.locator('tr').filter({ hasText: uniqueCarMake });
       await expect(requestRow).not.toBeVisible();
     });
   });

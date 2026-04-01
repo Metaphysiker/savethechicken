@@ -4,6 +4,7 @@ using Shared.Dtos.DtosImpl;
 using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using WebApi.Database.Includes;
 using WebApi.Models.ModelsImpl;
 
 namespace Services.ServicesImpl
@@ -19,9 +20,12 @@ namespace Services.ServicesImpl
         public async Task<PaginationDto<SaveChickenDriveRequest>> SearchAsync(SaveChickenDriveRequestSearch search, params Expression<Func<SaveChickenDriveRequest, object?>>[] includes)
         {
             var query = _db.Set<SaveChickenDriveRequest>().AsQueryable();
-            foreach (var include in includes)
+            
+            // Use string-based includes for proper navigation property chaining
+            // String-based Include properly loads nested entities like Person.Contact
+            foreach (var includePath in SaveChickenDriveRequestIncludes.DefaultStrings)
             {
-                query = query.Include(include);
+                query = query.Include(includePath);
             }
 
             // Filter by Ids
