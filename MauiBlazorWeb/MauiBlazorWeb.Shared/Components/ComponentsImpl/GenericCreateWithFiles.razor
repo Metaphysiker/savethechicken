@@ -50,6 +50,8 @@ App uses global @rendermode="InteractiveServer" in App.razor.
     [Parameter, EditorRequired] public RenderFragment<ItemWithBrowserFiles<TDto>> ChildContent { get; set; } = default!;
 
     [Parameter] public string? ResourceName { get; set; }
+    
+    [Parameter] public EventCallback OnCreated { get; set; }
 
     private GenericDtoService<TDto, ISearchDto>? _service;
     private string? errorMessage;
@@ -95,7 +97,12 @@ App uses global @rendermode="InteractiveServer" in App.razor.
                 }
 
                 // Navigate based on user role and configuration
-                if (isLoggedIn && !string.IsNullOrEmpty(ResourceName))
+                if (OnCreated.HasDelegate)
+                {
+                    // Dialog mode: invoke callback instead of navigation
+                    await OnCreated.InvokeAsync();
+                }
+                else if (isLoggedIn && !string.IsNullOrEmpty(ResourceName))
                 {
                     // Admin: navigate to detail page
                     var idProperty = createdItem.GetType().GetProperty("Id");

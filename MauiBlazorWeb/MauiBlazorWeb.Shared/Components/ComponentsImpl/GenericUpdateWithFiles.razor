@@ -8,9 +8,10 @@ App uses global @rendermode="InteractiveServer" in App.razor.
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @inject AwsFileService AwsFileService
 @using Microsoft.Extensions.Localization
+@using global::Shared.Dtos
 @using global::Shared.Dtos.DtosImpl
 @inject IJSRuntime JS
-@typeparam TDto where TDto : class, IEntityWithFileDtos
+@typeparam TDto where TDto : class, IDto, IEntityWithFileDtos
 @inject GenericDtoServiceFactory DtoServiceFactory
 @inject IStringLocalizer<AppResources> L
 
@@ -22,7 +23,7 @@ App uses global @rendermode="InteractiveServer" in App.razor.
             @ChildContent(model)
 
             <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
-                @L["update"]
+                @(IsCreate ? L["Create"] : L["update"])
             </MudButton>
         </EditForm>
     </div>
@@ -34,6 +35,7 @@ App uses global @rendermode="InteractiveServer" in App.razor.
     [Parameter]
     public EventCallback OnEdited { get; set; }
     private GenericDtoService<TDto, ISearchDto>? _service;
+    private bool IsCreate => model?.Item?.Id == 0;
 
     protected override void OnInitialized()
     {
@@ -47,7 +49,15 @@ App uses global @rendermode="InteractiveServer" in App.razor.
             var storedFiles = await UploadFilesAsync(model);
             model.Item.Files.AddRange(storedFiles);
 
-            await _service.UpdateAsync(model.Item);
+            if (IsCreate)
+            {
+                await _service.CreateAsync(model.Item);
+            }
+            else
+            {
+                await _service.UpdateAsync(model.Item);
+            }
+            
             await OnEdited.InvokeAsync();
         }
     }

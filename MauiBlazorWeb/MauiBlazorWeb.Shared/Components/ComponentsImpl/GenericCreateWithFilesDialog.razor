@@ -1,4 +1,4 @@
-﻿@using MudBlazor
+@using MudBlazor
 @using global::Shared.Dtos
 @typeparam TDto where TDto : class, IDto, IEntityWithFileDtos
 
@@ -8,10 +8,10 @@
 
         @if(Model != null && ChildContent != null)
         {
-            <GenericUpdateWithFiles TDto="TDto" 
+            <GenericCreateWithFiles TDto="TDto" 
                                    model="@Model" 
                                    ChildContent="@ChildContent"
-                                   OnEdited="@HandleEdited" />
+                                   OnCreated="@HandleCreated" />
         }
     </DialogContent>
 </MudDialog>
@@ -21,11 +21,11 @@
 
     [Parameter, EditorRequired] public ItemWithBrowserFiles<TDto> Model { get; set; } = default!;
     [Parameter, EditorRequired] public RenderFragment<ItemWithBrowserFiles<TDto>> ChildContent { get; set; } = default!;
-    [Parameter] public EventCallback OnEdited { get; set; }
+    [Parameter] public EventCallback OnCreated { get; set; }
     
-    private async Task HandleEdited()
+    private async Task HandleCreated()
     {
-        await OnEdited.InvokeAsync();
+        await OnCreated.InvokeAsync();
         MudDialog?.Close(DialogResult.Ok(true));
     }
 }

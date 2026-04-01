@@ -22,7 +22,11 @@
     [Parameter]
     public bool IsReadOnly { get; set; } = false;
 
+    [Parameter]
+    public int? PreSelectedPersonId { get; set; }
+
     private PersonDto? person;
+    private bool isPersonSelectorReadOnly => IsReadOnly || EntityWithFiles.Item.Id > 0 || PreSelectedPersonId.HasValue;
 
     private async Task OnPersonIdChanged(int? newPersonId)
     {
@@ -53,8 +57,15 @@
     <PersonSelector SelectedPersonId="@EntityWithFiles.Item.PersonId"
                     SelectedPersonIdChanged="OnPersonIdChanged"
                     Label="Select Person*"
-                    IsReadOnly="@(IsReadOnly || EntityWithFiles.Item.Id > 0)" />
+                    IsReadOnly="@isPersonSelectorReadOnly" />
     <ValidationMessage For="@(() => EntityWithFiles.Item.PersonId)" />
+    
+    @if (PreSelectedPersonId.HasValue)
+    {
+        <MudAlert Severity="Severity.Info" Dense="true" Class="mt-2">
+            Person is pre-selected and cannot be changed for this request.
+        </MudAlert>
+    }
 </MudPaper>
 
 @if (person != null)
@@ -157,6 +168,12 @@
     {
         _saveChickenActionService = DtoServiceFactory.Create<SaveChickenActionDto, SaveChickenActionSearch>();
         await getSaveChickenAction();
+
+        // Set PreSelectedPersonId if provided
+        if (PreSelectedPersonId.HasValue && EntityWithFiles.Item.PersonId == null)
+        {
+            EntityWithFiles.Item.PersonId = PreSelectedPersonId.Value;
+        }
 
         // Load person if PersonId already set
         if (EntityWithFiles.Item.PersonId.HasValue && EntityWithFiles.Item.PersonId.Value > 0)

@@ -36,6 +36,10 @@ namespace Services.ServicesImpl
             if (search.SaveChickenActionIds != null && search.SaveChickenActionIds.Any())
                 query = query.Where(x => x.SaveChickenActionId.HasValue && search.SaveChickenActionIds.Contains(x.SaveChickenActionId.Value));
 
+            // Filter by PersonId
+            if (search.PersonId.HasValue)
+                query = query.Where(x => x.PersonId == search.PersonId.Value);
+
             if (!string.IsNullOrWhiteSpace(search.SearchTerm))
             {
                 // Search in drive request fields and related Person data
