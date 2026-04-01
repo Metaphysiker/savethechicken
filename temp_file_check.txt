@@ -1,0 +1,119 @@
+﻿@page "/admin/save-chicken-requests/{id:int}"
+
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Persons
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Shared.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+@inject GenericDtoServiceFactory DtoServiceFactory
+
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+    <h3>Platzangebot Details</h3>
+
+    @if (item != null)
+    {
+        <PersonDetailsDisplay Person="item.Person" 
+                             ContactTitle="Kontaktperson" 
+                             AddressTitle="Adresse" />
+
+        <MudPaper Class="pa-4 my-4" Elevation="2">
+            <MudText Typo="Typo.h6" Class="mb-3">Platzangebot Information</MudText>
+
+            @if (item.NumberOfChickensToBeSaved > 0)
+            {
+                <MudText Typo="Typo.body1" Class="mt-2">
+                    <strong>Anzahl HÃ¼hner:</strong> @item.NumberOfChickensToBeSaved
+                </MudText>
+            }
+
+            @if (item.NumberOfRoostersToBeSaved > 0)
+            {
+                <MudText Typo="Typo.body1" Class="mt-2">
+                    <strong>Anzahl HÃ¤hne:</strong> @item.NumberOfRoostersToBeSaved
+                </MudText>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(item.DescriptionOfPlaceForChickens))
+            {
+                <MudText Typo="Typo.body1" Class="mt-2">
+                    <strong>Beschreibung des Platzes:</strong> @item.DescriptionOfPlaceForChickens
+                </MudText>
+            }
+
+            @if (item.DatesForHandOver != null && item.DatesForHandOver.Any())
+            {
+                <MudText Typo="Typo.body2" Class="mt-3">
+                    <strong>Ãœbergabedaten:</strong>
+                </MudText>
+                <div>
+                    @foreach (var date in item.DatesForHandOver.OrderBy(d => d))
+                    {
+                        <MudChip T="string" Size="Size.Small" Class="mr-1">@date.ToString("dd.MM.yyyy")</MudChip>
+                    }
+                </div>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(item.Message))
+            {
+                <MudText Typo="Typo.body1" Class="mt-2">
+                    <strong>Nachricht:</strong> @item.Message
+                </MudText>
+            }
+        </MudPaper>
+
+        <MudPaper Class="pa-4 my-4" Elevation="2">
+            <MudText Typo="Typo.h6" Class="mb-3">Actions</MudText>
+            <MudStack Direction="Row" Spacing="2">
+                <GenericUpdateDialogLauncher TDto="SaveChickenRequestDto"
+                                             model="item"
+                                             OnEdited="RefreshItem">
+                    <ChildContent Context="editModel">
+                        <SaveChickenRequestFormWithFiles EntityWithFiles="@(new ItemWithBrowserFiles<SaveChickenRequestDto> { Item = editModel })" />
+                    </ChildContent>
+                </GenericUpdateDialogLauncher>
+                <GenericDeleteDialog TDto="SaveChickenRequestDto" Model="item" />
+            </MudStack>
+        </MudPaper>
+    }
+    else if (Id.HasValue)
+    {
+        <MudPaper Class="pa-4">
+            <MudText>Laden...</MudText>
+        </MudPaper>
+    }
+    else
+    {
+        <MudPaper Class="pa-4">
+            <MudText>Kein Platzangebot ausgewÃ¤hlt.</MudText>
+        </MudPaper>
+    }
+</MudContainer>
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    private SaveChickenRequestDto? item;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadItem();
+    }
+
+    private async Task LoadItem()
+    {
+        if (Id.HasValue)
+        {
+            var service = DtoServiceFactory.Create<SaveChickenRequestDto, SaveChickenRequestSearch>();
+            item = await service.GetByIdAsync(Id.Value);
+            StateHasChanged();
+        }
+    }
+
+    private async Task RefreshItem()
+    {
+        await LoadItem();
+    }
+}
+

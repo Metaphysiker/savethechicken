@@ -27,11 +27,9 @@ namespace Shared.Dtos.DtosImpl
         [Required]
         public string Name { get; set; } = String.Empty;
         [ValidateComplexType]
-        [Required]
         public ContactDto Contact { get; set; }
         public int ContactId { get; set; }
         [ValidateComplexType]
-        [Required]
         public AddressDto Address { get; set; }
         public int AddressId { get; set; }
         public List<StoredFileDto> Files { get; set; }

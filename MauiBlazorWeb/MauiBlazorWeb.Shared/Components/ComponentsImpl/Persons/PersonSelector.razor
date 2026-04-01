@@ -5,10 +5,12 @@
 
 <MudSelect T="int?"
            Label="@Label"
-           @bind-Value="SelectedPersonId"
+           Value="@SelectedPersonId"
+           ValueChanged="@OnValueChanged"
            Variant="Variant.Outlined"
            Disabled="@IsReadOnly"
-           Clearable="true">
+           Clearable="true"
+           UserAttributes="@(new Dictionary<string, object> { { "data-testid", "person-selector" } })">
     @if (persons != null)
     {
         @foreach (var person in persons)
@@ -22,19 +24,6 @@
         }
     }
 </MudSelect>
-
-@if (SelectedPersonId.HasValue && SelectedPersonId > 0)
-{
-    <MudButton OnClick="CreateNewPerson" Color="Color.Secondary" Variant="Variant.Text" Size="Size.Small" Class="mt-2">
-        Create New Person Instead
-    </MudButton>
-}
-else
-{
-    <MudAlert Severity="Severity.Info" Dense="true" Class="mt-2">
-        No person selected - a new person will be created with the form data below
-    </MudAlert>
-}
 
 @code {
     [Parameter]
@@ -61,9 +50,9 @@ else
         persons = searchResult?.ToList();
     }
 
-    private async Task CreateNewPerson()
+    private async Task OnValueChanged(int? value)
     {
-        SelectedPersonId = null;
-        await SelectedPersonIdChanged.InvokeAsync(SelectedPersonId);
+        SelectedPersonId = value;
+        await SelectedPersonIdChanged.InvokeAsync(value);
     }
 }

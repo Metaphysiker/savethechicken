@@ -272,6 +272,10 @@ namespace WebApi.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("CarMake")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Categories")
                         .IsRequired()
                         .HasColumnType("text");
@@ -299,7 +303,7 @@ namespace WebApi.Migrations
                         .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("tsvector")
-                        .HasComputedColumnSql("to_tsvector('german',\r\n                                coalesce(\"FirstName\", '') || ' ' ||\r\n                                coalesce(\"LastName\", '') || ' ' ||\r\n                                coalesce(\"Email\", '') || ' ' ||\r\n                                coalesce(\"PhoneNumber\", '')\r\n                            )", true);
+                        .HasComputedColumnSql("to_tsvector('german',\r\n                                coalesce(\"FirstName\", '') || ' ' ||\r\n                                coalesce(\"LastName\", '') || ' ' ||\r\n                                coalesce(\"Email\", '') || ' ' ||\r\n                                coalesce(\"PhoneNumber\", '') || ' ' ||\r\n                                coalesce(\"CarMake\", '')\r\n                            )", true);
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");

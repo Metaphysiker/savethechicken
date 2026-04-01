@@ -21,6 +21,11 @@ public class ModelSearchFactory
             return (IModelSearcher<ModelT, SearchDtoT>)new SaveChickenRequestSearcher(_db);
         }
 
+        if (typeof(ModelT) == typeof(SaveChickenDriveRequest) && typeof(SearchDtoT) == typeof(SaveChickenDriveRequestSearch))
+        {
+            return (IModelSearcher<ModelT, SearchDtoT>)new SaveChickenDriveRequestSearcher(_db);
+        }
+
         if( typeof(ModelT) ==  typeof(SaveChickenAction) && typeof(SearchDtoT) == typeof(SaveChickenActionSearch))
         {
             return (IModelSearcher<ModelT, SearchDtoT>)new SaveChickenActionSearcher(_db);

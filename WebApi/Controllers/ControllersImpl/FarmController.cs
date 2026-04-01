@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Dtos.DtosImpl;
 using System.Linq.Expressions;
+using WebApi.Database;
 using WebApi.Database.Includes;
 using WebApi.Factories;
 using WebApi.Factories.FactoriesImpl;
@@ -20,27 +21,169 @@ namespace WebApi.Controllers.ControllersImpl
         private readonly IEmailService _emailService;
         private readonly IConfiguration _configuration;
         private readonly ILogger<FarmController> _logger;
+        private readonly DatabaseContext _db;
 
         public FarmController(
             GenericModelServiceFactory genericModelServiceFactory,
             AutoMapperService mapper,
             IEmailService emailService,
             IConfiguration configuration,
-            ILogger<FarmController> logger)
+            ILogger<FarmController> logger,
+            DatabaseContext db)
         {
             _service = genericModelServiceFactory.Create<Farm, FarmSearch>();
             _mapper = mapper;
             _emailService = emailService;
             _configuration = configuration;
             _logger = logger;
+            _db = db;
         }
 
         [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<FarmDto>> Create([FromBody] FarmDto dto)
         {
+            // Clear validation errors for nested Contact/Address if we're creating new ones
+            if (dto.ContactId == 0 && dto.Contact != null)
+            {
+                // Remove validation errors for Contact properties
+                var contactErrors = ModelState.Keys
+                    .Where(k => k.StartsWith("Contact."))
+                    .ToList();
+                foreach (var key in contactErrors)
+                {
+                    ModelState.Remove(key);
+                }
+            }
+
+            if (dto.AddressId == 0 && dto.Address != null)
+            {
+                // Remove validation errors for Address properties
+                var addressErrors = ModelState.Keys
+                    .Where(k => k.StartsWith("Address."))
+                    .ToList();
+                foreach (var key in addressErrors)
+                {
+                    ModelState.Remove(key);
+                }
+            }
+
+            // Now check if model is valid
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // If ContactId and AddressId are not provided (or are 0), create new entities from the nested objects
+            if (dto.ContactId == 0 && dto.Contact != null)
+            {
+                // Validate contact fields manually
+                if (string.IsNullOrWhiteSpace(dto.Contact.FirstName) ||
+                    string.IsNullOrWhiteSpace(dto.Contact.LastName) ||
+                    string.IsNullOrWhiteSpace(dto.Contact.Email) ||
+                    string.IsNullOrWhiteSpace(dto.Contact.PhoneNumber))
+                {
+                    return BadRequest(new { error = "Contact information is incomplete." });
+                }
+
+                var contact = _mapper.mapper.Map<Contact>(dto.Contact);
+                contact.CreatedAt = DateTime.UtcNow;
+                contact.UpdatedAt = DateTime.UtcNow;
+                _db.Contacts.Add(contact);
+                await _db.SaveChangesAsync();
+                dto.ContactId = contact.Id;
+            }
+
+            if (dto.AddressId == 0 && dto.Address != null)
+            {
+                // Validate address fields manually
+                if (string.IsNullOrWhiteSpace(dto.Address.Street) ||
+                    string.IsNullOrWhiteSpace(dto.Address.City) ||
+                    string.IsNullOrWhiteSpace(dto.Address.PostalCode))
+                {
+                    return BadRequest(new { error = "Address information is incomplete." });
+                }
+
+                var address = _mapper.mapper.Map<Address>(dto.Address);
+                address.CreatedAt = DateTime.UtcNow;
+                address.UpdatedAt = DateTime.UtcNow;
+                _db.Addresses.Add(address);
+                await _db.SaveChangesAsync();
+                dto.AddressId = address.Id;
+            }
+
+            // Now ContactId and AddressId should be set
+            if (dto.ContactId == 0 || dto.AddressId == 0)
+            {
+                return BadRequest(new { error = "Contact and Address information is required." });
+            }
+
             var model = _mapper.mapper.Map<Farm>(dto);
             var result = await _service.Create(model, FarmIncludes.Default);
+            var resultDto = _mapper.mapper.Map<FarmDto>(result);
+
+            // Send notification email
+            try
+            {
+                await SendNewFarmNotificationEmail(resultDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to send notification email for Farm {Id}", resultDto.Id);
+                // Don't fail the request creation if email fails
+            }
+
+            return CreatedAtAction(nameof(Read), new { id = resultDto.Id }, resultDto);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("public")]
+        public async Task<ActionResult<FarmDto>> CreatePublic([FromBody] FarmPublicDto publicDto)
+        {
+            // Create Contact entity
+            var contact = new Contact
+            {
+                FirstName = publicDto.FirstName,
+                LastName = publicDto.LastName,
+                PhoneNumber = publicDto.PhoneNumber,
+                Email = publicDto.Email,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+            _db.Contacts.Add(contact);
+
+            // Create Address entity
+            var address = new Address
+            {
+                Street = publicDto.Street,
+                City = publicDto.City,
+                PostalCode = publicDto.PostalCode,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+            _db.Addresses.Add(address);
+
+            // Save Contact and Address first to get their IDs
+            await _db.SaveChangesAsync();
+
+            // Create Farm entity
+            var farm = new Farm
+            {
+                Name = publicDto.Name,
+                ContactId = contact.Id,
+                AddressId = address.Id,
+                NumberOfChickens = publicDto.NumberOfChickens,
+                NumberOfRoosters = publicDto.NumberOfRoosters,
+                Size = publicDto.Size,
+                Color = publicDto.Color,
+                DatesForRescues = publicDto.DatesForRescues,
+                GeneralInformation = publicDto.GeneralInformation,
+                SaveChickenActionId = publicDto.SaveChickenActionId,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            var result = await _service.Create(farm, FarmIncludes.Default);
             var resultDto = _mapper.mapper.Map<FarmDto>(result);
 
             // Send notification email

@@ -8,8 +8,8 @@ namespace Shared.Dtos.DtosImpl
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
-        public int PersonId { get; set; }
-        public PersonDto Person { get; set; } = null!;
+        public int? PersonId { get; set; }
+        public PersonDto? Person { get; set; }
 
         [Required]
         public string CarMake { get; set; } = string.Empty;

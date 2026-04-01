@@ -44,6 +44,12 @@ namespace WebApi.Controllers.ControllersImpl
         [HttpPost]
         public async Task<ActionResult<SaveChickenRequestDto>> Create([FromBody] SaveChickenRequestDto dto)
         {
+            // Admin endpoint requires PersonId to link to existing person
+            if (!dto.PersonId.HasValue || dto.PersonId.Value == 0)
+            {
+                return BadRequest(new { error = "PersonId is required for this endpoint. Use the public endpoint to create a request with new person data." });
+            }
+
             var model = _mapper.mapper.Map<SaveChickenRequest>(dto);
             var result = await _service.Create(model, SaveChickenRequestIncludes.Default);
             var resultDto = _mapper.mapper.Map<SaveChickenRequestDto>(result);
@@ -75,13 +81,85 @@ namespace WebApi.Controllers.ControllersImpl
 
         [AllowAnonymous]
         [HttpPost("public")]
-        public async Task<ActionResult<SaveChickenRequestDto>> CreatePublic([FromBody] SaveChickenRequestDto dto)
+        public async Task<ActionResult<SaveChickenRequestDto>> CreatePublic([FromBody] SaveChickenRequestPublicDto publicDto)
         {
-            // Ensure no sensitive data is set from public submission
-            dto.Id = 0; // Ensure new record
-            
-            var model = _mapper.mapper.Map<SaveChickenRequest>(dto);
-            var result = await _service.Create(model, SaveChickenRequestIncludes.Default);
+            // Create Contact entity
+            var contact = new Contact
+            {
+                FirstName = publicDto.FirstName,
+                LastName = publicDto.LastName,
+                PhoneNumber = publicDto.PhoneNumber,
+                Email = publicDto.Email,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+            _db.Contacts.Add(contact);
+
+            // Create main Address entity
+            var address = new Address
+            {
+                Street = publicDto.Street,
+                City = publicDto.City,
+                PostalCode = publicDto.PostalCode,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+            _db.Addresses.Add(address);
+
+            // Create handover Address if different
+            Address? handoverAddress = null;
+            if (publicDto.IsHandoverAtDifferentAddress &&
+                !string.IsNullOrEmpty(publicDto.HandoverStreet) &&
+                !string.IsNullOrEmpty(publicDto.HandoverCity) &&
+                !string.IsNullOrEmpty(publicDto.HandoverPostalCode))
+            {
+                handoverAddress = new Address
+                {
+                    Street = publicDto.HandoverStreet,
+                    City = publicDto.HandoverCity,
+                    PostalCode = publicDto.HandoverPostalCode,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                };
+                _db.Addresses.Add(handoverAddress);
+            }
+
+            // Save Contact and Address first to get their IDs
+            await _db.SaveChangesAsync();
+
+            // Create Person entity
+            var person = new Person
+            {
+                ContactId = contact.Id,
+                AddressId = address.Id,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+            _db.Persons.Add(person);
+            await _db.SaveChangesAsync();
+
+            // Create SaveChickenRequest entity
+            var request = new SaveChickenRequest
+            {
+                PersonId = person.Id,
+                NumberOfChickensToBeSaved = publicDto.NumberOfChickensToBeSaved,
+                NumberOfRoostersToBeSaved = publicDto.NumberOfRoostersToBeSaved,
+                DescriptionOfPlaceForChickens = publicDto.DescriptionOfPlaceForChickens,
+                AcceptTermsAndConditions = publicDto.AcceptTermsAndConditions,
+                AlreadyReceivedChickenPreviously = publicDto.AlreadyReceivedChickenPreviously,
+                ConfirmThatIFulfillCriteria = publicDto.ConfirmThatIFulfillCriteria,
+                Message = publicDto.Message,
+                SaveChickenActionId = publicDto.SaveChickenActionId,
+                IsHandoverAtDifferentAddress = publicDto.IsHandoverAtDifferentAddress,
+                AddressForHandOverId = handoverAddress?.Id,
+                NumberOfBoxes = publicDto.NumberOfBoxes,
+                DatesForHandOver = publicDto.DatesForHandOver,
+                Color = publicDto.Color,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            var result = await _service.Create(request, SaveChickenRequestIncludes.Default);
             var resultDto = _mapper.mapper.Map<SaveChickenRequestDto>(result);
 
             // Send notification email to admins
@@ -157,7 +235,7 @@ namespace WebApi.Controllers.ControllersImpl
             var existing = await _db.SaveChickenRequests
                 .AsNoTracking()
                 .FirstOrDefaultAsync(r => r.Id == dto.Id);
-            
+
             if (existing == null)
             {
                 return NotFound();
@@ -197,16 +275,28 @@ namespace WebApi.Controllers.ControllersImpl
                 return;
             }
 
-            var subject = $"Neuer Abnehmer: {request.Person?.Contact?.FirstName} {request.Person?.Contact?.LastName}";
+            // Load Person with includes
+            var person = await _db.Persons
+                .Include(p => p.Contact)
+                .Include(p => p.Address)
+                .FirstOrDefaultAsync(p => p.Id == request.PersonId);
+
+            if (person == null)
+            {
+                _logger.LogWarning("Person not found for SaveChickenRequest {Id}", request.Id);
+                return;
+            }
+
+            var subject = $"Neuer Abnehmer: {person.Contact?.FirstName} {person.Contact?.LastName}";
             var body = $@"
                 <html>
                 <body>
                     <h2>Neuer Abnehmer</h2>
                     <p><strong>Anfrage-ID:</strong> {request.Id}</p>
-                    <p><strong>Kontakt:</strong> {request.Person?.Contact?.FirstName} {request.Person?.Contact?.LastName}</p>
-                    <p><strong>E-Mail:</strong> {request.Person?.Contact?.Email}</p>
-                    <p><strong>Telefon:</strong> {request.Person?.Contact?.PhoneNumber}</p>
-                    <p><strong>Adresse:</strong> {request.Person?.Address?.Street}, {request.Person?.Address?.PostalCode} {request.Person?.Address?.City}</p>
+                    <p><strong>Kontakt:</strong> {person.Contact?.FirstName} {person.Contact?.LastName}</p>
+                    <p><strong>E-Mail:</strong> {person.Contact?.Email}</p>
+                    <p><strong>Telefon:</strong> {person.Contact?.PhoneNumber}</p>
+                    <p><strong>Adresse:</strong> {person.Address?.Street}, {person.Address?.PostalCode} {person.Address?.City}</p>
                     <p><strong>Anzahl Hühner:</strong> {request.NumberOfChickensToBeSaved}</p>
                     <p><strong>Anzahl Hähne:</strong> {request.NumberOfRoostersToBeSaved}</p>
                     <p><strong>Erstellt:</strong> {DateTime.Now:dd.MM.yyyy HH:mm}</p>
@@ -220,7 +310,19 @@ namespace WebApi.Controllers.ControllersImpl
 
         private async Task SendConfirmationEmailToRequester(SaveChickenRequestDto request)
         {
-            var email = request.Person?.Contact?.Email;
+            // Load Person with includes
+            var person = await _db.Persons
+                .Include(p => p.Contact)
+                .Include(p => p.Address)
+                .FirstOrDefaultAsync(p => p.Id == request.PersonId);
+
+            if (person == null)
+            {
+                _logger.LogWarning("Person not found for SaveChickenRequest {Id}", request.Id);
+                return;
+            }
+
+            var email = person.Contact?.Email;
             if (string.IsNullOrEmpty(email))
             {
                 _logger.LogWarning("No email address for requester in SaveChickenRequest {Id}", request.Id);
@@ -232,22 +334,22 @@ namespace WebApi.Controllers.ControllersImpl
                 <html>
                 <body>
                     <h2>Vielen Dank für Ihre Anfrage!</h2>
-                    <p>Liebe/r {request.Person?.Contact?.FirstName} {request.Person?.Contact?.LastName},</p>
-                    
+                    <p>Liebe/r {person.Contact?.FirstName} {person.Contact?.LastName},</p>
+
                     <p>Vielen Dank, dass Sie Hühnern ein neues Zuhause geben möchten!</p>
-                    
+
                     <p>Wir haben Ihre Anfrage erhalten und werden uns in Kürze bei Ihnen melden.</p>
-                    
+
                     <h3>Ihre Angaben:</h3>
                     <ul>
                         <li><strong>Anfrage-Nr.:</strong> {request.Id}</li>
                         <li><strong>Anzahl Hühner:</strong> {request.NumberOfChickensToBeSaved}</li>
                         <li><strong>Anzahl Hähne:</strong> {request.NumberOfRoostersToBeSaved}</li>
-                        <li><strong>Ort:</strong> {request.Person?.Address?.PostalCode} {request.Person?.Address?.City}</li>
+                        <li><strong>Ort:</strong> {person.Address?.PostalCode} {person.Address?.City}</li>
                     </ul>
-                    
+
                     <p>Wir werden Sie kontaktieren, sobald wir passende Hühner für Sie haben.</p>
-                    
+
                     <p>Mit freundlichen Grüßen<br/>
                     Ihr Team von Rettet das Huhn</p>
                 </body>

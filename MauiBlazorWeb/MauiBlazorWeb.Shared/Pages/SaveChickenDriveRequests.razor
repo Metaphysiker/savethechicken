@@ -1,5 +1,4 @@
-@page "/save-chicken-drive-requests"
-@page "/save-chicken-drive-requests/{id:int}"
+@page "/admin/save-chicken-drive-requests/{id:int}"
 
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenDriveRequests
@@ -14,38 +13,48 @@
     @if (item != null)
     {
         <MudPaper Class="pa-4 my-4">
-            <MudText Typo="Typo.h5" Class="mb-2">@item.Person?.Contact?.FirstName @item.Person?.Contact?.LastName</MudText>
+            <MudText Typo="Typo.h5" Class="mb-2">
+                <span data-testid="contact-firstname">@person?.Contact?.FirstName</span>
+                <span> </span>
+                <span data-testid="contact-lastname">@person?.Contact?.LastName</span>
+            </MudText>
 
-            @if (item.Person?.Contact?.Email != null)
+            @if (person?.Contact?.Email != null)
             {
-                <MudText Typo="Typo.body1"><strong>Email:</strong> @item.Person.Contact.Email</MudText>
+                <MudText Typo="Typo.body1">
+                    <strong>Email:</strong> <span data-testid="contact-email">@person.Contact.Email</span>
+                </MudText>
             }
 
-            @if (item.Person?.Contact?.PhoneNumber != null)
+            @if (person?.Contact?.PhoneNumber != null)
             {
-                <MudText Typo="Typo.body1"><strong>Telefon:</strong> @item.Person.Contact.PhoneNumber</MudText>
+                <MudText Typo="Typo.body1">
+                    <strong>Telefon:</strong> <span data-testid="contact-phone">@person.Contact.PhoneNumber</span>
+                </MudText>
             }
 
-            @if (item.Person?.Address != null)
+            @if (person?.Address != null)
             {
                 <MudText Typo="Typo.body1" Class="mt-2">
                     <strong>Adresse:</strong><br />
-                    @item.Person.Address.Street<br />
-                    @item.Person.Address.PostalCode @item.Person.Address.City
+                    <span data-testid="address-street">@person.Address.Street</span><br />
+                    <span data-testid="address-postalcode">@person.Address.PostalCode</span>
+                    <span> </span>
+                    <span data-testid="address-city">@person.Address.City</span>
                 </MudText>
             }
 
             @if (!string.IsNullOrWhiteSpace(item.CarMake))
             {
-                <MudText Typo="Typo.body1" Class="mt-2">
-                    <strong>Automarke:</strong> @item.CarMake
+                <MudText Typo="Typo.body1" Class="mt-2" data-testid="drive-request-car">
+                    <strong>Auto:</strong> @item.CarMake
                 </MudText>
             }
 
             @if (item.CapacityForChickens > 0)
             {
-                <MudText Typo="Typo.body1" Class="mt-2">
-                    <strong>Kapazität für Hühner:</strong> @item.CapacityForChickens
+                <MudText Typo="Typo.body1" Class="mt-2" data-testid="drive-request-capacity">
+                    <strong>Kapazität:</strong> @item.CapacityForChickens
                 </MudText>
             }
 
@@ -64,7 +73,7 @@
 
             @if (!string.IsNullOrWhiteSpace(item.Message))
             {
-                <MudText Typo="Typo.body1" Class="mt-2">
+                <MudText Typo="Typo.body1" Class="mt-2" data-testid="drive-request-message-display">
                     <strong>Nachricht:</strong> @item.Message
                 </MudText>
             }
@@ -72,7 +81,8 @@
 
         <MudPaper Class="pa-4 my-4">
             <GenericUpdateDialogLauncher TDto="SaveChickenDriveRequestDto"
-                                         model="item">
+                                         model="item"
+                                         OnEdited="RefreshItem">
                 <ChildContent Context="editModel">
                     <SaveChickenDriveRequestFormWithFiles EntityWithFiles="@(new ItemWithBrowserFiles<SaveChickenDriveRequestDto> { Item = editModel })" />
                 </ChildContent>
@@ -99,13 +109,33 @@
     public int? Id { get; set; }
 
     private SaveChickenDriveRequestDto? item;
+    private PersonDto? person;
 
     protected override async Task OnParametersSetAsync()
+    {
+        await LoadItem();
+    }
+
+    private async Task LoadItem()
     {
         if (Id.HasValue)
         {
             var service = DtoServiceFactory.Create<SaveChickenDriveRequestDto, SaveChickenDriveRequestSearch>();
             item = await service.GetByIdAsync(Id.Value);
+
+            // Load person separately
+            if (item?.PersonId.HasValue == true)
+            {
+                var personService = DtoServiceFactory.Create<PersonDto, PersonSearch>();
+                person = await personService.GetByIdAsync(item.PersonId.Value);
+            }
+
+            StateHasChanged();
         }
+    }
+
+    private async Task RefreshItem()
+    {
+        await LoadItem();
     }
 }

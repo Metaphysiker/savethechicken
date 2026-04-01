@@ -1,3 +1,7 @@
+@*
+Requires interactive rendering mode for OnValidSubmit to work.
+App uses global @rendermode="InteractiveServer" in App.razor.
+*@
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
 @using MauiBlazorWeb.Shared.Resources.Strings
 @using MauiBlazorWeb.Web.Services.ServicesImpl
@@ -43,6 +47,7 @@
         if (_service != null)
         {
             var updatedDto = await _service.UpdateAsync(model);
+
             await OnEdited.InvokeAsync();
 
             // Navigate to detail page if ResourceName is provided and dto has Id property

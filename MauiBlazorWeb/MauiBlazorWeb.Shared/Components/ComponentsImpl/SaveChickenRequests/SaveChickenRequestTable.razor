@@ -39,12 +39,12 @@
 
     private void ShowItem(int id)
     {
-        NavigationManager.NavigateTo($"/save-chicken-requests/{id}");
+        NavigationManager.NavigateTo($"/admin/save-chicken-requests/{id}");
     }
 
     private void EditItem(SaveChickenRequestDto saveChickenRequestDto)
     {
-        NavigationManager.NavigateTo($"/save-chicken-requests/{saveChickenRequestDto.Id}/edit");
+        NavigationManager.NavigateTo($"/admin/save-chicken-requests/{saveChickenRequestDto.Id}/edit");
 
     }
 

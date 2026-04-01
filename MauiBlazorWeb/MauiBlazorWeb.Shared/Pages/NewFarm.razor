@@ -7,7 +7,7 @@
 @inject SaveChickenActionService saveChickenActionService;
 @using global::Shared.Dtos.DtosImpl
 
-@page "/farms/new"
+@page "/admin/farms/new"
 
 <PageTitle>Landwirtschaftsbetrieb anmelden</PageTitle>
 
@@ -16,11 +16,11 @@
     <h3>Ich möchte meinen Landwirtschaftsbetrieb anmelden</h3>
     @if(newItemWithBrowserFiles != null)
     {
-       <GenericCreateWithFiles TDto="FarmDto" model="newItemWithBrowserFiles">
+       <GenericCreateWithFiles TDto="FarmDto" model="newItemWithBrowserFiles" ResourceName="admin/farms">
             <ChildContent Context="model">
                 <FarmFormWithFiles EntityWithFiles="model"  />
             </ChildContent>
-        </GenericCreateWithFiles>  
+        </GenericCreateWithFiles>
     }
 
 </MudContainer>

@@ -6,7 +6,7 @@
 @inject SaveChickenActionService saveChickenActionService;
 @using global::Shared.Dtos.DtosImpl
 
-@page "/save-chicken-requests/new"
+@page "/admin/save-chicken-requests/new"
 
 <PageTitle>Hühner retten</PageTitle>
 
@@ -20,7 +20,7 @@
 
     @if (newRequestDtoWithFiles != null)
     {
-        <GenericCreateWithFiles TDto="SaveChickenRequestDto" model="newRequestDtoWithFiles">
+        <GenericCreateWithFiles TDto="SaveChickenRequestDto" model="newRequestDtoWithFiles" ResourceName="admin/save-chicken-requests">
             <ChildContent Context="model">
                 <SaveChickenRequestFormWithFiles EntityWithFiles="newRequestDtoWithFiles" />
             </ChildContent>

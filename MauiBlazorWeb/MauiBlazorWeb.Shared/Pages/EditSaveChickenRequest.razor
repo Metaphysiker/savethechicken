@@ -1,4 +1,4 @@
-@page "/save-chicken-requests/{Id:int}/edit"
+@page "/admin/save-chicken-requests/{Id:int}/edit"
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
@@ -18,7 +18,7 @@
 {
     <GenericUpdateWithFiles TDto="SaveChickenRequestDto" model="modelWithFiles">
         <ChildContent Context="editModel">
-            <AdminSaveChickenRequestFormWithFiles EntityWithFiles="editModel" />
+            <SaveChickenRequestFormWithFiles EntityWithFiles="editModel" />
         </ChildContent>
     </GenericUpdateWithFiles>
 }

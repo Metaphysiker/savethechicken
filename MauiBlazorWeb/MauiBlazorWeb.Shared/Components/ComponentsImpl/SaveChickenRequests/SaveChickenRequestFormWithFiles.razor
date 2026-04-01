@@ -3,6 +3,7 @@
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.FileUploads
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.StoredFiles
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Persons
 @using MauiBlazorWeb.Shared.Components.MultiDateSelecters
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
 @using MauiBlazorWeb.Shared.Resources.Strings
@@ -14,7 +15,6 @@
 @inject IStringLocalizer<AppResources> L
 @inject GenericDtoServiceFactory DtoServiceFactory
 
-
 @code {
     [Parameter, EditorRequired]
     public ItemWithBrowserFiles<SaveChickenRequestDto> EntityWithFiles { get; set; } = default!;
@@ -22,31 +22,60 @@
     [Parameter]
     public bool IsReadOnly { get; set; } = false;
 
-    protected override void OnInitialized()
+    private PersonDto? person;
+
+    private async Task OnPersonIdChanged(int? newPersonId)
     {
-        // Initialize Person if null
-        if (EntityWithFiles.Item.Person == null)
+        EntityWithFiles.Item.PersonId = newPersonId;
+
+        if (newPersonId.HasValue && newPersonId.Value > 0)
         {
-            EntityWithFiles.Item.Person = new PersonDto
-            {
-                Contact = new ContactDto(),
-                Address = new AddressDto()
-            };
+            // Load the selected person
+            var personService = DtoServiceFactory.Create<PersonDto, PersonSearch>();
+            person = await personService.GetByIdAsync(newPersonId.Value);
         }
+        else
+        {
+            // Clear person reference when deselected
+            person = null;
+        }
+
+        StateHasChanged();
     }
 }
 
-<ContactForm Contact="EntityWithFiles.Item.Person.Contact" IsReadOnly="@IsReadOnly" />
-<AddressForm Address="EntityWithFiles.Item.Person.Address" IsReadOnly="@IsReadOnly" />
-
 <MudPaper Class="pa-4 my-4">
-    <MudText Typo="Typo.h6">Allgemeine Informationen</MudText>
+    <MudText Typo="Typo.h6">Person Selection</MudText>
+    <MudAlert Severity="Severity.Info" Dense="true" Class="my-2">
+        <strong>Admin:</strong> Select an existing person for this request. PersonId is required for admin submissions.
+    </MudAlert>
+
+    <PersonSelector SelectedPersonId="@EntityWithFiles.Item.PersonId"
+                    SelectedPersonIdChanged="OnPersonIdChanged"
+                    Label="Select Person*"
+                    IsReadOnly="@(IsReadOnly || EntityWithFiles.Item.Id > 0)" />
+    <ValidationMessage For="@(() => EntityWithFiles.Item.PersonId)" />
+</MudPaper>
+
+@if (person != null)
+{
+    <MudPaper Class="pa-4 my-4">
+        <MudText Typo="Typo.h6">Selected Person Details</MudText>
+        <MudText Typo="Typo.body2"><strong>Name:</strong> @person.Contact?.FirstName @person.Contact?.LastName</MudText>
+        <MudText Typo="Typo.body2"><strong>Email:</strong> @person.Contact?.Email</MudText>
+        <MudText Typo="Typo.body2"><strong>Phone:</strong> @person.Contact?.PhoneNumber</MudText>
+        <MudText Typo="Typo.body2"><strong>Address:</strong> @person.Address?.Street, @person.Address?.PostalCode @person.Address?.City</MudText>
+    </MudPaper>
+}
+
+<MudPaper Class="pa-4 my-4" data-testid="save-chicken-request-general-info">
+    <MudText Typo="Typo.h6">Request Information</MudText>
     <MudItem>
-        <MudNumericField ReadOnly="@IsReadOnly" T="int" @bind-Value="EntityWithFiles.Item.NumberOfChickensToBeSaved" Label="@L["NumberOfChickens"]" Variant="Variant.Outlined" UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "chickens-count" })" />
+        <MudNumericField ReadOnly="@IsReadOnly" T="int" @bind-Value="EntityWithFiles.Item.NumberOfChickensToBeSaved" Label="@L["NumberOfChickens"]" Variant="Variant.Outlined" UserAttributes="@(new Dictionary<string, object> { { "data-testid", "chickens-count" } })" />
         <ValidationMessage For="@(() => EntityWithFiles.Item.NumberOfChickensToBeSaved)" />
     </MudItem>
-        <MudItem>
-        <MudNumericField ReadOnly="@IsReadOnly" T="int" @bind-Value="EntityWithFiles.Item.NumberOfRoostersToBeSaved" Label="@L["NumberOfRoostersToBeSaved"]" Variant="Variant.Outlined" UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "roosters-count" })" />
+    <MudItem>
+        <MudNumericField ReadOnly="@IsReadOnly" T="int" @bind-Value="EntityWithFiles.Item.NumberOfRoostersToBeSaved" Label="@L["NumberOfRoostersToBeSaved"]" Variant="Variant.Outlined" UserAttributes="@(new Dictionary<string, object> { { "data-testid", "roosters-count" } })" />
         <ValidationMessage For="@(() => EntityWithFiles.Item.NumberOfRoostersToBeSaved)" />
     </MudItem>
 
@@ -54,65 +83,87 @@
 
     <MudItem Class="my-2">
         <MudText>
-            Bitte beschreiben Sie kurz  Ihr Hühnerzuhause (Stall, Auslauf m2) , Anzahl bestehende Hühner, Erfahrung etc.
+            Bitte beschreiben Sie kurz Ihr Hühnerzuhause (Stall, Auslauf m2), Anzahl bestehende Hühner, Erfahrung etc.
         </MudText>
-        <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.DescriptionOfPlaceForChickens" Label="@L["Description"]" Variant="Variant.Outlined" Lines="3" UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "description" })" />
+        <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.DescriptionOfPlaceForChickens" Label="@L["Description"]" Variant="Variant.Outlined" Lines="3" UserAttributes="@(new Dictionary<string, object> { { "data-testid", "description" } })" />
         <ValidationMessage For="@(() => EntityWithFiles.Item.DescriptionOfPlaceForChickens)" />
     </MudItem>
 
     <MudItem>
-        <MudCheckBox ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.AlreadyReceivedChickenPreviously" Label="@L["AlreadyReceivedChickenPreviously"]" UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "received-chickens-before" })"></MudCheckBox>
+        <MudCheckBox ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.AlreadyReceivedChickenPreviously" Label="@L["AlreadyReceivedChickenPreviously"]" UserAttributes="@(new Dictionary<string, object> { { "data-testid", "received-chickens-before" } })"></MudCheckBox>
         <ValidationMessage For="@(() => EntityWithFiles.Item.AlreadyReceivedChickenPreviously)" />
     </MudItem>
 
+    <MudDivider Class="my-2"></MudDivider>
+
+    <MudItem Class="my-2">
+        <MudNumericField ReadOnly="@IsReadOnly" T="int" @bind-Value="EntityWithFiles.Item.NumberOfBoxes" Label="Number of Boxes" Variant="Variant.Outlined" />
+        <ValidationMessage For="@(() => EntityWithFiles.Item.NumberOfBoxes)" />
+    </MudItem>
+
+    <MudItem Class="my-2">
+        <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.Color" Label="Color" Variant="Variant.Outlined" />
+        <ValidationMessage For="@(() => EntityWithFiles.Item.Color)" />
+    </MudItem>
+
+    <MudItem Class="my-2">
+        <MudCheckBox ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.IsHandoverAtDifferentAddress" Label="Handover at Different Address"></MudCheckBox>
+        <ValidationMessage For="@(() => EntityWithFiles.Item.IsHandoverAtDifferentAddress)" />
+    </MudItem>
 </MudPaper>
 
-<MultiDateOnlySelector @bind-SelectedDates="EntityWithFiles.Item.DatesForHandOver" Text="Ich bin an diesen Tagen erreichbar:" MinDate="@minDate" MaxDate="@maxDate" />
+<MultiDateOnlySelector @bind-SelectedDates="EntityWithFiles.Item.DatesForHandOver" Text="Available dates for handover:" MinDate="@minDate" MaxDate="@maxDate" />
 
 <StoredFilesEdit @bind-Files="EntityWithFiles.Item.Files" />
 
-<FilesUploadForm @bind-Value="EntityWithFiles.Files" Label="Dateien hochladen" Text="" />
+<FilesUploadForm @bind-Value="EntityWithFiles.Files" Label="Upload Files" Text="" />
 
 <SaveChickenActionSelector SelectedActionId="EntityWithFiles.Item.SaveChickenActionId"
                           SelectedActionIdChanged="OnSaveChickenActionIdChanged" />
 
-
 <MudPaper Class="pa-4 my-4">
-    <MudCheckBox ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.ConfirmThatIFulfillCriteria" Label="@L["ConfirmThatIFulfillCriteria"]" UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "confirm-criteria" })"></MudCheckBox>
+    <MudCheckBox ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.ConfirmThatIFulfillCriteria" Label="@L["ConfirmThatIFulfillCriteria"]" UserAttributes="@(new Dictionary<string, object> { { "data-testid", "confirm-criteria" } })"></MudCheckBox>
     <ValidationMessage For="@(() => EntityWithFiles.Item.ConfirmThatIFulfillCriteria)" />
 
-    <MudCheckBox ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.AcceptTermsAndConditions" Label="@L["AcceptTermsAndConditions"]" UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "accept-terms" })"></MudCheckBox>
+    <MudCheckBox ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.AcceptTermsAndConditions" Label="@L["AcceptTermsAndConditions"]" UserAttributes="@(new Dictionary<string, object> { { "data-testid", "accept-terms" } })"></MudCheckBox>
     <ValidationMessage For="@(() => EntityWithFiles.Item.AcceptTermsAndConditions)" />
 
      <MudDivider Class="my-2"></MudDivider>
 
     <MudItem Class="my-2">
         <MudText>
-            Was ich noch sagen möchte:
+            Additional message:
         </MudText>
-        <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.Message" Label="@L["Message"]" Variant="Variant.Outlined" Lines="3" UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "message" })" />
+        <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.Message" Label="@L["Message"]" Variant="Variant.Outlined" Lines="3" UserAttributes="@(new Dictionary<string, object> { { "data-testid", "message" } })" />
         <ValidationMessage For="@(() => EntityWithFiles.Item.Message)" />
     </MudItem>
 </MudPaper>
 
-
 @code {
     private GenericDtoService<SaveChickenActionDto, SaveChickenActionSearch>? _saveChickenActionService;
     private SaveChickenActionDto? _saveChickenActionDto;
+
     private DateOnly? minDate =>
-    _saveChickenActionDto != null && _saveChickenActionDto.Dates != null && _saveChickenActionDto.Dates.Count > 0
-        ? _saveChickenActionDto.Dates.Min()
-        : null;
+        _saveChickenActionDto != null && _saveChickenActionDto.Dates != null && _saveChickenActionDto.Dates.Count > 0
+            ? _saveChickenActionDto.Dates.Min()
+            : null;
 
     private DateOnly? maxDate =>
-    _saveChickenActionDto != null && _saveChickenActionDto.Dates != null && _saveChickenActionDto.Dates.Count > 0
-        ? _saveChickenActionDto.Dates.Max()
-        : null;
+        _saveChickenActionDto != null && _saveChickenActionDto.Dates != null && _saveChickenActionDto.Dates.Count > 0
+            ? _saveChickenActionDto.Dates.Max()
+            : null;
 
     protected override async Task OnInitializedAsync()
     {
         _saveChickenActionService = DtoServiceFactory.Create<SaveChickenActionDto, SaveChickenActionSearch>();
         await getSaveChickenAction();
+
+        // Load person if PersonId already set
+        if (EntityWithFiles.Item.PersonId.HasValue && EntityWithFiles.Item.PersonId.Value > 0)
+        {
+            var personService = DtoServiceFactory.Create<PersonDto, PersonSearch>();
+            person = await personService.GetByIdAsync(EntityWithFiles.Item.PersonId.Value);
+        }
     }
 
     private async Task getSaveChickenAction()

@@ -63,7 +63,8 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
                                 coalesce(""FirstName"", '') || ' ' ||
                                 coalesce(""LastName"", '') || ' ' ||
                                 coalesce(""Email"", '') || ' ' ||
-                                coalesce(""PhoneNumber"", '')
+                                coalesce(""PhoneNumber"", '') || ' ' ||
+                                coalesce(""CarMake"", '')
                             )", stored: true);
 
             entity.HasIndex(e => e.SearchVector)

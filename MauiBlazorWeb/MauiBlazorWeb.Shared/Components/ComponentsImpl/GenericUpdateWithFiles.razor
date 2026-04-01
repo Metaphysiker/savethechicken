@@ -1,3 +1,7 @@
+@*
+Requires interactive rendering mode for OnValidSubmit to work.
+App uses global @rendermode="InteractiveServer" in App.razor.
+*@
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
 @using MauiBlazorWeb.Shared.Resources.Strings
 @using MauiBlazorWeb.Shared.Services.ServicesImpl
@@ -42,6 +46,7 @@
         {
             var storedFiles = await UploadFilesAsync(model);
             model.Item.Files.AddRange(storedFiles);
+
             await _service.UpdateAsync(model.Item);
             await OnEdited.InvokeAsync();
         }

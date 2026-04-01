@@ -1,5 +1,4 @@
-@page "/farms"
-@page "/farms/{id:int}"
+@page "/admin/farms/{id:int}"
 
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Farms
@@ -97,7 +96,8 @@
 
         <MudPaper Class="pa-4 my-4">
             <GenericUpdateDialogLauncher TDto="FarmDto"
-                                         model="item">
+                                         model="item"
+                                         OnEdited="RefreshItem">
                 <ChildContent Context="editModel">
                     <FarmFormWithFiles EntityWithFiles="@(new ItemWithBrowserFiles<FarmDto> { Item = editModel })" />
                 </ChildContent>
@@ -127,10 +127,21 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        await LoadItem();
+    }
+
+    private async Task LoadItem()
+    {
         if (Id.HasValue)
         {
             var service = DtoServiceFactory.Create<FarmDto, FarmSearch>();
             item = await service.GetByIdAsync(Id.Value);
+            StateHasChanged();
         }
+    }
+
+    private async Task RefreshItem()
+    {
+        await LoadItem();
     }
 }

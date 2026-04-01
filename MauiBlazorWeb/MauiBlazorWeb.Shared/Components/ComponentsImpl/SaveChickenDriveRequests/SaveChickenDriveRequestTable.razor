@@ -37,9 +37,14 @@
         return currentSortDescending == true ? Icons.Material.Filled.ArrowDownward : Icons.Material.Filled.ArrowUpward;
     }
 
+    private void ShowItem(int id)
+    {
+        NavigationManager.NavigateTo($"/admin/save-chicken-drive-requests/{id}");
+    }
+
     private void EditItem(SaveChickenDriveRequestDto saveChickenDriveRequestDto)
     {
-        NavigationManager.NavigateTo($"/save-chicken-drive-requests/{saveChickenDriveRequestDto.Id}/edit");
+        NavigationManager.NavigateTo($"/admin/save-chicken-drive-requests/{saveChickenDriveRequestDto.Id}/edit");
 
     }
 }
@@ -211,15 +216,13 @@
             </TemplateColumn>
 
             <TemplateColumn>
-                <HeaderTemplate>@L["copy"]</HeaderTemplate>
+                <HeaderTemplate>@L["show"]</HeaderTemplate>
                 <CellTemplate>
-                    @if (context.Item != null)
-                    {
-                        <SaveChickenActionSelectorDialogLauncher TDto="SaveChickenDriveRequestDto"
-                                                                 Model="context.Item"
-                                                                 OnCopied="@(() => OnItemsChanged.InvokeAsync())"
-                                                                 ExcludeIds="@(context.Item.SaveChickenActionId.HasValue ? new List<int> { context.Item.SaveChickenActionId.Value } : null)" />
-                    }
+                    <MudButton Variant="Variant.Filled"
+                               OnClick="@(() => ShowItem(context.Item.Id))"
+                               UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "view-button" })">
+                        <MudIcon Icon="@Icons.Material.Filled.Visibility" />
+                    </MudButton>
                 </CellTemplate>
             </TemplateColumn>
 
@@ -246,6 +249,19 @@
                     <GenericDeleteDialog TDto="SaveChickenDriveRequestDto"
                                          Model="context.Item"
                                          OnDeleted="@(() => OnItemsChanged.InvokeAsync())" />
+                </CellTemplate>
+            </TemplateColumn>
+
+            <TemplateColumn>
+                <HeaderTemplate>@L["copy"]</HeaderTemplate>
+                <CellTemplate>
+                    @if (context.Item != null)
+                    {
+                        <SaveChickenActionSelectorDialogLauncher TDto="SaveChickenDriveRequestDto"
+                                                                 Model="context.Item"
+                                                                 OnCopied="@(() => OnItemsChanged.InvokeAsync())"
+                                                                 ExcludeIds="@(context.Item.SaveChickenActionId.HasValue ? new List<int> { context.Item.SaveChickenActionId.Value } : null)" />
+                    }
                 </CellTemplate>
             </TemplateColumn>
 

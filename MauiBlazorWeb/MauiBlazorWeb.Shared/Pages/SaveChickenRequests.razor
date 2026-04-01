@@ -1,8 +1,8 @@
-@page "/save-chicken-requests"
-@page "/save-chicken-requests/{id:int}"
+@page "/admin/save-chicken-requests/{id:int}"
 
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Persons
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
 @using MauiBlazorWeb.Shared.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
@@ -13,27 +13,12 @@
 
     @if (item != null)
     {
-        <MudPaper Class="pa-4 my-4">
-            <MudText Typo="Typo.h5" Class="mb-2">@item.Person?.Contact?.FirstName @item.Person?.Contact?.LastName</MudText>
+        <PersonDetailsDisplay Person="item.Person"
+                             ContactTitle="Kontaktperson"
+                             AddressTitle="Adresse" />
 
-            @if (item.Person?.Contact?.Email != null)
-            {
-                <MudText Typo="Typo.body1"><strong>Email:</strong> @item.Person.Contact.Email</MudText>
-            }
-
-            @if (item.Person?.Contact?.PhoneNumber != null)
-            {
-                <MudText Typo="Typo.body1"><strong>Telefon:</strong> @item.Person.Contact.PhoneNumber</MudText>
-            }
-
-            @if (item.Person?.Address != null)
-            {
-                <MudText Typo="Typo.body1" Class="mt-2">
-                    <strong>Adresse:</strong><br />
-                    @item.Person.Address.Street<br />
-                    @item.Person.Address.PostalCode @item.Person.Address.City
-                </MudText>
-            }
+        <MudPaper Class="pa-4 my-4" Elevation="2">
+            <MudText Typo="Typo.h6" Class="mb-3">Platzangebot Information</MudText>
 
             @if (item.NumberOfChickensToBeSaved > 0)
             {
@@ -77,14 +62,18 @@
             }
         </MudPaper>
 
-        <MudPaper Class="pa-4 my-4">
-            <GenericUpdateDialogLauncher TDto="SaveChickenRequestDto"
-                                         model="item">
-                <ChildContent Context="editModel">
-                    <AdminSaveChickenRequestFormWithFiles EntityWithFiles="@(new ItemWithBrowserFiles<SaveChickenRequestDto> { Item = editModel })" />
-                </ChildContent>
-            </GenericUpdateDialogLauncher>
-            <GenericDeleteDialog TDto="SaveChickenRequestDto" Model="item" />
+        <MudPaper Class="pa-4 my-4" Elevation="2">
+            <MudText Typo="Typo.h6" Class="mb-3">Actions</MudText>
+            <MudStack Direction="Row" Spacing="2">
+                <GenericUpdateDialogLauncher TDto="SaveChickenRequestDto"
+                                             model="item"
+                                             OnEdited="RefreshItem">
+                    <ChildContent Context="editModel">
+                        <SaveChickenRequestFormWithFiles EntityWithFiles="@(new ItemWithBrowserFiles<SaveChickenRequestDto> { Item = editModel })" />
+                    </ChildContent>
+                </GenericUpdateDialogLauncher>
+                <GenericDeleteDialog TDto="SaveChickenRequestDto" Model="item" />
+            </MudStack>
         </MudPaper>
     }
     else if (Id.HasValue)
@@ -109,10 +98,21 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        await LoadItem();
+    }
+
+    private async Task LoadItem()
+    {
         if (Id.HasValue)
         {
             var service = DtoServiceFactory.Create<SaveChickenRequestDto, SaveChickenRequestSearch>();
             item = await service.GetByIdAsync(Id.Value);
+            StateHasChanged();
         }
+    }
+
+    private async Task RefreshItem()
+    {
+        await LoadItem();
     }
 }

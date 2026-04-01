@@ -1,7 +1,12 @@
+@*
+Requires interactive rendering mode for OnValidSubmit to work.
+App uses global @rendermode="InteractiveServer" in App.razor.
+*@
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
 @using MauiBlazorWeb.Shared.Resources.Strings
 @using MauiBlazorWeb.Shared.Services.ServicesImpl
 @using MauiBlazorWeb.Web.Services.ServicesImpl
+@using MudBlazor
 @inject AwsFileService AwsFileService
 @inject AuthService AuthService
 @using Microsoft.Extensions.Localization
@@ -14,13 +19,26 @@
 
 @if(model != null){
     <div class="form-wrapper-div">
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <MudAlert Severity="Severity.Error" Class="mb-4">@errorMessage</MudAlert>
+    }
+
     <EditForm Model="model" OnValidSubmit="HandleValidSubmit">
         <ObjectGraphDataAnnotationsValidator />
 
         @ChildContent(model)
 
-        <MudButton data-testid="submit-button" ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
-            @L["Create"]
+        <MudButton data-testid="submit-button" ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Disabled="@isSubmitting">
+            @if (isSubmitting)
+            {
+                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                <MudText Class="ms-2">@L["Creating"]...</MudText>
+            }
+            else
+            {
+                @L["Create"]
+            }
         </MudButton>
     </EditForm>
     </div>
@@ -31,7 +49,11 @@
 
     [Parameter, EditorRequired] public RenderFragment<ItemWithBrowserFiles<TDto>> ChildContent { get; set; } = default!;
 
+    [Parameter] public string? ResourceName { get; set; }
+
     private GenericDtoService<TDto, ISearchDto>? _service;
+    private string? errorMessage;
+    private bool isSubmitting = false;
 
 
 
@@ -49,30 +71,56 @@
     {
         if (_service != null && model != null)
         {
+            errorMessage = null;
+            isSubmitting = true;
+            StateHasChanged();
+
             try
             {
                 var storedFiles = await UploadFilesAsync(model);
                 model.Item.Files.AddRange(storedFiles);
-                
+
                 // Check if user is logged in
                 bool isLoggedIn = await AuthService.CheckIfLoggedInAsync();
-                
+
+                TDto createdItem;
                 if (isLoggedIn)
                 {
-                    await _service.CreateAsync(model.Item);
+                    createdItem = await _service.CreateAsync(model.Item);
                 }
                 else
                 {
                     // Use public endpoint for non-authenticated users
-                    await _service.CreatePublicAsync(model.Item);
+                    createdItem = await _service.CreatePublicAsync(model.Item);
                 }
-                
-                NavigationManager.NavigateTo("/thank-you"); // Only runs if create succeeds
+
+                // Navigate based on user role and configuration
+                if (isLoggedIn && !string.IsNullOrEmpty(ResourceName))
+                {
+                    // Admin: navigate to detail page
+                    var idProperty = createdItem.GetType().GetProperty("Id");
+                    if (idProperty != null)
+                    {
+                        var id = idProperty.GetValue(createdItem);
+                        NavigationManager.NavigateTo($"/{ResourceName}/{id}");
+                    }
+                    else
+                    {
+                        // Fallback if Id property not found
+                        NavigationManager.NavigateTo("/thank-you");
+                    }
+                }
+                else
+                {
+                    // Public user: navigate to thank-you page
+                    NavigationManager.NavigateTo("/thank-you");
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Optionally show an error message to the user
-                // e.g., set an error flag or log the exception
+                errorMessage = $"Failed to create: {ex.Message}";
+                isSubmitting = false;
+                StateHasChanged();
             }
         }
     }

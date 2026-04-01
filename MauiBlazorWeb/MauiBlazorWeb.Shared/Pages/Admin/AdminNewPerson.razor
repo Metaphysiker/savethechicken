@@ -14,7 +14,7 @@
         <strong>Admin Mode:</strong> Create a new person in the system.
     </MudAlert>
 
-    <GenericCreate TDto="PersonDto" TSearchDto="PersonSearch" OnSuccess="OnSuccess">
+    <GenericCreate TDto="PersonDto" OnSuccess="OnSuccess">
         <ChildContent Context="model">
             <PersonForm Person="model" />
         </ChildContent>

@@ -1,15 +1,18 @@
-@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Addresses
-@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Contacts
-@inject IStringLocalizer<AppResources> L
-@inject GenericDtoServiceFactory DtoServiceFactory
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Persons
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.FileUploads
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.StoredFiles
+@using MauiBlazorWeb.Shared.Components.MultiDateSelecters
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
 @using MauiBlazorWeb.Shared.Resources.Strings
+@using MauiBlazorWeb.Shared.Services.ServicesImpl
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @using Microsoft.Extensions.Localization
 @using global::Shared.Dtos.DtosImpl
 @using MudBlazor
+@inject IStringLocalizer<AppResources> L
+@inject GenericDtoServiceFactory DtoServiceFactory
+
 @code {
     [Parameter, EditorRequired]
     public ItemWithBrowserFiles<SaveChickenDriveRequestDto> EntityWithFiles { get; set; } = default!;
@@ -17,61 +20,97 @@
     [Parameter]
     public bool IsReadOnly { get; set; } = false;
 
-    protected override void OnInitialized()
+    private PersonDto? person;
+
+    private async Task OnPersonIdChanged(int? newPersonId)
     {
-        // Initialize Person if null
-        if (EntityWithFiles.Item.Person == null)
+        EntityWithFiles.Item.PersonId = newPersonId;
+
+        if (newPersonId.HasValue && newPersonId.Value > 0)
         {
-            EntityWithFiles.Item.Person = new PersonDto
-            {
-                Contact = new ContactDto(),
-                Address = new AddressDto()
-            };
+            // Load the selected person
+            var personService = DtoServiceFactory.Create<PersonDto, PersonSearch>();
+            person = await personService.GetByIdAsync(newPersonId.Value);
         }
+        else
+        {
+            // Clear person reference when deselected
+            person = null;
+        }
+
+        StateHasChanged();
     }
 }
 
-    <ContactForm Contact="EntityWithFiles.Item.Person.Contact" IsReadOnly="@IsReadOnly" />
-    <AddressForm Address="EntityWithFiles.Item.Person.Address" IsReadOnly="@IsReadOnly" />
+<MudPaper Class="pa-4 my-4">
+    <MudText Typo="Typo.h6">Person Selection</MudText>
+    <MudAlert Severity="Severity.Info" Dense="true" Class="my-2">
+        <strong>Admin:</strong> Select an existing person for this drive request. PersonId is required for admin submissions.
+    </MudAlert>
 
-    <MudPaper Class="pa-4 my-4" Elevation="2">
-        <MudText Typo="Typo.h6">Allgemeine Informationen</MudText>
+    <PersonSelector SelectedPersonId="@EntityWithFiles.Item.PersonId"
+                    SelectedPersonIdChanged="OnPersonIdChanged"
+                    Label="Select Person*"
+                    IsReadOnly="@(IsReadOnly || EntityWithFiles.Item.Id > 0)" />
+    <ValidationMessage For="@(() => EntityWithFiles.Item.PersonId)" />
+</MudPaper>
 
-        <MudTextField ReadOnly="@IsReadOnly"
-                      @bind-Value="EntityWithFiles.Item.CarMake"
-                      Label="@L["CarMake"]"
-                      Variant="Variant.Outlined" />
-        <ValidationMessage For="@(() => EntityWithFiles.Item.CarMake)" />
+@if (person != null)
+{
+    <MudPaper Class="pa-4 my-4">
+        <MudText Typo="Typo.h6">Selected Person Details</MudText>
+        <MudText Typo="Typo.body2"><strong>Name:</strong> @person.Contact?.FirstName @person.Contact?.LastName</MudText>
+        <MudText Typo="Typo.body2"><strong>Email:</strong> @person.Contact?.Email</MudText>
+        <MudText Typo="Typo.body2"><strong>Phone:</strong> @person.Contact?.PhoneNumber</MudText>
+        <MudText Typo="Typo.body2"><strong>Address:</strong> @person.Address?.Street, @person.Address?.PostalCode @person.Address?.City</MudText>
+    </MudPaper>
+}
 
-            <div class="my-5">
+<MudPaper Class="pa-4 my-4" Elevation="2" data-testid="drive-request-general-info">
+    <MudText Typo="Typo.h6">Drive Request Information</MudText>
 
-            <MudNumericField T="int"
-                             ReadOnly="@IsReadOnly"
-                             @bind-Value="EntityWithFiles.Item.CapacityForChickens"
-                             Label="@L["CapacityForChickens"]"
-                             Variant="Variant.Outlined" />
-            </div>
+    <MudTextField ReadOnly="@IsReadOnly"
+                  @bind-Value="EntityWithFiles.Item.CarMake"
+                  Label="@L["CarMake"]"
+                  Variant="Variant.Outlined"
+                  UserAttributes="@(new Dictionary<string, object> { { "data-testid", "car-make" } })" />
+    <ValidationMessage For="@(() => EntityWithFiles.Item.CarMake)" />
 
-    <ValidationMessage For="@(() => EntityWithFiles.Item.CapacityForChickens)" />
+    <div class="my-5">
+        <MudNumericField T="int"
+                         ReadOnly="@IsReadOnly"
+                         @bind-Value="EntityWithFiles.Item.CapacityForChickens"
+                         Label="@L["CapacityForChickens"]"
+                         Variant="Variant.Outlined"
+                         UserAttributes="@(new Dictionary<string, object> { { "data-testid", "capacity-for-chickens" } })" />
+        <ValidationMessage For="@(() => EntityWithFiles.Item.CapacityForChickens)" />
+    </div>
 
     <MudItem Class="my-2">
         <MudText>
-            Was ich noch sagen möchte:
+            Additional message:
         </MudText>
-        <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.Message" Label="@L["Message"]" Variant="Variant.Outlined" Lines="3" />
+        <MudTextField ReadOnly="@IsReadOnly"
+                     @bind-Value="EntityWithFiles.Item.Message"
+                     Label="@L["Message"]"
+                     Variant="Variant.Outlined"
+                     Lines="3"
+                     UserAttributes="@(new Dictionary<string, object> { { "data-testid", "drive-request-message" } })" />
         <ValidationMessage For="@(() => EntityWithFiles.Item.Message)" />
     </MudItem>
+</MudPaper>
 
-    </MudPaper>
+<MultiDateOnlySelector Text="Available driving dates:"
+                      @bind-SelectedDates="EntityWithFiles.Item.AvailableDates"
+                      MinDate="@minDate"
+                      MaxDate="@maxDate" />
 
+<SaveChickenActionSelector SelectedActionId="EntityWithFiles.Item.SaveChickenActionId"
+                          SelectedActionIdChanged="OnSaveChickenActionIdChanged" />
 
+<StoredFilesEdit @bind-Files="EntityWithFiles.Item.Files" />
 
-    <MauiBlazorWeb.Shared.Components.MultiDateSelecters.MultiDateOnlySelector Text="Ich kann an diesen Tagen fahren:" @bind-SelectedDates="EntityWithFiles.Item.AvailableDates" MinDate="@minDate" MaxDate="@maxDate" />
-
-    <SaveChickenActionSelector SelectedActionId="EntityWithFiles.Item.SaveChickenActionId"
-                           SelectedActionIdChanged="OnSaveChickenActionIdChanged" />
-
-    <FilesUploadForm @bind-Value="EntityWithFiles.Files" Label="Dateien hochladen" Text="Routenplan" />
+<FilesUploadForm @bind-Value="EntityWithFiles.Files" Label="Upload Files" Text="Route plan" />
 
 
 @code {
@@ -91,6 +130,13 @@
     {
         _saveChickenActionService = DtoServiceFactory.Create<SaveChickenActionDto, SaveChickenActionSearch>();
         await getSaveChickenAction();
+
+        // Load person if PersonId already set
+        if (EntityWithFiles.Item.PersonId.HasValue && EntityWithFiles.Item.PersonId.Value > 0)
+        {
+            var personService = DtoServiceFactory.Create<PersonDto, PersonSearch>();
+            person = await personService.GetByIdAsync(EntityWithFiles.Item.PersonId.Value);
+        }
     }
 
     private async Task getSaveChickenAction()

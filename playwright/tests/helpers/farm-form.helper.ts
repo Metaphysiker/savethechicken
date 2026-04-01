@@ -1,5 +1,6 @@
 import { Page } from '@playwright/test';
 import { getMultiDateSelector } from './multi-date-selector.helper';
+import { selectSaveChickenAction } from './save-chicken-action-selector.helper';
 
 export interface FarmFormData {
   // Farm details
@@ -9,18 +10,21 @@ export interface FarmFormData {
   size: string;
   color: string;
   generalInformation: string;
-  
+
   // Contact information
   contactFirstName: string;
   contactLastName: string;
   contactEmail: string;
   contactPhone: string;
-  
+
   // Address
   addressCity: string;
   addressPostalCode: string;
   addressStreet: string;
-  
+
+  // SaveChickenAction (required for admin forms)
+  saveChickenActionId?: number;
+
   // Dates (optional)
   datesForRescues?: number[];
 }
@@ -42,25 +46,32 @@ export async function fillFarmForm(page: Page, data: FarmFormData): Promise<void
   await page.getByTestId('address-postalcode').fill(data.addressPostalCode);
   await page.getByTestId('address-street').fill(data.addressStreet);
 
-  // Fill farm name
-  await page.getByLabel('Name des Betriebs').fill(data.name);
-
-  // Fill farm-specific information
-  await page.getByLabel('Anzahl Hühner').fill(data.numberOfChickens);
-  await page.getByLabel('Anzahl Hähne').fill(data.numberOfRoosters);
-  await page.getByLabel('Grösse').fill(data.size);
-  await page.getByLabel('Farbe').fill(data.color);
-
-  // Fill general information (multi-line field)
+  // Fill farm name and details using data-testids
+  await page.getByTestId('farm-name').fill(data.name);
+  await page.getByTestId('number-of-chickens').fill(data.numberOfChickens);
+  await page.getByTestId('number-of-roosters').fill(data.numberOfRoosters);
+  await page.getByTestId('farm-size').fill(data.size);
+  await page.getByTestId('farm-color').fill(data.color);
   await page.getByTestId('farm-general-info').fill(data.generalInformation);
+
+  // Select SaveChickenAction if provided (required for dates to be selectable)
+  if (data.saveChickenActionId) {
+    await selectSaveChickenAction(page, data.saveChickenActionId);
+    // Wait for action to load and calendar to update
+    await page.waitForTimeout(1000);
+  }
 
   // Select dates if provided
   if (data.datesForRescues && data.datesForRescues.length > 0) {
+    // Wait a bit for any previous operations to complete
+    await page.waitForTimeout(500);
+
     const dateSelector = getMultiDateSelector(page);
-    if (data.datesForRescues.length === 1) {
-      await dateSelector.selectDate(data.datesForRescues[0]);
-    } else {
-      await dateSelector.selectDates(data.datesForRescues);
+
+    // Select dates one by one with a small delay between each
+    for (const date of data.datesForRescues) {
+      await dateSelector.selectDate(date);
+      await page.waitForTimeout(300);
     }
   }
 }

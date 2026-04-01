@@ -1,0 +1,48 @@
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
+@using MauiBlazorWeb.Shared.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+
+@page "/platz-anbieten"
+@page "/offer-place"
+
+<PageTitle>Hühner retten - Platz anbieten</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large">
+
+    <MudPaper Class="pa-6 my-4" Elevation="2">
+        <MudText Typo="Typo.h3" Class="mb-4">Ich biete Hühnern einen Lebensplatz an</MudText>
+
+        <MudAlert Severity="Severity.Success" Dense="false" Class="my-4">
+            <MudText Typo="Typo.body1">
+                <strong>Vielen Dank, dass Sie Hühnern ein neues Zuhause geben möchten!</strong>
+            </MudText>
+            <MudText Typo="Typo.body2" Class="mt-2">
+                Bitte füllen Sie das untenstehende Formular aus. Wir werden uns in Kürze bei Ihnen melden.
+            </MudText>
+        </MudAlert>
+
+        @if (publicDto != null)
+        {
+            <PublicSaveChickenRequestForm Model="publicDto" OnSubmitSuccess="HandleSuccess" />
+        }
+    </MudPaper>
+
+</MudContainer>
+
+@code {
+    private SaveChickenRequestPublicDto? publicDto;
+
+    protected override void OnInitialized()
+    {
+        publicDto = new SaveChickenRequestPublicDto();
+    }
+
+    private void HandleSuccess()
+    {
+        // Redirect to thank you page or show success message
+        NavigationManager.NavigateTo("/thank-you");
+    }
+
+    [Inject]
+    private NavigationManager NavigationManager { get; set; } = default!;
+}

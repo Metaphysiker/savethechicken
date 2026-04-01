@@ -1,0 +1,46 @@
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Contacts
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Addresses
+@using global::Shared.Dtos.DtosImpl
+
+@if (Person != null)
+{
+    <MudPaper Class="pa-4 my-4" Elevation="2">
+        <MudText Typo="Typo.h6" Class="mb-3">Status</MudText>
+
+        @if (Person.IsBlacklisted)
+        {
+            <MudAlert Severity="Severity.Error" Class="mb-2" data-testid="blacklist-status">
+                <MudText>Blacklisted: Yes</MudText>
+                <MudText Typo="Typo.caption">Auf der schwarzen Liste</MudText>
+            </MudAlert>
+        }
+        else
+        {
+            <MudAlert Severity="Severity.Success" Class="mb-2" data-testid="blacklist-status">
+                <MudText>Blacklisted: No</MudText>
+                <MudText Typo="Typo.caption">Nicht auf der schwarzen Liste</MudText>
+            </MudAlert>
+        }
+    </MudPaper>
+
+    @if (Person.Contact != null)
+    {
+        <ContactDetailsCard Contact="Person.Contact" Title="@ContactTitle" />
+    }
+
+    @if (Person.Address != null)
+    {
+        <AddressDetailsCard Address="Person.Address" Title="@AddressTitle" />
+    }
+}
+
+@code {
+    [Parameter]
+    public PersonDto? Person { get; set; }
+
+    [Parameter]
+    public string? ContactTitle { get; set; }
+
+    [Parameter]
+    public string? AddressTitle { get; set; }
+}

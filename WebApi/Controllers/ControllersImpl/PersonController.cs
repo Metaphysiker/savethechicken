@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Shared.Dtos.DtosImpl;
 using System.Linq.Expressions;
+using WebApi.Database;
 using WebApi.Database.Includes;
 using WebApi.Factories;
 using WebApi.Factories.FactoriesImpl;
@@ -19,15 +21,18 @@ namespace WebApi.Controllers.ControllersImpl
         private readonly GenericModelService<Person, PersonSearch> _service;
         private readonly AutoMapperService _mapper;
         private readonly ILogger<PersonController> _logger;
+        private readonly DatabaseContext _db;
 
         public PersonController(
             GenericModelServiceFactory genericModelServiceFactory,
             AutoMapperService mapper,
-            ILogger<PersonController> logger)
+            ILogger<PersonController> logger,
+            DatabaseContext db)
         {
             _service = genericModelServiceFactory.Create<Person, PersonSearch>();
             _mapper = mapper;
             _logger = logger;
+            _db = db;
         }
 
         [HttpPost]
@@ -81,8 +86,50 @@ namespace WebApi.Controllers.ControllersImpl
         [HttpPut]
         public async Task<ActionResult<PersonDto>> Update([FromBody] PersonDto dto)
         {
-            var model = _mapper.mapper.Map<Person>(dto);
-            var result = await _service.Update(model, PersonIncludes.Default);
+            // Load the existing person
+            var existingPerson = await _db.Persons
+                .Include(p => p.Contact)
+                .Include(p => p.Address)
+                .FirstOrDefaultAsync(p => p.Id == dto.Id);
+
+            if (existingPerson == null)
+            {
+                return NotFound();
+            }
+
+            // Update Contact if it exists
+            if (existingPerson.Contact != null && dto.Contact != null)
+            {
+                existingPerson.Contact.FirstName = dto.Contact.FirstName;
+                existingPerson.Contact.LastName = dto.Contact.LastName;
+                existingPerson.Contact.Email = dto.Contact.Email;
+                existingPerson.Contact.PhoneNumber = dto.Contact.PhoneNumber;
+                existingPerson.Contact.CarMake = dto.Contact.CarMake ?? string.Empty;
+                existingPerson.Contact.AvailableDates = dto.Contact.AvailableDates ?? new List<DateOnly>();
+                existingPerson.Contact.Categories = dto.Contact.Categories ?? new List<ContactCategory>();
+                existingPerson.Contact.UpdatedAt = DateTime.UtcNow;
+                _db.Contacts.Update(existingPerson.Contact);
+            }
+
+            // Update Address if it exists
+            if (existingPerson.Address != null && dto.Address != null)
+            {
+                existingPerson.Address.Street = dto.Address.Street;
+                existingPerson.Address.City = dto.Address.City;
+                existingPerson.Address.PostalCode = dto.Address.PostalCode;
+                existingPerson.Address.UpdatedAt = DateTime.UtcNow;
+                _db.Addresses.Update(existingPerson.Address);
+            }
+
+            // Update Person properties
+            existingPerson.IsBlacklisted = dto.IsBlacklisted;
+            existingPerson.UpdatedAt = DateTime.UtcNow;
+            _db.Persons.Update(existingPerson);
+
+            await _db.SaveChangesAsync();
+
+            // Reload with includes for the response
+            var result = await _service.Read(dto.Id, PersonIncludes.Default);
             var resultDto = _mapper.mapper.Map<PersonDto>(result);
             return Ok(resultDto);
         }

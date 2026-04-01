@@ -8,7 +8,7 @@
 @inject SaveChickenActionService saveChickenActionService;
 @using global::Shared.Dtos.DtosImpl
 
-@page "/save-chicken-drive-requests/new"
+@page "/admin/save-chicken-drive-requests/new"
 
 <PageTitle>Fahrer werden</PageTitle>
 
@@ -18,7 +18,7 @@
 
     @if(newItemWithBrowserFiles != null)
     {
-      <GenericCreateWithFiles TDto="SaveChickenDriveRequestDto" model="newItemWithBrowserFiles" >
+      <GenericCreateWithFiles TDto="SaveChickenDriveRequestDto" model="newItemWithBrowserFiles" ResourceName="admin/save-chicken-drive-requests" >
         <ChildContent Context="model">
             <SaveChickenDriveRequestFormWithFiles EntityWithFiles="model" />
         </ChildContent>

@@ -2,7 +2,7 @@
   "cookies": [
     {
       "name": ".AspNetCore.Antiforgery.VyLW6ORzMgk",
-      "value": "CfDJ8CzBeSlwJ5ZIp3dYm3py9VY4iqLUEma18rVK4-ho52jxdYi7bf3WEQnDaWXs8Y3z0u3kCmbQg-ghy86mdsQQOJdHoVy4Y0RWeFUii3tY8tYqKM2AP1Ju3--nnEaQPSQAGxhWB0uKPhwAsLVUAQEZM0Q",
+      "value": "CfDJ8EbaxUqmFk5Jrl0uPDjOiZ6pLXYW7g5dbc_mWLt4dxhBPOnv_4_92IA4TDjbp-Ltz1poQkcU4jF_wnlbw6MtoVY-JDgFo0kZ4d0ynePpsU3Ap50WwEj2gTnxlPHYLxlX2o83lT7zQyT2WE7ZZS6KqIs",
       "domain": "localhost",
       "path": "/",
       "expires": -1,
@@ -17,11 +17,7 @@
       "localStorage": [
         {
           "name": "jwt_token",
-          "value": "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJUb2tlbkZvclRoZUFwaVdpdGhBdXRoIiwianRpIjoiMTIwY2M3YTYtYzQxOC00NjI4LWJjZWUtMjc4ZjlkMDE1MTM1IiwiaWF0IjoiMTc3NDk5NDAwNSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiYTkwYTc0NjktMmQwMi00YTA1LTgzNDQtZjI2OTNmNTVhMDUxIiwiVXNlcklkIjoiYTkwYTc0NjktMmQwMi00YTA1LTgzNDQtZjI2OTNmNTVhMDUxIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6InRlc3RAZXhhbXBsZS5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJ0ZXN0QGV4YW1wbGUuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjpbIkFkbWluIiwiVXNlciJdLCJleHAiOjE4MDY1MzAwMDUsImlzcyI6ImFwaVdpdGhBdXRoQmFja2VuZCIsImF1ZCI6ImFwaVdpdGhBdXRoQmFja2VuZCJ9._lwqwKZ6ypbjl6c9nEWsEs8_nRJMdU95M2qoMx3N7vo\""
-        },
-        {
-          "name": "blazor-resource-hash:MauiBlazorWeb.Web.Client",
-          "value": "sha256-tDVPrAKkb3A3ErKKEXEcPkqn08uzazhdqTSfTCrF2EY="
+          "value": "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJUb2tlbkZvclRoZUFwaVdpdGhBdXRoIiwianRpIjoiYjQ0NTMwOTEtOWMxNy00ODU2LTkyMTQtYjNkNmM3NTVlN2M4IiwiaWF0IjoiMTc3NTA2MzIzMyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiNDViOWRiMTQtZmQ3ZS00Y2RmLTkyM2ItZTUwNDg1MjA1MzcwIiwiVXNlcklkIjoiNDViOWRiMTQtZmQ3ZS00Y2RmLTkyM2ItZTUwNDg1MjA1MzcwIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6InRlc3RAZXhhbXBsZS5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJ0ZXN0QGV4YW1wbGUuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjpbIkFkbWluIiwiVXNlciJdLCJleHAiOjE4MDY1OTkyMzMsImlzcyI6ImFwaVdpdGhBdXRoQmFja2VuZCIsImF1ZCI6ImFwaVdpdGhBdXRoQmFja2VuZCJ9.jicUkMvA9f75ydxOKQtRAvO3-GQFM3igHj9RsN4-Yn4\""
         }
       ]
     }

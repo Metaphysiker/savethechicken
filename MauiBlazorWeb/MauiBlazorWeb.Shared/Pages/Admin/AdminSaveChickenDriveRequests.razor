@@ -1,0 +1,24 @@
+@page "/admin/save-chicken-drive-requests"
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenDriveRequests
+@using MauiBlazorWeb.Web.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+
+<PageTitle>Admin - Save Chicken Drive Requests Management</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+    <h2>Admin - Save Chicken Drive Requests Management</h2>
+
+    <MudAlert Severity="Severity.Info" Dense="true" Class="my-4">
+        <strong>Admin Mode:</strong> Manage all chicken drive requests.
+    </MudAlert>
+
+    <GenericSearch TDto="SaveChickenDriveRequestDto" TSearchDto="SaveChickenDriveRequestSearch">
+        <SearchForm Context="search">
+            <SaveChickenDriveRequestSearchForm Model="search" />
+        </SearchForm>
+        <Table Context="ctx">
+            <SaveChickenDriveRequestTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" OnItemsChanged="ctx.Item4.InvokeAsync" />
+        </Table>
+    </GenericSearch>
+</MudContainer>

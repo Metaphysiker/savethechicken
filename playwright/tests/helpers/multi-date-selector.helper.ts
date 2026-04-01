@@ -20,10 +20,21 @@ export class MultiDateSelectorHelper {
    * @param day - The day of the month (1-31)
    */
   async selectDate(day: number) {
-    const dayCell = this.container.locator(`.calendar-day:has-text("${day}")`).first();
-    await dayCell.waitFor({ state: 'visible' });
+    // Select only non-disabled dates with exact text match
+    // Use locator with filter for exact text to avoid matching "1" in "10", "11", etc.
+    const dayCell = this.container
+      .locator('.calendar-day:not(.disabled)')
+      .filter({ hasText: new RegExp(`^${day}$`) })
+      .first();
+    
+    await dayCell.waitFor({ state: 'visible', timeout: 5000 });
+    
+    // Scroll into view if needed
+    await dayCell.scrollIntoViewIfNeeded();
+    await this.page.waitForTimeout(200);
+    
     await dayCell.click();
-    await this.page.waitForTimeout(200); // Wait for selection to register
+    await this.page.waitForTimeout(300); // Wait for selection to register
   }
 
   /**

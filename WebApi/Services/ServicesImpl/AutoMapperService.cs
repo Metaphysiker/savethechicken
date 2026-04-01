@@ -48,13 +48,15 @@ public class AutoMapperService
                 .ForMember(
                     dest => dest.GenericName,
                     opt => opt.MapFrom(src =>
-                        src.Person != null 
+                        src.Person != null
                             ? $"{src.Person.Contact.FirstName} {src.Person.Contact.LastName}, {src.Person.Contact.Email}, {src.Person.Address.City}".Trim()
                             : string.Empty
                     )
-                );
+                )
+                .ForMember(dest => dest.Person, opt => opt.Ignore());
 
-            cfg.CreateMap<SaveChickenRequestDto, SaveChickenRequest>();
+            cfg.CreateMap<SaveChickenRequestDto, SaveChickenRequest>()
+                .ForMember(dest => dest.Person, opt => opt.Ignore()); // Ignore Person when mapping from DTO - use PersonId instead
 
             // SaveChickenAction
             cfg.CreateMap<SaveChickenAction, SaveChickenActionDto>()
@@ -81,7 +83,9 @@ public class AutoMapperService
                     opt => opt.MapFrom(src =>
                         $"{src.Contact.FirstName} {src.Contact.LastName}".Trim()
                     )
-                );
+                )
+                .ForMember(dest => dest.SaveChickenRequests, opt => opt.Ignore())
+                .ForMember(dest => dest.SaveChickenDriveRequests, opt => opt.Ignore());
 
             cfg.CreateMap<PersonDto, Person>();
 
@@ -92,9 +96,11 @@ public class AutoMapperService
                     opt => opt.MapFrom(src =>
                         $"{src.Person.Contact.FirstName} {src.Person.Contact.LastName}, {src.CarMake}".Trim()
                     )
-                );
+                )
+                .ForMember(dest => dest.Person, opt => opt.Ignore());
 
-            cfg.CreateMap<SaveChickenDriveRequestDto, SaveChickenDriveRequest>();
+            cfg.CreateMap<SaveChickenDriveRequestDto, SaveChickenDriveRequest>()
+                .ForMember(dest => dest.Person, opt => opt.Ignore()); // Ignore Person when mapping from DTO - use PersonId instead
         });
 
         mapper = config.CreateMapper();

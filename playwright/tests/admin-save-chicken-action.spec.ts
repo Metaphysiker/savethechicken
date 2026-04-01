@@ -16,7 +16,7 @@ test.describe('Admin - Create Save Chicken Action', () => {
     const testDescription = `Test description for action created at ${timestamp}`;
 
     await test.step('Navigate to new save chicken action page', async () => {
-      await page.goto('/save-chicken-actions/new', { waitUntil: 'networkidle' });
+      await page.goto('/admin/save-chicken-actions/new', { waitUntil: 'networkidle' });
 
       // Wait for the page heading to be visible
       await expect(page.getByText('Neue Rettungsaktion für Hühner')).toBeVisible();
@@ -55,7 +55,7 @@ test.describe('Admin - Create Save Chicken Action', () => {
       await page.getByRole('button', { name: 'Erstellen' }).click();
 
       // Wait for navigation to the detail page
-      await page.waitForURL(/\/save-chicken-actions\/\d+/, { timeout: 10000 });
+      await page.waitForURL(/\/admin\/save-chicken-actions\/\d+/, { timeout: 10000 });
       
       // Verify we're on the detail page and can see the created action
       await expect(page.getByTestId('action-title')).toHaveText(testTitle);
@@ -63,10 +63,10 @@ test.describe('Admin - Create Save Chicken Action', () => {
 
     await test.step('Verify action was created and displays correct details', async () => {
       // Should be on the detail page now, not thank-you
-      expect(page.url()).toMatch(/\/save-chicken-actions\/\d+/);
+      expect(page.url()).toMatch(/\/admin\/save-chicken-actions\/\d+/);
 
       // Navigate to the save chicken actions list page
-      await page.goto('/save-chicken-actions-list', { waitUntil: 'networkidle' });
+      await page.goto('/admin/save-chicken-actions-list', { waitUntil: 'networkidle' });
 
       // Wait for the page to load
       await page.waitForSelector('h3', { state: 'visible', timeout: 10000 });
@@ -84,7 +84,7 @@ test.describe('Admin - Create Save Chicken Action', () => {
       await actionRow.getByTestId('view-button').click();
 
       // Wait for the detail page to load
-      await page.waitForURL('**/save-chicken-actions/**', { timeout: 10000 });
+      await page.waitForURL(/\/admin\/save-chicken-actions\/\d+/, { timeout: 10000 });
 
       // Verify the action details are displayed correctly
       await expect(page.getByTestId('action-title')).toHaveText(testTitle);
@@ -108,7 +108,7 @@ test.describe('Admin - Create Save Chicken Action', () => {
 
   test('should show validation errors for required fields', async ({ page }) => {
     // Navigate to new save chicken action page
-    await page.goto('/save-chicken-actions/new', { waitUntil: 'networkidle' });
+    await page.goto('/admin/save-chicken-actions/new', { waitUntil: 'networkidle' });
 
     // Wait for the form to load
     await page.waitForSelector('h3:has-text("Neue Rettungsaktion")', { state: 'visible', timeout: 10000 });
@@ -143,7 +143,7 @@ test.describe('Admin - Create Save Chicken Action', () => {
 
     await test.step('Create a new save chicken action', async () => {
       // Navigate to new save chicken action page
-      await page.goto('/save-chicken-actions/new', { waitUntil: 'networkidle' });
+      await page.goto('/admin/save-chicken-actions/new', { waitUntil: 'networkidle' });
 
       // Fill in the form
       await page.getByLabel('Title').click();
@@ -162,7 +162,7 @@ test.describe('Admin - Create Save Chicken Action', () => {
       await page.getByRole('button', { name: 'Erstellen' }).click();
 
       // Wait for navigation to detail page
-      await page.waitForURL(/\/save-chicken-actions\/\d+/, { timeout: 10000 });
+      await page.waitForURL(/\/admin\/save-chicken-actions\/\d+/, { timeout: 10000 });
 
       // Verify original details
       await expect(page.getByTestId('action-title')).toHaveText(originalTitle);
@@ -177,12 +177,12 @@ test.describe('Admin - Create Save Chicken Action', () => {
     await test.step('Navigate to edit page', async () => {
       // Extract the ID from the current URL
       const url = page.url();
-      const match = url.match(/\/save-chicken-actions\/(\d+)/);
+      const match = url.match(/\/admin\/save-chicken-actions\/(\d+)/);
       expect(match).toBeTruthy();
       const actionId = match![1];
 
       // Navigate to edit page
-      await page.goto(`/save-chicken-actions/${actionId}/edit`, { waitUntil: 'networkidle' });
+      await page.goto(`/admin/save-chicken-actions/${actionId}/edit`, { waitUntil: 'networkidle' });
 
       // Wait for the edit form to load
       await page.waitForSelector('h2:has-text("Edit Save Chicken Request")', { state: 'visible', timeout: 10000 });
@@ -216,7 +216,7 @@ test.describe('Admin - Create Save Chicken Action', () => {
       await updateButton.click();
 
       // Wait for navigation back to detail page
-      await page.waitForURL(/\/save-chicken-actions\/\d+/, { timeout: 10000 });
+      await page.waitForURL(/\/admin\/save-chicken-actions\/\d+/, { timeout: 10000 });
     });
 
     await test.step('Verify updated details', async () => {
@@ -244,7 +244,7 @@ test.describe('Admin - Create Save Chicken Action', () => {
 
     await test.step('Create a new save chicken action', async () => {
       // Navigate to new save chicken action page
-      await page.goto('/save-chicken-actions/new', { waitUntil: 'networkidle' });
+      await page.goto('/admin/save-chicken-actions/new', { waitUntil: 'networkidle' });
 
       // Fill in the form
       await page.getByLabel('Title').click();
@@ -264,7 +264,7 @@ test.describe('Admin - Create Save Chicken Action', () => {
       await page.getByRole('button', { name: 'Erstellen' }).click();
 
       // Wait for navigation to detail page
-      await page.waitForURL(/\/save-chicken-actions\/\d+/, { timeout: 10000 });
+      await page.waitForURL(/\/admin\/save-chicken-actions\/\d+/, { timeout: 10000 });
 
       // Verify creation
       await expect(page.getByTestId('action-title')).toHaveText(testTitle);
@@ -272,7 +272,7 @@ test.describe('Admin - Create Save Chicken Action', () => {
 
     await test.step('Navigate to list and find the created action', async () => {
       // Navigate to save chicken actions list page
-      await page.goto('/save-chicken-actions-list', { waitUntil: 'networkidle' });
+      await page.goto('/admin/save-chicken-actions-list', { waitUntil: 'networkidle' });
 
       // Wait for the page to load
       await page.waitForSelector('h3', { state: 'visible', timeout: 10000 });

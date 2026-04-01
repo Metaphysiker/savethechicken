@@ -7,24 +7,24 @@ export interface SaveChickenRequestFormData {
   contactLastName: string;
   contactEmail: string;
   contactPhone: string;
-  
+
   // Address
   addressCity: string;
   addressPostalCode: string;
   addressStreet: string;
-  
+
   // Chicken details
   numberOfChickens: string;
   numberOfRoosters: string;
   description: string;
   alreadyReceivedChickensBefore?: boolean;
-  
+
   // Dates
   datesForHandOver?: number[];
-  
+
   // Additional info
   message?: string;
-  
+
   // Confirmations (default to true for valid submissions)
   confirmCriteria?: boolean;
   acceptTerms?: boolean;

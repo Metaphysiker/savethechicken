@@ -39,12 +39,12 @@
 
     private void ShowItem(int id)
     {
-        NavigationManager.NavigateTo($"/farms/{id}");
+        NavigationManager.NavigateTo($"/admin/farms/{id}");
     }
 
     private void EditItem(FarmDto farmDto)
     {
-        NavigationManager.NavigateTo($"/farms/{farmDto.Id}/edit");
+        NavigationManager.NavigateTo($"/admin/farms/{farmDto.Id}/edit");
 
     }
 }

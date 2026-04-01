@@ -1,41 +1,80 @@
 import { test, expect } from '@playwright/test';
-import { fillSaveChickenRequestForm } from './helpers/save-chicken-request-form.helper';
+import { createPerson } from './helpers/person-form.helper';
+import { fillAdminSaveChickenRequestForm } from './helpers/admin-save-chicken-request-form.helper';
+import { createSaveChickenAction } from './helpers/save-chicken-action-form.helper';
+import { selectPerson } from './helpers/person-selector.helper';
+
+// Use admin authentication
+test.use({ storageState: 'playwright/.auth/admin.json' });
 
 // Configure browser for this test file (top-level)
 test.use({
   headless: false,
   launchOptions: {
-    slowMo: 500,
+    slowMo: 100, // Reduced from 500ms to speed up tests
   },
 });
 
-test.describe('Save Chicken Request Management', () => {
-  test('should create a new save chicken request', async ({ page }) => {
+test.describe('Admin Save Chicken Request Management', () => {
+  // Run tests serially to avoid resource contention when creating actions/persons
+  test.describe.configure({ mode: 'serial' });
+
+  test('should create and view a save chicken request using PersonSelector', async ({ page }) => {
+    test.setTimeout(90000); // Increased timeout for action + person + request creation
+
     const timestamp = Date.now();
-    const testFirstName = `RequestFirst${timestamp}`;
-    const testLastName = `RequestLast${timestamp}`;
-    const testEmail = `request${timestamp}@example.com`;
+    const testFirstName = `AdminReqFirst${timestamp}`;
+    const testLastName = `AdminReqLast${timestamp}`;
+    const testEmail = `adminreq${timestamp}@example.com`;
 
-    await test.step('Navigate to new save chicken request page', async () => {
-      await page.goto('/save-chicken-requests/new', { waitUntil: 'networkidle' });
-      await page.waitForSelector('h3', { state: 'visible', timeout: 10000 });
-    });
+    let personId: number;
+    let availableDates: number[];
 
-    await test.step('Fill in the save chicken request form', async () => {
+    await test.step('Admin creates a SaveChickenAction first', async () => {
       const today = new Date();
       const dayOfMonth = today.getDate();
-      
-      const datesToSelect = [dayOfMonth];
-      if (dayOfMonth + 1 <= 28) datesToSelect.push(dayOfMonth + 1);
 
-      await fillSaveChickenRequestForm(page, {
-        contactFirstName: testFirstName,
-        contactLastName: testLastName,
-        contactEmail: testEmail,
-        contactPhone: '+41798888888',
-        addressCity: 'Lausanne',
-        addressPostalCode: '1000',
-        addressStreet: 'Request Street 123',
+      // Create dates relative to today (today + next 3 days)
+      const datesToCreate = [dayOfMonth];
+      if (dayOfMonth + 1 <= 28) datesToCreate.push(dayOfMonth + 1);
+      if (dayOfMonth + 2 <= 28) datesToCreate.push(dayOfMonth + 2);
+      if (dayOfMonth + 3 <= 28) datesToCreate.push(dayOfMonth + 3);
+
+      const action = await createSaveChickenAction(page, {
+        title: `Test Action ${timestamp}`,
+        description: 'Test action for save chicken requests',
+        dates: datesToCreate,
+        isActive: true,
+      });
+
+      availableDates = action.dates;
+      expect(action.actionId).toBeGreaterThan(0);
+    });
+
+    await test.step('Admin creates a person first', async () => {
+      personId = await createPerson(page, {
+        firstName: testFirstName,
+        lastName: testLastName,
+        email: testEmail,
+        phone: '+41798888888',
+        city: 'Lausanne',
+        postalCode: '1000',
+        street: 'Request Street 123',
+      });
+
+      expect(personId).toBeGreaterThan(0);
+    });
+
+    await test.step('Admin creates SaveChickenRequest using PersonSelector', async () => {
+      await page.goto('/admin/save-chicken-requests/new', { waitUntil: 'networkidle' });
+      await page.waitForSelector('h3', { state: 'visible', timeout: 10000 });
+
+      // Use dates from the created action (select first two)
+      const datesToSelect = availableDates.slice(0, 2);
+
+      await fillAdminSaveChickenRequestForm(page, {
+        personId: personId,
+        personEmail: testEmail,
         numberOfChickens: '8',
         numberOfRoosters: '1',
         description: 'Large garden with secure chicken coop',
@@ -45,80 +84,99 @@ test.describe('Save Chicken Request Management', () => {
         confirmCriteria: true,
         acceptTerms: true,
       });
-    });
 
-    await test.step('Submit and verify', async () => {
       await page.getByRole('button', { name: /erstellen|submit/i }).click();
 
-      // Wait for success confirmation or redirect
-      await page.waitForURL(/thank-you|save-chicken-requests/, { timeout: 10000 });
-
-      // Verify success
-      const currentUrl = page.url();
-      expect(currentUrl).toMatch(/thank-you|save-chicken-requests/);
+      // Admin should be redirected to detail page, not thank-you
+      await page.waitForURL(/\/admin\/save-chicken-requests\/\d+/, { timeout: 10000 });
     });
 
-    await test.step('Find and verify created request', async () => {
-      // Navigate to save chicken requests list
-      await page.goto('/save-chicken-requests-list', { waitUntil: 'networkidle' });
+    await test.step('Admin finds and views the request', async () => {
+      await page.goto('/admin/save-chicken-requests', { waitUntil: 'networkidle' });
 
       // Search for the request
-      await page.getByLabel('Suche').fill(testFirstName);
+      await page.getByLabel(/suche|search/i).fill(testFirstName);
       await page.getByRole('button', { name: /suchen|search/i }).click();
+      await page.waitForTimeout(1000);
 
-      // Wait for view button and click it
-      const viewButton = page.getByTestId('view-button').first();
-      await viewButton.waitFor({ state: 'visible', timeout: 5000 });
-      await viewButton.click();
+      // Click view button
+      const showButton = page.getByTestId('view-button').first();
+      await showButton.waitFor({ state: 'visible', timeout: 5000 });
+      await showButton.click();
 
-      // Wait for detail page to load
-      await page.waitForURL(/\/save-chicken-requests\/\d+/, { timeout: 10000 });
+      // Verify on detail page
+      await page.waitForURL(/\/admin\/save-chicken-requests\/\d+/, { timeout: 10000 });
 
-      // Verify all the information is displayed
-      await expect(page.getByText(testFirstName)).toBeVisible();
-      await expect(page.getByText(testLastName)).toBeVisible();
-      await expect(page.getByText(testEmail)).toBeVisible();
-      await expect(page.getByText('+41798888888')).toBeVisible();
-      await expect(page.getByText('Lausanne')).toBeVisible();
-      await expect(page.getByText('1000')).toBeVisible();
-      await expect(page.getByText('Request Street 123')).toBeVisible();
+      // Verify person information using data-testid
+      await expect(page.getByTestId('contact-firstname')).toHaveText(testFirstName);
+      await expect(page.getByTestId('contact-lastname')).toHaveText(testLastName);
+      await expect(page.getByTestId('contact-email')).toHaveText(testEmail);
+      await expect(page.getByTestId('contact-phone')).toHaveText('+41798888888');
+      await expect(page.getByTestId('address-city')).toHaveText('Lausanne');
+      await expect(page.getByTestId('address-postalcode')).toHaveText('1000');
+      await expect(page.getByTestId('address-street')).toHaveText('Request Street 123');
+
+      // Verify save chicken request information
       await expect(page.getByText(/Anzahl Hühner:\s*8/)).toBeVisible();
       await expect(page.getByText('Large garden with secure chicken coop')).toBeVisible();
       await expect(page.getByText('Looking forward to helping chickens!')).toBeVisible();
     });
   });
 
-  test('should show validation errors for required fields', async ({ page }) => {
-    await page.goto('/save-chicken-requests/new', { waitUntil: 'networkidle' });
+  test('should edit a save chicken request (admin updates SaveChickenRequest fields only)', async ({ page }) => {
+    test.setTimeout(90000); // Increased timeout for action + person + request creation
 
-    // Try to submit without filling required fields
-    await page.getByRole('button', { name: /erstellen|submit/i }).click();
-
-    // Verify validation errors appear
-    await expect(page.getByText(/required|erforderlich/i).first()).toBeVisible({ timeout: 5000 });
-  });
-
-  test('should create and then update a save chicken request', async ({ page }) => {
-    test.setTimeout(60000);
-    
     const timestamp = Date.now();
-    const originalFirstName = `OriginalReq${timestamp}`;
-    const originalEmail = `reqoriginal${timestamp}@example.com`;
+    const originalFirstName = `EditableReq${timestamp}`;
+    const originalLastName = 'OriginalLast';
+    const originalEmail = `editablereq${timestamp}@example.com`;
 
-    await test.step('Create a new save chicken request', async () => {
-      await page.goto('/save-chicken-requests/new', { waitUntil: 'networkidle' });
+    let personId: number;
+    let availableDates: number[];
 
+    await test.step('Admin creates a SaveChickenAction first', async () => {
       const today = new Date();
       const dayOfMonth = today.getDate();
 
-      await fillSaveChickenRequestForm(page, {
-        contactFirstName: originalFirstName,
-        contactLastName: 'OriginalLast',
-        contactEmail: originalEmail,
-        contactPhone: '+41793333333',
-        addressCity: 'Geneva',
-        addressPostalCode: '1200',
-        addressStreet: 'Original St 1',
+      // Create dates relative to today
+      const datesToCreate = [dayOfMonth];
+      if (dayOfMonth + 1 <= 28) datesToCreate.push(dayOfMonth + 1);
+      if (dayOfMonth + 2 <= 28) datesToCreate.push(dayOfMonth + 2);
+
+      const action = await createSaveChickenAction(page, {
+        title: `Test Action ${timestamp}`,
+        description: 'Test action for edit test',
+        dates: datesToCreate,
+        isActive: true,
+      });
+
+      availableDates = action.dates;
+      expect(action.actionId).toBeGreaterThan(0);
+    });
+
+    await test.step('Admin creates a person first', async () => {
+      personId = await createPerson(page, {
+        firstName: originalFirstName,
+        lastName: originalLastName,
+        email: originalEmail,
+        phone: '+41793333333',
+        city: 'Geneva',
+        postalCode: '1200',
+        street: 'Original St 1',
+      });
+
+      expect(personId).toBeGreaterThan(0);
+    });
+
+    await test.step('Admin creates SaveChickenRequest', async () => {
+      await page.goto('/admin/save-chicken-requests/new', { waitUntil: 'networkidle' });
+
+      // Use first date from created action
+      const dayOfMonth = availableDates[0];
+
+      await fillAdminSaveChickenRequestForm(page, {
+        personId: personId,
+        personEmail: originalEmail,
         numberOfChickens: '5',
         numberOfRoosters: '0',
         description: 'Original description',
@@ -127,38 +185,43 @@ test.describe('Save Chicken Request Management', () => {
       });
 
       await page.getByRole('button', { name: /erstellen/i }).click();
-      await page.waitForURL(/thank-you|save-chicken-requests/, { timeout: 10000 });
+
+      // Admin should be redirected to detail page, not thank-you
+      await page.waitForURL(/\/admin\/save-chicken-requests\/\d+/, { timeout: 10000 });
     });
 
     await test.step('Verify created request', async () => {
-      await page.goto('/save-chicken-requests-list', { waitUntil: 'networkidle' });
+      await page.goto('/admin/save-chicken-requests', { waitUntil: 'networkidle' });
 
-      await page.getByLabel('Suche').fill(originalFirstName);
+      await page.getByLabel(/suche|search/i).fill(originalFirstName);
       await page.getByRole('button', { name: /suchen|search/i }).click();
+      await page.waitForTimeout(1000);
 
-      const viewButton = page.getByTestId('view-button').first();
-      await viewButton.waitFor({ state: 'visible', timeout: 5000 });
-      await viewButton.click();
-      await page.waitForURL(/\/save-chicken-requests\/\d+/, { timeout: 10000 });
+      const showButton = page.getByTestId('view-button').first();
+      await showButton.waitFor({ state: 'visible', timeout: 5000 });
+      await showButton.click();
+      await page.waitForURL(/\/admin\/save-chicken-requests\/\d+/, { timeout: 10000 });
 
-      await expect(page.getByText(originalFirstName)).toBeVisible();
-      await expect(page.getByText(originalEmail)).toBeVisible();
-      await expect(page.getByText('Geneva')).toBeVisible();
+      // Verify person information using data-testid
+      await expect(page.getByTestId('contact-firstname')).toHaveText(originalFirstName);
+      await expect(page.getByTestId('contact-email')).toHaveText(originalEmail);
+      await expect(page.getByTestId('address-city')).toHaveText('Geneva');
       await expect(page.getByText('Original description')).toBeVisible();
     });
 
-    await test.step('Update the request', async () => {
-      await page.goto('/save-chicken-requests-list', { waitUntil: 'networkidle' });
-      
-      await page.getByLabel('Suche').fill(originalFirstName);
+    await test.step('Update the request (SaveChickenRequest fields only)', async () => {
+      await page.goto('/admin/save-chicken-requests', { waitUntil: 'networkidle' });
+
+      await page.getByLabel(/suche|search/i).fill(originalFirstName);
       await page.getByRole('button', { name: /suchen|search/i }).click();
+      await page.waitForTimeout(1000);
 
       const editButton = page.getByTestId('edit-button').first();
       await editButton.waitFor({ state: 'visible', timeout: 5000 });
       await editButton.click();
 
       // Wait for dialog to open
-      await page.waitForSelector('text=Allgemeine Informationen', { state: 'visible', timeout: 10000 });
+      await page.waitForSelector('[data-testid="save-chicken-request-general-info"]', { state: 'visible', timeout: 10000 });
 
       // Update only SaveChickenRequest's own fields (NOT Person/Contact/Address)
       await page.getByTestId('chickens-count').fill('12');
@@ -169,31 +232,31 @@ test.describe('Save Chicken Request Management', () => {
       // Submit the update
       await page.getByRole('button', { name: /aktualisieren|update/i }).click();
 
-      // Wait for dialog to close by waiting for the list to be visible again
+      // Wait for dialog to close
       await page.waitForTimeout(2000);
-      
-      // Close the dialog if still open by navigating back to list
-      await page.goto('/save-chicken-requests-list', { waitUntil: 'networkidle' });
+
+      // Navigate back to list
+      await page.goto('/admin/save-chicken-requests', { waitUntil: 'networkidle' });
     });
 
     await test.step('Verify updated request', async () => {
       // Search for the request using original name (Person data shouldn't change)
-      await page.getByLabel('Suche').clear();
-      await page.getByLabel('Suche').fill(originalFirstName);
+      await page.getByLabel(/suche|search/i).clear();
+      await page.getByLabel(/suche|search/i).fill(originalFirstName);
       await page.getByRole('button', { name: /suchen|search/i }).click();
       await page.waitForTimeout(2000);
 
-      const viewButton = page.getByTestId('view-button').first();
-      await viewButton.waitFor({ state: 'visible', timeout: 5000 });
-      await viewButton.click();
-      await page.waitForURL(/\/save-chicken-requests\/\d+/, { timeout: 10000 });
+      const showButton = page.getByTestId('view-button').first();
+      await showButton.waitFor({ state: 'visible', timeout: 5000 });
+      await showButton.click();
+      await page.waitForURL(/\/admin\/save-chicken-requests\/\d+/, { timeout: 10000 });
 
-      // Verify Person data is UNCHANGED (original values)
-      await expect(page.getByText(originalFirstName)).toBeVisible();
-      await expect(page.getByText('OriginalLast')).toBeVisible();
-      await expect(page.getByText(originalEmail)).toBeVisible();
-      await expect(page.getByText('Geneva')).toBeVisible();
-      await expect(page.getByText('1200')).toBeVisible();
+      // Verify Person data is UNCHANGED (original values) using data-testid
+      await expect(page.getByTestId('contact-firstname')).toHaveText(originalFirstName);
+      await expect(page.getByTestId('contact-lastname')).toHaveText(originalLastName);
+      await expect(page.getByTestId('contact-email')).toHaveText(originalEmail);
+      await expect(page.getByTestId('address-city')).toHaveText('Geneva');
+      await expect(page.getByTestId('address-postalcode')).toHaveText('1200');
 
       // Verify SaveChickenRequest data IS UPDATED
       await expect(page.getByText(/Anzahl Hühner:\s*12/)).toBeVisible();
@@ -208,25 +271,59 @@ test.describe('Save Chicken Request Management', () => {
     });
   });
 
-  test('should create and then delete a save chicken request', async ({ page }) => {
+  test('should delete a save chicken request', async ({ page }) => {
+    test.setTimeout(90000); // Increased timeout for action + person + request creation
+
     const timestamp = Date.now();
     const testFirstName = `DeleteReq${timestamp}`;
+    const testLastName = 'DeleteLast';
     const testEmail = `deletereq${timestamp}@example.com`;
 
-    await test.step('Create a new save chicken request', async () => {
-      await page.goto('/save-chicken-requests/new', { waitUntil: 'networkidle' });
+    let personId: number;
+    let availableDates: number[];
 
+    await test.step('Admin creates a SaveChickenAction first', async () => {
       const today = new Date();
       const dayOfMonth = today.getDate();
 
-      await fillSaveChickenRequestForm(page, {
-        contactFirstName: testFirstName,
-        contactLastName: 'DeleteLast',
-        contactEmail: testEmail,
-        contactPhone: '+41794444444',
-        addressCity: 'Luzern',
-        addressPostalCode: '6000',
-        addressStreet: 'Delete St 1',
+      // Create dates relative to today
+      const datesToCreate = [dayOfMonth];
+      if (dayOfMonth + 1 <= 28) datesToCreate.push(dayOfMonth + 1);
+
+      const action = await createSaveChickenAction(page, {
+        title: `Test Action ${timestamp}`,
+        description: 'Test action for delete test',
+        dates: datesToCreate,
+        isActive: true,
+      });
+
+      availableDates = action.dates;
+      expect(action.actionId).toBeGreaterThan(0);
+    });
+
+    await test.step('Admin creates a person first', async () => {
+      personId = await createPerson(page, {
+        firstName: testFirstName,
+        lastName: testLastName,
+        email: testEmail,
+        phone: '+41794444444',
+        city: 'Luzern',
+        postalCode: '6000',
+        street: 'Delete St 1',
+      });
+
+      expect(personId).toBeGreaterThan(0);
+    });
+
+    await test.step('Admin creates SaveChickenRequest', async () => {
+      await page.goto('/admin/save-chicken-requests/new', { waitUntil: 'networkidle' });
+
+      // Use first date from created action
+      const dayOfMonth = availableDates[0];
+
+      await fillAdminSaveChickenRequestForm(page, {
+        personId: personId,
+        personEmail: testEmail,
         numberOfChickens: '3',
         numberOfRoosters: '0',
         description: 'This request will be deleted',
@@ -234,13 +331,15 @@ test.describe('Save Chicken Request Management', () => {
       });
 
       await page.getByRole('button', { name: /erstellen/i }).click();
-      await page.waitForURL(/thank-you|save-chicken-requests/, { timeout: 10000 });
+
+      // Admin should be redirected to detail page, not thank-you
+      await page.waitForURL(/\/admin\/save-chicken-requests\/\d+/, { timeout: 10000 });
     });
 
     await test.step('Navigate to list and find the created request', async () => {
-      await page.goto('/save-chicken-requests-list', { waitUntil: 'networkidle' });
+      await page.goto('/admin/save-chicken-requests', { waitUntil: 'networkidle' });
 
-      await page.getByLabel('Suche').fill(testFirstName);
+      await page.getByLabel(/suche|search/i).fill(testFirstName);
       await page.getByRole('button', { name: /suchen|search/i }).click();
 
       const requestRow = page.locator('tr').filter({ hasText: testFirstName });
@@ -275,6 +374,81 @@ test.describe('Save Chicken Request Management', () => {
 
       const requestRow = page.locator('tr').filter({ hasText: testFirstName });
       await expect(requestRow).not.toBeVisible();
+    });
+  });
+
+  test('should show validation warnings for required fields', async ({ page }) => {
+    test.setTimeout(60000);
+
+    const timestamp = Date.now();
+    let availableDates: number[];
+
+    await test.step('Admin creates a SaveChickenAction', async () => {
+      const today = new Date();
+      const dayOfMonth = today.getDate();
+
+      const datesToCreate = [dayOfMonth];
+      if (dayOfMonth + 1 <= 28) datesToCreate.push(dayOfMonth + 1);
+
+      const action = await createSaveChickenAction(page, {
+        title: `Test Action ${timestamp}`,
+        description: 'Test action for validation test',
+        dates: datesToCreate,
+        isActive: true,
+      });
+
+      availableDates = action.dates;
+      expect(action.actionId).toBeGreaterThan(0);
+    });
+
+    await test.step('Navigate to create form and submit without filling required fields', async () => {
+      await page.goto('/admin/save-chicken-requests/new', { waitUntil: 'networkidle' });
+      await page.waitForSelector('h3', { state: 'visible', timeout: 10000 });
+
+      // Try to submit without filling any fields
+      await page.getByRole('button', { name: /erstellen|submit|create/i }).click();
+
+      // Wait for validation messages to appear
+      await page.waitForTimeout(1000);
+
+      // Person selection should be required
+      const personValidation = page.locator('.validation-message, .mud-input-error, [class*="error"]').filter({ hasText: /person|required|erforderlich/i });
+      await expect(personValidation.first()).toBeVisible({ timeout: 5000 });
+    });
+
+    await test.step('Fill only some fields and verify specific validations', async () => {
+      // Create a person first
+      const testEmail = `validation${timestamp}@example.com`;
+      const personId = await createPerson(page, {
+        firstName: `ValidationTest${timestamp}`,
+        lastName: 'User',
+        email: testEmail,
+        phone: '+41791111111',
+        city: 'Bern',
+        postalCode: '3000',
+        street: 'Test Street 1',
+      });
+
+      await page.goto('/admin/save-chicken-requests/new', { waitUntil: 'networkidle' });
+
+      // Use the helper to select person (this is a known working pattern)
+      await selectPerson(page, testEmail);
+
+      // Fill only numberOfChickens but leave other required fields empty
+      await page.getByTestId('chickens-count').fill('5');
+
+      // Try to submit with incomplete form
+      await page.getByRole('button', { name: /erstellen|submit|create/i }).click();
+      await page.waitForTimeout(1000);
+
+      // Should see validation errors for missing required fields
+      // The form should not navigate away (stays on the create page)
+      await expect(page).toHaveURL(/\/admin\/save-chicken-requests\/new/);
+
+      // Check for validation messages (at least one should be visible)
+      const validationMessages = page.locator('.validation-message, .mud-input-error, [class*="mud-error"]');
+      const validationCount = await validationMessages.count();
+      expect(validationCount).toBeGreaterThan(0);
     });
   });
 });

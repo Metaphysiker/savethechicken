@@ -9,12 +9,10 @@ namespace Shared.Dtos.DtosImpl
         public DateTime UpdatedAt { get; set; }
 
         [ValidateComplexType]
-        [Required]
         public ContactDto Contact { get; set; }
         public int ContactId { get; set; }
 
         [ValidateComplexType]
-        [Required]
         public AddressDto Address { get; set; }
         public int AddressId { get; set; }
 

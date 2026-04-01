@@ -1,0 +1,184 @@
+@page "/admin/persons/{Id:int}"
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Contacts
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Addresses
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Persons
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Shared.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+@inject GenericDtoServiceFactory DtoServiceFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Admin - Person Details</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge">
+    <MudBreadcrumbs Items="_breadcrumbs" Class="mb-4"></MudBreadcrumbs>
+
+    <MudText Typo="Typo.h3" Class="mb-4">Person Details</MudText>
+
+    @if (item != null)
+    {
+        <MudPaper Class="pa-4 my-4" Elevation="2">
+            <MudText Typo="Typo.h5" Class="mb-3">
+                Person Details
+                @if (item.IsBlacklisted)
+                {
+                    <MudChip T="string" Color="Color.Error" Size="Size.Small" Icon="@Icons.Material.Filled.Block">Blacklisted</MudChip>
+                }
+            </MudText>
+
+            <MudDivider Class="my-3" />
+
+            @* Blacklist Status Display *@
+            @if (item.IsBlacklisted)
+            {
+                <MudAlert Severity="Severity.Error" Class="mb-3">
+                    <MudText data-testid="blacklist-status">Blacklisted: Yes</MudText>
+                    <MudText Typo="Typo.caption">Auf der schwarzen Liste</MudText>
+                </MudAlert>
+            }
+            else
+            {
+                <MudAlert Severity="Severity.Success" Class="mb-3">
+                    <MudText data-testid="blacklist-status">Blacklisted: No</MudText>
+                    <MudText Typo="Typo.caption">Nicht auf der schwarzen Liste</MudText>
+                </MudAlert>
+            }
+
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <ContactDetailsCard Contact="@item.Contact" />
+                </MudItem>
+
+                <MudItem xs="12" md="6">
+                    <AddressDetailsCard Address="@item.Address" />
+                </MudItem>
+            </MudGrid>
+
+            @if (item.Contact?.AvailableDates != null && item.Contact.AvailableDates.Any())
+            {
+                <MudDivider Class="my-3" />
+                <MudText Typo="Typo.h6" Class="mb-2">Available Dates</MudText>
+                <div>
+                    @foreach (var date in item.Contact.AvailableDates.OrderBy(d => d))
+                    {
+                        <MudChip T="string" Size="Size.Small" Class="mr-1 mb-1">@date.ToString("dd.MM.yyyy")</MudChip>
+                    }
+                </div>
+            }
+
+            <MudDivider Class="my-3" />
+
+            <MudText Typo="Typo.body2" Color="Color.Secondary">
+                <strong>Created:</strong> @item.CreatedAt.ToString("dd.MM.yyyy HH:mm")
+            </MudText>
+            <MudText Typo="Typo.body2" Color="Color.Secondary">
+                <strong>Updated:</strong> @item.UpdatedAt.ToString("dd.MM.yyyy HH:mm")
+            </MudText>
+        </MudPaper>
+
+        @if (item.SaveChickenRequests != null && item.SaveChickenRequests.Any())
+        {
+            <MudPaper Class="pa-4 my-4" Elevation="2">
+                <MudText Typo="Typo.h6" Class="mb-2">Save Chicken Requests (@item.SaveChickenRequests.Count)</MudText>
+                <MudList T="string">
+                    @foreach (var request in item.SaveChickenRequests)
+                    {
+                        <MudListItem T="string" Icon="@Icons.Material.Filled.Pets"
+                                    OnClick="@(() => NavigationManager.NavigateTo($"/save-chicken-requests/{request.Id}"))">
+                            <MudText>
+                                @request.NumberOfChickensToBeSaved Chickens, @request.NumberOfRoostersToBeSaved Roosters
+                                @if (request.SaveChickenAction != null)
+                                {
+                                    <span> - @request.SaveChickenAction.Title</span>
+                                }
+                            </MudText>
+                        </MudListItem>
+                    }
+                </MudList>
+            </MudPaper>
+        }
+
+        @if (item.SaveChickenDriveRequests != null && item.SaveChickenDriveRequests.Any())
+        {
+            <MudPaper Class="pa-4 my-4" Elevation="2">
+                <MudText Typo="Typo.h6" Class="mb-2">Drive Requests (@item.SaveChickenDriveRequests.Count)</MudText>
+                <MudList T="string">
+                    @foreach (var request in item.SaveChickenDriveRequests)
+                    {
+                        <MudListItem T="string" Icon="@Icons.Material.Filled.DirectionsCar">
+                            <MudText>
+                                @request.CarMake - Capacity: @request.CapacityForChickens
+                                @if (request.SaveChickenAction != null)
+                                {
+                                    <span> - @request.SaveChickenAction.Title</span>
+                                }
+                            </MudText>
+                        </MudListItem>
+                    }
+                </MudList>
+            </MudPaper>
+        }
+
+        <MudPaper Class="pa-4 my-4" Elevation="2">
+            <MudText Typo="Typo.h6" class="mb-3">Actions</MudText>
+            <MudStack Row="true" Spacing="2">
+                <MudButton Variant="Variant.Filled"
+                          Color="Color.Primary"
+                          StartIcon="@Icons.Material.Filled.Edit"
+                          OnClick="@(() => NavigationManager.NavigateTo($"/admin/persons/{Id}/edit"))">
+                    Edit
+                </MudButton>
+                <GenericDeleteDialog TDto="PersonDto" Model="item" OnDeleted="OnDeleted" />
+                <MudButton Variant="Variant.Outlined"
+                          OnClick="@(() => NavigationManager.NavigateTo("/admin/persons"))">
+                    Back to List
+                </MudButton>
+            </MudStack>
+        </MudPaper>
+    }
+    else if (Id > 0)
+    {
+        <MudPaper Class="pa-4">
+            <MudProgressCircular Indeterminate="true" />
+            <MudText>Loading...</MudText>
+        </MudPaper>
+    }
+    else
+    {
+        <MudPaper Class="pa-4">
+            <MudText Color="Color.Error">Invalid person ID.</MudText>
+        </MudPaper>
+    }
+</MudContainer>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private PersonDto? item;
+    private List<BreadcrumbItem> _breadcrumbs = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id > 0)
+        {
+            var service = DtoServiceFactory.Create<PersonDto, PersonSearch>();
+            item = await service.GetByIdAsync(Id);
+
+            _breadcrumbs = new List<BreadcrumbItem>
+            {
+                new BreadcrumbItem("Admin", href: "/"),
+                new BreadcrumbItem("Persons", href: "/admin/persons"),
+                new BreadcrumbItem($"{item?.Contact?.FirstName} {item?.Contact?.LastName}", href: null, disabled: true)
+            };
+
+            StateHasChanged();
+        }
+    }
+
+    private void OnDeleted()
+    {
+        NavigationManager.NavigateTo("/admin/persons");
+    }
+}

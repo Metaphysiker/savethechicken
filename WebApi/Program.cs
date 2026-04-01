@@ -27,6 +27,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     options.JsonSerializerOptions.WriteIndented = true;
+    options.JsonSerializerOptions.MaxDepth = 32; // Limit depth to prevent stack overflow
 });
 
 builder.Services.AddSwaggerGen(option =>
@@ -120,7 +121,7 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-    
+
     try
     {
         // Ensure the database exists and apply migrations

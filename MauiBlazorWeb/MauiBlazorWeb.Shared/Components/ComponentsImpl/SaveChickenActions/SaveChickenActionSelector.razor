@@ -10,7 +10,8 @@
            ValueChanged="OnValueChanged"
            Dense="true"
            Variant="Variant.Outlined"
-           Clearable="true">
+           Clearable="true"
+           UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "save-chicken-action-selector" })">
     @foreach (var action in GetFilteredActions())
     {
         <MudSelectItem Value="@((int?)action.Id)">

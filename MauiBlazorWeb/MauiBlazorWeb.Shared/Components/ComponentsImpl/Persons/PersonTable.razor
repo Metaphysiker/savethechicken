@@ -1,3 +1,4 @@
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl
 @using MauiBlazorWeb.Shared.Resources.Strings
 @using Microsoft.Extensions.Localization
 @using MudBlazor
@@ -15,6 +16,8 @@
     [Parameter] public EventCallback<(string? SortBy, bool? SortDescending)> OnSortSelected { get; set; }
     void SortByColumn(string columnName, bool? descending) => OnSortSelected.InvokeAsync((columnName, descending));
 
+    [Parameter] public EventCallback OnItemsChanged { get; set; }
+
     private string? currentColumnName = null;
     private bool? currentSortDescending = null;
 
@@ -30,6 +33,11 @@
     {
         if (currentColumnName != columnName) return null;
         return currentSortDescending == true ? Icons.Material.Filled.ArrowDownward : Icons.Material.Filled.ArrowUpward;
+    }
+
+    private void ShowItem(int id)
+    {
+        NavigationManager.NavigateTo($"/admin/persons/{id}");
     }
 
     private void EditItem(PersonDto person)
@@ -137,13 +145,36 @@
             </TemplateColumn>
 
             <TemplateColumn>
-                <HeaderTemplate>
-                    Actions
-                </HeaderTemplate>
+                <HeaderTemplate>@L["show"]</HeaderTemplate>
                 <CellTemplate>
-                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                                   Size="Size.Small"
-                                   OnClick="@(() => EditItem(context.Item))" />
+                    <MudButton Variant="Variant.Filled"
+                               Size="Size.Small"
+                               OnClick="@(() => ShowItem(context.Item.Id))"
+                               UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "view-button" })">
+                        <MudIcon Icon="@Icons.Material.Filled.Visibility" />
+                    </MudButton>
+                </CellTemplate>
+            </TemplateColumn>
+
+            <TemplateColumn>
+                <HeaderTemplate>@L["edit"]</HeaderTemplate>
+                <CellTemplate>
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Size="Size.Small"
+                               OnClick="@(() => EditItem(context.Item))"
+                               UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "edit-button" })">
+                        <MudIcon Icon="@Icons.Material.Filled.Edit" />
+                    </MudButton>
+                </CellTemplate>
+            </TemplateColumn>
+
+            <TemplateColumn>
+                <HeaderTemplate>@L["delete"]</HeaderTemplate>
+                <CellTemplate>
+                    <GenericDeleteDialog TDto="PersonDto"
+                                         Model="context.Item"
+                                         OnDeleted="@(() => OnItemsChanged.InvokeAsync())" />
                 </CellTemplate>
             </TemplateColumn>
         </Columns>

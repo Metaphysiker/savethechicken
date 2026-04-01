@@ -27,7 +27,7 @@
             <PersonSearchForm Model="search" />
         </SearchForm>
         <Table Context="ctx">
-            <PersonTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" />
+            <PersonTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" OnItemsChanged="ctx.Item4.InvokeAsync" />
         </Table>
     </GenericSearch>
 </MudContainer>

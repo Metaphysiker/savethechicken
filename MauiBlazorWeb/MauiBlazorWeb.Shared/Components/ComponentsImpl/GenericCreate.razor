@@ -1,3 +1,7 @@
+@*
+Requires interactive rendering mode for OnValidSubmit to work.
+App uses global @rendermode="InteractiveServer" in App.razor.
+*@
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
 @using MauiBlazorWeb.Shared.Resources.Strings
 @using MauiBlazorWeb.Web.Services.ServicesImpl
@@ -29,6 +33,7 @@
     [Parameter] public TDto model { get; set; } = default!;
     [Parameter] public RenderFragment<TDto> ChildContent { get; set; } = default!;
     [Parameter] public string? ResourceName { get; set; }
+    [Parameter] public EventCallback OnSuccess { get; set; }
 
     private GenericDtoService<TDto, ISearchDto>? _service;
 
@@ -50,6 +55,13 @@
             try
             {
                 var createdDto = await _service.CreateAsync(model);
+
+                // Call OnSuccess callback if provided
+                if (OnSuccess.HasDelegate)
+                {
+                    await OnSuccess.InvokeAsync();
+                    return;
+                }
 
                 // Navigate to detail page if ResourceName is provided and dto has Id property
                 if (!string.IsNullOrEmpty(ResourceName) && createdDto != null)

@@ -1,0 +1,55 @@
+@using global::Shared.Dtos.DtosImpl
+
+@if (Contact != null)
+{
+    <MudPaper Class="pa-4 my-4" Elevation="2">
+        <MudText Typo="Typo.h6" Class="mb-3">
+            @if (!string.IsNullOrWhiteSpace(Title))
+            {
+                <span>@Title</span>
+            }
+            else
+            {
+                <span>Contact Information</span>
+            }
+        </MudText>
+
+        @if (!string.IsNullOrWhiteSpace(Contact.FirstName) || !string.IsNullOrWhiteSpace(Contact.LastName))
+        {
+            <MudText Typo="Typo.h5" Class="mb-2">
+                @if (!string.IsNullOrWhiteSpace(Contact.FirstName))
+                {
+                    <span data-testid="contact-firstname">@Contact.FirstName</span>
+                }
+                @if (!string.IsNullOrWhiteSpace(Contact.LastName))
+                {
+                    <span data-testid="contact-lastname"> @Contact.LastName</span>
+                }
+            </MudText>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(Contact.Email))
+        {
+            <MudText Typo="Typo.body1" Class="mb-1">
+                <MudIcon Icon="@Icons.Material.Filled.Email" Size="Size.Small" Class="mr-2" />
+                <strong>Email:</strong> <span data-testid="contact-email">@Contact.Email</span>
+            </MudText>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(Contact.PhoneNumber))
+        {
+            <MudText Typo="Typo.body1" Class="mb-1">
+                <MudIcon Icon="@Icons.Material.Filled.Phone" Size="Size.Small" Class="mr-2" />
+                <strong>Telefon:</strong> <span data-testid="contact-phone">@Contact.PhoneNumber</span>
+            </MudText>
+        }
+    </MudPaper>
+}
+
+@code {
+    [Parameter]
+    public ContactDto? Contact { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+}

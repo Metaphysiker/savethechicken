@@ -1,0 +1,43 @@
+@using global::Shared.Dtos.DtosImpl
+
+@if (Address != null)
+{
+    <MudPaper Class="pa-4 my-4" Elevation="2">
+        <MudText Typo="Typo.h6" Class="mb-3">
+            @if (!string.IsNullOrWhiteSpace(Title))
+            {
+                <span>@Title</span>
+            }
+            else
+            {
+                <span>Address</span>
+            }
+        </MudText>
+
+        <MudText Typo="Typo.body1">
+            <MudIcon Icon="@Icons.Material.Filled.LocationOn" Size="Size.Small" Class="mr-2" />
+            @if (!string.IsNullOrWhiteSpace(Address.Street))
+            {
+                <span data-testid="address-street">@Address.Street</span><br />
+            }
+            <span style="margin-left: 32px;">
+                @if (!string.IsNullOrWhiteSpace(Address.PostalCode))
+                {
+                    <span data-testid="address-postalcode">@Address.PostalCode </span>
+                }
+                @if (!string.IsNullOrWhiteSpace(Address.City))
+                {
+                    <span data-testid="address-city">@Address.City</span>
+                }
+            </span>
+        </MudText>
+    </MudPaper>
+}
+
+@code {
+    [Parameter]
+    public AddressDto? Address { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+}
