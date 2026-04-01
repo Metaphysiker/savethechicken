@@ -3,9 +3,9 @@ import { getMultiDateSelector } from './multi-date-selector.helper';
 import { selectPerson } from './person-selector.helper';
 
 export interface AdminSaveChickenDriveRequestFormData {
-  // Person selection (required for admin) - need email to identify person in dropdown
-  personId: number;
-  personEmail: string;
+  // Person selection (optional - not needed when person is pre-selected)
+  personId?: number;
+  personEmail?: string;
 
   // Drive request details (SaveChickenDriveRequest's own fields)
   carMake: string;
@@ -22,8 +22,10 @@ export interface AdminSaveChickenDriveRequestFormData {
  * Fill admin save chicken drive request form - only SaveChickenDriveRequest fields, not Contact/Address
  */
 export async function fillAdminSaveChickenDriveRequestForm(page: Page, data: AdminSaveChickenDriveRequestFormData): Promise<void> {
-  // Select person using PersonSelector component
-  await selectPerson(page, data.personEmail);
+  // Select person using PersonSelector component (only if personEmail is provided)
+  if (data.personEmail) {
+    await selectPerson(page, data.personEmail);
+  }
 
   // Fill SaveChickenDriveRequest's own fields only
   await page.getByTestId('car-make').fill(data.carMake);

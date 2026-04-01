@@ -86,7 +86,7 @@
         {
             <MudPaper Class="pa-4 my-4" Elevation="2">
                 <MudText Typo="Typo.h6" Class="mb-3">Save Chicken Requests (@item.SaveChickenRequests.Count)</MudText>
-                <SaveChickenRequestTable items="@item.SaveChickenRequests" OnItemsChanged="HandleRequestsChanged" />
+                <SaveChickenRequestTable items="@item.SaveChickenRequests" OnItemsChanged="HandleRequestsChanged" ShowContactAndAddress="false" />
             </MudPaper>
         }
 
@@ -94,7 +94,7 @@
         {
             <MudPaper Class="pa-4 my-4" Elevation="2">
                 <MudText Typo="Typo.h6" Class="mb-3">Drive Requests (@item.SaveChickenDriveRequests.Count)</MudText>
-                <SaveChickenDriveRequestTable items="@item.SaveChickenDriveRequests" OnItemsChanged="HandleRequestsChanged" />
+                <SaveChickenDriveRequestTable items="@item.SaveChickenDriveRequests" OnItemsChanged="HandleRequestsChanged" ShowContactAndAddress="false" />
             </MudPaper>
         }
 

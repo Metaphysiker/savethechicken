@@ -499,4 +499,156 @@ test.describe('Admin Save Chicken Drive Request Management', () => {
       expect(validationCount).toBeGreaterThan(0);
     });
   });
+
+  test('should manage save chicken drive request from person detail page', async ({ page }) => {
+    test.setTimeout(120000); // Increased timeout for multiple operations
+
+    const timestamp = Date.now();
+    const testFirstName = `PersonDrive${timestamp}`;
+    const testLastName = `PersonDriveLast${timestamp}`;
+    const testEmail = `persondrive${timestamp}@example.com`;
+
+    let personId: number;
+    let availableDates: number[];
+    let actionId: number;
+
+    await test.step('Admin creates a SaveChickenAction first', async () => {
+      const today = new Date();
+      const dayOfMonth = today.getDate();
+
+      // Create dates relative to today
+      const datesToCreate = [dayOfMonth];
+      if (dayOfMonth + 1 <= 28) datesToCreate.push(dayOfMonth + 1);
+      if (dayOfMonth + 2 <= 28) datesToCreate.push(dayOfMonth + 2);
+
+      const action = await createSaveChickenAction(page, {
+        title: `Test Action ${timestamp}`,
+        description: 'Test action for person detail page',
+        dates: datesToCreate,
+        isActive: true,
+      });
+
+      availableDates = action.dates;
+      actionId = action.actionId;
+      expect(action.actionId).toBeGreaterThan(0);
+    });
+
+    await test.step('Admin creates a person', async () => {
+      personId = await createPerson(page, {
+        firstName: testFirstName,
+        lastName: testLastName,
+        email: testEmail,
+        phone: '+41792222222',
+        city: 'Zurich',
+        postalCode: '8000',
+        street: 'Drive Street 789',
+      });
+
+      expect(personId).toBeGreaterThan(0);
+    });
+
+    await test.step('Navigate to person detail page and add save chicken drive request', async () => {
+      // Go to person detail page
+      await page.goto(`/admin/persons/${personId}`, { waitUntil: 'networkidle' });
+      
+      // Verify we're on the correct person page using specific test IDs
+      await expect(page.getByTestId('contact-firstname')).toHaveText(testFirstName);
+      await expect(page.getByTestId('contact-email')).toHaveText(testEmail);
+
+      // Click "Add Drive Request" button
+      await page.getByRole('button', { name: /Add Drive Request/i }).click();
+
+      // Wait for dialog to open
+      await page.waitForSelector('[data-testid="drive-request-general-info"]', { state: 'visible', timeout: 10000 });
+
+      // Verify person is pre-selected and disabled
+      await expect(page.getByText('Person is pre-selected and cannot be changed')).toBeVisible();
+      
+      // Use helper to fill the form (person is pre-selected, so don't pass personId/personEmail)
+      await fillAdminSaveChickenDriveRequestForm(page, {
+        carMake: 'Honda Civic',
+        capacityForChickens: '30',
+        availableDates: [availableDates[0]],
+        message: 'Ready to transport chickens!',
+      });
+
+      // Submit
+      await page.getByTestId('submit-button').click();
+
+      // Wait for dialog to close
+      await page.waitForTimeout(2000);
+    });
+
+    await test.step('Verify request appears on person detail page', async () => {
+      // Should still be on person detail page
+      await expect(page).toHaveURL(`/admin/persons/${personId}`);
+      
+      // Verify the request appears in the table
+      await expect(page.getByText('Drive Requests (1)')).toBeVisible();
+      await expect(page.getByText('Honda Civic')).toBeVisible();
+      
+      // Verify it shows the correct data in the table
+      const tableRow = page.locator('tr').filter({ hasText: 'Honda Civic' });
+      await expect(tableRow).toBeVisible();
+    });
+
+    await test.step('Edit the request from person detail page', async () => {
+      // Click edit button in the table
+      const editButton = page.getByTestId('edit-button').first();
+      await editButton.waitFor({ state: 'visible', timeout: 5000 });
+      await editButton.click();
+
+      // Wait for dialog to open
+      await page.waitForSelector('[data-testid="drive-request-general-info"]', { state: 'visible', timeout: 10000 });
+
+      // Update the request
+      await page.getByTestId('car-make').fill('Toyota Prius');
+      await page.getByTestId('capacity-for-chickens').fill('35');
+      await page.getByTestId('drive-request-message').fill('Updated: Even more capacity!');
+
+      // Submit update
+      await page.getByRole('button', { name: /aktualisieren|update/i }).click();
+
+      // Wait for dialog to close
+      await page.waitForTimeout(2000);
+    });
+
+    await test.step('Verify updated request appears on person detail page', async () => {
+      // Should still be on person detail page
+      await expect(page).toHaveURL(`/admin/persons/${personId}`);
+      
+      // Verify the updated data appears
+      await expect(page.getByText('Toyota Prius')).toBeVisible();
+      
+      // Verify old data is gone
+      await expect(page.getByText('Honda Civic')).not.toBeVisible();
+      
+      // Still shows 1 request
+      await expect(page.getByText('Drive Requests (1)')).toBeVisible();
+    });
+
+    await test.step('Delete the request from person detail page', async () => {
+      // Click delete button in the table
+      const deleteButton = page.getByTestId('delete-button').first();
+      await deleteButton.waitFor({ state: 'visible', timeout: 5000 });
+      await deleteButton.click();
+
+      // Confirm deletion
+      await page.getByRole('button', { name: /ja|yes|delete|löschen/i }).click();
+
+      // Wait for deletion to complete
+      await page.waitForTimeout(2000);
+    });
+
+    await test.step('Verify request no longer appears on person detail page', async () => {
+      // Should still be on person detail page
+      await expect(page).toHaveURL(`/admin/persons/${personId}`);
+      
+      // Request section should not be visible anymore (no requests)
+      await expect(page.getByText('Drive Requests')).not.toBeVisible();
+      
+      // The data should not be visible
+      await expect(page.getByText('Toyota Prius')).not.toBeVisible();
+    });
+  });
 });

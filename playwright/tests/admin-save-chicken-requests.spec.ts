@@ -516,32 +516,19 @@ test.describe('Admin Save Chicken Request Management', () => {
       // Verify person is pre-selected and disabled
       await expect(page.getByText('Person is pre-selected and cannot be changed')).toBeVisible();
       
-      // Select the SaveChickenAction
-      await page.getByTestId('save-chicken-action-selector').click();
-      await page.waitForTimeout(500); // Wait for dropdown to open
-      await page.getByRole('option', { name: new RegExp(`#${actionId}`) }).click();
-      await page.waitForTimeout(1000); // Wait for any async operations after selection
-      
-      // Verify dialog is still open after action selection
-      await expect(page.locator('[data-testid="save-chicken-request-general-info"]')).toBeVisible();
-      
-      // Fill out the request form
-      const dayOfMonth = availableDates[0];
-      await page.getByTestId('chickens-count').fill('10');
-      await page.getByTestId('roosters-count').fill('2');
-      await page.getByTestId('description').fill('Nice farm with lots of space');
-      await page.getByTestId('message').fill('Happy to help!');
-      
-      // Select date
-      await page.waitForSelector(`button[data-day="${dayOfMonth}"]`, { state: 'visible', timeout: 5000 });
-      await page.locator(`button[data-day="${dayOfMonth}"]`).first().click();
-      
-      // Accept terms
-      await page.getByTestId('confirm-criteria').check();
-      await page.getByTestId('accept-terms').check();
+      // Use helper to fill the form (person is pre-selected, so don't pass personId/personEmail)
+      await fillAdminSaveChickenRequestForm(page, {
+        numberOfChickens: '10',
+        numberOfRoosters: '2',
+        description: 'Nice farm with lots of space',
+        message: 'Happy to help!',
+        datesForHandOver: [availableDates[0]],
+        confirmCriteria: true,
+        acceptTerms: true,
+      });
 
       // Submit
-      await page.getByRole('button', { name: /create/i }).click();
+      await page.getByTestId('submit-button').click();
 
       // Wait for dialog to close
       await page.waitForTimeout(2000);
