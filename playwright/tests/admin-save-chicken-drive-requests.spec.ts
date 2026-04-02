@@ -575,7 +575,9 @@ test.describe('Admin Save Chicken Drive Request Management', () => {
 
     // Delete the request
     const deleteButton = page.getByTestId('delete-button').first();
+    await deleteButton.waitFor({ state: 'visible', timeout: 5000 });
     await deleteButton.click();
+    await page.waitForTimeout(500); // Give dialog time to open
 
     // Wait for the delete confirmation dialog to appear
     await page.waitForSelector('.mud-dialog-container', { state: 'visible', timeout: 5000 });

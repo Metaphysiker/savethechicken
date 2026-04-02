@@ -303,7 +303,7 @@
     <value>Personen-Auswahl</value>
   </data>
   <data name="PersonSelection_AdminInfo" xml:space="preserve">
-    <value>Admin: Wählen Sie eine existierende Person für diese Transportanfrage aus. PersonId ist für Admin-Einreichungen erforderlich.</value>
+    <value>Wählen Sie eine existierende Person für diese Transportanfrage aus. PersonId ist für Admin-Einreichungen erforderlich.</value>
   </data>
   <data name="SelectPerson" xml:space="preserve">
     <value>Person auswählen*</value>

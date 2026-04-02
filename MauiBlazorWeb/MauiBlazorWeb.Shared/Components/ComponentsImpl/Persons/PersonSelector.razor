@@ -3,27 +3,29 @@
 @using global::Shared.Dtos.DtosImpl
 @inject GenericDtoServiceFactory DtoServiceFactory
 
-<MudSelect T="int?"
-           Label="@Label"
-           Value="@SelectedPersonId"
-           ValueChanged="@OnValueChanged"
-           Variant="Variant.Outlined"
-           Disabled="@IsReadOnly"
-           Clearable="true"
-           UserAttributes="@(new Dictionary<string, object> { { "data-testid", "person-selector" } })">
-    @if (persons != null)
-    {
-        @foreach (var person in persons)
+<MudAutocomplete T="PersonDto"
+                 Label="@Label"
+                 SearchFunc="@SearchPersons"
+                 Value="@_selectedPerson"
+                 ValueChanged="@OnPersonChanged"
+                 ToStringFunc="@(p => p == null ? "" : GetDisplayText(p))"
+                 Variant="Variant.Outlined"
+                 Disabled="@IsReadOnly"
+                 Clearable="true"
+                 MinCharacters="2"
+                 ResetValueOnEmptyText="true"
+                 CoerceText="false"
+                 CoerceValue="false"
+                 DebounceInterval="300"
+                 UserAttributes="@(new Dictionary<string, object> { { "data-testid", "person-selector" } })">
+    <ItemTemplate Context="person">
+        <MudText>@GetDisplayText(person)</MudText>
+        @if (!string.IsNullOrWhiteSpace(person.Contact?.Email))
         {
-            var displayText = $"{person.Contact?.FirstName} {person.Contact?.LastName}";
-            if (!string.IsNullOrWhiteSpace(person.Contact?.Email))
-            {
-                displayText += $" ({person.Contact.Email})";
-            }
-            <MudSelectItem T="int?" Value="@person.Id">@displayText</MudSelectItem>
+            <MudText Typo="Typo.caption" Class="mud-text-secondary">@person.Contact.Email</MudText>
         }
-    }
-</MudSelect>
+    </ItemTemplate>
+</MudAutocomplete>
 
 @code {
     [Parameter]
@@ -38,21 +40,71 @@
     [Parameter]
     public bool IsReadOnly { get; set; } = false;
 
-    private List<PersonDto>? persons;
+    private PersonDto? _selectedPerson;
     private GenericDtoService<PersonDto, PersonSearch>? _service;
 
     protected override async Task OnInitializedAsync()
     {
         _service = DtoServiceFactory.Create<PersonDto, PersonSearch>();
-
-        // Load all persons - you might want to add pagination or search functionality
-        var searchResult = await _service.GetAllAsync();
-        persons = searchResult?.ToList();
+        
+        // Load the selected person if an ID is provided
+        if (SelectedPersonId.HasValue && SelectedPersonId.Value > 0)
+        {
+            _selectedPerson = await _service.GetByIdAsync(SelectedPersonId.Value);
+        }
     }
 
-    private async Task OnValueChanged(int? value)
+    protected override async Task OnParametersSetAsync()
     {
-        SelectedPersonId = value;
-        await SelectedPersonIdChanged.InvokeAsync(value);
+        // If SelectedPersonId changed externally, update the selected person
+        if (SelectedPersonId.HasValue && SelectedPersonId.Value > 0 && 
+            (_selectedPerson == null || _selectedPerson.Id != SelectedPersonId.Value))
+        {
+            _selectedPerson = await _service.GetByIdAsync(SelectedPersonId.Value);
+        }
+        else if (!SelectedPersonId.HasValue)
+        {
+            _selectedPerson = null;
+        }
+    }
+
+    private async Task<IEnumerable<PersonDto>> SearchPersons(string searchText, CancellationToken cancellationToken)
+    {
+        if (_service == null)
+            return Enumerable.Empty<PersonDto>();
+
+        // If search text is empty or too short, return empty list
+        if (string.IsNullOrWhiteSpace(searchText) || searchText.Length < 2)
+            return Enumerable.Empty<PersonDto>();
+
+        var search = new PersonSearch
+        {
+            SearchTerm = searchText,
+            PageSize = 10,
+            Page = 1
+        };
+
+        var result = await _service.SearchAsync(search);
+        return result?.Data ?? Enumerable.Empty<PersonDto>();
+    }
+
+    private async Task OnPersonChanged(PersonDto? person)
+    {
+        _selectedPerson = person;
+        SelectedPersonId = person?.Id;
+        await SelectedPersonIdChanged.InvokeAsync(person?.Id);
+    }
+
+    private string GetDisplayText(PersonDto person)
+    {
+        if (person == null)
+            return string.Empty;
+
+        var displayText = $"{person.Contact?.FirstName} {person.Contact?.LastName}";
+        if (!string.IsNullOrWhiteSpace(person.Contact?.Email))
+        {
+            displayText += $" ({person.Contact.Email})";
+        }
+        return displayText.Trim();
     }
 }

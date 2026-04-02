@@ -3,21 +3,25 @@ import { Page } from '@playwright/test';
 /**
  * Select a person from PersonSelector component by email
  * @param page - Playwright page object
- * @param personEmail - Email of the person to select (used to identify in dropdown)
+ * @param personEmail - Email of the person to select (used to search)
  */
 export async function selectPerson(page: Page, personEmail: string): Promise<void> {
-  // Click the PersonSelector to open dropdown
-  await page.getByTestId('person-selector').click();
-  await page.waitForTimeout(1000); // Wait for dropdown to open and render options
+  // Click the PersonSelector autocomplete input to focus it
+  const autocomplete = page.getByTestId('person-selector');
+  await autocomplete.click();
+  await page.waitForTimeout(300); // Wait for input to focus
 
-  // Get the popover content and find the list item by email text
-  // Person options are displayed as "FirstName LastName (email@example.com)"
+  // Type the email to trigger search (MudAutocomplete requires min 2 characters)
+  await autocomplete.fill(personEmail);
+  await page.waitForTimeout(500); // Wait for debounce (300ms) + search results
+
+  // Wait for the autocomplete dropdown to appear
   const popover = page.locator('.mud-popover-open .mud-list');
   await popover.waitFor({ state: 'visible', timeout: 5000 });
 
-  // Find the list item that contains the person's email
+  // Find and click the list item that contains the person's email
   const option = popover.locator('.mud-list-item').filter({ hasText: personEmail });
   await option.waitFor({ state: 'visible', timeout: 5000 });
   await option.click();
-  await page.waitForTimeout(1000); // Wait for dropdown to close and value to be set
+  await page.waitForTimeout(500); // Wait for dropdown to close and value to be set
 }
