@@ -54,15 +54,16 @@
 
         <MudPaper Class="pa-4 my-4" Elevation="2">
             <MudText Typo="Typo.h6" Class="mb-3">@L["Actions"]</MudText>
-            <MudStack Direction="Row" Spacing="2">
+            <MudStack Row="true" Spacing="2">
                 <GenericUpdateDialogLauncher TDto="SaveChickenRequestDto"
                                              model="item"
-                                             OnEdited="RefreshItem">
+                                             OnEdited="RefreshItem"
+                                             ButtonText="@L["edit"]">
                     <ChildContent Context="editModel">
                         <SaveChickenRequestFormWithFiles EntityWithFiles="@(new ItemWithBrowserFiles<SaveChickenRequestDto> { Item = editModel })" />
                     </ChildContent>
                 </GenericUpdateDialogLauncher>
-                <GenericDeleteDialog TDto="SaveChickenRequestDto" Model="item" />
+                <GenericDeleteDialog TDto="SaveChickenRequestDto" Model="item" ButtonText="@L["delete"]" />
             </MudStack>
         </MudPaper>
     }
