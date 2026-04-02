@@ -1,4 +1,5 @@
 ﻿@using MauiBlazorWeb.Shared.Classes
+@using Microsoft.JSInterop
 @inject IJSRuntime JS
 
 <div @ref="mapDiv" style="height: 500px;"></div>
@@ -12,16 +13,27 @@
 
     private ElementReference mapDiv;
     private bool _mapInitialized;
+    private bool _isClientRendered;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await JS.InvokeVoidAsync("initMap", mapDiv, Markers);
-            _mapInitialized = true;
+            _isClientRendered = true;
+            
+            try
+            {
+                await JS.InvokeVoidAsync("initMap", mapDiv, Markers);
+                _mapInitialized = true;
+            }
+            catch (JSDisconnectedException)
+            {
+                // Component disconnected during initialization
+                return;
+            }
         }
 
-        if (!_mapInitialized)
+        if (!_mapInitialized || !_isClientRendered)
             return;
 
         await UpdateMapAsync();
@@ -29,20 +41,36 @@
 
     private async Task UpdateMapAsync()
     {
-        // Always update markers (cheap and safe)
-        await JS.InvokeVoidAsync("updateMarkers", mapDiv, Markers);
+        if (!_isClientRendered)
+            return;
 
-        // Always clear and redraw arrows (prevents JS state leaks)
-        await JS.InvokeVoidAsync("clearArrows", mapDiv);
-
-        foreach (var arrow in Arrows)
+        try
         {
-            await JS.InvokeVoidAsync(
-                "drawArrow",
-                mapDiv,
-                new { latitude = arrow.LatitudeFrom, longitude = arrow.LongitudeFrom },
-                new { latitude = arrow.LatitudeTo, longitude = arrow.LongitudeTo }
-            );
+            // Always update markers (cheap and safe)
+            await JS.InvokeVoidAsync("updateMarkers", mapDiv, Markers);
+
+            // Always clear and redraw arrows (prevents JS state leaks)
+            await JS.InvokeVoidAsync("clearArrows", mapDiv);
+
+            // Draw arrows with actual car routing (async)
+            foreach (var arrow in Arrows)
+            {
+                await JS.InvokeVoidAsync(
+                    "drawArrow",
+                    mapDiv,
+                    new { latitude = arrow.LatitudeFrom, longitude = arrow.LongitudeFrom },
+                    new { latitude = arrow.LatitudeTo, longitude = arrow.LongitudeTo }
+                );
+            }
+        }
+        catch (JSDisconnectedException)
+        {
+            // Component disconnected, ignore
+        }
+        catch (JSException ex)
+        {
+            // Log JS errors but don't crash
+            Console.WriteLine($"JS Error in map: {ex.Message}");
         }
     }
 }

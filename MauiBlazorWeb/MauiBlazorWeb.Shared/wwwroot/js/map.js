@@ -61,9 +61,72 @@ function clearArrows(element) {
 }
 
 /**
- * Draws a route arrow between two points
+ * Gets route information (distance, duration) between two points
+ * Returns: { distance: meters, duration: seconds, success: boolean }
  */
-function drawArrow(element, from, to, options = {}) {
+async function getRouteInfo(from, to) {
+    try {
+        const url = `https://router.project-osrm.org/route/v1/driving/${from.longitude},${from.latitude};${to.longitude},${to.latitude}?overview=false`;
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.code === 'Ok' && data.routes && data.routes.length > 0) {
+            return {
+                distance: data.routes[0].distance,
+                duration: data.routes[0].duration,
+                success: true
+            };
+        } else {
+            return { distance: 0, duration: 0, success: false };
+        }
+    } catch (error) {
+        console.error('Error fetching route info:', error);
+        return { distance: 0, duration: 0, success: false };
+    }
+}
+
+/**
+ * Draws a route arrow between two points using OSRM routing
+ */
+async function drawArrow(element, from, to, options = {}) {
+    const arrowLayer = arrowLayers.get(element);
+    if (!arrowLayer) return;
+
+    try {
+        // Use OSRM public demo server (free, no API key needed)
+        // For production, consider self-hosting OSRM
+        const url = `https://router.project-osrm.org/route/v1/driving/${from.longitude},${from.latitude};${to.longitude},${to.latitude}?overview=full&geometries=geojson`;
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.code === 'Ok' && data.routes && data.routes.length > 0) {
+            // Use actual route geometry from OSRM
+            const coordinates = data.routes[0].geometry.coordinates.map(coord => [coord[1], coord[0]]);
+
+            return L.polyline(coordinates, {
+                color: options.color || 'blue',
+                weight: options.weight || 4,
+                opacity: 0.7,
+                ...options
+            }).addTo(arrowLayer);
+        } else {
+            // Fallback to straight line if routing fails
+            console.warn('OSRM routing failed, using straight line');
+            return drawStraightArrow(element, from, to, options);
+        }
+    } catch (error) {
+        // Fallback to straight line on error
+        console.error('Error fetching route:', error);
+        return drawStraightArrow(element, from, to, options);
+    }
+}
+
+/**
+ * Draws a straight line arrow (fallback)
+ */
+function drawStraightArrow(element, from, to, options = {}) {
     const arrowLayer = arrowLayers.get(element);
     if (!arrowLayer) return;
 

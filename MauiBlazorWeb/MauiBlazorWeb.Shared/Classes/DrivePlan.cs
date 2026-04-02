@@ -20,6 +20,8 @@ namespace MauiBlazorWeb.Shared.Classes
 
         public List<MapArrow> RouteArrows { get; set; } = new List<MapArrow>();
 
+        public double TotalDistanceInKm => RouteArrows.Sum(a => a.DistanceInMeters) / 1000.0;
+
         public DrivePlan() {
             Farm = new FarmDto();
             Driver = new SaveChickenDriveRequestDto();

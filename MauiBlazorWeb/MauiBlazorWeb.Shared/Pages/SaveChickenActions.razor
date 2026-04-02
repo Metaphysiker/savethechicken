@@ -126,7 +126,18 @@
 
         @if (selectedAction != null)
         {
-            <MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions.SaveChickenActionRoutePlanner saveChickenActionDto="selectedAction" />
+            <MudPaper Class="pa-4 mb-4" Elevation="2">
+                <MudSwitch @bind-Value="useRoutePlanner2" Color="Color.Primary" Label="Routen-Planer Version 2 (mit Fahrer-Auswahl)" />
+            </MudPaper>
+
+            @if (useRoutePlanner2)
+            {
+                <MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions.SaveChickenActionRoutePlanner2 saveChickenActionDto="selectedAction" />
+            }
+            else
+            {
+                <MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions.SaveChickenActionRoutePlanner saveChickenActionDto="selectedAction" />
+            }
         }
     }
 </MudContainer>
@@ -138,6 +149,7 @@
     private SaveChickenRequestSearch saveChickenRequestSearch = new SaveChickenRequestSearch();
     private SaveChickenDriveRequestSearch saveChickenDriveRequestSearch = new SaveChickenDriveRequestSearch();
     private FarmSearch farmSearch = new FarmSearch();
+    private bool useRoutePlanner2 = false;
     private List<SaveChickenRequestDto> foundSaveChickenRequests = new();
     private List<FarmDto> foundFarms = new();
     private List<SaveChickenDriveRequestDto> saveChickenDriveRequests = new();

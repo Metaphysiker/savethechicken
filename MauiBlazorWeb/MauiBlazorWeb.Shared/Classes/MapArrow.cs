@@ -12,5 +12,6 @@ namespace MauiBlazorWeb.Shared.Classes
         public double LongitudeFrom { get; set; }
         public double LatitudeTo { get; set; }
         public double LongitudeTo { get; set; }
+        public double DistanceInMeters { get; set; }
     }
 }
