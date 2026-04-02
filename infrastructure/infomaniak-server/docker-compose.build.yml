@@ -8,6 +8,11 @@ services:
       - "${PORT_WEBAPI}:8080"
     env_file:
       - .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    volumes:
+      - ./appsettings.Production.json:/app/appsettings.Production.json:ro
+      - webapi-temp:/tmp
     depends_on:
       - postgres
   dotnet:
@@ -45,3 +50,4 @@ services:
 
 volumes:
   postgres-data:
+  webapi-temp:

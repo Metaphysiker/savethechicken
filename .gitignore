@@ -36,6 +36,9 @@ rettet-das-huhn-downloads/
 .env
 .env.
 
+# Production configuration files (contain sensitive credentials)
+**/appsettings.Production.json
+
 # Ignore Copilot Chat sessions and .vs
 WebApi/.vs/
 WebApi/.vs/WebApi/
