@@ -380,4 +380,64 @@
   <data name="ViewPerson" xml:space="preserve">
     <value>Person anzeigen</value>
   </data>
+  <data name="Admin_Persons_Title" xml:space="preserve">
+    <value>Admin - Personenverwaltung</value>
+  </data>
+  <data name="Admin_Persons_Management" xml:space="preserve">
+    <value>Admin - Personenverwaltung</value>
+  </data>
+  <data name="Admin_Persons_AlertTitle" xml:space="preserve">
+    <value>Admin-Modus:</value>
+  </data>
+  <data name="Admin_Persons_AlertText" xml:space="preserve">
+    <value>Verwalten Sie alle Personen im System. Erstellen, bearbeiten und sperren Sie Personen.</value>
+  </data>
+  <data name="Admin_Persons_CreateButton" xml:space="preserve">
+    <value>Neue Person erstellen</value>
+  </data>
+  <data name="Admin_NewPerson_Title" xml:space="preserve">
+    <value>Admin - Neue Person erstellen</value>
+  </data>
+  <data name="Admin_NewPerson_Heading" xml:space="preserve">
+    <value>Neue Person erstellen</value>
+  </data>
+  <data name="Admin_NewPerson_AlertText" xml:space="preserve">
+    <value>Erstellen Sie eine neue Person im System.</value>
+  </data>
+  <data name="Admin_EditPerson_Title" xml:space="preserve">
+    <value>Admin - Person bearbeiten</value>
+  </data>
+  <data name="Admin_EditPerson_Heading" xml:space="preserve">
+    <value>Person bearbeiten</value>
+  </data>
+  <data name="Admin_EditPerson_AlertText" xml:space="preserve">
+    <value>Bearbeiten Sie Personeninformationen und verwalten Sie den Sperrstatus.</value>
+  </data>
+  <data name="RequestInformation" xml:space="preserve">
+    <value>Anfrage-Informationen</value>
+  </data>
+  <data name="DescriptionOfPlaceForChickens_Label" xml:space="preserve">
+    <value>Bitte beschreiben Sie kurz Ihr Hühnerzuhause (Stall, Auslauf m2), Anzahl bestehende Hühner, Erfahrung etc.</value>
+  </data>
+  <data name="NumberOfBoxes" xml:space="preserve">
+    <value>Anzahl Boxen</value>
+  </data>
+  <data name="Color" xml:space="preserve">
+    <value>Farbe</value>
+  </data>
+  <data name="IsHandoverAtDifferentAddress" xml:space="preserve">
+   <value>Übergabe an anderer Adresse</value>
+  </data>
+  <data name="AvailableDatesForHandover" xml:space="preserve">
+    <value>Verfügbare Termine für die Übergabe:</value>
+  </data>
+  <data name="AdditionalMessage" xml:space="preserve">
+    <value>Zusätzliche Nachricht:</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Telefon:</value>
+  </data>
+  <data name="AvailableDrivingDates" xml:space="preserve">
+    <value>Verfügbare Fahrtage:</value>
+  </data>
 </root>

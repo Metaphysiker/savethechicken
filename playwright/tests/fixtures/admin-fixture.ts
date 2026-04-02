@@ -17,7 +17,8 @@ export const test = base.extend<{ adminUser: AdminUser }>({
     await page.fill('input[type="email"]', admin.email);
     await page.fill('input[type="password"]', admin.password);
     await page.click('button[type="submit"]');
-    await page.waitForURL('/');
+    // Admin users are redirected to /admin/persons after login
+    await page.waitForURL('/admin/persons');
 
     await use(admin);
 

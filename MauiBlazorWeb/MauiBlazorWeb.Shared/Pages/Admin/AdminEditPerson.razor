@@ -4,16 +4,19 @@
 @using global::Shared.Dtos.DtosImpl
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
 @inject GenericDtoServiceFactory DtoServiceFactory
 @inject NavigationManager NavigationManager
+@inject IStringLocalizer<AppResources> L
 
-<PageTitle>Admin - Edit Person</PageTitle>
+<PageTitle>@L["Admin_EditPerson_Title"]</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.Large">
-    <MudText Typo="Typo.h3" Class="mb-4">Edit Person</MudText>
+    <MudText Typo="Typo.h3" Class="mb-4">@L["Admin_EditPerson_Heading"]</MudText>
 
     <MudAlert Severity="Severity.Info" Dense="true" Class="my-4">
-        <strong>Admin Mode:</strong> Edit person information and manage blacklist status.
+        <strong>@L["Admin_Persons_AlertTitle"]</strong> @L["Admin_EditPerson_AlertText"]
     </MudAlert>
 
     @if (model != null)
@@ -27,7 +30,7 @@
     else
     {
         <MudProgressCircular Indeterminate="true" />
-        <MudText>Loading...</MudText>
+        <MudText>@L["Loading"]</MudText>
     }
 </MudContainer>
 

@@ -47,24 +47,7 @@ test.describe('Admin Person Management', () => {
 
       await page.getByRole('button', { name: /create|erstellen/i }).click();
 
-      // Wait for redirect to persons list
-      await page.waitForURL(/\/admin\/persons$/, { timeout: 10000 });
-    });
-
-    await test.step('Admin finds and views the person', async () => {
-      await page.goto('/admin/persons', { waitUntil: 'networkidle' });
-
-      // Search for the person
-      await page.getByLabel(/suche|search/i).fill(testEmail);
-      await page.getByRole('button', { name: /suchen|search/i }).click();
-      await page.waitForTimeout(1000);
-
-      // Click view button
-      const showButton = page.getByTestId('view-button').first();
-      await showButton.waitFor({ state: 'visible', timeout: 5000 });
-      await showButton.click();
-
-      // Verify on detail page
+      // Wait for redirect to person detail page (changed behavior - now redirects to detail instead of list)
       await page.waitForURL(/\/admin\/persons\/\d+/, { timeout: 10000 });
 
       // Extract person ID from URL
@@ -74,7 +57,7 @@ test.describe('Admin Person Management', () => {
       personId = parseInt(match![1], 10);
       expect(personId).toBeGreaterThan(0);
 
-      // Verify person information using data-testid
+      // Verify person information is displayed on the detail page
       await expect(page.getByTestId('contact-firstname')).toHaveText(testFirstName);
       await expect(page.getByTestId('contact-lastname')).toHaveText(testLastName);
       await expect(page.getByTestId('contact-email')).toHaveText(testEmail);
@@ -85,6 +68,20 @@ test.describe('Admin Person Management', () => {
 
       // Verify not blacklisted
       await expect(page.getByTestId('blacklist-status')).toBeVisible();
+    });
+
+    await test.step('Admin verifies person appears in list', async () => {
+      // Navigate back to list to verify the person appears there
+      await page.goto('/admin/persons', { waitUntil: 'networkidle' });
+
+      // Search for the person
+      await page.getByLabel(/suche|search/i).fill(testEmail);
+      await page.getByRole('button', { name: /suchen|search/i }).click();
+      await page.waitForTimeout(1000);
+
+      // Verify the view button is visible for this person (confirms it's in the list)
+      const showButton = page.getByTestId('view-button').first();
+      await showButton.waitFor({ state: 'visible', timeout: 5000 });
     });
   });
 
@@ -121,22 +118,11 @@ test.describe('Admin Person Management', () => {
       });
 
       await page.getByRole('button', { name: /create|erstellen/i }).click();
-      await page.waitForURL(/\/admin\/persons$/, { timeout: 10000 });
-    });
 
-    await test.step('Verify created person', async () => {
-      await page.goto('/admin/persons', { waitUntil: 'networkidle' });
-
-      await page.getByLabel(/suche|search/i).fill(originalFirstName);
-      await page.getByRole('button', { name: /suchen|search/i }).click();
-      await page.waitForTimeout(1000);
-
-      const showButton = page.getByTestId('view-button').first();
-      await showButton.waitFor({ state: 'visible', timeout: 5000 });
-      await showButton.click();
+      // After creation, now redirects to detail page
       await page.waitForURL(/\/admin\/persons\/\d+/, { timeout: 10000 });
 
-      // Verify original data
+      // Verify original data on detail page
       await expect(page.getByTestId('contact-firstname')).toHaveText(originalFirstName);
       await expect(page.getByTestId('contact-lastname')).toHaveText(originalLastName);
       await expect(page.getByTestId('contact-email')).toHaveText(originalEmail);
@@ -254,7 +240,9 @@ test.describe('Admin Person Management', () => {
       });
 
       await page.getByRole('button', { name: /create|erstellen/i }).click();
-      await page.waitForURL(/\/admin\/persons$/, { timeout: 10000 });
+
+      // After creation, now redirects to detail page
+      await page.waitForURL(/\/admin\/persons\/\d+/, { timeout: 10000 });
     });
 
     await test.step('Navigate to list and find the created person', async () => {
@@ -326,7 +314,9 @@ test.describe('Admin Person Management', () => {
       });
 
       await page.getByRole('button', { name: /create|erstellen/i }).click();
-      await page.waitForURL(/\/admin\/persons$/, { timeout: 10000 });
+
+      // After creation, now redirects to detail page
+      await page.waitForURL(/\/admin\/persons\/\d+/, { timeout: 10000 });
     });
 
     await test.step('Verify person is not blacklisted', async () => {

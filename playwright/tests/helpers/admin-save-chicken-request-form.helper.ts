@@ -1,11 +1,15 @@
 import { Page } from '@playwright/test';
 import { getMultiDateSelector } from './multi-date-selector.helper';
 import { selectPerson } from './person-selector.helper';
+import { selectSaveChickenAction } from './save-chicken-action-selector.helper';
 
 export interface AdminSaveChickenRequestFormData {
   // Person selection (optional - not needed when person is pre-selected)
   personId?: number;
   personEmail?: string;
+
+  // SaveChickenAction selection (required for date filtering)
+  saveChickenActionId?: number;
 
   // Chicken details (SaveChickenRequest's own fields)
   numberOfChickens: string;
@@ -31,6 +35,11 @@ export async function fillAdminSaveChickenRequestForm(page: Page, data: AdminSav
   // Select person using PersonSelector component (only if personEmail is provided)
   if (data.personEmail) {
     await selectPerson(page, data.personEmail);
+  }
+
+  // Select SaveChickenAction if provided (required for dates to be available)
+  if (data.saveChickenActionId) {
+    await selectSaveChickenAction(page, data.saveChickenActionId);
   }
 
   // Fill SaveChickenRequest's own fields only

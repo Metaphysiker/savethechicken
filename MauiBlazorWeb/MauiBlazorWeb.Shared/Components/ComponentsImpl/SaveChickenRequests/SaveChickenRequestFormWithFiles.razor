@@ -49,21 +49,21 @@
 }
 
 <MudPaper Class="pa-4 my-4">
-    <MudText Typo="Typo.h6">Person Selection</MudText>
+    <MudText Typo="Typo.h6">@L["PersonSelection"]</MudText>
     <MudAlert Severity="Severity.Info" Dense="true" Class="my-2">
-        <strong>Admin:</strong> Select an existing person for this request. PersonId is required for admin submissions.
+        <strong>@L["Admin_Persons_AlertTitle"]</strong> @L["PersonSelection_AdminInfo"]
     </MudAlert>
 
     <PersonSelector SelectedPersonId="@EntityWithFiles.Item.PersonId"
                     SelectedPersonIdChanged="OnPersonIdChanged"
-                    Label="Select Person*"
+                    Label="@L["SelectPerson"]"
                     IsReadOnly="@isPersonSelectorReadOnly" />
     <ValidationMessage For="@(() => EntityWithFiles.Item.PersonId)" />
-    
+
     @if (PreSelectedPersonId.HasValue)
     {
         <MudAlert Severity="Severity.Info" Dense="true" Class="mt-2">
-            Person is pre-selected and cannot be changed for this request.
+            @L["PersonPreselected_Info"]
         </MudAlert>
     }
 </MudPaper>
@@ -71,16 +71,16 @@
 @if (person != null)
 {
     <MudPaper Class="pa-4 my-4">
-        <MudText Typo="Typo.h6">Selected Person Details</MudText>
-        <MudText Typo="Typo.body2"><strong>Name:</strong> @person.Contact?.FirstName @person.Contact?.LastName</MudText>
-        <MudText Typo="Typo.body2"><strong>Email:</strong> @person.Contact?.Email</MudText>
-        <MudText Typo="Typo.body2"><strong>Phone:</strong> @person.Contact?.PhoneNumber</MudText>
-        <MudText Typo="Typo.body2"><strong>Address:</strong> @person.Address?.Street, @person.Address?.PostalCode @person.Address?.City</MudText>
+        <MudText Typo="Typo.h6">@L["SelectedPersonDetails"]</MudText>
+        <MudText Typo="Typo.body2"><strong>@L["Name"]</strong> @person.Contact?.FirstName @person.Contact?.LastName</MudText>
+        <MudText Typo="Typo.body2"><strong>@L["Email"]</strong> @person.Contact?.Email</MudText>
+        <MudText Typo="Typo.body2"><strong>@L["Phone"]</strong> @person.Contact?.PhoneNumber</MudText>
+        <MudText Typo="Typo.body2"><strong>@L["Address"]</strong> @person.Address?.Street, @person.Address?.PostalCode @person.Address?.City</MudText>
     </MudPaper>
 }
 
 <MudPaper Class="pa-4 my-4" data-testid="save-chicken-request-general-info">
-    <MudText Typo="Typo.h6">Request Information</MudText>
+    <MudText Typo="Typo.h6">@L["RequestInformation"]</MudText>
     <MudItem>
         <MudNumericField ReadOnly="@IsReadOnly" T="int" @bind-Value="EntityWithFiles.Item.NumberOfChickensToBeSaved" Label="@L["NumberOfChickens"]" Variant="Variant.Outlined" UserAttributes="@(new Dictionary<string, object> { { "data-testid", "chickens-count" } })" />
         <ValidationMessage For="@(() => EntityWithFiles.Item.NumberOfChickensToBeSaved)" />
@@ -94,7 +94,7 @@
 
     <MudItem Class="my-2">
         <MudText>
-            Bitte beschreiben Sie kurz Ihr Hühnerzuhause (Stall, Auslauf m2), Anzahl bestehende Hühner, Erfahrung etc.
+            @L["DescriptionOfPlaceForChickens_Label"]
         </MudText>
         <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.DescriptionOfPlaceForChickens" Label="@L["Description"]" Variant="Variant.Outlined" Lines="3" UserAttributes="@(new Dictionary<string, object> { { "data-testid", "description" } })" />
         <ValidationMessage For="@(() => EntityWithFiles.Item.DescriptionOfPlaceForChickens)" />
@@ -108,22 +108,22 @@
     <MudDivider Class="my-2"></MudDivider>
 
     <MudItem Class="my-2">
-        <MudNumericField ReadOnly="@IsReadOnly" T="int" @bind-Value="EntityWithFiles.Item.NumberOfBoxes" Label="Number of Boxes" Variant="Variant.Outlined" />
+        <MudNumericField ReadOnly="@IsReadOnly" T="int" @bind-Value="EntityWithFiles.Item.NumberOfBoxes" Label="@L["NumberOfBoxes"]" Variant="Variant.Outlined" />
         <ValidationMessage For="@(() => EntityWithFiles.Item.NumberOfBoxes)" />
     </MudItem>
 
     <MudItem Class="my-2">
-        <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.Color" Label="Color" Variant="Variant.Outlined" />
+        <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.Color" Label="@L["Color"]" Variant="Variant.Outlined" />
         <ValidationMessage For="@(() => EntityWithFiles.Item.Color)" />
     </MudItem>
 
     <MudItem Class="my-2">
-        <MudCheckBox ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.IsHandoverAtDifferentAddress" Label="Handover at Different Address"></MudCheckBox>
+        <MudCheckBox ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.IsHandoverAtDifferentAddress" Label="@L["IsHandoverAtDifferentAddress"]"></MudCheckBox>
         <ValidationMessage For="@(() => EntityWithFiles.Item.IsHandoverAtDifferentAddress)" />
     </MudItem>
 </MudPaper>
 
-<MultiDateOnlySelector @bind-SelectedDates="EntityWithFiles.Item.DatesForHandOver" Text="Available dates for handover:" MinDate="@minDate" MaxDate="@maxDate" />
+<MultiDateOnlySelector @bind-SelectedDates="EntityWithFiles.Item.DatesForHandOver" Text="@L["AvailableDatesForHandover"]" MinDate="@minDate" MaxDate="@maxDate" />
 
 <StoredFilesEdit @bind-Files="EntityWithFiles.Item.Files" />
 
@@ -143,7 +143,7 @@
 
     <MudItem Class="my-2">
         <MudText>
-            Additional message:
+            @L["AdditionalMessage"]
         </MudText>
         <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.Message" Label="@L["Message"]" Variant="Variant.Outlined" Lines="3" UserAttributes="@(new Dictionary<string, object> { { "data-testid", "message" } })" />
         <ValidationMessage For="@(() => EntityWithFiles.Item.Message)" />

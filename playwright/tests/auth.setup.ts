@@ -13,8 +13,8 @@ setup('authenticate as admin', async ({ page }) => {
   // Click login button
   await page.getByRole('button', { name: 'Login' }).click();
 
-  // Wait for navigation to complete
-  await page.waitForURL('/');
+  // Wait for navigation to complete - admin users are redirected to /admin/persons
+  await page.waitForURL('/admin/persons');
 
   // Verify we're logged in
   await expect(page.getByText('Logout')).toBeVisible();

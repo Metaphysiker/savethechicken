@@ -7,19 +7,19 @@ export async function selectSaveChickenAction(page: Page, actionId: number): Pro
   console.log(`Selecting SaveChickenAction with ID: ${actionId}`);
 
   // Find the SaveChickenAction selector using data-testid
-  // The data-testid is on the hidden input, but we need to click its visible sibling div with tabindex
-  const hiddenInput = page.getByTestId('save-chicken-action-selector');
-  const selector = hiddenInput.locator('..').locator('div[tabindex="0"]').first();
+  // Click on the parent container div which is the clickable area for MudSelect
+  const inputElement = page.getByTestId('save-chicken-action-selector');
+  const selectContainer = inputElement.locator('..');
 
-  // Wait for the selector to be visible
-  await selector.waitFor({ state: 'visible', timeout: 10000 });
+  // Wait for the container to be visible
+  await selectContainer.waitFor({ state: 'visible', timeout: 10000 });
 
   // Wait a bit for actions to load
   await page.waitForTimeout(1000);
 
   // Click to open the dropdown
   console.log('Opening SaveChickenAction dropdown...');
-  await selector.click();
+  await selectContainer.click();
 
   // Wait for the popover to appear (MudSelect renders options in a popover)
   await page.waitForSelector('.mud-popover', { state: 'visible', timeout: 5000 });

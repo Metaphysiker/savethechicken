@@ -49,7 +49,7 @@
 <MudPaper Class="pa-4 my-4">
     <MudText Typo="Typo.h6">@L["PersonSelection"]</MudText>
     <MudAlert Severity="Severity.Info" Dense="true" Class="my-2">
-        @L["PersonSelection_AdminInfo"]
+        <strong>@L["Admin_Persons_AlertTitle"]</strong> @L["PersonSelection_AdminInfo"]
     </MudAlert>
 
     <PersonSelector SelectedPersonId="@EntityWithFiles.Item.PersonId"
@@ -73,7 +73,7 @@
         <MudText Typo="Typo.body2"><strong>@L["Name"]</strong> @person.Contact?.FirstName @person.Contact?.LastName</MudText>
         <MudText Typo="Typo.body2"><strong>@L["Email"]</strong> @person.Contact?.Email</MudText>
         <MudText Typo="Typo.body2"><strong>@L["Phone"]</strong> @person.Contact?.PhoneNumber</MudText>
-        <MudText Typo="Typo.body2"><strong>@L["Address_Label"]</strong> @person.Address?.Street, @person.Address?.PostalCode @person.Address?.City</MudText>
+        <MudText Typo="Typo.body2"><strong>@L["Address"]</strong> @person.Address?.Street, @person.Address?.PostalCode @person.Address?.City</MudText>
     </MudPaper>
 }
 
@@ -121,7 +121,7 @@
 
 <StoredFilesEdit @bind-Files="EntityWithFiles.Item.Files" />
 
-<FilesUploadForm @bind-Value="EntityWithFiles.Files" Label="@L["UploadFiles"]" Text="@L["RoutePlan"]" />
+<FilesUploadForm @bind-Value="EntityWithFiles.Files" Label="Upload Files" Text="Route plan" />
 
 
 @code {

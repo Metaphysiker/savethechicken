@@ -1,17 +1,12 @@
 import { Page } from '@playwright/test';
 import { getMultiDateSelector } from './multi-date-selector.helper';
-import { selectPerson } from './person-selector.helper';
 import { selectSaveChickenAction } from './save-chicken-action-selector.helper';
 
-export interface AdminSaveChickenDriveRequestFormData {
-  // Person selection (optional - not needed when person is pre-selected)
-  personId?: number;
-  personEmail?: string;
-
+export interface AdminSaveChickenDriveRequestFormPreselectedData {
   // SaveChickenAction selection (required for date validation)
-  saveChickenActionId?: number;
+  saveChickenActionId: number;
 
-  // Drive request details (SaveChickenDriveRequest's own fields)
+  // Drive request details
   carMake: string;
   capacityForChickens: string;
 
@@ -23,29 +18,26 @@ export interface AdminSaveChickenDriveRequestFormData {
 }
 
 /**
- * Fill admin save chicken drive request form - only SaveChickenDriveRequest fields, not Contact/Address
+ * Fill admin save chicken drive request form when person is pre-selected (from person detail page)
  */
-export async function fillAdminSaveChickenDriveRequestForm(page: Page, data: AdminSaveChickenDriveRequestFormData): Promise<void> {
-  // Select person using PersonSelector component (only if personEmail is provided)
-  if (data.personEmail) {
-    await selectPerson(page, data.personEmail);
-  }
-
-  // Fill SaveChickenDriveRequest's own fields only
+export async function fillAdminSaveChickenDriveRequestFormPreselected(page: Page, data: AdminSaveChickenDriveRequestFormPreselectedData): Promise<void> {
+  // Wait for form to be fully loaded
+  await page.getByTestId('car-make').waitFor({ state: 'visible', timeout: 10000 });
+  await page.waitForTimeout(500); // Additional wait for all components to load
+  
+  // Fill SaveChickenDriveRequest's own fields
   await page.getByTestId('car-make').fill(data.carMake);
   await page.getByTestId('capacity-for-chickens').fill(data.capacityForChickens);
 
-  // Select SaveChickenAction if provided (required before selecting dates)
-  if (data.saveChickenActionId) {
-    await selectSaveChickenAction(page, data.saveChickenActionId);
-  }
+  // Select SaveChickenAction (required before selecting dates)
+  await selectSaveChickenAction(page, data.saveChickenActionId);
 
   // Select dates if provided
   if (data.availableDates && data.availableDates.length > 0) {
     // Wait for calendar to be visible before trying to select dates
     await page.locator('.mud-calendar').first().waitFor({ state: 'visible', timeout: 10000 });
     await page.waitForTimeout(500); // Additional wait for calendar to stabilize
-
+    
     const dateSelector = getMultiDateSelector(page);
     if (data.availableDates.length === 1) {
       await dateSelector.selectDate(data.availableDates[0]);

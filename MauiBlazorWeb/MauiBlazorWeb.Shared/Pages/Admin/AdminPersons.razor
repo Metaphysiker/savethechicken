@@ -3,23 +3,26 @@
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
 @inject NavigationManager NavigationManager
+@inject IStringLocalizer<AppResources> L
 
-<PageTitle>Admin - Persons Management</PageTitle>
+<PageTitle>@L["Admin_Persons_Title"]</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
-    <MudText Typo="Typo.h3" Class="mb-4">Admin - Persons Management</MudText>
+    <MudText Typo="Typo.h3" Class="mb-4">@L["Admin_Persons_Management"]</MudText>
 
     <MudAlert Severity="Severity.Info" Dense="true" Class="my-4">
-        <strong>Admin Mode:</strong> Manage all persons in the system. Create, edit, and blacklist persons.
+        <strong>@L["Admin_Persons_AlertTitle"]</strong> @L["Admin_Persons_AlertText"]
     </MudAlert>
 
-    <MudButton Variant="Variant.Filled" 
-               Color="Color.Primary" 
-               StartIcon="@Icons.Material.Filled.Add" 
+    <MudButton Variant="Variant.Filled"
+               Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.Add"
                OnClick="@(() => NavigationManager.NavigateTo("/admin/persons/new"))"
                Class="mb-4">
-        Create New Person
+        @L["Admin_Persons_CreateButton"]
     </MudButton>
 
     <GenericSearch TDto="PersonDto" TSearchDto="PersonSearch">

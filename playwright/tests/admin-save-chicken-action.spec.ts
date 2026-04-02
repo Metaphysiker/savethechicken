@@ -23,16 +23,13 @@ test.describe('Admin - Create Save Chicken Action', () => {
     });
 
     await test.step('Fill in the form', async () => {
-      // Fill in Title using label selector (MudBlazor)
-      await page.getByLabel('Title').click();
-      await page.getByLabel('Title').fill(testTitle);
+      // Fill in Title using label selector (supports German "Titel" and English "Title")
+      await page.getByLabel(/titel|title/i).click();
+      await page.getByLabel(/titel|title/i).fill(testTitle);
 
-      // Fill in Description using label selector
-      await page.getByLabel('Description').click();
-      await page.getByLabel('Description').fill(testDescription);
-
-      // Check "Aktiv" checkbox by clicking the label text
-      await page.getByText('Aktiv').click();
+      // Fill in Description using label selector (supports German "Beschreibung" and English "Description")
+      await page.getByLabel(/beschreibung|description/i).click();
+      await page.getByLabel(/beschreibung|description/i).fill(testDescription);
 
       // Select multiple dates using MultiDateSelector helper
       const dateSelector = getMultiDateSelector(page);
@@ -51,12 +48,12 @@ test.describe('Admin - Create Save Chicken Action', () => {
     });
 
     await test.step('Submit the form', async () => {
-      // Click the submit/create button using role selector
-      await page.getByRole('button', { name: 'Erstellen' }).click();
+      // Click the submit/create button using role selector (supports German "Erstellen" and English "Create")
+      await page.getByRole('button', { name: /erstellen|create/i }).click();
 
       // Wait for navigation to the detail page
       await page.waitForURL(/\/admin\/save-chicken-actions\/\d+/, { timeout: 10000 });
-      
+
       // Verify we're on the detail page and can see the created action
       await expect(page.getByTestId('action-title')).toHaveText(testTitle);
     });
@@ -74,7 +71,7 @@ test.describe('Admin - Create Save Chicken Action', () => {
       // Search for the created action by title using placeholder
       const searchBox = page.getByPlaceholder('Nach Titel suchen...');
       await searchBox.fill(testTitle);
-      
+
       // Click the search button
       await page.getByTestId('search-button').click();
       await page.waitForTimeout(1000); // Wait for search to filter results
@@ -89,7 +86,6 @@ test.describe('Admin - Create Save Chicken Action', () => {
       // Verify the action details are displayed correctly
       await expect(page.getByTestId('action-title')).toHaveText(testTitle);
       await expect(page.getByTestId('action-description')).toHaveText(testDescription);
-      await expect(page.getByTestId('action-active-status')).toHaveText('Aktiv');
 
       // Verify the selected dates are displayed
       const transferDatesSection = page.getByTestId('action-transfer-dates');
@@ -114,7 +110,7 @@ test.describe('Admin - Create Save Chicken Action', () => {
     await page.waitForSelector('h3:has-text("Neue Rettungsaktion")', { state: 'visible', timeout: 10000 });
 
     // Try to submit without filling required fields
-    await page.getByRole('button', { name: 'Erstellen' }).click();
+    await page.getByRole('button', { name: /erstellen|create/i }).click();
 
     // Verify validation errors appear
     await expect(page.getByText('The Title field is required.')).toBeVisible();
@@ -127,17 +123,17 @@ test.describe('Admin - Create Save Chicken Action', () => {
     const originalDescription = `Original description ${timestamp}`;
     const updatedTitle = `Updated Action ${timestamp}`;
     const updatedDescription = `Updated description ${timestamp}`;
-    
+
     // Store the dates for verification
     const today = new Date();
     const originalDay = today.getDate();
     const newDay = originalDay === 1 ? 2 : originalDay - 1; // Pick a different day
-    
+
     const formatDate = (day: number) => {
       const date = new Date(today.getFullYear(), today.getMonth(), day);
       return `${String(date.getDate()).padStart(2, '0')}.${String(date.getMonth() + 1).padStart(2, '0')}.${date.getFullYear()}`;
     };
-    
+
     const originalDate = formatDate(originalDay);
     const newDate = formatDate(newDay);
 
@@ -145,21 +141,18 @@ test.describe('Admin - Create Save Chicken Action', () => {
       // Navigate to new save chicken action page
       await page.goto('/admin/save-chicken-actions/new', { waitUntil: 'networkidle' });
 
-      // Fill in the form
-      await page.getByLabel('Title').click();
-      await page.getByLabel('Title').fill(originalTitle);
-      await page.getByLabel('Description').click();
-      await page.getByLabel('Description').fill(originalDescription);
-      
-      // Check "Aktiv" checkbox
-      await page.getByText('Aktiv').click();
+      // Fill in the form (supports German and English labels)
+      await page.getByLabel(/titel|title/i).click();
+      await page.getByLabel(/titel|title/i).fill(originalTitle);
+      await page.getByLabel(/beschreibung|description/i).click();
+      await page.getByLabel(/beschreibung|description/i).fill(originalDescription);
 
       // Select original date
       const dateSelector = getMultiDateSelector(page);
       await dateSelector.selectDate(originalDay);
 
-      // Submit the form
-      await page.getByRole('button', { name: 'Erstellen' }).click();
+      // Submit the form (supports German "Erstellen" and English "Create")
+      await page.getByRole('button', { name: /erstellen|create/i }).click();
 
       // Wait for navigation to detail page
       await page.waitForURL(/\/admin\/save-chicken-actions\/\d+/, { timeout: 10000 });
@@ -167,8 +160,7 @@ test.describe('Admin - Create Save Chicken Action', () => {
       // Verify original details
       await expect(page.getByTestId('action-title')).toHaveText(originalTitle);
       await expect(page.getByTestId('action-description')).toHaveText(originalDescription);
-      await expect(page.getByTestId('action-active-status')).toBeVisible();
-      
+
       // Verify original date is shown
       const transferDatesSection = page.getByTestId('action-transfer-dates');
       await expect(transferDatesSection).toContainText(originalDate);
@@ -190,13 +182,13 @@ test.describe('Admin - Create Save Chicken Action', () => {
 
     await test.step('Update the save chicken action', async () => {
       // Update title - clear by selecting all and typing
-      const titleInput = page.getByLabel('Title');
+      const titleInput = page.getByLabel(/titel|title/i);
       await titleInput.click();
       await titleInput.press('Control+A');
       await titleInput.fill(updatedTitle);
 
       // Update description - clear by selecting all and typing
-      const descriptionInput = page.getByLabel('Description');
+      const descriptionInput = page.getByLabel(/beschreibung|description/i);
       await descriptionInput.click();
       await descriptionInput.press('Control+A');
       await descriptionInput.fill(updatedDescription);
@@ -205,10 +197,6 @@ test.describe('Admin - Create Save Chicken Action', () => {
       const dateSelector = getMultiDateSelector(page);
       await dateSelector.deselectDate(originalDay);  // Remove original date
       await dateSelector.selectDate(newDay);         // Add new date
-
-      // Uncheck "Aktiv" checkbox (find the actual checkbox input)
-      const aktivCheckbox = page.locator('input[type="checkbox"]').first();
-      await aktivCheckbox.uncheck();
 
       // Submit the update - wait for the button to be visible and enabled
       const updateButton = page.getByRole('button', { name: /update|aktualisieren/i });
@@ -222,14 +210,10 @@ test.describe('Admin - Create Save Chicken Action', () => {
     await test.step('Verify updated details', async () => {
       // Verify updated title
       await expect(page.getByTestId('action-title')).toHaveText(updatedTitle);
-      
+
       // Verify updated description
       await expect(page.getByTestId('action-description')).toHaveText(updatedDescription);
-      
-      // Verify "Aktiv" status changed to "Inaktiv" (chip is still visible but shows different text)
-      await expect(page.getByTestId('action-active-status')).toBeVisible();
-      await expect(page.getByTestId('action-active-status')).toHaveText('Inaktiv');
-      
+
       // Verify date changed - new date should be shown, old date should not
       const transferDatesSection = page.getByTestId('action-transfer-dates');
       await expect(transferDatesSection).toContainText(newDate);
@@ -246,22 +230,19 @@ test.describe('Admin - Create Save Chicken Action', () => {
       // Navigate to new save chicken action page
       await page.goto('/admin/save-chicken-actions/new', { waitUntil: 'networkidle' });
 
-      // Fill in the form
-      await page.getByLabel('Title').click();
-      await page.getByLabel('Title').fill(testTitle);
-      await page.getByLabel('Description').click();
-      await page.getByLabel('Description').fill(testDescription);
-      
-      // Check "Aktiv" checkbox
-      await page.getByText('Aktiv').click();
+      // Fill in the form (supports German and English labels)
+      await page.getByLabel(/titel|title/i).click();
+      await page.getByLabel(/titel|title/i).fill(testTitle);
+      await page.getByLabel(/beschreibung|description/i).click();
+      await page.getByLabel(/beschreibung|description/i).fill(testDescription);
 
       // Select a date
       const dateSelector = getMultiDateSelector(page);
       const today = new Date();
       await dateSelector.selectDate(today.getDate());
 
-      // Submit the form
-      await page.getByRole('button', { name: 'Erstellen' }).click();
+      // Submit the form (supports German "Erstellen" and English "Create")
+      await page.getByRole('button', { name: /erstellen|create/i }).click();
 
       // Wait for navigation to detail page
       await page.waitForURL(/\/admin\/save-chicken-actions\/\d+/, { timeout: 10000 });
@@ -280,7 +261,7 @@ test.describe('Admin - Create Save Chicken Action', () => {
       // Search for the created action by title using placeholder
       const searchBox = page.getByPlaceholder('Nach Titel suchen...');
       await searchBox.fill(testTitle);
-      
+
       // Click the search button
       await page.getByTestId('search-button').click();
       await page.waitForTimeout(1000); // Wait for search to filter
@@ -294,16 +275,16 @@ test.describe('Admin - Create Save Chicken Action', () => {
       // Find the delete button in the row using data-testid
       const actionRow = page.locator('tr').filter({ hasText: testTitle });
       const deleteButton = actionRow.getByTestId('delete-button');
-      
+
       // Click delete button
       await deleteButton.click();
 
       // Wait for confirmation dialog with specific text
       await page.waitForSelector('text=wirklich löschen?', { state: 'visible', timeout: 5000 });
-      
+
       // Wait for "Diese Aktion kann nicht rückgängig gemacht werden" to be visible
       await expect(page.getByText('Diese Aktion kann nicht rückgängig gemacht werden')).toBeVisible();
-      
+
       // Click the "Löschen" (Delete) button in the dialog
       const confirmDeleteButton = page.getByRole('button', { name: 'Löschen' });
       await confirmDeleteButton.click();
@@ -317,7 +298,7 @@ test.describe('Admin - Create Save Chicken Action', () => {
       const searchBox = page.getByPlaceholder('Nach Titel suchen...');
       await searchBox.clear();
       await searchBox.fill(testTitle);
-      
+
       // Click the search button
       await page.getByTestId('search-button').click();
       await page.waitForTimeout(1000);

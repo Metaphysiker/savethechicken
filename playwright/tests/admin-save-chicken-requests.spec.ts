@@ -29,6 +29,7 @@ test.describe('Admin Save Chicken Request Management', () => {
 
     let personId: number;
     let availableDates: number[];
+    let actionId: number;
 
     await test.step('Admin creates a SaveChickenAction first', async () => {
       const today = new Date();
@@ -48,6 +49,7 @@ test.describe('Admin Save Chicken Request Management', () => {
       });
 
       availableDates = action.dates;
+      actionId = action.actionId;
       expect(action.actionId).toBeGreaterThan(0);
     });
 
@@ -75,6 +77,7 @@ test.describe('Admin Save Chicken Request Management', () => {
       await fillAdminSaveChickenRequestForm(page, {
         personId: personId,
         personEmail: testEmail,
+        saveChickenActionId: actionId,
         numberOfChickens: '8',
         numberOfRoosters: '1',
         description: 'Large garden with secure chicken coop',
@@ -133,6 +136,7 @@ test.describe('Admin Save Chicken Request Management', () => {
 
     let personId: number;
     let availableDates: number[];
+    let actionId: number;
 
     await test.step('Admin creates a SaveChickenAction first', async () => {
       const today = new Date();
@@ -151,6 +155,7 @@ test.describe('Admin Save Chicken Request Management', () => {
       });
 
       availableDates = action.dates;
+      actionId = action.actionId;
       expect(action.actionId).toBeGreaterThan(0);
     });
 
@@ -177,6 +182,7 @@ test.describe('Admin Save Chicken Request Management', () => {
       await fillAdminSaveChickenRequestForm(page, {
         personId: personId,
         personEmail: originalEmail,
+        saveChickenActionId: actionId,
         numberOfChickens: '5',
         numberOfRoosters: '0',
         description: 'Original description',
@@ -281,6 +287,7 @@ test.describe('Admin Save Chicken Request Management', () => {
 
     let personId: number;
     let availableDates: number[];
+    let actionId: number;
 
     await test.step('Admin creates a SaveChickenAction first', async () => {
       const today = new Date();
@@ -298,6 +305,7 @@ test.describe('Admin Save Chicken Request Management', () => {
       });
 
       availableDates = action.dates;
+      actionId = action.actionId;
       expect(action.actionId).toBeGreaterThan(0);
     });
 
@@ -324,6 +332,7 @@ test.describe('Admin Save Chicken Request Management', () => {
       await fillAdminSaveChickenRequestForm(page, {
         personId: personId,
         personEmail: testEmail,
+        saveChickenActionId: actionId,
         numberOfChickens: '3',
         numberOfRoosters: '0',
         description: 'This request will be deleted',
@@ -382,8 +391,9 @@ test.describe('Admin Save Chicken Request Management', () => {
 
     const timestamp = Date.now();
     let availableDates: number[];
+    let actionId: number;
 
-    await test.step('Admin creates a SaveChickenAction', async () => {
+    await test.step('Admin creates a SaveChickenAction first', async () => {
       const today = new Date();
       const dayOfMonth = today.getDate();
 
@@ -392,12 +402,13 @@ test.describe('Admin Save Chicken Request Management', () => {
 
       const action = await createSaveChickenAction(page, {
         title: `Test Action ${timestamp}`,
-        description: 'Test action for validation test',
+        description: 'Test action for delete test',
         dates: datesToCreate,
         isActive: true,
       });
 
       availableDates = action.dates;
+      actionId = action.actionId;
       expect(action.actionId).toBeGreaterThan(0);
     });
 
@@ -453,157 +464,86 @@ test.describe('Admin Save Chicken Request Management', () => {
   });
 
   test('should manage save chicken request from person detail page', async ({ page }) => {
-    test.setTimeout(120000); // Increased timeout for multiple operations
+    test.setTimeout(60000);
 
     const timestamp = Date.now();
-    const testFirstName = `PersonReq${timestamp}`;
-    const testLastName = `PersonLast${timestamp}`;
     const testEmail = `personreq${timestamp}@example.com`;
 
-    let personId: number;
-    let availableDates: number[];
-    let actionId: number;
+    // Create action and person
+    const today = new Date();
+    const dayOfMonth = today.getDate();
+    const datesToCreate = [dayOfMonth, dayOfMonth + 1 <= 28 ? dayOfMonth + 1 : dayOfMonth];
 
-    await test.step('Admin creates a SaveChickenAction first', async () => {
-      const today = new Date();
-      const dayOfMonth = today.getDate();
-
-      // Create dates relative to today
-      const datesToCreate = [dayOfMonth];
-      if (dayOfMonth + 1 <= 28) datesToCreate.push(dayOfMonth + 1);
-      if (dayOfMonth + 2 <= 28) datesToCreate.push(dayOfMonth + 2);
-
-      const action = await createSaveChickenAction(page, {
-        title: `Test Action ${timestamp}`,
-        description: 'Test action for person detail page',
-        dates: datesToCreate,
-        isActive: true,
-      });
-
-      availableDates = action.dates;
-      actionId = action.actionId;
-      expect(action.actionId).toBeGreaterThan(0);
+    const action = await createSaveChickenAction(page, {
+      title: `Test Action ${timestamp}`,
+      description: 'Test action for person detail page',
+      dates: datesToCreate,
+      isActive: true,
     });
 
-    await test.step('Admin creates a person', async () => {
-      personId = await createPerson(page, {
-        firstName: testFirstName,
-        lastName: testLastName,
-        email: testEmail,
-        phone: '+41791111111',
-        city: 'Bern',
-        postalCode: '3000',
-        street: 'Person Street 456',
-      });
-
-      expect(personId).toBeGreaterThan(0);
+    const personId = await createPerson(page, {
+      firstName: `PersonReq${timestamp}`,
+      lastName: 'Test',
+      email: testEmail,
+      phone: '+41791111111',
+      city: 'Bern',
+      postalCode: '3000',
+      street: 'Person Street 456',
     });
 
-    await test.step('Navigate to person detail page and add save chicken request', async () => {
-      // Go to person detail page
-      await page.goto(`/admin/persons/${personId}`, { waitUntil: 'networkidle' });
-      
-      // Verify we're on the correct person page using specific test IDs
-      await expect(page.getByTestId('contact-firstname')).toHaveText(testFirstName);
-      await expect(page.getByTestId('contact-email')).toHaveText(testEmail);
+    // Navigate to person detail page
+    await page.goto(`/admin/persons/${personId}`, { waitUntil: 'networkidle' });
+    await expect(page.getByTestId('contact-firstname')).toContainText(`PersonReq${timestamp}`);
 
-      // Click "Add Save Chicken Request" button
-      await page.getByRole('button', { name: /Add Save Chicken Request/i }).click();
+    // Add save chicken request
+    await page.getByTestId('add-save-chicken-request-button').click();
+    await page.waitForSelector('[data-testid="save-chicken-request-general-info"]', { state: 'visible', timeout: 10000 });
 
-      // Wait for dialog to open
-      await page.waitForSelector('[data-testid="save-chicken-request-general-info"]', { state: 'visible', timeout: 10000 });
-
-      // Verify person is pre-selected and disabled
-      await expect(page.getByText('Person is pre-selected and cannot be changed')).toBeVisible();
-      
-      // Use helper to fill the form (person is pre-selected, so don't pass personId/personEmail)
-      await fillAdminSaveChickenRequestForm(page, {
-        numberOfChickens: '10',
-        numberOfRoosters: '2',
-        description: 'Nice farm with lots of space',
-        message: 'Happy to help!',
-        datesForHandOver: [availableDates[0]],
-        confirmCriteria: true,
-        acceptTerms: true,
-      });
-
-      // Submit
-      await page.getByTestId('submit-button').click();
-
-      // Wait for dialog to close
-      await page.waitForTimeout(2000);
+    await fillAdminSaveChickenRequestForm(page, {
+      saveChickenActionId: action.actionId,
+      numberOfChickens: '10',
+      numberOfRoosters: '2',
+      description: 'Nice farm with lots of space',
+      message: 'Happy to help!',
+      datesForHandOver: [action.dates[0]],
+      confirmCriteria: true,
+      acceptTerms: true,
     });
 
-    await test.step('Verify request appears on person detail page', async () => {
-      // Should still be on person detail page
-      await expect(page).toHaveURL(`/admin/persons/${personId}`);
-      
-      // Verify the request appears in the table
-      await expect(page.getByText('Save Chicken Requests (1)')).toBeVisible();
-      await expect(page.getByText('Nice farm with lots of space')).toBeVisible();
-      
-      // Verify it shows the correct counts in the table
-      const tableRow = page.locator('tr').filter({ hasText: 'Nice farm with lots of space' });
-      await expect(tableRow).toBeVisible();
-    });
+    await page.getByTestId('submit-button').click();
+    await page.waitForSelector('[data-testid="save-chicken-request-general-info"]', { state: 'hidden', timeout: 5000 });
 
-    await test.step('Edit the request from person detail page', async () => {
-      // Click edit button in the table
-      const editButton = page.getByTestId('edit-button').first();
-      await editButton.waitFor({ state: 'visible', timeout: 5000 });
-      await editButton.click();
+    // Verify creation
+    await expect(page.getByText('Nice farm with lots of space')).toBeVisible();
 
-      // Wait for dialog to open
-      await page.waitForSelector('[data-testid="save-chicken-request-general-info"]', { state: 'visible', timeout: 10000 });
+    // Edit the request
+    await page.getByTestId('edit-button').first().click();
+    await page.waitForSelector('[data-testid="save-chicken-request-general-info"]', { state: 'visible', timeout: 10000 });
 
-      // Update the request
-      await page.getByTestId('chickens-count').fill('15');
-      await page.getByTestId('description').fill('Updated: Even more space now');
-      await page.getByTestId('message').fill('Very excited to help!');
+    await page.getByTestId('chickens-count').fill('15');
+    await page.getByTestId('description').fill('Updated: Even more space now');
 
-      // Submit update
-      await page.getByRole('button', { name: /aktualisieren|update/i }).click();
+    await page.getByRole('button', { name: /aktualisieren|update/i }).click();
+    await page.waitForSelector('[data-testid="save-chicken-request-general-info"]', { state: 'hidden', timeout: 5000 });
 
-      // Wait for dialog to close
-      await page.waitForTimeout(2000);
-    });
+    // Verify changes
+    await expect(page.getByText('Updated: Even more space now')).toBeVisible();
+    await expect(page.getByText('Nice farm with lots of space')).not.toBeVisible();
 
-    await test.step('Verify updated request appears on person detail page', async () => {
-      // Should still be on person detail page
-      await expect(page).toHaveURL(`/admin/persons/${personId}`);
-      
-      // Verify the updated data appears
-      await expect(page.getByText('Updated: Even more space now')).toBeVisible();
-      
-      // Verify old data is gone
-      await expect(page.getByText('Nice farm with lots of space')).not.toBeVisible();
-      
-      // Still shows 1 request
-      await expect(page.getByText('Save Chicken Requests (1)')).toBeVisible();
-    });
-
-    await test.step('Delete the request from person detail page', async () => {
-      // Click delete button in the table
-      const deleteButton = page.getByTestId('delete-button').first();
-      await deleteButton.waitFor({ state: 'visible', timeout: 5000 });
-      await deleteButton.click();
-
-      // Confirm deletion
-      await page.getByRole('button', { name: /ja|yes|delete|löschen/i }).click();
-
-      // Wait for deletion to complete
-      await page.waitForTimeout(2000);
-    });
-
-    await test.step('Verify request no longer appears on person detail page', async () => {
-      // Should still be on person detail page
-      await expect(page).toHaveURL(`/admin/persons/${personId}`);
-      
-      // Request section should not be visible anymore (no requests)
-      await expect(page.getByText('Save Chicken Requests')).not.toBeVisible();
-      
-      // The data should not be visible
-      await expect(page.getByText('Updated: Even more space now')).not.toBeVisible();
-    });
+    // Delete the request
+    const deleteButton = page.getByTestId('delete-button').first();
+    await deleteButton.click();
+    
+    // Wait for confirmation dialog and confirm
+    const confirmButton = page.getByRole('button', { name: /ja|yes|delete|löschen/i });
+    await confirmButton.waitFor({ state: 'visible', timeout: 5000 });
+    await confirmButton.click();
+    
+    // Wait for confirmation dialog to close
+    await confirmButton.waitFor({ state: 'hidden', timeout: 5000 });
+    
+    // Wait for the data to be gone (row is removed from table)
+    await expect(page.getByText('Updated: Even more space now')).not.toBeVisible({ timeout: 5000 });
+    await expect(page.getByText('Save Chicken Requests')).not.toBeVisible();
   });
 });

@@ -20,13 +20,14 @@
         <MudText Typo="Typo.h6" Class="mb-3">@L["SaveChickenRequests"]</MudText>
         @if (saveChickenRequests.Any())
         {
-            <SaveChickenRequestTable items="@saveChickenRequests" ShowContactAndAddress="false" />
+            <SaveChickenRequestTable items="@saveChickenRequests" ShowContactAndAddress="false" OnItemsChanged="@LoadPersonRequests" />
         }
         <MudButton Variant="Variant.Filled"
                   Color="Color.Primary"
                   OnClick="OpenAddSaveChickenRequestDialog"
                   StartIcon="@Icons.Material.Filled.Add"
-                  Class="mt-3">
+                  Class="mt-3"
+                  data-testid="add-save-chicken-request-button">
             @L["AddSaveChickenRequest"]
         </MudButton>
     </MudPaper>
@@ -35,13 +36,14 @@
         <MudText Typo="Typo.h6" Class="mb-3">@L["SaveChickenDriveRequests"]</MudText>
         @if (saveChickenDriveRequests.Any())
         {
-            <SaveChickenDriveRequestTable items="@saveChickenDriveRequests" ShowContactAndAddress="false" />
+            <SaveChickenDriveRequestTable items="@saveChickenDriveRequests" ShowContactAndAddress="false" OnItemsChanged="@LoadPersonRequests" />
         }
         <MudButton Variant="Variant.Filled"
                   Color="Color.Secondary"
                   OnClick="OpenAddSaveChickenDriveRequestDialog"
                   StartIcon="@Icons.Material.Filled.Add"
-                  Class="mt-3">
+                  Class="mt-3"
+                  data-testid="add-drive-request-button">
             @L["AddDriveRequest"]
         </MudButton>
     </MudPaper>

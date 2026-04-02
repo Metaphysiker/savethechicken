@@ -3,27 +3,23 @@
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
 @inject NavigationManager NavigationManager
+@inject IStringLocalizer<AppResources> L
 
-<PageTitle>Admin - Create New Person</PageTitle>
+<PageTitle>@L["Admin_NewPerson_Title"]</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.Large">
-    <MudText Typo="Typo.h3" Class="mb-4">Create New Person</MudText>
+    <MudText Typo="Typo.h3" Class="mb-4">@L["Admin_NewPerson_Heading"]</MudText>
 
     <MudAlert Severity="Severity.Info" Dense="true" Class="my-4">
-        <strong>Admin Mode:</strong> Create a new person in the system.
+        <strong>@L["Admin_Persons_AlertTitle"]</strong> @L["Admin_NewPerson_AlertText"]
     </MudAlert>
 
-    <GenericCreate TDto="PersonDto" OnSuccess="OnSuccess">
+    <GenericCreate TDto="PersonDto" ResourceName="admin/persons">
         <ChildContent Context="model">
             <PersonForm Person="model" />
         </ChildContent>
     </GenericCreate>
 </MudContainer>
-
-@code {
-    private void OnSuccess()
-    {
-        NavigationManager.NavigateTo("/admin/persons");
-    }
-}

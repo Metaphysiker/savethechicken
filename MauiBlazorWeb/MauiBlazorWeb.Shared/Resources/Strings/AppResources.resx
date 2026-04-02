@@ -244,22 +244,22 @@
     <value>löschen</value>
   </data>
   <data name="show" xml:space="preserve">
-    <value>zeigen</value>
+    <value>show</value>
   </data>
   <data name="isActive" xml:space="preserve">
-    <value>aktiv</value>
+    <value>active</value>
   </data>
   <data name="edit" xml:space="preserve">
-    <value>bearbeiten</value>
+    <value>edit</value>
   </data>
   <data name="yes" xml:space="preserve">
-    <value>ja</value>
+    <value>yes</value>
   </data>
   <data name="no" xml:space="preserve">
-    <value>nein</value>
+    <value>no</value>
   </data>
   <data name="CapacityForChickens" xml:space="preserve">
-    <value>Wie viele Hühner kannst du mitnehmen?</value>
+    <value>How many chickens can you take with you?</value>
   </data>
   <data name="assign" xml:space="preserve">
     <value>Assign</value>
@@ -298,19 +298,19 @@
     <value>Übergabe an diesen Daten:</value>
   </data>
   <data name="PersonSelection" xml:space="preserve">
-    <value>Personen-Auswahl</value>
+    <value>Person Selection</value>
   </data>
   <data name="PersonSelection_AdminInfo" xml:space="preserve">
-    <value>Admin: Wählen Sie eine existierende Person für diese Transportanfrage aus. PersonId ist für Admin-Einreichungen erforderlich.</value>
+    <value>Select an existing person for this request. PersonId is required for admin submissions.</value>
   </data>
   <data name="SelectPerson" xml:space="preserve">
-    <value>Person auswählen*</value>
+    <value>Select Person*</value>
   </data>
   <data name="PersonPreselected_Info" xml:space="preserve">
-    <value>Person ist vorausgewählt und kann für diese Anfrage nicht geändert werden.</value>
+    <value>Person is pre-selected and cannot be changed for this request.</value>
   </data>
   <data name="SelectedPersonDetails" xml:space="preserve">
-    <value>Details der ausgewählten Person</value>
+    <value>Selected Person Details</value>
   </data>
   <data name="Name" xml:space="preserve">
     <value>Name:</value>
@@ -380,5 +380,65 @@
   </data>
   <data name="ViewPerson" xml:space="preserve">
     <value>View Person</value>
+  </data>
+  <data name="Admin_Persons_Title" xml:space="preserve">
+    <value>Admin - Persons Management</value>
+  </data>
+  <data name="Admin_Persons_Management" xml:space="preserve">
+    <value>Admin - Persons Management</value>
+  </data>
+  <data name="Admin_Persons_AlertTitle" xml:space="preserve">
+    <value>Admin Mode:</value>
+  </data>
+  <data name="Admin_Persons_AlertText" xml:space="preserve">
+    <value>Manage all persons in the system. Create, edit, and blacklist persons.</value>
+  </data>
+  <data name="Admin_Persons_CreateButton" xml:space="preserve">
+    <value>Create New Person</value>
+  </data>
+  <data name="Admin_NewPerson_Title" xml:space="preserve">
+    <value>Admin - Create New Person</value>
+  </data>
+  <data name="Admin_NewPerson_Heading" xml:space="preserve">
+    <value>Create New Person</value>
+  </data>
+  <data name="Admin_NewPerson_AlertText" xml:space="preserve">
+    <value>Create a new person in the system.</value>
+  </data>
+  <data name="Admin_EditPerson_Title" xml:space="preserve">
+    <value>Admin - Edit Person</value>
+  </data>
+  <data name="Admin_EditPerson_Heading" xml:space="preserve">
+    <value>Edit Person</value>
+  </data>
+  <data name="Admin_EditPerson_AlertText" xml:space="preserve">
+    <value>Edit person information and manage blacklist status.</value>
+  </data>
+  <data name="RequestInformation" xml:space="preserve">
+    <value>Request Information</value>
+  </data>
+  <data name="DescriptionOfPlaceForChickens_Label" xml:space="preserve">
+    <value>Please briefly describe your chicken home (coop, outdoor space m2), number of existing chickens, experience, etc.</value>
+  </data>
+  <data name="NumberOfBoxes" xml:space="preserve">
+    <value>Number of Boxes</value>
+  </data>
+  <data name="Color" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="IsHandoverAtDifferentAddress" xml:space="preserve">
+    <value>Handover at Different Address</value>
+  </data>
+  <data name="AvailableDatesForHandover" xml:space="preserve">
+    <value>Available dates for handover:</value>
+  </data>
+  <data name="AdditionalMessage" xml:space="preserve">
+    <value>Additional message:</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Phone:</value>
+  </data>
+  <data name="AvailableDrivingDates" xml:space="preserve">
+    <value>Available driving dates:</value>
   </data>
 </root>

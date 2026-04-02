@@ -54,25 +54,13 @@ export async function createPerson(page: Page, data: PersonFormData): Promise<nu
 
   await page.getByRole('button', { name: /create|erstellen/i }).click();
 
-  // Wait for redirect to persons list
-  await page.waitForURL(/\/admin\/persons$/, { timeout: 10000 });
-
-  // Search for the created person
-  await page.getByLabel(/suche|search/i).fill(data.email);
-  await page.getByRole('button', { name: /suchen|search/i }).click();
-  
-await page.waitForTimeout(1000);
-
-  // Click the show button to get to detail page
-  const showButton = page.getByTestId('view-button').first();
-  await showButton.waitFor({ state: 'visible', timeout: 5000 });
-  await showButton.click();
-
-  // Wait for detail page and extract ID from URL
+  // Wait for redirect to person detail page (GenericCreate redirects to detail page)
   await page.waitForURL(/\/admin\/persons\/\d+/, { timeout: 10000 });
+
+  // Extract ID from URL
   const url = page.url();
   const match = url.match(/\/admin\/persons\/(\d+)/);
-  
+
   if (!match) {
     throw new Error('Could not extract person ID from URL: ' + url);
   }

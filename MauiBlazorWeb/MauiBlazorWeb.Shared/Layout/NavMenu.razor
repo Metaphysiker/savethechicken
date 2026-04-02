@@ -4,7 +4,7 @@
 @inject AuthService authService
 
 <MudNavMenu>
-    <MudNavLink Href="/" Class="nav-link-entry" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+    <MudNavLink Href="@HomeUrl" Class="nav-link-entry" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
     <MudDivider Class="my-2" />
 
     @if (authService.isLoading == true)
@@ -71,6 +71,10 @@
     [Parameter] public bool _drawerOpen { get; set; }
     [Parameter] public EventCallback OnCloseDrawer { get; set; }
     [Parameter] public EventCallback OnOpenDrawer { get; set; }
+
+    private string HomeUrl => authResponseSingleton.AuthResponse?.Roles?.Contains("Admin") == true
+        ? "/admin/persons"
+        : "/";
 
     private async Task HandleCloseDrawer()
     {

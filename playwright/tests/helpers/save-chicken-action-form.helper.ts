@@ -23,24 +23,19 @@ export async function createSaveChickenAction(
   await page.goto('/admin/save-chicken-actions/new', { waitUntil: 'networkidle' });
   await page.waitForSelector('h3', { state: 'visible', timeout: 10000 });
 
-  // Fill in Title
-  await page.getByLabel('Title').fill(data.title);
+  // Fill in Title (supports both German "Titel" and English "Title")
+  await page.getByLabel(/titel|title/i).fill(data.title);
 
-  // Fill in Description
-  await page.getByLabel('Description').fill(data.description);
+  // Fill in Description (supports both German "Beschreibung" and English "Description")
+  await page.getByLabel(/beschreibung|description/i).fill(data.description);
 
-  // Check "Aktiv" checkbox if specified (default true)
-  const isActive = data.isActive !== false;
-  if (isActive) {
-    await page.getByText('Aktiv').click();
-  }
 
   // Select dates using MultiDateSelector
   const dateSelector = getMultiDateSelector(page);
   await dateSelector.selectDates(data.dates);
 
-  // Submit the form
-  await page.getByRole('button', { name: 'Erstellen' }).click();
+  // Submit the form (supports both German "Erstellen" and English "Create")
+  await page.getByRole('button', { name: /erstellen|create/i }).click();
 
   // Wait for redirect to detail page
   await page.waitForURL(/\/admin\/save-chicken-actions\/\d+/, { timeout: 10000 });
