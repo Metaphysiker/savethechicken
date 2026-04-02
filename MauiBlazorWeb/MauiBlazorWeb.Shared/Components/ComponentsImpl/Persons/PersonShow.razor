@@ -1,11 +1,8 @@
-@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Contacts
-@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Addresses
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenDriveRequests
-@using MauiBlazorWeb.Shared.Components.ComponentsImpl
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
 @using global::Shared.Dtos.DtosImpl
-@using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.Extensions.Localization
 @using MauiBlazorWeb.Shared.Resources.Strings
@@ -15,60 +12,39 @@
 
 @if (displayPerson != null)
 {
-    <MudPaper Class="pa-4 my-4" Elevation="2">
-        <MudText Typo="Typo.h6" Class="mb-3">@L["Status"]</MudText>
-
-        @if (displayPerson.IsBlacklisted)
-        {
-            <MudAlert Severity="Severity.Error" Class="mb-2" data-testid="blacklist-status">
-                <MudText>@L["Blacklisted_Yes"]</MudText>
-            </MudAlert>
-        }
-        else
-        {
-            <MudAlert Severity="Severity.Success" Class="mb-2" data-testid="blacklist-status">
-                <MudText>@L["Blacklisted_No"]</MudText>
-            </MudAlert>
-        }
-    </MudPaper>
-
-    @if (displayPerson.Contact != null)
-    {
-        <ContactDetailsCard Contact="displayPerson.Contact" Title="@ContactTitle" />
-    }
-
-    @if (displayPerson.Address != null)
-    {
-        <AddressDetailsCard Address="displayPerson.Address" Title="@AddressTitle" />
-    }
+    <PersonDetailsCard Person="displayPerson"
+                      ContactTitle="@ContactTitle"
+                      AddressTitle="@AddressTitle" />
 
     <MudPaper Class="pa-4 my-4" Elevation="2">
-        <MudText Typo="Typo.h6" Class="mb-3">@L["Actions"]</MudText>
-        <MudStack Direction="Row" Spacing="2">
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OpenAddSaveChickenRequestDialog" StartIcon="@Icons.Material.Filled.Add">
-                @L["AddSaveChickenRequest"]
-            </MudButton>
-            <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="OpenAddSaveChickenDriveRequestDialog" StartIcon="@Icons.Material.Filled.Add">
-                @L["AddDriveRequest"]
-            </MudButton>
-        </MudStack>
+        <MudText Typo="Typo.h6" Class="mb-3">@L["SaveChickenRequests"]</MudText>
+        @if (saveChickenRequests.Any())
+        {
+            <SaveChickenRequestTable items="@saveChickenRequests" ShowContactAndAddress="false" />
+        }
+        <MudButton Variant="Variant.Filled"
+                  Color="Color.Primary"
+                  OnClick="OpenAddSaveChickenRequestDialog"
+                  StartIcon="@Icons.Material.Filled.Add"
+                  Class="mt-3">
+            @L["AddSaveChickenRequest"]
+        </MudButton>
     </MudPaper>
 
-    @if (saveChickenRequests.Any())
-    {
-        <MudPaper Class="pa-4 my-4" Elevation="2">
-            <MudText Typo="Typo.h6" Class="mb-3">@L["SaveChickenRequests"]</MudText>
-            <SaveChickenRequestTable items="@saveChickenRequests" />
-        </MudPaper>
-    }
-
-    @if (saveChickenDriveRequests.Any())
-    {
-        <MudPaper Class="pa-4 my-4" Elevation="2">
-            <MudText Typo="Typo.h6" Class="mb-3">@L["SaveChickenDriveRequests"]</MudText>
-            <SaveChickenDriveRequestTable items="@saveChickenDriveRequests" />
-        </MudPaper>
-    }
+    <MudPaper Class="pa-4 my-4" Elevation="2">
+        <MudText Typo="Typo.h6" Class="mb-3">@L["SaveChickenDriveRequests"]</MudText>
+        @if (saveChickenDriveRequests.Any())
+        {
+            <SaveChickenDriveRequestTable items="@saveChickenDriveRequests" ShowContactAndAddress="false" />
+        }
+        <MudButton Variant="Variant.Filled"
+                  Color="Color.Secondary"
+                  OnClick="OpenAddSaveChickenDriveRequestDialog"
+                  StartIcon="@Icons.Material.Filled.Add"
+                  Class="mt-3">
+            @L["AddDriveRequest"]
+        </MudButton>
+    </MudPaper>
 }
 
 @code {

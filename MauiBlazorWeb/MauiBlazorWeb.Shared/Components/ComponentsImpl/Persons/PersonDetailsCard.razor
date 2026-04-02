@@ -1,0 +1,76 @@
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Contacts
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Addresses
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using global::Shared.Dtos.DtosImpl
+@using Microsoft.Extensions.Localization
+@using MauiBlazorWeb.Shared.Resources.Strings
+@inject GenericDtoServiceFactory DtoServiceFactory
+@inject IStringLocalizer<AppResources> L
+
+@if (displayPerson != null)
+{
+    <MudPaper Class="pa-4 my-4" Elevation="2">
+        <MudText Typo="Typo.h6" Class="mb-3">@L["Status"]</MudText>
+
+        @if (displayPerson.IsBlacklisted)
+        {
+            <MudAlert Severity="Severity.Error" Class="mb-2" data-testid="blacklist-status">
+                <MudText>@L["Blacklisted_Yes"]</MudText>
+            </MudAlert>
+        }
+        else
+        {
+            <MudAlert Severity="Severity.Success" Class="mb-2" data-testid="blacklist-status">
+                <MudText>@L["Blacklisted_No"]</MudText>
+            </MudAlert>
+        }
+    </MudPaper>
+
+    @if (displayPerson.Contact != null)
+    {
+        <ContactDetailsCard Contact="displayPerson.Contact" Title="@ContactTitle" />
+    }
+
+    @if (displayPerson.Address != null)
+    {
+        <AddressDetailsCard Address="displayPerson.Address" Title="@AddressTitle" />
+    }
+}
+
+@code {
+    [Parameter]
+    public PersonDto? Person { get; set; }
+
+    [Parameter]
+    public int? PersonId { get; set; }
+
+    [Parameter]
+    public string? ContactTitle { get; set; }
+
+    [Parameter]
+    public string? AddressTitle { get; set; }
+
+    private PersonDto? displayPerson;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadPerson();
+    }
+
+    private async Task LoadPerson()
+    {
+        // Use Person parameter if provided
+        if (Person != null)
+        {
+            displayPerson = Person;
+        }
+        // Otherwise, if PersonId is provided, fetch the person
+        else if (PersonId.HasValue)
+        {
+            var personService = DtoServiceFactory.Create<PersonDto, PersonSearch>();
+            displayPerson = await personService.GetByIdAsync(PersonId.Value);
+        }
+
+        StateHasChanged();
+    }
+}

@@ -13,12 +13,10 @@
 
     @if (item != null)
     {
-        <!-- Use PersonDetailsDisplay with PersonId -->
+        <!-- Use CompactPersonDetailsCard to display person info -->
         @if (item.PersonId.HasValue)
         {
-            <PersonDetailsDisplay PersonId="item.PersonId.Value"
-                                 ContactTitle="Kontaktperson"
-                                 AddressTitle="Adresse" />
+            <CompactPersonDetailsCard PersonId="item.PersonId.Value" />
         }
 
         <MudPaper Class="pa-4 my-4" Elevation="2">

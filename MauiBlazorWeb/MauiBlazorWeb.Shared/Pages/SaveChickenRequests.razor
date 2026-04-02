@@ -1,4 +1,4 @@
-@page "/admin/save-chicken-requests/{id:int}"
+﻿@page "/admin/save-chicken-requests/{id:int}"
 
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
@@ -6,47 +6,48 @@
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
 @using MauiBlazorWeb.Shared.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
+@using Microsoft.Extensions.Localization
+@using MauiBlazorWeb.Shared.Resources.Strings
 @inject GenericDtoServiceFactory DtoServiceFactory
+@inject IStringLocalizer<AppResources> L
 
 <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
-    <h3>Platzangebot Details</h3>
+    <h3>@L["SaveChickenRequestDetails"]</h3>
 
     @if (item != null)
     {
-        <!-- Use PersonDetailsDisplay with both Person and PersonId for flexibility -->
-        <PersonDetailsDisplay Person="item.Person"
-                             PersonId="item.PersonId"
-                             ContactTitle="Kontaktperson"
-                             AddressTitle="Adresse" />
+        <!-- Use CompactPersonDetailsCard to display person info -->
+        <CompactPersonDetailsCard Person="item.Person"
+                                 PersonId="item.PersonId" />
 
         <MudPaper Class="pa-4 my-4" Elevation="2">
-            <MudText Typo="Typo.h6" Class="mb-3">Platzangebot Information</MudText>
+            <MudText Typo="Typo.h6" Class="mb-3">@L["SaveChickenRequestInformation"]</MudText>
 
             @if (item.NumberOfChickensToBeSaved > 0)
             {
                 <MudText Typo="Typo.body1" Class="mt-2">
-                    <strong>Anzahl Hühner:</strong> @item.NumberOfChickensToBeSaved
+                    <strong>@L["NumberOfChickensToBeSaved"]:</strong> @item.NumberOfChickensToBeSaved
                 </MudText>
             }
 
             @if (item.NumberOfRoostersToBeSaved > 0)
             {
                 <MudText Typo="Typo.body1" Class="mt-2">
-                    <strong>Anzahl Hähne:</strong> @item.NumberOfRoostersToBeSaved
+                    <strong>@L["NumberOfRoostersToBeSaved"]:</strong> @item.NumberOfRoostersToBeSaved
                 </MudText>
             }
 
             @if (!string.IsNullOrWhiteSpace(item.DescriptionOfPlaceForChickens))
             {
                 <MudText Typo="Typo.body1" Class="mt-2">
-                    <strong>Beschreibung des Platzes:</strong> @item.DescriptionOfPlaceForChickens
+                    <strong>@L["DescriptionOfPlaceForChickens"]:</strong> @item.DescriptionOfPlaceForChickens
                 </MudText>
             }
 
             @if (item.DatesForHandOver != null && item.DatesForHandOver.Any())
             {
                 <MudText Typo="Typo.body2" Class="mt-3">
-                    <strong>Übergabedaten:</strong>
+                    <strong>@L["TransferDates"]</strong>
                 </MudText>
                 <div>
                     @foreach (var date in item.DatesForHandOver.OrderBy(d => d))
@@ -59,13 +60,13 @@
             @if (!string.IsNullOrWhiteSpace(item.Message))
             {
                 <MudText Typo="Typo.body1" Class="mt-2">
-                    <strong>Nachricht:</strong> @item.Message
+                    <strong>@L["Message"]:</strong> @item.Message
                 </MudText>
             }
         </MudPaper>
 
         <MudPaper Class="pa-4 my-4" Elevation="2">
-            <MudText Typo="Typo.h6" Class="mb-3">Actions</MudText>
+            <MudText Typo="Typo.h6" Class="mb-3">@L["Actions"]</MudText>
             <MudStack Direction="Row" Spacing="2">
                 <GenericUpdateDialogLauncher TDto="SaveChickenRequestDto"
                                              model="item"
@@ -81,13 +82,13 @@
     else if (Id.HasValue)
     {
         <MudPaper Class="pa-4">
-            <MudText>Laden...</MudText>
+            <MudText>@L["Loading"]</MudText>
         </MudPaper>
     }
     else
     {
         <MudPaper Class="pa-4">
-            <MudText>Kein Platzangebot ausgewählt.</MudText>
+            <MudText>@L["NoSaveChickenRequestSelected"]</MudText>
         </MudPaper>
     }
 </MudContainer>

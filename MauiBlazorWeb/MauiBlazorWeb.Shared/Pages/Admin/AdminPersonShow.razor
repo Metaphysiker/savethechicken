@@ -1,143 +1,59 @@
 @page "/admin/persons/{Id:int}"
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl
-@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Contacts
-@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Addresses
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Persons
-@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
-@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenDriveRequests
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
-@using MauiBlazorWeb.Shared.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
-@using Microsoft.AspNetCore.Components
-@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.Extensions.Localization
+@using MauiBlazorWeb.Shared.Resources.Strings
 @inject GenericDtoServiceFactory DtoServiceFactory
 @inject NavigationManager NavigationManager
-@inject IDialogService DialogService
+@inject IStringLocalizer<AppResources> L
 
-<PageTitle>Admin - Person Details</PageTitle>
+<PageTitle>@L["Admin"] - @L["PersonDetails"]</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.ExtraLarge">
     <MudBreadcrumbs Items="_breadcrumbs" Class="mb-4"></MudBreadcrumbs>
 
-    <MudText Typo="Typo.h3" Class="mb-4">Person Details</MudText>
+    <MudText Typo="Typo.h3" Class="mb-4">@L["PersonDetails"]</MudText>
 
     @if (item != null)
     {
-        <MudPaper Class="pa-4 my-4" Elevation="2">
-            <MudText Typo="Typo.h5" Class="mb-3">
-                Person Details
-                @if (item.IsBlacklisted)
-                {
-                    <MudChip T="string" Color="Color.Error" Size="Size.Small" Icon="@Icons.Material.Filled.Block">Blacklisted</MudChip>
-                }
-            </MudText>
-
-            <MudDivider Class="my-3" />
-
-            @* Blacklist Status Display *@
-            @if (item.IsBlacklisted)
-            {
-                <MudAlert Severity="Severity.Error" Class="mb-3">
-                    <MudText data-testid="blacklist-status">Blacklisted: Yes</MudText>
-                    <MudText Typo="Typo.caption">Auf der schwarzen Liste</MudText>
-                </MudAlert>
-            }
-            else
-            {
-                <MudAlert Severity="Severity.Success" Class="mb-3">
-                    <MudText data-testid="blacklist-status">Blacklisted: No</MudText>
-                    <MudText Typo="Typo.caption">Nicht auf der schwarzen Liste</MudText>
-                </MudAlert>
-            }
-
-            <MudGrid>
-                <MudItem xs="12" md="6">
-                    <ContactDetailsCard Contact="@item.Contact" />
-                </MudItem>
-
-                <MudItem xs="12" md="6">
-                    <AddressDetailsCard Address="@item.Address" />
-                </MudItem>
-            </MudGrid>
-
-            @if (item.Contact?.AvailableDates != null && item.Contact.AvailableDates.Any())
-            {
-                <MudDivider Class="my-3" />
-                <MudText Typo="Typo.h6" Class="mb-2">Available Dates</MudText>
-                <div>
-                    @foreach (var date in item.Contact.AvailableDates.OrderBy(d => d))
-                    {
-                        <MudChip T="string" Size="Size.Small" Class="mr-1 mb-1">@date.ToString("dd.MM.yyyy")</MudChip>
-                    }
-                </div>
-            }
-
-            <MudDivider Class="my-3" />
-
-            <MudText Typo="Typo.body2" Color="Color.Secondary">
-                <strong>Created:</strong> @item.CreatedAt.ToString("dd.MM.yyyy HH:mm")
-            </MudText>
-            <MudText Typo="Typo.body2" Color="Color.Secondary">
-                <strong>Updated:</strong> @item.UpdatedAt.ToString("dd.MM.yyyy HH:mm")
-            </MudText>
-        </MudPaper>
-
-        @if (item.SaveChickenRequests != null && item.SaveChickenRequests.Any())
-        {
-            <MudPaper Class="pa-4 my-4" Elevation="2">
-                <MudText Typo="Typo.h6" Class="mb-3">Save Chicken Requests (@item.SaveChickenRequests.Count)</MudText>
-                <SaveChickenRequestTable items="@item.SaveChickenRequests" OnItemsChanged="HandleRequestsChanged" ShowContactAndAddress="false" />
-            </MudPaper>
-        }
-
-        @if (item.SaveChickenDriveRequests != null && item.SaveChickenDriveRequests.Any())
-        {
-            <MudPaper Class="pa-4 my-4" Elevation="2">
-                <MudText Typo="Typo.h6" Class="mb-3">Drive Requests (@item.SaveChickenDriveRequests.Count)</MudText>
-                <SaveChickenDriveRequestTable items="@item.SaveChickenDriveRequests" OnItemsChanged="HandleRequestsChanged" ShowContactAndAddress="false" />
-            </MudPaper>
-        }
+        <PersonShow PersonId="Id"
+                   ContactTitle="@L["ContactPerson"]"
+                   AddressTitle="@L["Address"]" />
 
         <MudPaper Class="pa-4 my-4" Elevation="2">
-            <MudText Typo="Typo.h6" class="mb-3">Actions</MudText>
+            <MudText Typo="Typo.h6" class="mb-3">@L["Actions"]</MudText>
             <MudStack Row="true" Spacing="2">
                 <MudButton Variant="Variant.Filled"
                           Color="Color.Primary"
                           StartIcon="@Icons.Material.Filled.Edit"
                           OnClick="@(() => NavigationManager.NavigateTo($"/admin/persons/{Id}/edit"))">
-                    Edit
-                </MudButton>
-                <MudButton Variant="Variant.Filled"
-                          Color="Color.Success"
-                          StartIcon="@Icons.Material.Filled.Add"
-                          OnClick="OpenAddSaveChickenRequestDialog">
-                    Add Save Chicken Request
-                </MudButton>
-                <MudButton Variant="Variant.Filled"
-                          Color="Color.Secondary"
-                          StartIcon="@Icons.Material.Filled.Add"
-                          OnClick="OpenAddSaveChickenDriveRequestDialog">
-                    Add Drive Request
+                    @L["Edit"]
                 </MudButton>
                 <GenericDeleteDialog TDto="PersonDto" Model="item" OnDeleted="OnDeleted" />
                 <MudButton Variant="Variant.Outlined"
                           OnClick="@(() => NavigationManager.NavigateTo("/admin/persons"))">
-                    Back to List
+                    @L["BackToList"]
                 </MudButton>
             </MudStack>
         </MudPaper>
+
+        <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mt-2">
+            @L["Created"]: @item.CreatedAt.ToString("dd.MM.yyyy HH:mm") | @L["Updated"]: @item.UpdatedAt.ToString("dd.MM.yyyy HH:mm")
+        </MudText>
     }
     else if (Id > 0)
     {
         <MudPaper Class="pa-4">
             <MudProgressCircular Indeterminate="true" />
-            <MudText>Loading...</MudText>
+            <MudText>@L["Loading"]</MudText>
         </MudPaper>
     }
     else
     {
         <MudPaper Class="pa-4">
-            <MudText Color="Color.Error">Invalid person ID.</MudText>
+            <MudText Color="Color.Error">@L["InvalidPersonId"]</MudText>
         </MudPaper>
     }
 </MudContainer>
@@ -155,30 +71,11 @@
         {
             var service = DtoServiceFactory.Create<PersonDto, PersonSearch>();
             item = await service.GetByIdAsync(Id);
-            
-            // Manually load the requests since they're ignored in AutoMapper to prevent cycles
-            var saveChickenRequestService = DtoServiceFactory.Create<SaveChickenRequestDto, SaveChickenRequestSearch>();
-            var saveChickenRequestSearch = new SaveChickenRequestSearch 
-            { 
-                PersonId = Id,
-                PageSize = 100
-            };
-            var saveChickenRequestResult = await saveChickenRequestService.SearchAsync(saveChickenRequestSearch);
-            item.SaveChickenRequests = saveChickenRequestResult.Data;
-            
-            var saveChickenDriveRequestService = DtoServiceFactory.Create<SaveChickenDriveRequestDto, SaveChickenDriveRequestSearch>();
-            var saveChickenDriveRequestSearch = new SaveChickenDriveRequestSearch 
-            { 
-                PersonId = Id,
-                PageSize = 100
-            };
-            var saveChickenDriveRequestResult = await saveChickenDriveRequestService.SearchAsync(saveChickenDriveRequestSearch);
-            item.SaveChickenDriveRequests = saveChickenDriveRequestResult.Data;
 
             _breadcrumbs = new List<BreadcrumbItem>
             {
-                new BreadcrumbItem("Admin", href: "/"),
-                new BreadcrumbItem("Persons", href: "/admin/persons"),
+                new BreadcrumbItem(L["Admin"], href: "/"),
+                new BreadcrumbItem(L["Persons"], href: "/admin/persons"),
                 new BreadcrumbItem($"{item?.Contact?.FirstName} {item?.Contact?.LastName}", href: null, disabled: true)
             };
 
@@ -189,118 +86,5 @@
     private void OnDeleted()
     {
         NavigationManager.NavigateTo("/admin/persons");
-    }
-
-    private async Task OpenAddSaveChickenRequestDialog()
-    {
-        if (item == null || item.Id == 0)
-            return;
-
-        // Create a new SaveChickenRequestDto with the person preselected
-        var newRequest = new SaveChickenRequestDto
-        {
-            PersonId = item.Id,
-            Files = new List<StoredFileDto>()
-        };
-
-        var modelWithFiles = new ItemWithBrowserFiles<SaveChickenRequestDto>
-        {
-            Item = newRequest,
-            Files = new List<IBrowserFile>()
-        };
-
-        // Create the render fragment with PreSelectedPersonId parameter
-        RenderFragment<ItemWithBrowserFiles<SaveChickenRequestDto>> childContent = (editModel) => builder =>
-        {
-            builder.OpenComponent<SaveChickenRequestFormWithFiles>(0);
-            builder.AddAttribute(1, "EntityWithFiles", editModel);
-            builder.AddAttribute(2, "PreSelectedPersonId", item.Id);
-            builder.CloseComponent();
-        };
-
-        var parameters = new DialogParameters
-        {
-            { "Model", modelWithFiles },
-            { "ChildContent", childContent },
-            { "OnCreated", EventCallback.Factory.Create(this, HandleRequestCreated) }
-        };
-
-        var options = new DialogOptions { FullScreen = true, CloseButton = true, MaxWidth = MaxWidth.False };
-        await DialogService.ShowAsync<GenericCreateWithFilesDialog<SaveChickenRequestDto>>("Create Save Chicken Request", parameters, options);
-    }
-
-    private async Task OpenAddSaveChickenDriveRequestDialog()
-    {
-        if (item == null || item.Id == 0)
-            return;
-
-        // Create a new SaveChickenDriveRequestDto with the person preselected
-        var newRequest = new SaveChickenDriveRequestDto
-        {
-            PersonId = item.Id,
-            Files = new List<StoredFileDto>()
-        };
-
-        var modelWithFiles = new ItemWithBrowserFiles<SaveChickenDriveRequestDto>
-        {
-            Item = newRequest,
-            Files = new List<IBrowserFile>()
-        };
-
-        // Create the render fragment with PreSelectedPersonId parameter
-        RenderFragment<ItemWithBrowserFiles<SaveChickenDriveRequestDto>> childContent = (editModel) => builder =>
-        {
-            builder.OpenComponent<SaveChickenDriveRequestFormWithFiles>(0);
-            builder.AddAttribute(1, "EntityWithFiles", editModel);
-            builder.AddAttribute(2, "PreSelectedPersonId", item.Id);
-            builder.CloseComponent();
-        };
-
-        var parameters = new DialogParameters
-        {
-            { "Model", modelWithFiles },
-            { "ChildContent", childContent },
-            { "OnCreated", EventCallback.Factory.Create(this, HandleRequestCreated) }
-        };
-
-        var options = new DialogOptions { FullScreen = true, CloseButton = true, MaxWidth = MaxWidth.False };
-        await DialogService.ShowAsync<GenericCreateWithFilesDialog<SaveChickenDriveRequestDto>>("Create Drive Request", parameters, options);
-    }
-
-    private async Task HandleRequestCreated()
-    {
-        // Reload the person data to refresh the request lists
-        if (Id > 0)
-        {
-            var service = DtoServiceFactory.Create<PersonDto, PersonSearch>();
-            item = await service.GetByIdAsync(Id);
-            
-            // Manually load the requests since they're ignored in AutoMapper to prevent cycles
-            var saveChickenRequestService = DtoServiceFactory.Create<SaveChickenRequestDto, SaveChickenRequestSearch>();
-            var saveChickenRequestSearch = new SaveChickenRequestSearch 
-            { 
-                PersonId = Id,
-                PageSize = 100
-            };
-            var saveChickenRequestResult = await saveChickenRequestService.SearchAsync(saveChickenRequestSearch);
-            item.SaveChickenRequests = saveChickenRequestResult.Data;
-            
-            var saveChickenDriveRequestService = DtoServiceFactory.Create<SaveChickenDriveRequestDto, SaveChickenDriveRequestSearch>();
-            var saveChickenDriveRequestSearch = new SaveChickenDriveRequestSearch 
-            { 
-                PersonId = Id,
-                PageSize = 100
-            };
-            var saveChickenDriveRequestResult = await saveChickenDriveRequestService.SearchAsync(saveChickenDriveRequestSearch);
-            item.SaveChickenDriveRequests = saveChickenDriveRequestResult.Data;
-            
-            StateHasChanged();
-        }
-    }
-
-    private async Task HandleRequestsChanged()
-    {
-        // Reload the request lists when items are edited or deleted
-        await HandleRequestCreated();
     }
 }
