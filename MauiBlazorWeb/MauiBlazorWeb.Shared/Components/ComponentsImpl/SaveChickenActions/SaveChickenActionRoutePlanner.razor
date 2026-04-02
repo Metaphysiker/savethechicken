@@ -22,7 +22,8 @@
 
                     @foreach (var drivePlan in GetDriversByDateAndFarm(date, farm))
                     {
-                        <MudText Typo="Typo.h6">Fahrt: #@drivePlan.NumberOfDrive - Fahrer: @drivePlan.Driver.Person?.Contact?.FirstName @drivePlan.Driver.Person?.Contact?.LastName, Kapazität: @drivePlan.Driver.CapacityForChickens</MudText>
+                        var totalSelected = GetTotalSelectedAnimals(drivePlan);
+                        <MudText Typo="Typo.h6">Fahrt: #@drivePlan.NumberOfDrive - Fahrer: @drivePlan.Driver.Person?.Contact?.FirstName @drivePlan.Driver.Person?.Contact?.LastName, Kapazität: @totalSelected/@drivePlan.Driver.CapacityForChickens</MudText>
 
                         <MudGrid>
                             <MudItem xs="12" md="6">
@@ -265,12 +266,8 @@
         {
             @foreach(var farm in Farms)
             {
-                // All farms are already filtered by SaveChickenActionId, so they're all associated with these dates
-                var saveChickenRequestsForDate = copyOfRequests
-                    .Where(r => r.DatesForHandOver.Contains(date))
-                    .ToList();
-
-                var sortedRequests = saveChickenRequestsForDate
+                // All requests are associated with this SaveChickenAction, so they're available for all action dates
+                var sortedRequests = copyOfRequests
                     .Where(r => r.Person?.Address != null && !string.IsNullOrWhiteSpace(r.Person.Address.PostalCode))
                     .OrderBy(r => r.Person.Address.PostalCode)
                     .ToList();
@@ -339,6 +336,14 @@
         return drivePlans
             .Where(drp => drp.RouteDate == date && drp.Farm.Id == farm.Id)
             .ToList();
+    }
+
+    private int GetTotalSelectedAnimals(DrivePlan drivePlan)
+    {
+        var itemsInZone = _items.Where(i => i.Selector == drivePlan.Id.ToString());
+        return itemsInZone.Sum(item => 
+            item.saveChickenRequest.NumberOfChickensToBeSaved + 
+            item.saveChickenRequest.NumberOfRoostersToBeSaved);
     }
 
     private void setMapMarkers()

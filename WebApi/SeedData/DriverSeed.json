@@ -80,5 +80,128 @@
     "saveChickenActionId": null,
     "saveChickenAction": null,
     "files": []
+  },
+  {
+    "id": 0,
+    "createdAt": "2025-10-03T10:00:00",
+    "updatedAt": "2025-10-03T10:00:00",
+    "personId": null,
+    "person": {
+      "id": 0,
+      "createdAt": "2025-10-03T10:00:00",
+      "updatedAt": "2025-10-03T10:00:00",
+      "contact": {
+        "id": 0,
+        "createdAt": "2025-10-03T10:00:00",
+        "updatedAt": "2025-10-03T10:00:00",
+        "firstName": "Michael",
+        "lastName": "Keller",
+        "email": "michael.keller@example.ch",
+        "phoneNumber": "+41 79 555 66 77"
+      },
+      "contactId": 0,
+      "address": {
+        "id": 0,
+        "createdAt": "2025-10-03T10:00:00",
+        "updatedAt": "2025-10-03T10:00:00",
+        "street": "Hauptstrasse 45",
+        "city": "Winterthur",
+        "postalCode": "8400",
+        "geoCoordinate": {
+          "latitude": 47.500,
+          "longitude": 8.724
+        }
+      },
+      "addressId": 0
+    },
+    "carMake": "Mercedes Sprinter",
+    "message": "Großer Transporter verfügbar für viele Hühner.",
+    "capacityForChickens": 50,
+    "availableDates": [ "2026-04-27", "2026-04-29" ],
+    "saveChickenActionId": null,
+    "saveChickenAction": null,
+    "files": []
+  },
+  {
+    "id": 0,
+    "createdAt": "2025-10-04T11:00:00",
+    "updatedAt": "2025-10-04T11:00:00",
+    "personId": null,
+    "person": {
+      "id": 0,
+      "createdAt": "2025-10-04T11:00:00",
+      "updatedAt": "2025-10-04T11:00:00",
+      "contact": {
+        "id": 0,
+        "createdAt": "2025-10-04T11:00:00",
+        "updatedAt": "2025-10-04T11:00:00",
+        "firstName": "Lisa",
+        "lastName": "Meyer",
+        "email": "lisa.meyer@example.ch",
+        "phoneNumber": "+41 78 111 22 33"
+      },
+      "contactId": 0,
+      "address": {
+        "id": 0,
+        "createdAt": "2025-10-04T11:00:00",
+        "updatedAt": "2025-10-04T11:00:00",
+        "street": "Gartenweg 7",
+        "city": "Uster",
+        "postalCode": "8610",
+        "geoCoordinate": {
+          "latitude": 47.347,
+          "longitude": 8.716
+        }
+      },
+      "addressId": 0
+    },
+    "carMake": "Fiat Panda",
+    "message": "Kleines Auto, aber ich helfe gerne.",
+    "capacityForChickens": 10,
+    "availableDates": [ "2026-04-28", "2026-04-30" ],
+    "saveChickenActionId": null,
+    "saveChickenAction": null,
+    "files": []
+  },
+  {
+    "id": 0,
+    "createdAt": "2025-10-05T12:00:00",
+    "updatedAt": "2025-10-05T12:00:00",
+    "personId": null,
+    "person": {
+      "id": 0,
+      "createdAt": "2025-10-05T12:00:00",
+      "updatedAt": "2025-10-05T12:00:00",
+      "contact": {
+        "id": 0,
+        "createdAt": "2025-10-05T12:00:00",
+        "updatedAt": "2025-10-05T12:00:00",
+        "firstName": "Daniel",
+        "lastName": "Schneider",
+        "email": "daniel.schneider@example.ch",
+        "phoneNumber": "+41 79 444 55 66"
+      },
+      "contactId": 0,
+      "address": {
+        "id": 0,
+        "createdAt": "2025-10-05T12:00:00",
+        "updatedAt": "2025-10-05T12:00:00",
+        "street": "Seeweg 12",
+        "city": "Zürich",
+        "postalCode": "8001",
+        "geoCoordinate": {
+          "latitude": 47.3769,
+          "longitude": 8.5417
+        }
+      },
+      "addressId": 0
+    },
+    "carMake": "Ford Transit",
+    "message": "Mittelgroßer Van, all days available.",
+    "capacityForChickens": 25,
+    "availableDates": [ "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30" ],
+    "saveChickenActionId": null,
+    "saveChickenAction": null,
+    "files": []
   }
 ]

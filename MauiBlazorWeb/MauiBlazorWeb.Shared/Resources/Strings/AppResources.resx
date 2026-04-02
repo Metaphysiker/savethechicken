@@ -120,6 +120,9 @@
   <data name="B" xml:space="preserve">
     <value>swag</value>
   </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
   <data name="HomePage" xml:space="preserve">
     <value>Startseite</value>
   </data>
@@ -363,9 +366,6 @@
   <data name="Persons" xml:space="preserve">
     <value>Persons</value>
   </data>
-  <data name="Edit" xml:space="preserve">
-    <value>Edit</value>
-  </data>
   <data name="BackToList" xml:space="preserve">
     <value>Back to List</value>
   </data>
@@ -414,6 +414,69 @@
   <data name="Admin_EditPerson_AlertText" xml:space="preserve">
     <value>Edit person information and manage blacklist status.</value>
   </data>
+  <data name="Admin_Farms_Title" xml:space="preserve">
+    <value>Admin - Farms Management</value>
+  </data>
+  <data name="Admin_Farms_Management" xml:space="preserve">
+    <value>Admin - Farms Management</value>
+  </data>
+  <data name="Admin_Farms_AlertText" xml:space="preserve">
+    <value>Manage all farms.</value>
+  </data>
+  <data name="Admin_SaveChickenRequests_Title" xml:space="preserve">
+    <value>Admin - Save Chicken Requests Management</value>
+  </data>
+  <data name="Admin_SaveChickenRequests_Management" xml:space="preserve">
+    <value>Admin - Save Chicken Requests Management</value>
+  </data>
+  <data name="Admin_SaveChickenRequests_AlertText" xml:space="preserve">
+    <value>Manage all chicken save requests. Edit existing requests and link them to existing persons.</value>
+  </data>
+  <data name="Admin_SaveChickenDriveRequests_Title" xml:space="preserve">
+    <value>Admin - Drive Requests Management</value>
+  </data>
+  <data name="Admin_SaveChickenDriveRequests_Management" xml:space="preserve">
+    <value>Admin - Drive Requests Management</value>
+  </data>
+  <data name="Admin_SaveChickenDriveRequests_AlertText" xml:space="preserve">
+    <value>Manage all drive requests. Edit existing requests and link them to existing persons.</value>
+  </data>
+  <data name="Admin_SaveChickenActions_Title" xml:space="preserve">
+    <value>Admin - Save Chicken Actions Management</value>
+  </data>
+  <data name="Admin_SaveChickenActions_Management" xml:space="preserve">
+    <value>Admin - Save Chicken Actions Management</value>
+  </data>
+  <data name="Admin_SaveChickenActions_AlertText" xml:space="preserve">
+    <value>Manage all save chicken actions (rescue events).</value>
+  </data>
+  <data name="Admin_Setup_Title" xml:space="preserve">
+    <value>Admin - Database Setup</value>
+  </data>
+  <data name="Admin_Setup_Heading" xml:space="preserve">
+    <value>Database Setup &amp; Seeding</value>
+  </data>
+  <data name="Admin_Setup_WarningText" xml:space="preserve">
+    <value>These actions will modify the database. Use with caution!</value>
+  </data>
+  <data name="Admin_Setup_IdentityTitle" xml:space="preserve">
+    <value>Setup Identity</value>
+  </data>
+  <data name="Admin_Setup_IdentityDescription" xml:space="preserve">
+    <value>Creates roles and admin users for authentication.</value>
+  </data>
+  <data name="Admin_Setup_IdentityButton" xml:space="preserve">
+    <value>Setup Identity</value>
+  </data>
+  <data name="Admin_Setup_SeedTitle" xml:space="preserve">
+    <value>Seed Test Data</value>
+  </data>
+  <data name="Admin_Setup_SeedDescription" xml:space="preserve">
+    <value>Creates test data including SaveChickenAction, farms, and requests.</value>
+  </data>
+  <data name="Admin_Setup_SeedButton" xml:space="preserve">
+    <value>Seed Test Data</value>
+  </data>
   <data name="RequestInformation" xml:space="preserve">
     <value>Request Information</value>
   </data>
@@ -422,23 +485,5 @@
   </data>
   <data name="NumberOfBoxes" xml:space="preserve">
     <value>Number of Boxes</value>
-  </data>
-  <data name="Color" xml:space="preserve">
-    <value>Color</value>
-  </data>
-  <data name="IsHandoverAtDifferentAddress" xml:space="preserve">
-    <value>Handover at Different Address</value>
-  </data>
-  <data name="AvailableDatesForHandover" xml:space="preserve">
-    <value>Available dates for handover:</value>
-  </data>
-  <data name="AdditionalMessage" xml:space="preserve">
-    <value>Additional message:</value>
-  </data>
-  <data name="Phone" xml:space="preserve">
-    <value>Phone:</value>
-  </data>
-  <data name="AvailableDrivingDates" xml:space="preserve">
-    <value>Available driving dates:</value>
   </data>
 </root>

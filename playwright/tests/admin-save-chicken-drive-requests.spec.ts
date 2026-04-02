@@ -95,7 +95,7 @@ test.describe('Admin Save Chicken Drive Request Management', () => {
       await page.goto('/admin/save-chicken-drive-requests', { waitUntil: 'networkidle' });
 
       // Wait for the page to load
-      await page.waitForSelector('h2', { state: 'visible', timeout: 10000 });
+      await page.waitForSelector('h3', { state: 'visible', timeout: 10000 });
 
       // Search for the request (supports German "Suche" and English "Search")
       await page.getByLabel(/suche|search/i).fill(testFirstName);
@@ -393,7 +393,7 @@ test.describe('Admin Save Chicken Drive Request Management', () => {
       await page.goto('/admin/save-chicken-drive-requests', { waitUntil: 'networkidle' });
 
       // Wait for the page to load
-      await page.waitForSelector('h2', { state: 'visible', timeout: 10000 });
+      await page.waitForSelector('h3', { state: 'visible', timeout: 10000 });
 
       // Search using unique CarMake
       await page.getByLabel(/suche|search/i).fill(uniqueCarMake);
@@ -576,15 +576,18 @@ test.describe('Admin Save Chicken Drive Request Management', () => {
     // Delete the request
     const deleteButton = page.getByTestId('delete-button').first();
     await deleteButton.click();
+
+    // Wait for the delete confirmation dialog to appear
+    await page.waitForSelector('.mud-dialog-container', { state: 'visible', timeout: 5000 });
     
-    // Wait for confirmation dialog and confirm
-    const confirmButton = page.getByRole('button', { name: /ja|yes|delete|löschen/i });
+    // Wait for confirmation button and confirm
+    const confirmButton = page.getByTestId('confirm-delete-button');
     await confirmButton.waitFor({ state: 'visible', timeout: 5000 });
     await confirmButton.click();
-    
+
     // Wait for confirmation dialog to close
-    await confirmButton.waitFor({ state: 'hidden', timeout: 5000 });
-    
+    await page.waitForSelector('.mud-dialog-container', { state: 'hidden', timeout: 5000 });
+
     // Wait for the data to be gone (row is removed from table)
     await expect(page.getByText('Toyota Prius')).not.toBeVisible({ timeout: 5000 });
     await expect(page.getByText('Drive Requests')).not.toBeVisible();

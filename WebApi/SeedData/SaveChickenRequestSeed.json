@@ -32,7 +32,6 @@
       },
       "addressId": 0
     },
-    "isHandoverAtDifferentAddress": false,
     "addressForHandOver": null,
     "addressForHandOverId": null,
     "numberOfChickensToBeSaved": 3,
@@ -45,7 +44,6 @@
     "message": "Erste Hühner für unseren Garten.",
     "saveChickenActionId": null,
     "saveChickenAction": null,
-    "datesForHandOver": [ "2026-04-27", "2026-04-28" ],
     "color": "Grün",
     "files": [],
     "blackListedPersonIds": []
@@ -83,7 +81,6 @@
       },
       "addressId": 0
     },
-    "isHandoverAtDifferentAddress": false,
     "addressForHandOver": null,
     "addressForHandOverId": null,
     "numberOfChickensToBeSaved": 4,
@@ -96,7 +93,6 @@
     "message": "Unser Stall ist bereit.",
     "saveChickenActionId": null,
     "saveChickenAction": null,
-    "datesForHandOver": [ "2026-04-27" ],
     "color": "Blau",
     "files": [],
     "blackListedPersonIds": []
@@ -133,7 +129,6 @@
       },
       "addressId": 0
     },
-    "isHandoverAtDifferentAddress": true,
     "addressForHandOver": {
       "id": 0,
       "createdAt": "2025-11-20T10:15:00",
@@ -157,7 +152,6 @@
     "message": "Abholung in Schlieren bevorzugt.",
     "saveChickenActionId": null,
     "saveChickenAction": null,
-    "datesForHandOver": [ "2026-04-28", "2026-04-29", "2026-04-30" ],
     "color": "Violett",
     "files": [],
     "blackListedPersonIds": []
@@ -195,7 +189,6 @@
       },
       "addressId": 0
     },
-    "isHandoverAtDifferentAddress": false,
     "addressForHandOver": null,
     "addressForHandOverId": null,
     "numberOfChickensToBeSaved": 5,
@@ -208,7 +201,6 @@
     "message": "Wir haben bereits gerettete Hühner.",
     "saveChickenActionId": null,
     "saveChickenAction": null,
-    "datesForHandOver": [ "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30" ],
     "color": "Orange",
     "files": [],
     "blackListedPersonIds": []
@@ -246,7 +238,6 @@
       },
       "addressId": 0
     },
-    "isHandoverAtDifferentAddress": false,
     "addressForHandOver": null,
     "addressForHandOverId": null,
     "numberOfChickensToBeSaved": 2,
@@ -259,8 +250,203 @@
     "message": "Ideal für zwei Hühner.",
     "saveChickenActionId": null,
     "saveChickenAction": null,
-    "datesForHandOver": [ "2026-04-29" ],
     "color": "Gelb",
+    "files": [],
+    "blackListedPersonIds": []
+  },
+  {
+    "id": 0,
+    "createdAt": "2025-11-21T09:00:00",
+    "updatedAt": "2025-11-21T09:00:00",
+    "personId": null,
+    "person": {
+      "id": 0,
+      "createdAt": "2025-11-21T08:50:00",
+      "updatedAt": "2025-11-21T08:50:00",
+      "contact": {
+        "id": 0,
+        "createdAt": "2025-11-21T08:50:00",
+        "updatedAt": "2025-11-21T08:50:00",
+        "firstName": "Andrea",
+        "lastName": "Müller",
+        "email": "andrea.mueller@example.ch",
+        "phoneNumber": "+41 44 222 33 44"
+      },
+      "contactId": 0,
+      "address": {
+        "id": 0,
+        "createdAt": "2025-12-05T11:30:00",
+        "updatedAt": "2025-12-05T11:30:00",
+        "street": "Bergstrasse 5",
+        "city": "Winterthur",
+        "postalCode": "8400",
+        "geoCoordinate": {
+          "latitude": 47.500,
+          "longitude": 8.724
+        }
+      },
+      "addressId": 0
+    },
+    "addressForHandOver": null,
+    "addressForHandOverId": null,
+    "numberOfChickensToBeSaved": 6,
+    "numberOfRoostersToBeSaved": 0,
+    "numberOfBoxes": 2,
+    "descriptionOfPlaceForChickens": "Großzügiger Garten mit Hühnerstall",
+    "acceptTermsAndConditions": true,
+    "alreadyReceivedChickenPreviously": false,
+    "confirmThatIFulfillCriteria": true,
+    "message": "Platz für mehrere Hühner vorhanden.",
+    "saveChickenActionId": null,
+    "saveChickenAction": null,
+    "color": "Rosa",
+    "files": [],
+    "blackListedPersonIds": []
+  },
+  {
+    "id": 0,
+    "createdAt": "2025-11-21T10:00:00",
+    "updatedAt": "2025-11-21T10:00:00",
+    "personId": null,
+    "person": {
+      "id": 0,
+      "createdAt": "2025-11-21T09:50:00",
+      "updatedAt": "2025-11-21T09:50:00",
+      "contact": {
+        "id": 0,
+        "createdAt": "2025-11-21T09:50:00",
+        "updatedAt": "2025-11-21T09:50:00",
+        "firstName": "Thomas",
+        "lastName": "Weber",
+        "email": "thomas.weber@example.ch",
+        "phoneNumber": "+41 44 333 44 55"
+      },
+      "contactId": 0,
+      "address": {
+        "id": 0,
+        "createdAt": "2025-12-05T11:30:00",
+        "updatedAt": "2025-12-05T11:30:00",
+        "street": "Dorfplatz 3",
+        "city": "Dübendorf",
+        "postalCode": "8600",
+        "geoCoordinate": {
+          "latitude": 47.397,
+          "longitude": 8.619
+        }
+      },
+      "addressId": 0
+    },
+    "addressForHandOver": null,
+    "addressForHandOverId": null,
+    "numberOfChickensToBeSaved": 3,
+    "numberOfRoostersToBeSaved": 1,
+    "numberOfBoxes": 1,
+    "descriptionOfPlaceForChickens": "Kleiner Hof am Dorfrand",
+    "acceptTermsAndConditions": true,
+    "alreadyReceivedChickenPreviously": true,
+    "confirmThatIFulfillCriteria": true,
+    "message": "Erfahrung mit Hühnerhaltung vorhanden.",
+    "saveChickenActionId": null,
+    "saveChickenAction": null,
+    "color": "Braun",
+    "files": [],
+    "blackListedPersonIds": []
+  },
+  {
+    "id": 0,
+    "createdAt": "2025-11-21T11:00:00",
+    "updatedAt": "2025-11-21T11:00:00",
+    "personId": null,
+    "person": {
+      "id": 0,
+      "createdAt": "2025-11-21T10:50:00",
+      "updatedAt": "2025-11-21T10:50:00",
+      "contact": {
+        "id": 0,
+        "createdAt": "2025-11-21T10:50:00",
+        "updatedAt": "2025-11-21T10:50:00",
+        "firstName": "Julia",
+        "lastName": "Fischer",
+        "email": "julia.fischer@example.ch",
+        "phoneNumber": "+41 44 444 55 66"
+      },
+      "contactId": 0,
+      "address": {
+        "id": 0,
+        "createdAt": "2025-12-05T11:30:00",
+        "updatedAt": "2025-12-05T11:30:00",
+        "street": "Seestrasse 88",
+        "city": "Thalwil",
+        "postalCode": "8800",
+        "geoCoordinate": {
+          "latitude": 47.292,
+          "longitude": 8.563
+        }
+      },
+      "addressId": 0
+    },
+    "addressForHandOver": null,
+    "addressForHandOverId": null,
+    "numberOfChickensToBeSaved": 4,
+    "numberOfRoostersToBeSaved": 0,
+    "numberOfBoxes": 2,
+    "descriptionOfPlaceForChickens": "Garten mit Seeblick",
+    "acceptTermsAndConditions": true,
+    "alreadyReceivedChickenPreviously": false,
+    "confirmThatIFulfillCriteria": true,
+    "message": "Freue mich auf Hühner in Seenähe.",
+    "saveChickenActionId": null,
+    "saveChickenAction": null,
+    "color": "Türkis",
+    "files": [],
+    "blackListedPersonIds": []
+  },
+  {
+    "id": 0,
+    "createdAt": "2025-11-21T12:00:00",
+    "updatedAt": "2025-11-21T12:00:00",
+    "personId": null,
+    "person": {
+      "id": 0,
+      "createdAt": "2025-11-21T11:50:00",
+      "updatedAt": "2025-11-21T11:50:00",
+      "contact": {
+        "id": 0,
+        "createdAt": "2025-11-21T11:50:00",
+        "updatedAt": "2025-11-21T11:50:00",
+        "firstName": "Marco",
+        "lastName": "Schmid",
+        "email": "marco.schmid@example.ch",
+        "phoneNumber": "+41 44 555 66 77"
+      },
+      "contactId": 0,
+      "address": {
+        "id": 0,
+        "createdAt": "2025-12-05T11:30:00",
+        "updatedAt": "2025-12-05T11:30:00",
+        "street": "Landstrasse 42",
+        "city": "Regensdorf",
+        "postalCode": "8105",
+        "geoCoordinate": {
+          "latitude": 47.431,
+          "longitude": 8.465
+        }
+      },
+      "addressId": 0
+    },
+    "addressForHandOver": null,
+    "addressForHandOverId": null,
+    "numberOfChickensToBeSaved": 5,
+    "numberOfRoostersToBeSaved": 0,
+    "numberOfBoxes": 2,
+    "descriptionOfPlaceForChickens": "Ländlicher Garten mit viel Platz",
+    "acceptTermsAndConditions": true,
+    "alreadyReceivedChickenPreviously": false,
+    "confirmThatIFulfillCriteria": true,
+    "message": "Ideal für Hühner.",
+    "saveChickenActionId": null,
+    "saveChickenAction": null,
+    "color": "Lila",
     "files": [],
     "blackListedPersonIds": []
   }

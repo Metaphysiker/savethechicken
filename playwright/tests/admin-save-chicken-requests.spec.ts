@@ -82,7 +82,6 @@ test.describe('Admin Save Chicken Request Management', () => {
         numberOfRoosters: '1',
         description: 'Large garden with secure chicken coop',
         alreadyReceivedChickensBefore: false,
-        datesForHandOver: datesToSelect,
         message: 'Looking forward to helping chickens!',
         confirmCriteria: true,
         acceptTerms: true,
@@ -187,7 +186,6 @@ test.describe('Admin Save Chicken Request Management', () => {
         numberOfRoosters: '0',
         description: 'Original description',
         message: 'Original message',
-        datesForHandOver: [dayOfMonth],
       });
 
       await page.getByRole('button', { name: /erstellen/i }).click();
@@ -336,7 +334,6 @@ test.describe('Admin Save Chicken Request Management', () => {
         numberOfChickens: '3',
         numberOfRoosters: '0',
         description: 'This request will be deleted',
-        datesForHandOver: [dayOfMonth],
       });
 
       await page.getByRole('button', { name: /erstellen/i }).click();
@@ -505,7 +502,6 @@ test.describe('Admin Save Chicken Request Management', () => {
       numberOfRoosters: '2',
       description: 'Nice farm with lots of space',
       message: 'Happy to help!',
-      datesForHandOver: [action.dates[0]],
       confirmCriteria: true,
       acceptTerms: true,
     });
@@ -533,15 +529,18 @@ test.describe('Admin Save Chicken Request Management', () => {
     // Delete the request
     const deleteButton = page.getByTestId('delete-button').first();
     await deleteButton.click();
+
+    // Wait for the delete confirmation dialog to appear
+    await page.waitForSelector('.mud-dialog-container', { state: 'visible', timeout: 5000 });
     
-    // Wait for confirmation dialog and confirm
-    const confirmButton = page.getByRole('button', { name: /ja|yes|delete|löschen/i });
+    // Wait for confirmation button and confirm
+    const confirmButton = page.getByTestId('confirm-delete-button');
     await confirmButton.waitFor({ state: 'visible', timeout: 5000 });
     await confirmButton.click();
-    
+
     // Wait for confirmation dialog to close
-    await confirmButton.waitFor({ state: 'hidden', timeout: 5000 });
-    
+    await page.waitForSelector('.mud-dialog-container', { state: 'hidden', timeout: 5000 });
+
     // Wait for the data to be gone (row is removed from table)
     await expect(page.getByText('Updated: Even more space now')).not.toBeVisible({ timeout: 5000 });
     await expect(page.getByText('Save Chicken Requests')).not.toBeVisible();

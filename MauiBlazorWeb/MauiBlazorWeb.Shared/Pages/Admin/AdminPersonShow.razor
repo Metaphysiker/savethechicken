@@ -29,7 +29,7 @@
                           Color="Color.Primary"
                           StartIcon="@Icons.Material.Filled.Edit"
                           OnClick="@(() => NavigationManager.NavigateTo($"/admin/persons/{Id}/edit"))">
-                    @L["Edit"]
+                    @L["edit"]
                 </MudButton>
                 <GenericDeleteDialog TDto="PersonDto" Model="item" OnDeleted="OnDeleted" />
                 <MudButton Variant="Variant.Outlined"

@@ -3,14 +3,17 @@
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<AppResources> L
 
-<PageTitle>Admin - Save Chicken Requests Management</PageTitle>
+<PageTitle>@L["Admin_SaveChickenRequests_Title"]</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
-    <h2>Admin - Save Chicken Requests Management</h2>
+    <MudText Typo="Typo.h3" Class="mb-4">@L["Admin_SaveChickenRequests_Management"]</MudText>
 
     <MudAlert Severity="Severity.Info" Dense="true" Class="my-4">
-        <strong>Admin Mode:</strong> Manage all chicken save requests. Edit existing requests and link them to existing persons.
+        <strong>@L["Admin_Persons_AlertTitle"]</strong> @L["Admin_SaveChickenRequests_AlertText"]
     </MudAlert>
 
     <GenericSearch TDto="SaveChickenRequestDto" TSearchDto="SaveChickenRequestSearch">

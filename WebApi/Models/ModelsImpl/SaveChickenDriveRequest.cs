@@ -10,8 +10,8 @@ namespace WebApi.Models.ModelsImpl
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
-        public int PersonId { get; set; }
-        public Person Person { get; set; } = null!;
+        public int? PersonId { get; set; }
+        public Person? Person { get; set; }
 
         public string CarMake { get; set; } = string.Empty;
         public string Message { get; set; } = string.Empty;

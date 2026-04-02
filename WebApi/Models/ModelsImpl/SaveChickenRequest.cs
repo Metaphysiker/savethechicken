@@ -14,7 +14,6 @@ namespace WebApi.Models.ModelsImpl
         public int? PersonId { get; set; }
         public Person? Person { get; set; }
 
-        public bool IsHandoverAtDifferentAddress { get; set; } = false;
         public Address? AddressForHandOver { get; set; }
         public int? AddressForHandOverId { get; set; }
         public int NumberOfChickensToBeSaved { get; set; } = 0;
@@ -27,7 +26,6 @@ namespace WebApi.Models.ModelsImpl
         public string Message { get; set; } = string.Empty;
         public int? SaveChickenActionId { get; set; }
         public SaveChickenAction? SaveChickenAction { get; set; }
-        public List<DateOnly> DatesForHandOver { get; set; } = new List<DateOnly>();
         public string Color { get; set; } = string.Empty;
         public List<StoredFile> Files { get; set; }
         public List<int> BlackListedPersonIds { get; set; } = new List<int>();

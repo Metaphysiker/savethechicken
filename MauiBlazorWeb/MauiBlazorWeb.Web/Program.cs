@@ -10,6 +10,7 @@ using MudBlazor.Services;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<AuthenticationHandler>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<AwsFileService>();
 builder.Services.AddScoped<SaveChickenActionService>();
@@ -27,12 +28,22 @@ builder.Services.AddSingleton<IFormFactor, FormFactor>();
 
 // Server-side API calls use internal Docker hostname
 // Client-side (browser) gets API URL from /api/config endpoint
-var serverApiUrl = Environment.GetEnvironmentVariable("SERVER_API_BASE_URL") 
-    ?? builder.Configuration["SERVER_API_BASE_URL"] 
+var serverApiUrl = Environment.GetEnvironmentVariable("SERVER_API_BASE_URL")
+    ?? builder.Configuration["SERVER_API_BASE_URL"]
     ?? "http://localhost:8081/";
 
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(serverApiUrl) });
+// Register HttpClient with AuthenticationHandler
+builder.Services.AddScoped(sp =>
+{
+    var handler = sp.GetRequiredService<AuthenticationHandler>();
+    handler.InnerHandler = new HttpClientHandler();
+    var httpClient = new HttpClient(handler)
+    {
+        BaseAddress = new Uri(serverApiUrl)
+    };
+    return httpClient;
+});
 builder.Services.AddScoped<GenericDtoServiceFactory>(sp =>
 {
     var httpClient = sp.GetRequiredService<HttpClient>();

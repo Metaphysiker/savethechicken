@@ -106,10 +106,9 @@ namespace WebApi.Controllers.ControllersImpl
             };
             _db.Addresses.Add(address);
 
-            // Create handover Address if different
+            // Create handover Address if provided
             Address? handoverAddress = null;
-            if (publicDto.IsHandoverAtDifferentAddress &&
-                !string.IsNullOrEmpty(publicDto.HandoverStreet) &&
+            if (!string.IsNullOrEmpty(publicDto.HandoverStreet) &&
                 !string.IsNullOrEmpty(publicDto.HandoverCity) &&
                 !string.IsNullOrEmpty(publicDto.HandoverPostalCode))
             {
@@ -150,10 +149,8 @@ namespace WebApi.Controllers.ControllersImpl
                 ConfirmThatIFulfillCriteria = publicDto.ConfirmThatIFulfillCriteria,
                 Message = publicDto.Message,
                 SaveChickenActionId = publicDto.SaveChickenActionId,
-                IsHandoverAtDifferentAddress = publicDto.IsHandoverAtDifferentAddress,
                 AddressForHandOverId = handoverAddress?.Id,
                 NumberOfBoxes = publicDto.NumberOfBoxes,
-                DatesForHandOver = publicDto.DatesForHandOver,
                 Color = publicDto.Color,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
@@ -251,9 +248,7 @@ namespace WebApi.Controllers.ControllersImpl
             existing.ConfirmThatIFulfillCriteria = dto.ConfirmThatIFulfillCriteria;
             existing.Message = dto.Message;
             existing.SaveChickenActionId = dto.SaveChickenActionId;
-            existing.DatesForHandOver = dto.DatesForHandOver;
             existing.Color = dto.Color;
-            existing.IsHandoverAtDifferentAddress = dto.IsHandoverAtDifferentAddress;
             existing.UpdatedAt = DateTime.UtcNow;
 
             // Attach and mark as modified

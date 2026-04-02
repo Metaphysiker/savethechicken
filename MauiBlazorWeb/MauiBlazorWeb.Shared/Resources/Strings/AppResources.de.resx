@@ -120,6 +120,9 @@
   <data name="B" xml:space="preserve">
     <value>swag</value>
   </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Warnung</value>
+  </data>
   <data name="HomePage" xml:space="preserve">
     <value>Startseite</value>
   </data>
@@ -362,9 +365,6 @@
   <data name="Persons" xml:space="preserve">
     <value>Personen</value>
   </data>
-  <data name="Edit" xml:space="preserve">
-    <value>Bearbeiten</value>
-  </data>
   <data name="BackToList" xml:space="preserve">
     <value>Zurück zur Liste</value>
   </data>
@@ -413,6 +413,69 @@
   <data name="Admin_EditPerson_AlertText" xml:space="preserve">
     <value>Bearbeiten Sie Personeninformationen und verwalten Sie den Sperrstatus.</value>
   </data>
+  <data name="Admin_Farms_Title" xml:space="preserve">
+    <value>Admin - Betriebe-Verwaltung</value>
+  </data>
+  <data name="Admin_Farms_Management" xml:space="preserve">
+    <value>Admin - Betriebe-Verwaltung</value>
+  </data>
+  <data name="Admin_Farms_AlertText" xml:space="preserve">
+    <value>Verwalten Sie alle Betriebe.</value>
+  </data>
+  <data name="Admin_SaveChickenRequests_Title" xml:space="preserve">
+    <value>Admin - Platzangebote-Verwaltung</value>
+  </data>
+  <data name="Admin_SaveChickenRequests_Management" xml:space="preserve">
+    <value>Admin - Platzangebote-Verwaltung</value>
+  </data>
+  <data name="Admin_SaveChickenRequests_AlertText" xml:space="preserve">
+    <value>Verwalten Sie alle Platzangebote. Bearbeiten Sie bestehende Anfragen und verknüpfen Sie sie mit Personen.</value>
+  </data>
+  <data name="Admin_SaveChickenDriveRequests_Title" xml:space="preserve">
+    <value>Admin - Fahrangebote-Verwaltung</value>
+  </data>
+  <data name="Admin_SaveChickenDriveRequests_Management" xml:space="preserve">
+    <value>Admin - Fahrangebote-Verwaltung</value>
+  </data>
+  <data name="Admin_SaveChickenDriveRequests_AlertText" xml:space="preserve">
+    <value>Verwalten Sie alle Fahrangebote. Bearbeiten Sie bestehende Anfragen und verknüpfen Sie sie mit Personen.</value>
+  </data>
+  <data name="Admin_SaveChickenActions_Title" xml:space="preserve">
+    <value>Admin - Rettungsaktionen-Verwaltung</value>
+  </data>
+  <data name="Admin_SaveChickenActions_Management" xml:space="preserve">
+    <value>Admin - Rettungsaktionen-Verwaltung</value>
+  </data>
+  <data name="Admin_SaveChickenActions_AlertText" xml:space="preserve">
+    <value>Verwalten Sie alle Rettungsaktionen.</value>
+  </data>
+  <data name="Admin_Setup_Title" xml:space="preserve">
+    <value>Admin - Datenbank-Setup</value>
+  </data>
+  <data name="Admin_Setup_Heading" xml:space="preserve">
+    <value>Datenbank-Setup &amp; Daten</value>
+  </data>
+  <data name="Admin_Setup_WarningText" xml:space="preserve">
+    <value>Diese Aktionen werden die Datenbank ändern. Mit Vorsicht verwenden!</value>
+  </data>
+  <data name="Admin_Setup_IdentityTitle" xml:space="preserve">
+    <value>Identity einrichten</value>
+  </data>
+  <data name="Admin_Setup_IdentityDescription" xml:space="preserve">
+    <value>Erstellt Rollen und Admin-Benutzer für die Authentifizierung.</value>
+  </data>
+  <data name="Admin_Setup_IdentityButton" xml:space="preserve">
+    <value>Identity einrichten</value>
+  </data>
+  <data name="Admin_Setup_SeedTitle" xml:space="preserve">
+    <value>Testdaten hinzufügen</value>
+  </data>
+  <data name="Admin_Setup_SeedDescription" xml:space="preserve">
+    <value>Erstellt Testdaten inklusive Rettungsaktionen, Betriebe und Anfragen.</value>
+  </data>
+  <data name="Admin_Setup_SeedButton" xml:space="preserve">
+    <value>Testdaten hinzufügen</value>
+  </data>
   <data name="RequestInformation" xml:space="preserve">
     <value>Anfrage-Informationen</value>
   </data>
@@ -421,23 +484,5 @@
   </data>
   <data name="NumberOfBoxes" xml:space="preserve">
     <value>Anzahl Boxen</value>
-  </data>
-  <data name="Color" xml:space="preserve">
-    <value>Farbe</value>
-  </data>
-  <data name="IsHandoverAtDifferentAddress" xml:space="preserve">
-   <value>Übergabe an anderer Adresse</value>
-  </data>
-  <data name="AvailableDatesForHandover" xml:space="preserve">
-    <value>Verfügbare Termine für die Übergabe:</value>
-  </data>
-  <data name="AdditionalMessage" xml:space="preserve">
-    <value>Zusätzliche Nachricht:</value>
-  </data>
-  <data name="Phone" xml:space="preserve">
-    <value>Telefon:</value>
-  </data>
-  <data name="AvailableDrivingDates" xml:space="preserve">
-    <value>Verfügbare Fahrtage:</value>
   </data>
 </root>

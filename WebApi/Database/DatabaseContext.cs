@@ -117,13 +117,6 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
             entity.HasIndex(e => e.SearchVector)
     .HasMethod("GIN");
 
-            entity.Property(e => e.DatesForHandOver)
-                .HasConversion(
-                    v => string.Join(";", v.Select(d => d.ToString("yyyy-MM-dd"))),
-                    v => v.Split(';', StringSplitOptions.RemoveEmptyEntries)
-                        .Select(s => DateOnly.Parse(s)).ToList()
-                );
-
             entity.Property(e => e.BlackListedPersonIds)
                 .HasConversion(
                     v => string.Join(";", v),

@@ -83,6 +83,20 @@ public class SetupController : ControllerBase
             await _db.SaveChangesAsync();
         }
 
+        // Read and seed SaveChickenDriveRequests (Drivers)
+        var drivers = await ReadSeedFile<SaveChickenDriveRequest>("DriverSeed.json", options);
+        if (drivers != null && drivers.Count > 0)
+        {
+            // Assign the action ID to each driver
+            foreach (var driver in drivers)
+            {
+                driver.SaveChickenActionId = action.Id;
+            }
+
+            _db.SaveChickenDriveRequests.AddRange(drivers);
+            await _db.SaveChangesAsync();
+        }
+
         return Ok();
     }
 

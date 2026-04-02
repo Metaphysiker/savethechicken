@@ -1,5 +1,4 @@
-﻿@page "/admin/save-chicken-actions"
-@page "/admin/save-chicken-actions/{id:int}"
+﻿@page "/admin/save-chicken-actions/{id:int}"
 
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenDriveRequests
@@ -14,8 +13,6 @@
 
 <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
     <h3>Rettungs-Aktionen</h3>
-
-    <MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions.SaveChickenActionSelector @bind-SelectedActionId="selectedActionId" OnActionSelected="OnActionSelected" />
 
     @if(selectedAction != null)
     {
@@ -153,8 +150,15 @@
 
         if (id.HasValue)
         {
-            selectedActionId = id.Value;
-            UpdateSearches();
+            // Load the SaveChickenAction by ID
+            var service = DtoServiceFactory.Create<SaveChickenActionDto, SaveChickenActionSearch>();
+            selectedAction = await service.GetByIdAsync(id.Value);
+
+            if (selectedAction != null)
+            {
+                selectedActionId = selectedAction.Id;
+                UpdateSearches();
+            }
         }
         else
         {

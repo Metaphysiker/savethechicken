@@ -1,5 +1,4 @@
 import { Page } from '@playwright/test';
-import { getMultiDateSelector } from './multi-date-selector.helper';
 import { selectPerson } from './person-selector.helper';
 import { selectSaveChickenAction } from './save-chicken-action-selector.helper';
 
@@ -16,9 +15,6 @@ export interface AdminSaveChickenRequestFormData {
   numberOfRoosters: string;
   description: string;
   alreadyReceivedChickensBefore?: boolean;
-
-  // Dates
-  datesForHandOver?: number[];
 
   // Additional info
   message?: string;
@@ -50,16 +46,6 @@ export async function fillAdminSaveChickenRequestForm(page: Page, data: AdminSav
   // Check "already received chickens before" if specified
   if (data.alreadyReceivedChickensBefore) {
     await page.getByTestId('received-chickens-before').check();
-  }
-
-  // Select dates if provided
-  if (data.datesForHandOver && data.datesForHandOver.length > 0) {
-    const dateSelector = getMultiDateSelector(page);
-    if (data.datesForHandOver.length === 1) {
-      await dateSelector.selectDate(data.datesForHandOver[0]);
-    } else {
-      await dateSelector.selectDates(data.datesForHandOver);
-    }
   }
 
   // Fill message if provided

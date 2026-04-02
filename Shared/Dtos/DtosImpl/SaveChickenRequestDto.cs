@@ -35,14 +35,11 @@ namespace Shared.Dtos.DtosImpl
         public SaveChickenActionDto? SaveChickenAction { get; set; }
         public int? SaveChickenActionId { get; set; }
 
-        public bool IsHandoverAtDifferentAddress { get; set; } = false;
-
         [ValidateComplexType]
         public AddressDto? AddressForHandOver { get; set; }
         public int? AddressForHandOverId { get; set; }
         public int NumberOfBoxes { get; set; } = 0;
 
-        public List<DateOnly> DatesForHandOver { get; set; } = new List<DateOnly>();
         public string Color { get; set; } = String.Empty;
 
         public List<StoredFileDto> Files { get; set; }

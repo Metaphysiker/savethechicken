@@ -44,19 +44,6 @@
                 </MudText>
             }
 
-            @if (item.DatesForHandOver != null && item.DatesForHandOver.Any())
-            {
-                <MudText Typo="Typo.body2" Class="mt-3">
-                    <strong>@L["TransferDates"]</strong>
-                </MudText>
-                <div>
-                    @foreach (var date in item.DatesForHandOver.OrderBy(d => d))
-                    {
-                        <MudChip T="string" Size="Size.Small" Class="mr-1">@date.ToString("dd.MM.yyyy")</MudChip>
-                    }
-                </div>
-            }
-
             @if (!string.IsNullOrWhiteSpace(item.Message))
             {
                 <MudText Typo="Typo.body1" Class="mt-2">

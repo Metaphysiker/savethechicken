@@ -1,27 +1,30 @@
 @page "/admin/setup"
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
 @inject HttpClient Http
 @inject ISnackbar Snackbar
+@inject IStringLocalizer<AppResources> L
 
-<PageTitle>Admin - Database Setup</PageTitle>
+<PageTitle>@L["Admin_Setup_Title"]</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.Large" Class="mt-8">
     <MudPaper Class="pa-6" Elevation="2">
-        <MudText Typo="Typo.h3" Class="mb-4">Database Setup & Seeding</MudText>
+        <MudText Typo="Typo.h3" Class="mb-4">@L["Admin_Setup_Heading"]</MudText>
 
         <MudAlert Severity="Severity.Warning" Dense="true" Class="my-4">
-            <strong>Warning:</strong> These actions will modify the database. Use with caution!
+            <strong>@L["Warning"]:</strong> @L["Admin_Setup_WarningText"]
         </MudAlert>
 
         <MudGrid>
             <MudItem xs="12" md="6">
                 <MudPaper Class="pa-4" Elevation="1">
-                    <MudText Typo="Typo.h5" Class="mb-2">Setup Identity</MudText>
+                    <MudText Typo="Typo.h5" Class="mb-2">@L["Admin_Setup_IdentityTitle"]</MudText>
                     <MudText Typo="Typo.body2" Class="mb-4">
-                        Creates roles and admin users for authentication.
+                        @L["Admin_Setup_IdentityDescription"]
                     </MudText>
-                    <MudButton 
-                        Variant="Variant.Filled" 
-                        Color="Color.Primary" 
+                    <MudButton
+                        Variant="Variant.Filled"
+                        Color="Color.Primary"
                         OnClick="CallSetupEndpoint"
                         Disabled="@_isSetupLoading"
                         FullWidth="true"
@@ -29,11 +32,11 @@
                         @if (_isSetupLoading)
                         {
                             <MudProgressCircular Class="mr-2" Size="Size.Small" Indeterminate="true" />
-                            <span>Setting up...</span>
+                            <span>@L["Admin_Setup_IdentityButton"]...</span>
                         }
                         else
                         {
-                            <span>Setup Identity</span>
+                            <span>@L["Admin_Setup_IdentityButton"]</span>
                         }
                     </MudButton>
                 </MudPaper>
@@ -41,13 +44,13 @@
 
             <MudItem xs="12" md="6">
                 <MudPaper Class="pa-4" Elevation="1">
-                    <MudText Typo="Typo.h5" Class="mb-2">Seed Test Data</MudText>
+                    <MudText Typo="Typo.h5" Class="mb-2">@L["Admin_Setup_SeedTitle"]</MudText>
                     <MudText Typo="Typo.body2" Class="mb-4">
-                        Creates test data including SaveChickenAction, farms, and requests.
+                        @L["Admin_Setup_SeedDescription"]
                     </MudText>
-                    <MudButton 
-                        Variant="Variant.Filled" 
-                        Color="Color.Secondary" 
+                    <MudButton
+                        Variant="Variant.Filled"
+                        Color="Color.Secondary"
                         OnClick="CallSeedEndpoint"
                         Disabled="@_isSeedLoading"
                         FullWidth="true"
@@ -55,11 +58,11 @@
                         @if (_isSeedLoading)
                         {
                             <MudProgressCircular Class="mr-2" Size="Size.Small" Indeterminate="true" />
-                            <span>Seeding...</span>
+                            <span>@L["Admin_Setup_SeedButton"]...</span>
                         }
                         else
                         {
-                            <span>Seed Test Data</span>
+                            <span>@L["Admin_Setup_SeedButton"]</span>
                         }
                     </MudButton>
                 </MudPaper>

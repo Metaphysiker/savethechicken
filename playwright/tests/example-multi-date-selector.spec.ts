@@ -1,7 +1,8 @@
 import { test, expect } from '@playwright/test';
 import { getMultiDateSelector } from './helpers/multi-date-selector.helper';
 
-test.describe('Multi Date Selector Example', () => {
+// These tests are obsolete after removing DatesForHandOver from SaveChickenRequest
+test.describe.skip('Multi Date Selector Example', () => {
   test('should select and verify multiple dates', async ({ page }) => {
     // Navigate to a page with MultiDateOnlySelector component
     // Replace with your actual page path

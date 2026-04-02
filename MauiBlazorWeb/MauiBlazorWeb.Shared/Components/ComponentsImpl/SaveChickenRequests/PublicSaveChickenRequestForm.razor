@@ -179,41 +179,22 @@
         </MudItem>
     </MudPaper>
 
-    <!-- Handover Dates -->
-    @if (_saveChickenActionDto != null)
-    {
-        <MudPaper Class="pa-4 my-4" Elevation="2">
-            <MultiDateOnlySelector @bind-SelectedDates="Model.DatesForHandOver"
-                                  Text="Ich bin an diesen Tagen für die Übergabe erreichbar:"
-                                  MinDate="@minDate"
-                                  MaxDate="@maxDate" />
-        </MudPaper>
-    }
-
     <!-- Handover Address -->
     <MudPaper Class="pa-4 my-4" Elevation="2">
-        <MudItem Class="mb-3">
-            <MudCheckBox @bind-Value="Model.IsHandoverAtDifferentAddress"
-                        Label="Die Übergabe findet an einer anderen Adresse statt" />
-        </MudItem>
-
-        @if (Model.IsHandoverAtDifferentAddress)
-        {
-            <MudText Typo="Typo.subtitle2" Class="mb-2">Übergabe-Adresse</MudText>
-            <MudGrid>
-                <MudItem xs="12" sm="6">
-                    <MudTextField @bind-Value="Model.HandoverCity" Label="Ort" Variant="Variant.Outlined" />
-                </MudItem>
-                <MudItem xs="12" sm="6">
-                    <MudTextField @bind-Value="Model.HandoverPostalCode" Label="PLZ" Variant="Variant.Outlined" />
-                </MudItem>
-            </MudGrid>
-            <MudGrid>
-                <MudItem xs="12">
-                    <MudTextField @bind-Value="Model.HandoverStreet" Label="Strasse und Hausnummer" Variant="Variant.Outlined" />
-                </MudItem>
-            </MudGrid>
-        }
+        <MudText Typo="Typo.subtitle2" Class="mb-2">Übergabe-Adresse (optional, falls abweichend von Ihrer Adresse)</MudText>
+        <MudGrid>
+            <MudItem xs="12" sm="6">
+                <MudTextField @bind-Value="Model.HandoverCity" Label="Ort" Variant="Variant.Outlined" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudTextField @bind-Value="Model.HandoverPostalCode" Label="PLZ" Variant="Variant.Outlined" />
+            </MudItem>
+        </MudGrid>
+        <MudGrid>
+            <MudItem xs="12">
+                <MudTextField @bind-Value="Model.HandoverStreet" Label="Strasse und Hausnummer" Variant="Variant.Outlined" />
+            </MudItem>
+        </MudGrid>
     </MudPaper>
 
     <!-- Action Selector (hidden, auto-selected) -->

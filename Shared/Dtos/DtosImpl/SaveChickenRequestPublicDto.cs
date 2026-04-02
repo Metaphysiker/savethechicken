@@ -56,16 +56,12 @@ namespace Shared.Dtos.DtosImpl
 
         public int? SaveChickenActionId { get; set; }
 
-        public bool IsHandoverAtDifferentAddress { get; set; } = false;
-
         // Handover Address (if different from main address)
         public string? HandoverStreet { get; set; }
         public string? HandoverCity { get; set; }
         public string? HandoverPostalCode { get; set; }
 
         public int NumberOfBoxes { get; set; } = 0;
-
-        public List<DateOnly> DatesForHandOver { get; set; } = new List<DateOnly>();
 
         public string Color { get; set; } = string.Empty;
     }

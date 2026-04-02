@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
@@ -11,9 +12,11 @@ using NpgsqlTypes;
 namespace WebApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20260402114548_RemoveIsHandoverAtDifferentAddress")]
+    partial class RemoveIsHandoverAtDifferentAddress
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -485,7 +488,7 @@ namespace WebApi.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("PersonId")
+                    b.Property<int>("PersonId")
                         .HasColumnType("integer");
 
                     b.Property<int?>("SaveChickenActionId")
@@ -543,6 +546,10 @@ namespace WebApi.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DatesForHandOver")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("DescriptionOfPlaceForChickens")
                         .IsRequired()
@@ -762,7 +769,8 @@ namespace WebApi.Migrations
                     b.HasOne("WebApi.Models.ModelsImpl.Person", "Person")
                         .WithMany("SaveChickenDriveRequests")
                         .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("WebApi.Models.ModelsImpl.SaveChickenAction", "SaveChickenAction")
                         .WithMany("SaveChickenDriveRequests")

@@ -3,14 +3,17 @@
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<AppResources> L
 
-<PageTitle>Admin - Farms Management</PageTitle>
+<PageTitle>@L["Admin_Farms_Title"]</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
-    <h2>Admin - Farms Management</h2>
+    <MudText Typo="Typo.h3" Class="mb-4">@L["Admin_Farms_Management"]</MudText>
 
     <MudAlert Severity="Severity.Info" Dense="true" Class="my-4">
-        <strong>Admin Mode:</strong> Manage all farms.
+        <strong>@L["Admin_Persons_AlertTitle"]</strong> @L["Admin_Farms_AlertText"]
     </MudAlert>
 
     <GenericSearch TDto="FarmDto" TSearchDto="FarmSearch">

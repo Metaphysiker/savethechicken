@@ -24,7 +24,7 @@ export async function fillAdminSaveChickenDriveRequestFormPreselected(page: Page
   // Wait for form to be fully loaded
   await page.getByTestId('car-make').waitFor({ state: 'visible', timeout: 10000 });
   await page.waitForTimeout(500); // Additional wait for all components to load
-  
+
   // Fill SaveChickenDriveRequest's own fields
   await page.getByTestId('car-make').fill(data.carMake);
   await page.getByTestId('capacity-for-chickens').fill(data.capacityForChickens);
@@ -37,7 +37,7 @@ export async function fillAdminSaveChickenDriveRequestFormPreselected(page: Page
     // Wait for calendar to be visible before trying to select dates
     await page.locator('.mud-calendar').first().waitFor({ state: 'visible', timeout: 10000 });
     await page.waitForTimeout(500); // Additional wait for calendar to stabilize
-    
+
     const dateSelector = getMultiDateSelector(page);
     if (data.availableDates.length === 1) {
       await dateSelector.selectDate(data.availableDates[0]);

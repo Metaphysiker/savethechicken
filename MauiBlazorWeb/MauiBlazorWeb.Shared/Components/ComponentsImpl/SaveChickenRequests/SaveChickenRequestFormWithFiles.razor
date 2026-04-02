@@ -116,14 +116,8 @@
         <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.Color" Label="@L["Color"]" Variant="Variant.Outlined" />
         <ValidationMessage For="@(() => EntityWithFiles.Item.Color)" />
     </MudItem>
-
-    <MudItem Class="my-2">
-        <MudCheckBox ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.IsHandoverAtDifferentAddress" Label="@L["IsHandoverAtDifferentAddress"]"></MudCheckBox>
-        <ValidationMessage For="@(() => EntityWithFiles.Item.IsHandoverAtDifferentAddress)" />
-    </MudItem>
 </MudPaper>
 
-<MultiDateOnlySelector @bind-SelectedDates="EntityWithFiles.Item.DatesForHandOver" Text="@L["AvailableDatesForHandover"]" MinDate="@minDate" MaxDate="@maxDate" />
 
 <StoredFilesEdit @bind-Files="EntityWithFiles.Item.Files" />
 
