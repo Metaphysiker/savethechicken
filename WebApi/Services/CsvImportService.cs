@@ -226,10 +226,10 @@ public class CsvImportService
                     PostalCode = string.Empty
                 }
             };
-            
+
             dbContext.Farms.Add(farm);
         }
-        
+
         await dbContext.SaveChangesAsync();
         dbContext.ChangeTracker.Clear();
     }

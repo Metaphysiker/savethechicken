@@ -36,6 +36,26 @@
 
 ## Deployment
 
+### Check What's Currently Deployed
+
+Before deploying, check what version is currently running on the server:
+
+**Windows (PowerShell):**
+```powershell
+.\check-current-deployment.ps1
+```
+
+**Linux/Mac:**
+```bash
+./check-current-deployment.sh
+```
+
+This shows you:
+- Git commit hash of the deployed code
+- When it was deployed
+- Which branch it came from
+- Who deployed it
+
 ### Deploy to Infomaniak Server
 
 **Linux/Mac:**
@@ -48,11 +68,50 @@
 .\deploy-to-infomaniak-server.ps1
 ```
 
-Both scripts:
-- Build Docker images
-- Transfer images to server
-- Deploy and restart containers
-- Create a git branch to track deployment (format: `deployment/YYYY-MM-DD_HH-mm-ss`)
+Both scripts will:
+1. **Check for uncommitted changes** and warn you
+2. **Show current deployment** on the server (what you're replacing)
+3. **Show what you're about to deploy** (commit hash and message)
+4. Ask for confirmation if you have uncommitted changes
+5. Build Docker images
+6. Transfer images to server
+7. Deploy and restart containers
+8. Create deployment tracking:
+   - Git branch: `deployment/YYYY-MM-DD_HH-mm-ss`
+   - Git tag: `deploy-YYYY-MM-DD_HH-mm-ss`
+   - Server file: `/home/deploy/savethechicken/deployment.txt`
+
+### View Deployment History
+
+```bash
+# List all deployment branches
+git branch --list 'deployment/*'
+
+# List all deployment tags
+git tag --list 'deploy-*'
+
+# Show details of a specific deployment tag
+git show deploy-2026-04-02_14-30-00
+```
+
+### Rollback to Previous Deployment
+
+If something goes wrong, you can rollback:
+
+1. **Find the previous deployment:**
+   ```bash
+   git tag --list 'deploy-*' | tail -2
+   ```
+
+2. **Checkout that tag:**
+   ```bash
+   git checkout deploy-2026-04-02_12-00-00
+   ```
+
+3. **Re-deploy:**
+   ```powershell
+   .\deploy-to-infomaniak-server.ps1
+   ```
 
 **View deployment history:**
 ```bash

@@ -28,7 +28,7 @@
 
                 @if (!string.IsNullOrWhiteSpace(item.Contact.FirstName) || !string.IsNullOrWhiteSpace(item.Contact.LastName))
                 {
-                    <MudText Typo="Typo.body1"><strong>Name:</strong> @item.Contact.FirstName @item.Contact.LastName</MudText>
+                    <MudText Typo="Typo.body1"><strong>Name:</strong> @item.Contact.FirstName@(" ")@item.Contact.LastName</MudText>
                 }
 
                 @if (!string.IsNullOrWhiteSpace(item.Contact.Email))
@@ -47,7 +47,7 @@
                 <MudText Typo="Typo.body1" Class="mt-2">
                     <strong>Adresse:</strong><br />
                     @item.Address.Street<br />
-                    @item.Address.PostalCode @item.Address.City
+                    @item.Address.PostalCode@(" ")@item.Address.City
                 </MudText>
             }
 

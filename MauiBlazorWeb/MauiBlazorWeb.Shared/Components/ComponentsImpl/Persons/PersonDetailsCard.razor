@@ -25,6 +25,19 @@
             </MudAlert>
         }
 
+        @if (displayPerson.IsDriver)
+        {
+            <MudAlert Severity="Severity.Info" Class="mb-2" data-testid="driver-status">
+                <MudText>@L["IsDriver_Yes"]</MudText>
+            </MudAlert>
+        }
+        else
+        {
+            <MudAlert Severity="Severity.Normal" Class="mb-2" data-testid="driver-status">
+                <MudText>@L["IsDriver_No"]</MudText>
+            </MudAlert>
+        }
+
         @if (!string.IsNullOrEmpty(displayPerson.Comment))
         {
             <MudText Typo="Typo.body2" Class="mt-3" data-testid="person-comment-display">

@@ -47,7 +47,11 @@
 
     private string GetRowClass(PersonDto item, int rowNumber)
     {
-        return item.IsBlacklisted ? "row-blacklisted" : string.Empty;
+        if (item.IsBlacklisted)
+            return "row-blacklisted";
+        if (item.IsDriver)
+            return "row-driver";
+        return string.Empty;
     }
 }
 
@@ -158,6 +162,18 @@
                     @if (context.Item.IsBlacklisted)
                     {
                         <MudIcon Icon="@Icons.Material.Filled.Block" Color="Color.Error" Size="Size.Small" />
+                    }
+                </CellTemplate>
+            </TemplateColumn>
+
+            <TemplateColumn>
+                <HeaderTemplate>
+                    @L["IsDriver"]
+                </HeaderTemplate>
+                <CellTemplate>
+                    @if (context.Item.IsDriver)
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.DirectionsCar" Color="Color.Info" Size="Size.Small" />
                     }
                 </CellTemplate>
             </TemplateColumn>

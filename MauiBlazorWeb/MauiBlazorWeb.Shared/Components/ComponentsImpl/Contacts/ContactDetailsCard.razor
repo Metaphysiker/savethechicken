@@ -28,7 +28,7 @@
                 }
                 @if (!string.IsNullOrWhiteSpace(displayContact.LastName))
                 {
-                    <span data-testid="contact-lastname"> @displayContact.LastName</span>
+                    @(" ")<span data-testid="contact-lastname">@displayContact.LastName</span>
                 }
             </MudText>
         }

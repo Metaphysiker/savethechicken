@@ -64,7 +64,7 @@ public class ImportController : ControllerBase
     public ActionResult<ImportStatus> GetStatus(Guid jobId)
     {
         var status = _importService.GetStatus(jobId);
-        
+
         if (status == null)
             return NotFound($"Import job {jobId} not found");
 

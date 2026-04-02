@@ -41,7 +41,7 @@
                 <MudTh>Anzahl Hähne</MudTh>
             </HeaderContent>
             <RowTemplate Context="context">
-                <MudTd DataLabel="Name">@context.Person?.Contact?.FirstName @context.Person?.Contact?.LastName</MudTd>
+                <MudTd DataLabel="Name">@context.Person?.Contact?.FirstName@(" ")@context.Person?.Contact?.LastName</MudTd>
                 <MudTd DataLabel="Anzahl Hühner">@context.NumberOfChickensToBeSaved</MudTd>
                 <MudTd DataLabel="Anzahl Hähne">@context.NumberOfRoostersToBeSaved</MudTd>
             </RowTemplate>

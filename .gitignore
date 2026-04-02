@@ -39,6 +39,9 @@ rettet-das-huhn-downloads/
 # Production configuration files (contain sensitive credentials)
 **/appsettings.Production.json
 
+# Deployment tracking (generated during deployment)
+deployment.txt
+
 # Ignore Copilot Chat sessions and .vs
 WebApi/.vs/
 WebApi/.vs/WebApi/

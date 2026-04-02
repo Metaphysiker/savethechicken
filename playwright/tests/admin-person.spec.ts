@@ -45,6 +45,7 @@ test.describe('Admin Person Management', () => {
         street: testStreet,
         comment: testComment,
         isBlacklisted: false,
+        isDriver: false,
       });
 
       await page.getByRole('button', { name: /create|erstellen/i }).click();

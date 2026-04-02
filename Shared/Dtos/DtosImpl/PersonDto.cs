@@ -20,6 +20,8 @@ namespace Shared.Dtos.DtosImpl
 
         public bool IsBlacklisted { get; set; } = false;
 
+        public bool IsDriver { get; set; } = false;
+
         public List<SaveChickenRequestDto> SaveChickenRequests { get; set; }
         public List<SaveChickenDriveRequestDto> SaveChickenDriveRequests { get; set; }
 

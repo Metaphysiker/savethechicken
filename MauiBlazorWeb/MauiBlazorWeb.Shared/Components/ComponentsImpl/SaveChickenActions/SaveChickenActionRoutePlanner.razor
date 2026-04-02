@@ -23,7 +23,7 @@
                     @foreach (var drivePlan in GetDriversByDateAndFarm(date, farm))
                     {
                         var totalSelected = GetTotalSelectedAnimals(drivePlan);
-                        <MudText Typo="Typo.h6">Fahrt: #@drivePlan.NumberOfDrive - Fahrer: @drivePlan.Driver.Person?.Contact?.FirstName @drivePlan.Driver.Person?.Contact?.LastName, Kapazität: @totalSelected/@drivePlan.Driver.CapacityForChickens</MudText>
+                        <MudText Typo="Typo.h6">Fahrt: #@drivePlan.NumberOfDrive - Fahrer: @drivePlan.Driver.Person?.Contact?.FirstName@(" ")@drivePlan.Driver.Person?.Contact?.LastName, Kapazität: @totalSelected/@drivePlan.Driver.CapacityForChickens</MudText>
 
                         <MudGrid>
                             <MudItem xs="12" md="6">
@@ -62,7 +62,7 @@
                         @context.Name
                     </MudItem>
                     <MudItem xs="12" md="5" Class="item-table-cell">
-                        @context.saveChickenRequest.Person?.Address?.PostalCode @context.saveChickenRequest.Person?.Address?.City, @context.saveChickenRequest.Person?.Address?.Street
+                        @context.saveChickenRequest.Person?.Address?.PostalCode@(" ")@context.saveChickenRequest.Person?.Address?.City, @context.saveChickenRequest.Person?.Address?.Street
                     </MudItem>
                     <MudItem xs="12" md="3" Class="item-table-cell">
                         @context.saveChickenRequest.NumberOfChickensToBeSaved Hühner, @context.saveChickenRequest.NumberOfRoostersToBeSaved Hähne
@@ -252,7 +252,7 @@
         // Use SaveChickenAction dates as the source of truth
         if (saveChickenActionDto?.Dates == null || !saveChickenActionDto.Dates.Any())
             return new HashSet<DateOnly>();
-        
+
         return saveChickenActionDto.Dates.ToHashSet();
     }
 
@@ -294,7 +294,7 @@
                         : 0;
 
                     var totalAnimals = sortedRequests[i].NumberOfChickensToBeSaved + sortedRequests[i].NumberOfRoostersToBeSaved + sumOfAnimalsInCurrentRoute;
-                    
+
                     if(totalAnimals > driver.CapacityForChickens)
                     {
                         currentDriverIndex = (currentDriverIndex + 1) % driversCount;
@@ -327,7 +327,7 @@
         // All farms are associated with the SaveChickenAction, so return all farms for any date in the action
         if (saveChickenActionDto?.Dates == null || !saveChickenActionDto.Dates.Contains(date))
             return new List<FarmDto>();
-        
+
         return Farms.ToList();
     }
 
@@ -341,8 +341,8 @@
     private int GetTotalSelectedAnimals(DrivePlan drivePlan)
     {
         var itemsInZone = _items.Where(i => i.Selector == drivePlan.Id.ToString());
-        return itemsInZone.Sum(item => 
-            item.saveChickenRequest.NumberOfChickensToBeSaved + 
+        return itemsInZone.Sum(item =>
+            item.saveChickenRequest.NumberOfChickensToBeSaved +
             item.saveChickenRequest.NumberOfRoostersToBeSaved);
     }
 
@@ -386,7 +386,7 @@
         {
             drivePlan.RouteArrows.Clear();
             int markerCount = drivePlan.RouteMarkers.Count;
-            
+
             if (markerCount < 2)
                 continue;
 

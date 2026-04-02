@@ -20,6 +20,8 @@ namespace WebApi.Models.ModelsImpl
 
         public bool IsBlacklisted { get; set; } = false;
 
+        public bool IsDriver { get; set; } = false;
+
         public List<SaveChickenRequest> SaveChickenRequests { get; set; }
         public List<SaveChickenDriveRequest> SaveChickenDriveRequests { get; set; }
 

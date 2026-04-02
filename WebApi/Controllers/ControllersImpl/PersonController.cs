@@ -149,6 +149,7 @@ namespace WebApi.Controllers.ControllersImpl
 
             // Update Person properties
             existingPerson.IsBlacklisted = dto.IsBlacklisted;
+            existingPerson.IsDriver = dto.IsDriver;
             existingPerson.Comment = dto.Comment;
             existingPerson.UpdatedAt = DateTime.UtcNow;
             _db.Persons.Update(existingPerson);

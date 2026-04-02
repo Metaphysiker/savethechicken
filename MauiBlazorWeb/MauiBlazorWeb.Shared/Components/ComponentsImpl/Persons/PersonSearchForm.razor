@@ -1,22 +1,36 @@
 @using global::Shared.Dtos.DtosImpl
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<AppResources> L
 
 <MudGrid>
-    <MudItem xs="12" sm="8">
-        <MudTextField @bind-Value="Model.SearchTerm" 
-                      Label="Search" 
-                      Variant="Variant.Outlined" 
+    <MudItem xs="12" sm="6">
+        <MudTextField @bind-Value="Model.SearchTerm"
+                      Label="@L["Search"]"
+                      Variant="Variant.Outlined"
                       Placeholder="Search by name, email, phone, or address" />
         <ValidationMessage For="@(() => Model.SearchTerm)" />
     </MudItem>
-    
-    <MudItem xs="12" sm="4">
-        <MudSelect @bind-Value="Model.IsBlacklisted" 
-                   Label="Blacklist Filter" 
+
+    <MudItem xs="12" sm="3">
+        <MudSelect @bind-Value="Model.IsBlacklisted"
+                   Label="@L["BlacklistFilter"]"
                    Variant="Variant.Outlined"
                    Clearable="true">
-            <MudSelectItem Value="@((bool?)null)">All</MudSelectItem>
-            <MudSelectItem Value="@((bool?)true)">Blacklisted Only</MudSelectItem>
-            <MudSelectItem Value="@((bool?)false)">Not Blacklisted</MudSelectItem>
+            <MudSelectItem Value="@((bool?)null)">@L["All"]</MudSelectItem>
+            <MudSelectItem Value="@((bool?)true)">@L["BlacklistedOnly"]</MudSelectItem>
+            <MudSelectItem Value="@((bool?)false)">@L["NotBlacklisted"]</MudSelectItem>
+        </MudSelect>
+    </MudItem>
+
+    <MudItem xs="12" sm="3">
+        <MudSelect @bind-Value="Model.IsDriver"
+                   Label="@L["DriverFilter"]"
+                   Variant="Variant.Outlined"
+                   Clearable="true">
+            <MudSelectItem Value="@((bool?)null)">@L["All"]</MudSelectItem>
+            <MudSelectItem Value="@((bool?)true)">@L["DriversOnly"]</MudSelectItem>
+            <MudSelectItem Value="@((bool?)false)">@L["NotDrivers"]</MudSelectItem>
         </MudSelect>
     </MudItem>
 </MudGrid>

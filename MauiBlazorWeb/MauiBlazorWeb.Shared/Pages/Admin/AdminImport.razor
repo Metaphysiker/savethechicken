@@ -7,7 +7,7 @@
 @inject ISnackbar Snackbar
 @inject IStringLocalizer<AppResources> L
 
-@code { 
+@code {
     public class ImportUploadResponse
     {
         public Guid JobId { get; set; }
@@ -45,8 +45,8 @@
             <!-- Upload Form -->
             <MudGrid>
                 <MudItem xs="12" md="6">
-                    <MudSelect @bind-Value="_selectedEntityType" 
-                              Label="Entity Type" 
+                    <MudSelect @bind-Value="_selectedEntityType"
+                              Label="Entity Type"
                               Variant="Variant.Outlined"
                               AnchorOrigin="Origin.BottomCenter"
                               data-testid="entity-type-select">
@@ -61,7 +61,7 @@
                 </MudItem>
             </MudGrid>
 
-            <MudFileUpload T="IBrowserFile" 
+            <MudFileUpload T="IBrowserFile"
                           @bind-Files="_selectedFile"
                           Accept=".csv"
                           MaximumFileCount="1"
@@ -135,10 +135,10 @@ Jane,Smith,jane.smith@example.com,+41797654321,Oak Avenue 5,8000,Zurich</pre>
                         <MudTabPanel Text="Rettet Das Huhn Archive">
                             <MudText Typo="Typo.body2" Class="pa-4">
                                 <pre>Vorname	Name	Zusatz	Strasse	PLZ	 Ort	Telefon 1	Telefon 2	Email	Bemerkungen	du	Vor Ort  gewesen
-Wolfgang	Abart		Egetenstr. 13	9470	Werdenberg	075 424 45 38			musste aufgeben	x	
+Wolfgang	Abart		Egetenstr. 13	9470	Werdenberg	075 424 45 38			musste aufgeben	x
 Alan	Abrecht		Ratitsch 9	7408	Cazis	079 813 61 51		alan.abrecht@gmail.com		x	</pre>
                                 <MudAlert Severity="Severity.Info" Dense="true" Class="mt-2">
-                                    <strong>Note:</strong> This format uses comma or tab-separated values with German headers. 
+                                    <strong>Note:</strong> This format uses comma or tab-separated values with German headers.
                                     Imports Person records (contact + address information) from archive data.
                                     The "Bemerkungen" column will be imported as the Comment field.
                                 </MudAlert>
@@ -149,7 +149,7 @@ Alan	Abrecht		Ratitsch 9	7408	Cazis	079 813 61 51		alan.abrecht@gmail.com		x	</p
                                 <pre>Vorname,Name,Zusatz,Strasse,PLZ,Ort,Telefon1,Telefon2,Email,Bemerkungen,selberHuhner,Fahrzeug
 Markus,Bosshard,,Hauptseestr. 115,6315,Morgarten,076 560 28 56,,info@example.ch,Test comment,,schwarzer Renault clio</pre>
                                 <MudAlert Severity="Severity.Info" Dense="true" Class="mt-2">
-                                    <strong>Note:</strong> This format is for drivers/transport people with German headers. 
+                                    <strong>Note:</strong> This format is for drivers/transport people with German headers.
                                     Imports Person records including vehicle information which is stored in the Comment field.
                                 </MudAlert>
                             </MudText>
@@ -159,7 +159,7 @@ Markus,Bosshard,,Hauptseestr. 115,6315,Morgarten,076 560 28 56,,info@example.ch,
                                 <pre>Vorname,Name,Zusatz,Strasse,PLZ,Ort,Telefon1,Telefonf2,Ausstallung,Bemerkungen,du,Farbe
 Beni,Buchter,,Dorfstr. 16,8259,Rheinklingen,079 660 70 14,,Mai,sehr schlechte Haltung,,240 Hennen (120 weiss, 120 braun)</pre>
                                 <MudAlert Severity="Severity.Info" Dense="true" Class="mt-2">
-                                    <strong>Note:</strong> This format is for farms (betriebe) with German headers. 
+                                    <strong>Note:</strong> This format is for farms (betriebe) with German headers.
                                     Imports Farm records with contact, address, color (Farbe), and depopulation info (Ausstallung).
                                 </MudAlert>
                             </MudText>
@@ -174,13 +174,13 @@ Beni,Buchter,,Dorfstr. 16,8259,Rheinklingen,079 660 70 14,,Mai,sehr schlechte Ha
             <MudCard Class="mt-4">
                 <MudCardContent>
                     <MudText Typo="Typo.h5" Class="mb-4">Import Progress</MudText>
-                    
+
                     @if (_importStatus != null)
                     {
                         <MudGrid>
                             <MudItem xs="12" md="6">
                                 <MudText><strong>Entity Type:</strong> @_importStatus.EntityType</MudText>
-                                <MudText><strong>Status:</strong> 
+                                <MudText><strong>Status:</strong>
                                     <MudChip T="string" Color="@GetStatusColor(_importStatus.Status ?? "Unknown")" Size="Size.Small">
                                         @_importStatus.Status
                                     </MudChip>
@@ -222,8 +222,8 @@ Beni,Buchter,,Dorfstr. 16,8259,Rheinklingen,079 660 70 14,,Mai,sehr schlechte Ha
                     }
                 </MudCardContent>
                 <MudCardActions>
-                    <MudButton Variant="Variant.Text" 
-                              Color="Color.Primary" 
+                    <MudButton Variant="Variant.Text"
+                              Color="Color.Primary"
                               OnClick="ResetImport"
                               Disabled="@(_importStatus?.Status == "Processing")">
                         Start New Import
@@ -253,7 +253,7 @@ Beni,Buchter,,Dorfstr. 16,8259,Rheinklingen,079 660 70 14,,Mai,sehr schlechte Ha
         {
             // Create multipart form data
             using var content = new MultipartFormDataContent();
-            
+
             var fileContent = new StreamContent(_selectedFile.OpenReadStream(maxAllowedSize: 100_000_000));
             fileContent.Headers.ContentType = new MediaTypeHeaderValue("text/csv");
             content.Add(fileContent, "File", _selectedFile.Name);
@@ -261,16 +261,16 @@ Beni,Buchter,,Dorfstr. 16,8259,Rheinklingen,079 660 70 14,,Mai,sehr schlechte Ha
 
             // Upload file
             var response = await Http.PostAsync("api/import/upload", content);
-            
+
             if (response.IsSuccessStatusCode)
             {
                 var result = await response.Content.ReadFromJsonAsync<ImportUploadResponse>();
                 if (result != null)
                 {
                     _currentJobId = result.JobId;
-                    
+
                     Snackbar.Add($"Import started! Job ID: {result.JobId}", Severity.Success);
-                    
+
                     // Start polling for status
                     StartStatusPolling();
                 }
@@ -305,14 +305,14 @@ Beni,Buchter,,Dorfstr. 16,8259,Rheinklingen,079 660 70 14,,Mai,sehr schlechte Ha
         {
             var response = await Http.GetFromJsonAsync<ImportStatus>($"api/import/status/{_currentJobId}");
             _importStatus = response;
-            
+
             // Stop polling if completed or failed
             if (_importStatus?.Status == "Completed" || _importStatus?.Status == "Failed")
             {
                 _statusTimer?.Dispose();
                 _statusTimer = null;
             }
-            
+
             await InvokeAsync(StateHasChanged);
         }
         catch (Exception ex)

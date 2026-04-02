@@ -32,6 +32,10 @@ namespace Services.ServicesImpl
             if (search.IsBlacklisted.HasValue)
                 query = query.Where(x => x.IsBlacklisted == search.IsBlacklisted.Value);
 
+            // Filter by IsDriver
+            if (search.IsDriver.HasValue)
+                query = query.Where(x => x.IsDriver == search.IsDriver.Value);
+
             // Full-text search
             if (!string.IsNullOrWhiteSpace(search.SearchTerm))
             {

@@ -28,11 +28,11 @@
             <span style="margin-left: 32px;">
                 @if (!string.IsNullOrWhiteSpace(displayAddress.PostalCode))
                 {
-                    <span data-testid="address-postalcode">@displayAddress.PostalCode </span>
+                    <span data-testid="address-postalcode">@displayAddress.PostalCode</span>
                 }
                 @if (!string.IsNullOrWhiteSpace(displayAddress.City))
                 {
-                    <span data-testid="address-city">@displayAddress.City</span>
+                    @(" ")<span data-testid="address-city">@displayAddress.City</span>
                 }
             </span>
         </MudText>

@@ -186,6 +186,15 @@
   <data name="Comment" xml:space="preserve">
     <value>Kommentar</value>
   </data>
+  <data name="IsDriver" xml:space="preserve">
+    <value>Fahrer</value>
+  </data>
+  <data name="IsDriver_Yes" xml:space="preserve">
+    <value>Diese Person ist ein Fahrer</value>
+  </data>
+  <data name="IsDriver_No" xml:space="preserve">
+    <value>Diese Person ist kein Fahrer</value>
+  </data>
   <data name="GeneralInformation" xml:space="preserve">
     <value>Allgemeine Information</value>
   </data>
@@ -280,6 +289,33 @@
   </data>
   <data name="Blacklisted_No" xml:space="preserve">
     <value>Nicht auf der schwarzen Liste</value>
+  </data>
+  <data name="Blacklisted_Warning" xml:space="preserve">
+    <value>Diese Person steht auf der schwarzen Liste und sollte keine Hühner erhalten oder an Fahrten teilnehmen.</value>
+  </data>
+  <data name="BlacklistFilter" xml:space="preserve">
+    <value>Schwarze Liste Filter</value>
+  </data>
+  <data name="BlacklistedOnly" xml:space="preserve">
+    <value>Nur auf schwarzer Liste</value>
+  </data>
+  <data name="NotBlacklisted" xml:space="preserve">
+    <value>Nicht auf schwarzer Liste</value>
+  </data>
+  <data name="DriverFilter" xml:space="preserve">
+    <value>Fahrer Filter</value>
+  </data>
+  <data name="DriversOnly" xml:space="preserve">
+    <value>Nur Fahrer</value>
+  </data>
+  <data name="NotDrivers" xml:space="preserve">
+    <value>Keine Fahrer</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Alle</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Suchen</value>
   </data>
   <data name="Actions" xml:space="preserve">
     <value>Aktionen</value>

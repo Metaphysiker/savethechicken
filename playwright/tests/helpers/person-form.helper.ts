@@ -15,6 +15,7 @@ export interface PersonFormData {
   // Optional fields
   comment?: string;
   isBlacklisted?: boolean;
+  isDriver?: boolean;
 }
 
 /**
@@ -45,6 +46,17 @@ export async function fillPersonForm(page: Page, data: PersonFormData): Promise<
       await checkbox.check();
     } else if (!data.isBlacklisted && isChecked) {
       await checkbox.uncheck();
+    }
+  }
+
+  // Set driver status if specified
+  if (data.isDriver !== undefined) {
+    const driverSwitch = page.getByTestId('person-is-driver');
+    const isChecked = await driverSwitch.isChecked();
+    if (data.isDriver && !isChecked) {
+      await driverSwitch.check();
+    } else if (!data.isDriver && isChecked) {
+      await driverSwitch.uncheck();
     }
   }
 }

@@ -31,14 +31,22 @@
                Label="Blacklisted"
                Color="Color.Error"
                Disabled="@IsReadOnly"
+               data-testid="person-blacklisted"
                Class="mb-4" />
 
     @if (Person.IsBlacklisted)
     {
         <MudAlert Severity="Severity.Warning" Class="mb-4">
-            This person is blacklisted and should not receive chickens or participate in drives.
+            @L["Blacklisted_Warning"]
         </MudAlert>
     }
+
+    <MudSwitch @bind-Value="Person.IsDriver"
+               Label="@L["IsDriver"]"
+               Color="Color.Info"
+               Disabled="@IsReadOnly"
+               data-testid="person-is-driver"
+               Class="mb-4" />
 
     <MudTextField @bind-Value="Person.Comment"
                   Label="@L["Comment"]"
