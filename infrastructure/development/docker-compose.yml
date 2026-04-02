@@ -32,7 +32,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
-      - API_BASE_URL=http://localhost:8081/
+      - API_BASE_URL=${API_BASE_URL}
       - SERVER_API_BASE_URL=http://webapi:8080/
     depends_on:
       - webapi
@@ -48,8 +48,8 @@ services:
   mailhog:
     image: mailhog/mailhog:latest
     ports:
-      - "1025:1025"  # SMTP server
-      - "8025:8025"  # Web UI
+      - "${PORT_MAILHOG_SMTP}:1025"  # SMTP server
+      - "${PORT_MAILHOG_WEB}:8025"  # Web UI
     environment:
       - MH_STORAGE=memory
 
