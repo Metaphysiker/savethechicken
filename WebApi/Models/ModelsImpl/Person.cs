@@ -16,6 +16,8 @@ namespace WebApi.Models.ModelsImpl
         public Address Address { get; set; } = null!;
         public int AddressId { get; set; }
 
+        public string Comment { get; set; } = string.Empty;
+
         public bool IsBlacklisted { get; set; } = false;
 
         public List<SaveChickenRequest> SaveChickenRequests { get; set; }

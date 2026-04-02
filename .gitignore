@@ -29,6 +29,9 @@ Thumbs.db
 *.tmp
 *.bak
 
+# CSV downloads
+rettet-das-huhn-downloads/
+
 # Environment files
 .env
 .env.

@@ -16,6 +16,8 @@ namespace Shared.Dtos.DtosImpl
         public AddressDto Address { get; set; }
         public int AddressId { get; set; }
 
+        public string Comment { get; set; } = string.Empty;
+
         public bool IsBlacklisted { get; set; } = false;
 
         public List<SaveChickenRequestDto> SaveChickenRequests { get; set; }

@@ -183,6 +183,9 @@
   <data name="Color" xml:space="preserve">
     <value>Farbe</value>
   </data>
+  <data name="Comment" xml:space="preserve">
+    <value>Comment</value>
+  </data>
   <data name="GeneralInformation" xml:space="preserve">
     <value>Allgemeine Information</value>
   </data>

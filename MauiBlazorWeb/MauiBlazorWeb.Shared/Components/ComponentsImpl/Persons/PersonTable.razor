@@ -134,6 +134,24 @@
 
             <TemplateColumn>
                 <HeaderTemplate>
+                    <MudButton OnClick="@(() => OnHeaderClick("Comment"))" Variant="Variant.Text" Style="text-transform: none;">
+                        @L["Comment"]
+                        @if (GetSortIcon("Comment") != null)
+                        {
+                            <MudIcon Icon="@GetSortIcon("Comment")" Size="Size.Small" />
+                        }
+                    </MudButton>
+                </HeaderTemplate>
+                <CellTemplate>
+                    @if (!string.IsNullOrEmpty(context.Item.Comment))
+                    {
+                        <span title="@context.Item.Comment">@(context.Item.Comment.Length > 30 ? context.Item.Comment.Substring(0, 30) + "..." : context.Item.Comment)</span>
+                    }
+                </CellTemplate>
+            </TemplateColumn>
+
+            <TemplateColumn>
+                <HeaderTemplate>
                     Blacklisted
                 </HeaderTemplate>
                 <CellTemplate>

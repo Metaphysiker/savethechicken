@@ -24,6 +24,13 @@
                 <MudText>@L["Blacklisted_No"]</MudText>
             </MudAlert>
         }
+
+        @if (!string.IsNullOrEmpty(displayPerson.Comment))
+        {
+            <MudText Typo="Typo.body2" Class="mt-3" data-testid="person-comment-display">
+                <strong>@L["Comment"]:</strong> @displayPerson.Comment
+            </MudText>
+        }
     </MudPaper>
 
     @if (displayPerson.Contact != null)

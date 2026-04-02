@@ -39,6 +39,14 @@
             This person is blacklisted and should not receive chickens or participate in drives.
         </MudAlert>
     }
+
+    <MudTextField @bind-Value="Person.Comment"
+                  Label="@L["Comment"]"
+                  Lines="3"
+                  Variant="Variant.Outlined"
+                  ReadOnly="@IsReadOnly"
+                  data-testid="person-comment"
+                  Class="mb-4" />
 </MudPaper>
 
 <ContactForm Contact="Person.Contact" IsReadOnly="@IsReadOnly" />

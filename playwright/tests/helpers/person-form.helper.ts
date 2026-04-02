@@ -12,7 +12,8 @@ export interface PersonFormData {
   postalCode: string;
   street: string;
 
-  // Optional: Blacklist status
+  // Optional fields
+  comment?: string;
   isBlacklisted?: boolean;
 }
 
@@ -30,6 +31,11 @@ export async function fillPersonForm(page: Page, data: PersonFormData): Promise<
   await page.getByTestId('address-city').fill(data.city);
   await page.getByTestId('address-postalcode').fill(data.postalCode);
   await page.getByTestId('address-street').fill(data.street);
+
+  // Fill comment if provided
+  if (data.comment !== undefined) {
+    await page.getByTestId('person-comment').fill(data.comment);
+  }
 
   // Set blacklist status if specified
   if (data.isBlacklisted !== undefined) {

@@ -54,6 +54,9 @@
                         <MudSelectItem Value="@("SaveChickenRequest")">Save Chicken Request</MudSelectItem>
                         <MudSelectItem Value="@("SaveChickenDriveRequest")">Save Chicken Drive Request</MudSelectItem>
                         <MudSelectItem Value="@("Farm")">Farm</MudSelectItem>
+                        <MudSelectItem Value="@("RettetDasHuhnArchive")">Rettet Das Huhn Archive (German Headers)</MudSelectItem>
+                        <MudSelectItem Value="@("Fahrer")">Fahrer (Drivers - German Headers)</MudSelectItem>
+                        <MudSelectItem Value="@("Betrieb")">Betrieb (Farms - German Headers)</MudSelectItem>
                     </MudSelect>
                 </MudItem>
             </MudGrid>
@@ -127,6 +130,38 @@ Jane,Smith,jane.smith@example.com,+41797654321,Oak Avenue 5,8000,Zurich</pre>
                                 <pre>PersonId,SaveChickenActionId,FarmName,Description
 1,5,Sunny Farm,Organic farm in the mountains
 2,5,Green Valley,Family farm with free range</pre>
+                            </MudText>
+                        </MudTabPanel>
+                        <MudTabPanel Text="Rettet Das Huhn Archive">
+                            <MudText Typo="Typo.body2" Class="pa-4">
+                                <pre>Vorname	Name	Zusatz	Strasse	PLZ	 Ort	Telefon 1	Telefon 2	Email	Bemerkungen	du	Vor Ort  gewesen
+Wolfgang	Abart		Egetenstr. 13	9470	Werdenberg	075 424 45 38			musste aufgeben	x	
+Alan	Abrecht		Ratitsch 9	7408	Cazis	079 813 61 51		alan.abrecht@gmail.com		x	</pre>
+                                <MudAlert Severity="Severity.Info" Dense="true" Class="mt-2">
+                                    <strong>Note:</strong> This format uses comma or tab-separated values with German headers. 
+                                    Imports Person records (contact + address information) from archive data.
+                                    The "Bemerkungen" column will be imported as the Comment field.
+                                </MudAlert>
+                            </MudText>
+                        </MudTabPanel>
+                        <MudTabPanel Text="Fahrer">
+                            <MudText Typo="Typo.body2" Class="pa-4">
+                                <pre>Vorname,Name,Zusatz,Strasse,PLZ,Ort,Telefon1,Telefon2,Email,Bemerkungen,selberHuhner,Fahrzeug
+Markus,Bosshard,,Hauptseestr. 115,6315,Morgarten,076 560 28 56,,info@example.ch,Test comment,,schwarzer Renault clio</pre>
+                                <MudAlert Severity="Severity.Info" Dense="true" Class="mt-2">
+                                    <strong>Note:</strong> This format is for drivers/transport people with German headers. 
+                                    Imports Person records including vehicle information which is stored in the Comment field.
+                                </MudAlert>
+                            </MudText>
+                        </MudTabPanel>
+                        <MudTabPanel Text="Betrieb">
+                            <MudText Typo="Typo.body2" Class="pa-4">
+                                <pre>Vorname,Name,Zusatz,Strasse,PLZ,Ort,Telefon1,Telefonf2,Ausstallung,Bemerkungen,du,Farbe
+Beni,Buchter,,Dorfstr. 16,8259,Rheinklingen,079 660 70 14,,Mai,sehr schlechte Haltung,,240 Hennen (120 weiss, 120 braun)</pre>
+                                <MudAlert Severity="Severity.Info" Dense="true" Class="mt-2">
+                                    <strong>Note:</strong> This format is for farms (betriebe) with German headers. 
+                                    Imports Farm records with contact, address, color (Farbe), and depopulation info (Ausstallung).
+                                </MudAlert>
                             </MudText>
                         </MudTabPanel>
                     </MudTabs>

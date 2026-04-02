@@ -27,6 +27,7 @@ test.describe('Admin Person Management', () => {
     const testCity = 'Zurich';
     const testPostalCode = '8000';
     const testStreet = `Test Street ${timestamp}`;
+    const testComment = `Test comment ${timestamp}`;
 
     let personId: number;
 
@@ -42,6 +43,7 @@ test.describe('Admin Person Management', () => {
         city: testCity,
         postalCode: testPostalCode,
         street: testStreet,
+        comment: testComment,
         isBlacklisted: false,
       });
 
@@ -65,6 +67,7 @@ test.describe('Admin Person Management', () => {
       await expect(page.getByTestId('address-city')).toHaveText(testCity);
       await expect(page.getByTestId('address-postalcode')).toHaveText(testPostalCode);
       await expect(page.getByTestId('address-street')).toHaveText(testStreet);
+      await expect(page.getByTestId('person-comment-display')).toContainText(testComment);
 
       // Verify not blacklisted
       await expect(page.getByTestId('blacklist-status')).toBeVisible();
@@ -96,12 +99,14 @@ test.describe('Admin Person Management', () => {
     const originalCity = 'Bern';
     const originalPostalCode = '3000';
     const originalStreet = 'Original St 1';
+    const originalComment = 'Original comment';
 
     const updatedLastName = 'UpdatedLast';
     const updatedPhone = '+41793333333';
     const updatedCity = 'Basel';
     const updatedPostalCode = '4000';
     const updatedStreet = 'Updated Street 456';
+    const updatedComment = 'Updated comment text';
 
     await test.step('Admin creates a person', async () => {
       await page.goto('/admin/persons/new', { waitUntil: 'networkidle' });
@@ -114,6 +119,7 @@ test.describe('Admin Person Management', () => {
         city: originalCity,
         postalCode: originalPostalCode,
         street: originalStreet,
+        comment: originalComment,
         isBlacklisted: false,
       });
 
@@ -154,6 +160,9 @@ test.describe('Admin Person Management', () => {
       await page.getByTestId('address-city').fill(updatedCity);
       await page.getByTestId('address-postalcode').fill(updatedPostalCode);
       await page.getByTestId('address-street').fill(updatedStreet);
+
+      // Update comment
+      await page.getByTestId('person-comment').fill(updatedComment);
 
       // Submit the update
       console.log('About to click update button');
@@ -207,6 +216,7 @@ test.describe('Admin Person Management', () => {
       await expect(page.getByTestId('address-city')).toHaveText(updatedCity);
       await expect(page.getByTestId('address-postalcode')).toHaveText(updatedPostalCode);
       await expect(page.getByTestId('address-street')).toHaveText(updatedStreet);
+      await expect(page.getByTestId('person-comment-display')).toContainText(updatedComment);
 
       // Verify old data is NOT visible
       await expect(page.getByTestId('contact-lastname')).not.toHaveText(originalLastName);

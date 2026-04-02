@@ -28,7 +28,7 @@ public class ImportController : ControllerBase
         if (!request.File.FileName.EndsWith(".csv", StringComparison.OrdinalIgnoreCase))
             return BadRequest("Only CSV files are supported");
 
-        var allowedEntityTypes = new[] { "Person", "SaveChickenRequest", "SaveChickenDriveRequest", "Farm" };
+        var allowedEntityTypes = new[] { "Person", "SaveChickenRequest", "SaveChickenDriveRequest", "Farm", "RettetDasHuhnArchive", "Fahrer", "Betrieb" };
         if (!allowedEntityTypes.Contains(request.EntityType))
             return BadRequest($"Invalid entity type. Allowed: {string.Join(", ", allowedEntityTypes)}");
 
@@ -74,13 +74,13 @@ public class ImportController : ControllerBase
 
 public class ImportUploadRequest
 {
-    public IFormFile File { get; set; }
-    public string EntityType { get; set; }
+    public required IFormFile File { get; set; }
+    public required string EntityType { get; set; }
 }
 
 public class ImportUploadResponse
 {
     public Guid JobId { get; set; }
-    public string Status { get; set; }
-    public string Message { get; set; }
+    public required string Status { get; set; }
+    public required string Message { get; set; }
 }
