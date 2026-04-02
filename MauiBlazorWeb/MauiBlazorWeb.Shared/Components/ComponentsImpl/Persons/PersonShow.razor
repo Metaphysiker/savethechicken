@@ -152,7 +152,7 @@
         };
 
         var options = new DialogOptions { FullScreen = true, CloseButton = true, MaxWidth = MaxWidth.False };
-        await DialogService.ShowAsync<GenericCreateWithFilesDialog<SaveChickenRequestDto>>("Create Save Chicken Request", parameters, options);
+        await DialogService.ShowAsync<GenericCreateWithFilesDialog<SaveChickenRequestDto>>(L["CreateSaveChickenRequest"], parameters, options);
     }
 
     private async Task HandleRequestCreated()
@@ -197,6 +197,6 @@
         };
 
         var options = new DialogOptions { FullScreen = true, CloseButton = true, MaxWidth = MaxWidth.False };
-        await DialogService.ShowAsync<GenericCreateWithFilesDialog<SaveChickenDriveRequestDto>>("Create Drive Request", parameters, options);
+        await DialogService.ShowAsync<GenericCreateWithFilesDialog<SaveChickenDriveRequestDto>>(L["CreateDriveRequest"], parameters, options);
     }
 }

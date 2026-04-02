@@ -60,6 +60,9 @@
                     IsReadOnly="@isPersonSelectorReadOnly" />
     <ValidationMessage For="@(() => EntityWithFiles.Item.PersonId)" />
 
+    <SaveChickenActionSelector SelectedActionId="EntityWithFiles.Item.SaveChickenActionId"
+                          SelectedActionIdChanged="OnSaveChickenActionIdChanged" />
+
     @if (PreSelectedPersonId.HasValue)
     {
         <MudAlert Severity="Severity.Info" Dense="true" Class="mt-2">
@@ -122,9 +125,6 @@
 <StoredFilesEdit @bind-Files="EntityWithFiles.Item.Files" />
 
 <FilesUploadForm @bind-Value="EntityWithFiles.Files" Label="Upload Files" Text="" />
-
-<SaveChickenActionSelector SelectedActionId="EntityWithFiles.Item.SaveChickenActionId"
-                          SelectedActionIdChanged="OnSaveChickenActionIdChanged" />
 
 <MudPaper Class="pa-4 my-4">
     <MudCheckBox ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.ConfirmThatIFulfillCriteria" Label="@L["ConfirmThatIFulfillCriteria"]" UserAttributes="@(new Dictionary<string, object> { { "data-testid", "confirm-criteria" } })"></MudCheckBox>

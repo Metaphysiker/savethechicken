@@ -485,4 +485,19 @@
   <data name="NumberOfBoxes" xml:space="preserve">
     <value>Anzahl Boxen</value>
   </data>
+  <data name="CreateSaveChickenRequest" xml:space="preserve">
+    <value>Hühner-Rettungsanfrage erstellen</value>
+  </data>
+  <data name="CreateDriveRequest" xml:space="preserve">
+    <value>Transportanfrage erstellen</value>
+  </data>
+  <data name="Adopters" xml:space="preserve">
+    <value>Abnehmer</value>
+  </data>
+  <data name="Drivers" xml:space="preserve">
+    <value>Fahrer</value>
+  </data>
+  <data name="Farms" xml:space="preserve">
+    <value>Betriebe</value>
+  </data>
 </root>

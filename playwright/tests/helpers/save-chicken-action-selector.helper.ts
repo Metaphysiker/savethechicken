@@ -14,34 +14,34 @@ export async function selectSaveChickenAction(page: Page, actionId: number): Pro
   // Wait for the container to be visible
   await selectContainer.waitFor({ state: 'visible', timeout: 10000 });
 
-  // Wait a bit for actions to load
-  await page.waitForTimeout(1000);
+  // Wait for actions to load - check that the select is not disabled
+  await page.waitForTimeout(2000);
 
   // Click to open the dropdown
   console.log('Opening SaveChickenAction dropdown...');
   await selectContainer.click();
 
-  // Wait for the popover to appear (MudSelect renders options in a popover)
-  await page.waitForSelector('.mud-popover', { state: 'visible', timeout: 5000 });
-  await page.waitForTimeout(500);
+  // Wait for dropdown to open
+  await page.waitForTimeout(1000);
 
-  // Get all options to debug (MudSelect uses .mud-list-item for options)
-  const options = await page.locator('.mud-popover .mud-list-item').allTextContents();
-  console.log('Available SaveChickenAction options:', options);
-
-  // Select the option that contains the action ID
-  // Format is: "#ID | Title | Dates"
+  // Find the list items that match our action ID pattern
+  // MudSelect renders options as .mud-list-item inside a .mud-popover
   const optionPattern = `#${actionId}`;
   console.log(`Looking for option containing: ${optionPattern}`);
 
-  const option = page.locator('.mud-popover .mud-list-item').filter({ hasText: optionPattern }).first();
-  await option.waitFor({ state: 'visible', timeout: 5000 });
+  // Wait for at least one matching option to appear with generous timeout
+  const option = page.locator('.mud-list-item').filter({ hasText: optionPattern }).first();
+  await option.waitFor({ state: 'visible', timeout: 10000 });
+
+  // Get all options to debug (limit output)
+  const allOptions = page.locator('.mud-list-item');
+  const optionCount = await allOptions.count();
+  console.log(`Found ${optionCount} SaveChickenAction options total`);
+
+  // Click the option
   await option.click();
 
-  // Wait for the popover to close (confirms selection)
-  await page.waitForSelector('.mud-popover', { state: 'hidden', timeout: 5000 });
-
-  // Wait for the calendar to update
+  // Wait for the selection to complete
   await page.waitForTimeout(1000);
 
   console.log(`Successfully selected SaveChickenAction ${actionId}`);

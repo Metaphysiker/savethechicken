@@ -68,6 +68,32 @@ namespace WebApi.Controllers.ControllersImpl
             return Ok(resultDto);
         }
 
+        [HttpGet("autocomplete")]
+        public async Task<ActionResult<List<PersonDto>>> Autocomplete([FromQuery] string searchText, [FromQuery] int limit = 10)
+        {
+            if (string.IsNullOrWhiteSpace(searchText) || searchText.Length < 2)
+            {
+                return Ok(new List<PersonDto>());
+            }
+
+            var searchPattern = $"%{searchText}%";
+
+            var result = await _db.Persons
+                .Include(p => p.Contact)
+                .Include(p => p.Address)
+                .Where(p =>
+                    EF.Functions.ILike(p.Contact.FirstName, searchPattern) ||
+                    EF.Functions.ILike(p.Contact.LastName, searchPattern) ||
+                    EF.Functions.ILike(p.Contact.Email, searchPattern))
+                .OrderBy(p => p.Contact.LastName)
+                .ThenBy(p => p.Contact.FirstName)
+                .Take(limit)
+                .ToListAsync();
+
+            var resultDto = _mapper.mapper.Map<List<PersonDto>>(result);
+            return Ok(resultDto);
+        }
+
         [HttpPost("search")]
         public async Task<ActionResult<PaginationDto<PersonDto>>> Search([FromBody] PersonSearch search)
         {

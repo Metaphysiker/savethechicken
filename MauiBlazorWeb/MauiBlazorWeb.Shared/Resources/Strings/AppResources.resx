@@ -486,4 +486,19 @@
   <data name="NumberOfBoxes" xml:space="preserve">
     <value>Number of Boxes</value>
   </data>
+  <data name="CreateSaveChickenRequest" xml:space="preserve">
+    <value>Create Save Chicken Request</value>
+  </data>
+  <data name="CreateDriveRequest" xml:space="preserve">
+    <value>Create Drive Request</value>
+  </data>
+  <data name="Adopters" xml:space="preserve">
+    <value>Adopters</value>
+  </data>
+  <data name="Drivers" xml:space="preserve">
+    <value>Drivers</value>
+  </data>
+  <data name="Farms" xml:space="preserve">
+    <value>Farms</value>
+  </data>
 </root>

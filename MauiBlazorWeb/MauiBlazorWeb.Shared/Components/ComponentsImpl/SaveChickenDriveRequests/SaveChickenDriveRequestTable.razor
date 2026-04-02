@@ -287,19 +287,6 @@
                 </CellTemplate>
             </TemplateColumn>
 
-            <TemplateColumn>
-                <HeaderTemplate>@L["copy"]</HeaderTemplate>
-                <CellTemplate>
-                    @if (context.Item != null)
-                    {
-                        <SaveChickenActionSelectorDialogLauncher TDto="SaveChickenDriveRequestDto"
-                                                                 Model="context.Item"
-                                                                 OnCopied="@(() => OnItemsChanged.InvokeAsync())"
-                                                                 ExcludeIds="@(context.Item.SaveChickenActionId.HasValue ? new List<int> { context.Item.SaveChickenActionId.Value } : null)" />
-                    }
-                </CellTemplate>
-            </TemplateColumn>
-
     </Columns>
 </MudDataGrid>
 </div>

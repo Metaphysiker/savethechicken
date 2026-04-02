@@ -19,6 +19,9 @@
     public bool IsReadOnly { get; set; } = false;
 }
 
+<SaveChickenActionSelector SelectedActionId="EntityWithFiles.Item.SaveChickenActionId"
+                           SelectedActionIdChanged="OnSaveChickenActionIdChanged" />
+
 <ContactForm Contact="EntityWithFiles.Item.Contact" IsReadOnly="@IsReadOnly" />
 <AddressForm Address="EntityWithFiles.Item.Address" IsReadOnly="@IsReadOnly" />
 
@@ -49,8 +52,7 @@
 </MudPaper>
 
 
-<SaveChickenActionSelector SelectedActionId="EntityWithFiles.Item.SaveChickenActionId"
-                           SelectedActionIdChanged="OnSaveChickenActionIdChanged" />
+
 
 <FilesUploadForm @bind-Value="EntityWithFiles.Files" Label="Dateien hochladen" Text="Routenpläne" />
 

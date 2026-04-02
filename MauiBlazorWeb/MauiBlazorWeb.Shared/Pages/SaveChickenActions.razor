@@ -8,11 +8,14 @@
 @using MauiBlazorWeb.Shared.Services.ServicesImpl
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
 @inject GenericDtoServiceFactory DtoServiceFactory
 @inject SaveChickenActionService saveChickenActionService
+@inject IStringLocalizer<AppResources> L
 
 <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
-    <h3>Rettungs-Aktionen</h3>
+    <h3>@L["SaveChickenAction"]</h3>
 
     @if(selectedAction != null)
     {
@@ -27,7 +30,7 @@
             @if (selectedAction.Dates != null && selectedAction.Dates.Any())
             {
                 <MudText Typo="Typo.body2" Class="mt-3">
-                    <strong>Übergabedaten:</strong>
+                    <strong>@L["TransferDates"]:</strong>
                 </MudText>
                 <div data-testid="action-transfer-dates">
                     @foreach (var date in selectedAction.Dates.OrderBy(d => d))
@@ -39,7 +42,7 @@
         </MudPaper>
 
         <MudPaper Class="pa-4">
-            <MudText Typo="Typo.h6">Abnehmer</MudText>
+            <MudText Typo="Typo.h6">@L["Adopters"]</MudText>
 
             <GenericSearch TDto="SaveChickenRequestDto" TSearchDto="SaveChickenRequestSearch" search="saveChickenRequestSearch" OnItemsFound="OnItemsFound">
                 <SearchForm Context="search">
@@ -56,7 +59,7 @@
         </MudPaper>
 
         <MudPaper Class="pa-4 my-4">
-            <MudText Typo="Typo.h6">Fahrer</MudText>
+            <MudText Typo="Typo.h6">@L["Drivers"]</MudText>
 
             <GenericSearch TDto="SaveChickenDriveRequestDto" TSearchDto="SaveChickenDriveRequestSearch" search="saveChickenDriveRequestSearch" OnItemsFound="OnSaveChickenDriveRequestItemsFound">
                 <SearchForm Context="search">
@@ -69,7 +72,7 @@
         </MudPaper>
 
         <MudPaper Class="pa-4 my-4">
-            <MudText Typo="Typo.h6">Betriebe</MudText>
+            <MudText Typo="Typo.h6">@L["Farms"]</MudText>
 
             <GenericSearch TDto="FarmDto" TSearchDto="FarmSearch" search="farmSearch" OnItemsFound="OnFarmItemsFound">
                 <SearchForm Context="search">

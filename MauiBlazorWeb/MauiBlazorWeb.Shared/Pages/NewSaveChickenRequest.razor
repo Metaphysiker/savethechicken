@@ -1,9 +1,5 @@
 ﻿@using MauiBlazorWeb.Shared.Components.ComponentsImpl
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
-@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
-@using MauiBlazorWeb.Shared.Services.ServicesImpl
-@using MauiBlazorWeb.Web.Services.ServicesImpl
-@inject SaveChickenActionService saveChickenActionService;
 @using global::Shared.Dtos.DtosImpl
 
 @page "/admin/save-chicken-requests/new"
@@ -34,19 +30,14 @@
     private SaveChickenRequestDto newRequestDto = new();
     private ItemWithBrowserFiles<SaveChickenRequestDto>? newRequestDtoWithFiles;
 
-    protected override async Task OnInitializedAsync()
+    protected override Task OnInitializedAsync()
     {
-        SaveChickenActionDto? activeSaveChickenAction = await saveChickenActionService.GetActiveSaveChickenAction();
-
-        if (activeSaveChickenAction != null)
-        {
-            newRequestDto.SaveChickenActionId = activeSaveChickenAction?.Id;
-        }
-
         newRequestDtoWithFiles = new ItemWithBrowserFiles<SaveChickenRequestDto>
         {
             Item = newRequestDto,
             Files = new List<IBrowserFile>()
         };
+
+        return Task.CompletedTask;
     }
 }

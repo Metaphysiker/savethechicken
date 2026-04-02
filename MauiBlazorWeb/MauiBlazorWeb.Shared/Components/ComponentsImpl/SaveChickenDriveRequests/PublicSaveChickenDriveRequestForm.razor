@@ -28,25 +28,9 @@
             ? _saveChickenActionDto.Dates.Max()
             : null;
 
-    protected override async Task OnInitializedAsync()
+    protected override Task OnInitializedAsync()
     {
-        await GetActiveSaveChickenAction();
-    }
-
-    private async Task GetActiveSaveChickenAction()
-    {
-        try
-        {
-            _saveChickenActionDto = await SaveChickenActionService.GetActiveSaveChickenAction();
-            if (_saveChickenActionDto != null)
-            {
-                Model.SaveChickenActionId = _saveChickenActionDto.Id;
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error loading active action: {ex.Message}");
-        }
+        return Task.CompletedTask;
     }
 
     private async Task HandleValidSubmit()

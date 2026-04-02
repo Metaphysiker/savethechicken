@@ -1,11 +1,6 @@
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenDriveRequests
-@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
-@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
-@using MauiBlazorWeb.Shared.Services.ServicesImpl
-@using MauiBlazorWeb.Web.Services.ServicesImpl
 @using MudBlazor
-@inject SaveChickenActionService saveChickenActionService;
 @using global::Shared.Dtos.DtosImpl
 
 @page "/admin/save-chicken-drive-requests/new"
@@ -33,22 +28,15 @@
         private SaveChickenDriveRequestDto saveChickenDriveRequestDto = new();
         private ItemWithBrowserFiles<SaveChickenDriveRequestDto>? newItemWithBrowserFiles;
 
-        protected override async Task OnInitializedAsync()
+        protected override Task OnInitializedAsync()
         {
-            SaveChickenActionDto? activeSaveChickenAction = await saveChickenActionService.GetActiveSaveChickenAction();
-
-            if (activeSaveChickenAction != null)
-            {
-                saveChickenDriveRequestDto.SaveChickenActionId = activeSaveChickenAction?.Id;
-            }
-
             newItemWithBrowserFiles = new ItemWithBrowserFiles<SaveChickenDriveRequestDto>
             {
                 Item = saveChickenDriveRequestDto,
                 Files = new List<IBrowserFile>()
             };
 
-            newItemWithBrowserFiles.Item = saveChickenDriveRequestDto;
+            return Task.CompletedTask;
         }
     }
 }

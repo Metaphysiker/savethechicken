@@ -56,6 +56,10 @@
                     SelectedPersonIdChanged="OnPersonIdChanged"
                     Label="@L["SelectPerson"]"
                     IsReadOnly="@isPersonSelectorReadOnly" />
+
+    <SaveChickenActionSelector SelectedActionId="EntityWithFiles.Item.SaveChickenActionId"
+            SelectedActionIdChanged="OnSaveChickenActionIdChanged" />
+
     <ValidationMessage For="@(() => EntityWithFiles.Item.PersonId)" />
 
     @if (PreSelectedPersonId.HasValue)
@@ -116,8 +120,7 @@
                       MinDate="@minDate"
                       MaxDate="@maxDate" />
 
-<SaveChickenActionSelector SelectedActionId="EntityWithFiles.Item.SaveChickenActionId"
-                          SelectedActionIdChanged="OnSaveChickenActionIdChanged" />
+
 
 <StoredFilesEdit @bind-Files="EntityWithFiles.Item.Files" />
 

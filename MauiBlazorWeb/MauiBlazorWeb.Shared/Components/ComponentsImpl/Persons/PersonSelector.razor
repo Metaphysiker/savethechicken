@@ -1,7 +1,9 @@
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
+@using System.Net.Http.Json
 @inject GenericDtoServiceFactory DtoServiceFactory
+@inject HttpClient HttpClient
 
 <MudAutocomplete T="PersonDto"
                  Label="@Label"
@@ -46,7 +48,7 @@
     protected override async Task OnInitializedAsync()
     {
         _service = DtoServiceFactory.Create<PersonDto, PersonSearch>();
-        
+
         // Load the selected person if an ID is provided
         if (SelectedPersonId.HasValue && SelectedPersonId.Value > 0)
         {
@@ -57,7 +59,7 @@
     protected override async Task OnParametersSetAsync()
     {
         // If SelectedPersonId changed externally, update the selected person
-        if (SelectedPersonId.HasValue && SelectedPersonId.Value > 0 && 
+        if (SelectedPersonId.HasValue && SelectedPersonId.Value > 0 &&
             (_selectedPerson == null || _selectedPerson.Id != SelectedPersonId.Value))
         {
             _selectedPerson = await _service.GetByIdAsync(SelectedPersonId.Value);
@@ -70,22 +72,24 @@
 
     private async Task<IEnumerable<PersonDto>> SearchPersons(string searchText, CancellationToken cancellationToken)
     {
-        if (_service == null)
-            return Enumerable.Empty<PersonDto>();
-
         // If search text is empty or too short, return empty list
         if (string.IsNullOrWhiteSpace(searchText) || searchText.Length < 2)
             return Enumerable.Empty<PersonDto>();
 
-        var search = new PersonSearch
+        try
         {
-            SearchTerm = searchText,
-            PageSize = 10,
-            Page = 1
-        };
+            // Use the new autocomplete endpoint that does partial matching on firstname, lastname, and email
+            var result = await HttpClient.GetFromJsonAsync<List<PersonDto>>(
+                $"api/person/autocomplete?searchText={Uri.EscapeDataString(searchText)}&limit=10",
+                cancellationToken);
 
-        var result = await _service.SearchAsync(search);
-        return result?.Data ?? Enumerable.Empty<PersonDto>();
+            return result ?? Enumerable.Empty<PersonDto>();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error searching persons: {ex.Message}");
+            return Enumerable.Empty<PersonDto>();
+        }
     }
 
     private async Task OnPersonChanged(PersonDto? person)
