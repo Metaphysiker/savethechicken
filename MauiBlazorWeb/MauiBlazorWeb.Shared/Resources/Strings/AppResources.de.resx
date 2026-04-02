@@ -500,4 +500,13 @@
   <data name="Farms" xml:space="preserve">
     <value>Betriebe</value>
   </data>
+  <data name="ActionPreselected_Info" xml:space="preserve">
+    <value>Aktion ist vorausgewählt und kann nicht geändert werden.</value>
+  </data>
+  <data name="AddFarm" xml:space="preserve">
+    <value>Betrieb hinzufügen</value>
+  </data>
+  <data name="CreateFarm" xml:space="preserve">
+    <value>Betrieb erstellen</value>
+  </data>
 </root>

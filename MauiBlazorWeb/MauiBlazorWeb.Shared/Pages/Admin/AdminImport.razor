@@ -1,0 +1,313 @@
+@page "/admin/import"
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Components.Forms
+@using System.Net.Http.Headers
+@inject HttpClient Http
+@inject ISnackbar Snackbar
+@inject IStringLocalizer<AppResources> L
+
+@code { 
+    public class ImportUploadResponse
+    {
+        public Guid JobId { get; set; }
+        public string? Status { get; set; }
+        public string? Message { get; set; }
+    }
+
+    public class ImportStatus
+    {
+        public Guid JobId { get; set; }
+        public string? EntityType { get; set; }
+        public string? Status { get; set; }
+        public int TotalRecords { get; set; }
+        public int ProcessedRecords { get; set; }
+        public int SuccessCount { get; set; }
+        public int ErrorCount { get; set; }
+        public string? ErrorMessage { get; set; }
+        public DateTime StartedAt { get; set; }
+        public DateTime? CompletedAt { get; set; }
+    }
+}
+
+<PageTitle>CSV Import</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-8">
+    <MudPaper Class="pa-6" Elevation="2">
+        <MudText Typo="Typo.h3" Class="mb-4">CSV Data Import</MudText>
+
+        <MudAlert Severity="Severity.Info" Dense="true" Class="my-4">
+            <strong>How to use:</strong> Select an entity type, upload a CSV file with headers matching the field names, and click Upload. The import will process in the background.
+        </MudAlert>
+
+        @if (_currentJobId == null)
+        {
+            <!-- Upload Form -->
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudSelect @bind-Value="_selectedEntityType" 
+                              Label="Entity Type" 
+                              Variant="Variant.Outlined"
+                              AnchorOrigin="Origin.BottomCenter"
+                              data-testid="entity-type-select">
+                        <MudSelectItem Value="@("Person")">Person</MudSelectItem>
+                        <MudSelectItem Value="@("SaveChickenRequest")">Save Chicken Request</MudSelectItem>
+                        <MudSelectItem Value="@("SaveChickenDriveRequest")">Save Chicken Drive Request</MudSelectItem>
+                        <MudSelectItem Value="@("Farm")">Farm</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+            </MudGrid>
+
+            <MudFileUpload T="IBrowserFile" 
+                          @bind-Files="_selectedFile"
+                          Accept=".csv"
+                          MaximumFileCount="1"
+                          data-testid="csv-file-upload">
+                <ActivatorContent>
+                    <MudButton HtmlTag="label"
+                              Variant="Variant.Filled"
+                              Color="Color.Primary"
+                              StartIcon="@Icons.Material.Filled.CloudUpload">
+                        Select CSV File
+                    </MudButton>
+                </ActivatorContent>
+            </MudFileUpload>
+
+            @if (_selectedFile != null)
+            {
+                <MudChip T="string" Class="mt-2" Color="Color.Info">
+                    @_selectedFile.Name (@((_selectedFile.Size / 1024.0).ToString("F2")) KB)
+                </MudChip>
+            }
+
+            <MudButton Variant="Variant.Filled"
+                      Color="Color.Success"
+                      OnClick="UploadFile"
+                      Disabled="@(_selectedFile == null || string.IsNullOrEmpty(_selectedEntityType) || _isUploading)"
+                      Class="mt-4"
+                      data-testid="upload-button">
+                @if (_isUploading)
+                {
+                    <MudProgressCircular Class="mr-2" Size="Size.Small" Indeterminate="true" />
+                    <span>Uploading...</span>
+                }
+                else
+                {
+                    <span>Upload and Start Import</span>
+                }
+            </MudButton>
+
+            <!-- CSV Format Examples -->
+            <MudExpansionPanels Class="mt-4">
+                <MudExpansionPanel Text="CSV Format Examples">
+                    <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true">
+                        <MudTabPanel Text="Person">
+                            <MudText Typo="Typo.body2" Class="pa-4">
+                                <pre>FirstName,LastName,Email,PhoneNumber,Street,PostalCode,City
+John,Doe,john.doe@example.com,+41791234567,Main Street 1,3000,Bern
+Jane,Smith,jane.smith@example.com,+41797654321,Oak Avenue 5,8000,Zurich</pre>
+                            </MudText>
+                        </MudTabPanel>
+                        <MudTabPanel Text="SaveChickenRequest">
+                            <MudText Typo="Typo.body2" Class="pa-4">
+                                <pre>PersonId,SaveChickenActionId,NumberOfChickens,NumberOfRoosters,Description,Message,ConfirmCriteria,AcceptTerms
+1,5,20,2,Large farm with space,Happy to help,true,true
+2,5,10,0,Small backyard,Love chickens,true,true</pre>
+                            </MudText>
+                        </MudTabPanel>
+                        <MudTabPanel Text="SaveChickenDriveRequest">
+                            <MudText Typo="Typo.body2" Class="pa-4">
+                                <pre>PersonId,SaveChickenActionId,CarMake,CapacityForChickens,AvailableDates,Message
+1,5,VW Transporter,30,2026-04-15;2026-04-16,Can transport on weekends
+2,5,Toyota Corolla,5,2026-04-15,Small car available</pre>
+                            </MudText>
+                        </MudTabPanel>
+                        <MudTabPanel Text="Farm">
+                            <MudText Typo="Typo.body2" Class="pa-4">
+                                <pre>PersonId,SaveChickenActionId,FarmName,Description
+1,5,Sunny Farm,Organic farm in the mountains
+2,5,Green Valley,Family farm with free range</pre>
+                            </MudText>
+                        </MudTabPanel>
+                    </MudTabs>
+                </MudExpansionPanel>
+            </MudExpansionPanels>
+        }
+        else
+        {
+            <!-- Import Progress -->
+            <MudCard Class="mt-4">
+                <MudCardContent>
+                    <MudText Typo="Typo.h5" Class="mb-4">Import Progress</MudText>
+                    
+                    @if (_importStatus != null)
+                    {
+                        <MudGrid>
+                            <MudItem xs="12" md="6">
+                                <MudText><strong>Entity Type:</strong> @_importStatus.EntityType</MudText>
+                                <MudText><strong>Status:</strong> 
+                                    <MudChip T="string" Color="@GetStatusColor(_importStatus.Status ?? "Unknown")" Size="Size.Small">
+                                        @_importStatus.Status
+                                    </MudChip>
+                                </MudText>
+                                <MudText><strong>Started:</strong> @_importStatus.StartedAt.ToLocalTime().ToString("HH:mm:ss")</MudText>
+                                @if (_importStatus.CompletedAt.HasValue)
+                                {
+                                    <MudText><strong>Completed:</strong> @_importStatus.CompletedAt.Value.ToLocalTime().ToString("HH:mm:ss")</MudText>
+                                }
+                            </MudItem>
+                            <MudItem xs="12" md="6">
+                                <MudText><strong>Total Records:</strong> @_importStatus.TotalRecords</MudText>
+                                <MudText><strong>Processed:</strong> @_importStatus.ProcessedRecords</MudText>
+                                <MudText><strong>Success:</strong> @_importStatus.SuccessCount</MudText>
+                                <MudText><strong>Errors:</strong> @_importStatus.ErrorCount</MudText>
+                            </MudItem>
+                        </MudGrid>
+
+                        @if (_importStatus.TotalRecords > 0)
+                        {
+                            var progress = (_importStatus.ProcessedRecords / (double)_importStatus.TotalRecords) * 100;
+                            <MudProgressLinear Color="Color.Primary" Value="@progress" Class="mt-4" />
+                            <MudText Typo="Typo.caption" Align="Align.Center">@progress.ToString("F1")%</MudText>
+                        }
+
+                        @if (!string.IsNullOrEmpty(_importStatus.ErrorMessage))
+                        {
+                            <MudAlert Severity="Severity.Error" Class="mt-4">
+                                <strong>Error:</strong> @_importStatus.ErrorMessage
+                            </MudAlert>
+                        }
+
+                        @if (_importStatus.Status == "Completed")
+                        {
+                            <MudAlert Severity="Severity.Success" Class="mt-4">
+                                Import completed successfully! Processed @_importStatus.SuccessCount records.
+                            </MudAlert>
+                        }
+                    }
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Text" 
+                              Color="Color.Primary" 
+                              OnClick="ResetImport"
+                              Disabled="@(_importStatus?.Status == "Processing")">
+                        Start New Import
+                    </MudButton>
+                </MudCardActions>
+            </MudCard>
+        }
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private IBrowserFile? _selectedFile;
+    private string _selectedEntityType = "Person";
+    private bool _isUploading;
+    private Guid? _currentJobId;
+    private ImportStatus? _importStatus;
+    private System.Threading.Timer? _statusTimer;
+
+    private async Task UploadFile()
+    {
+        if (_selectedFile == null) return;
+
+        _isUploading = true;
+        StateHasChanged();
+
+        try
+        {
+            // Create multipart form data
+            using var content = new MultipartFormDataContent();
+            
+            var fileContent = new StreamContent(_selectedFile.OpenReadStream(maxAllowedSize: 100_000_000));
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue("text/csv");
+            content.Add(fileContent, "File", _selectedFile.Name);
+            content.Add(new StringContent(_selectedEntityType), "EntityType");
+
+            // Upload file
+            var response = await Http.PostAsync("api/import/upload", content);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<ImportUploadResponse>();
+                if (result != null)
+                {
+                    _currentJobId = result.JobId;
+                    
+                    Snackbar.Add($"Import started! Job ID: {result.JobId}", Severity.Success);
+                    
+                    // Start polling for status
+                    StartStatusPolling();
+                }
+            }
+            else
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                Snackbar.Add($"Upload failed: {error}", Severity.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isUploading = false;
+            StateHasChanged();
+        }
+    }
+
+    private void StartStatusPolling()
+    {
+        _statusTimer = new System.Threading.Timer(async _ => await CheckStatus(), null, 0, 1000);
+    }
+
+    private async Task CheckStatus()
+    {
+        if (_currentJobId == null) return;
+
+        try
+        {
+            var response = await Http.GetFromJsonAsync<ImportStatus>($"api/import/status/{_currentJobId}");
+            _importStatus = response;
+            
+            // Stop polling if completed or failed
+            if (_importStatus?.Status == "Completed" || _importStatus?.Status == "Failed")
+            {
+                _statusTimer?.Dispose();
+                _statusTimer = null;
+            }
+            
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error checking status: {ex.Message}");
+        }
+    }
+
+    private void ResetImport()
+    {
+        _currentJobId = null;
+        _importStatus = null;
+        _selectedFile = null;
+        _statusTimer?.Dispose();
+        _statusTimer = null;
+    }
+
+    private Color GetStatusColor(string status)
+    {
+        return status switch
+        {
+            "Processing" => Color.Info,
+            "Completed" => Color.Success,
+            "Failed" => Color.Error,
+            _ => Color.Default
+        };
+    }
+
+    public void Dispose()
+    {
+        _statusTimer?.Dispose();
+    }
+}

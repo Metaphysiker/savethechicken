@@ -522,19 +522,29 @@ test.describe('Admin Save Chicken Request Management', () => {
     await page.getByRole('button', { name: /aktualisieren|update/i }).click();
     await page.waitForSelector('[data-testid="save-chicken-request-general-info"]', { state: 'hidden', timeout: 5000 });
 
+    // Wait for the edit dialog container to be completely removed
+    await page.waitForSelector('.mud-dialog-container', { state: 'hidden', timeout: 5000 });
+
+    // Wait for network to be idle after edit to ensure table has refreshed
+    await page.waitForLoadState('networkidle', { timeout: 10000 });
+
     // Verify changes
     await expect(page.getByText('Updated: Even more space now')).toBeVisible();
     await expect(page.getByText('Nice farm with lots of space')).not.toBeVisible();
 
-    // Delete the request
+    // Delete the request - ensure button is actionable before clicking
     const deleteButton = page.getByTestId('delete-button').first();
+    await deleteButton.waitFor({ state: 'attached', timeout: 5000 });
     await deleteButton.waitFor({ state: 'visible', timeout: 5000 });
+    await expect(deleteButton).toBeEnabled();
+
+    // Small delay to ensure button event handlers are attached
+    await page.waitForTimeout(500);
     await deleteButton.click();
-    await page.waitForTimeout(500); // Give dialog time to open
 
     // Wait for the delete confirmation dialog to appear
-    await page.waitForSelector('.mud-dialog-container', { state: 'visible', timeout: 5000 });
-    
+    await page.waitForSelector('.mud-dialog-container', { state: 'visible', timeout: 10000 });
+
     // Wait for confirmation button and confirm
     const confirmButton = page.getByTestId('confirm-delete-button');
     await confirmButton.waitFor({ state: 'visible', timeout: 5000 });

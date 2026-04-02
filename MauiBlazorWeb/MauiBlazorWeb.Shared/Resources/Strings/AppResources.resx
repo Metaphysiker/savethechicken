@@ -501,4 +501,13 @@
   <data name="Farms" xml:space="preserve">
     <value>Farms</value>
   </data>
+  <data name="ActionPreselected_Info" xml:space="preserve">
+    <value>Action is pre-selected and cannot be changed.</value>
+  </data>
+  <data name="AddFarm" xml:space="preserve">
+    <value>Add Farm</value>
+  </data>
+  <data name="CreateFarm" xml:space="preserve">
+    <value>Create Farm</value>
+  </data>
 </root>

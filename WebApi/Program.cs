@@ -20,6 +20,7 @@ builder.Services.AddScoped<GenericModelServiceFactory>();
 builder.Services.AddScoped<ModelSearchFactory>();
 builder.Services.AddScoped<BlackListDetectorService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<CsvImportService>();
 builder.Services.AddDbContext<DatabaseContext>();
 builder.Services.AddEndpointsApiExplorer();
 

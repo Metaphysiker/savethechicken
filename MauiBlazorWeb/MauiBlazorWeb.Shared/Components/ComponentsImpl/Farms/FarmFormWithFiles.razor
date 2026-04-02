@@ -17,10 +17,23 @@
 
     [Parameter]
     public bool IsReadOnly { get; set; } = false;
+
+    [Parameter]
+    public int? PreSelectedSaveChickenActionId { get; set; }
+
+    private bool isSaveChickenActionSelectorReadOnly => IsReadOnly || EntityWithFiles.Item.Id > 0 || PreSelectedSaveChickenActionId.HasValue;
 }
 
 <SaveChickenActionSelector SelectedActionId="EntityWithFiles.Item.SaveChickenActionId"
-                           SelectedActionIdChanged="OnSaveChickenActionIdChanged" />
+                           SelectedActionIdChanged="OnSaveChickenActionIdChanged"
+                           IsReadOnly="@isSaveChickenActionSelectorReadOnly" />
+
+@if (PreSelectedSaveChickenActionId.HasValue)
+{
+    <MudAlert Severity="Severity.Info" Dense="true" Class="mt-2">
+        @L["ActionPreselected_Info"]
+    </MudAlert>
+}
 
 <ContactForm Contact="EntityWithFiles.Item.Contact" IsReadOnly="@IsReadOnly" />
 <AddressForm Address="EntityWithFiles.Item.Address" IsReadOnly="@IsReadOnly" />
@@ -72,6 +85,13 @@
     protected override async Task OnInitializedAsync()
     {
         _saveChickenActionService = DtoServiceFactory.Create<SaveChickenActionDto, SaveChickenActionSearch>();
+
+        // Set PreSelectedSaveChickenActionId if provided
+        if (PreSelectedSaveChickenActionId.HasValue && EntityWithFiles.Item.SaveChickenActionId == null)
+        {
+            EntityWithFiles.Item.SaveChickenActionId = PreSelectedSaveChickenActionId.Value;
+        }
+
         await getSaveChickenAction();
     }
 

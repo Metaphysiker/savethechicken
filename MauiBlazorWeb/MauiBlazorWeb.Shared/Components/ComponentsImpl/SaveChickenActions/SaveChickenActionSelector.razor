@@ -11,6 +11,7 @@
            Dense="true"
            Variant="Variant.Outlined"
            Clearable="true"
+           Disabled="@IsReadOnly"
            UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "save-chicken-action-selector" })">
     @foreach (var action in GetFilteredActions())
     {
@@ -26,6 +27,7 @@
     [Parameter] public EventCallback<int?> SelectedActionIdChanged { get; set; }
     [Parameter] public EventCallback<SaveChickenActionDto?> OnActionSelected { get; set; }
     [Parameter] public List<int>? ExcludeIds { get; set; }
+    [Parameter] public bool IsReadOnly { get; set; } = false;
 
     private GenericDtoService<SaveChickenActionDto, SaveChickenActionSearch>? _service;
     private List<SaveChickenActionDto> actions = new();

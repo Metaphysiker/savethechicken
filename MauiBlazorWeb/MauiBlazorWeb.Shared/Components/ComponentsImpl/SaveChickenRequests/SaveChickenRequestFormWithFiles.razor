@@ -25,8 +25,12 @@
     [Parameter]
     public int? PreSelectedPersonId { get; set; }
 
+    [Parameter]
+    public int? PreSelectedSaveChickenActionId { get; set; }
+
     private PersonDto? person;
     private bool isPersonSelectorReadOnly => IsReadOnly || EntityWithFiles.Item.Id > 0 || PreSelectedPersonId.HasValue;
+    private bool isSaveChickenActionSelectorReadOnly => IsReadOnly || EntityWithFiles.Item.Id > 0 || PreSelectedSaveChickenActionId.HasValue;
 
     private async Task OnPersonIdChanged(int? newPersonId)
     {
@@ -61,12 +65,20 @@
     <ValidationMessage For="@(() => EntityWithFiles.Item.PersonId)" />
 
     <SaveChickenActionSelector SelectedActionId="EntityWithFiles.Item.SaveChickenActionId"
-                          SelectedActionIdChanged="OnSaveChickenActionIdChanged" />
+                          SelectedActionIdChanged="OnSaveChickenActionIdChanged"
+                          IsReadOnly="@isSaveChickenActionSelectorReadOnly" />
 
     @if (PreSelectedPersonId.HasValue)
     {
         <MudAlert Severity="Severity.Info" Dense="true" Class="mt-2">
             @L["PersonPreselected_Info"]
+        </MudAlert>
+    }
+
+    @if (PreSelectedSaveChickenActionId.HasValue)
+    {
+        <MudAlert Severity="Severity.Info" Dense="true" Class="mt-2">
+            @L["ActionPreselected_Info"]
         </MudAlert>
     }
 </MudPaper>
@@ -167,6 +179,13 @@
         if (PreSelectedPersonId.HasValue && EntityWithFiles.Item.PersonId == null)
         {
             EntityWithFiles.Item.PersonId = PreSelectedPersonId.Value;
+        }
+
+        // Set PreSelectedSaveChickenActionId if provided
+        if (PreSelectedSaveChickenActionId.HasValue && EntityWithFiles.Item.SaveChickenActionId == null)
+        {
+            EntityWithFiles.Item.SaveChickenActionId = PreSelectedSaveChickenActionId.Value;
+            await getSaveChickenAction();
         }
 
         // Load person if PersonId already set
