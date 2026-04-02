@@ -1,6 +1,9 @@
 @using global::Shared.Dtos.DtosImpl
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using Microsoft.Extensions.Localization
+@using MauiBlazorWeb.Shared.Resources.Strings
 @inject GenericDtoServiceFactory DtoServiceFactory
+@inject IStringLocalizer<AppResources> L
 
 @if (displayAddress != null)
 {
@@ -12,7 +15,7 @@
             }
             else
             {
-                <span>Address</span>
+                <span>@L["Address"]</span>
             }
         </MudText>
 

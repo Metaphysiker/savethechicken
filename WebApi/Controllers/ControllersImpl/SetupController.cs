@@ -43,8 +43,7 @@ public class SetupController : ControllerBase
                 new DateOnly(2026, 4, 30)
             },
             Title = "Test - Rettungsaktion April 2026",
-            Description = "Test",
-            IsActive = true
+            Description = "Test"
         };
 
         _db.SaveChickenActions.Add(action);

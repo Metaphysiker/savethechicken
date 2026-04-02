@@ -27,12 +27,6 @@
                 <MudText Typo="Typo.body1" Class="mb-3" data-testid="action-description">@selectedAction.Description</MudText>
             }
 
-            <MudChip T="string" Color="@(selectedAction.IsActive ? Color.Success : Color.Default)"
-                     Size="Size.Small"
-                     data-testid="action-active-status">
-                @(selectedAction.IsActive ? "Aktiv" : "Inaktiv")
-            </MudChip>
-
             @if (selectedAction.Dates != null && selectedAction.Dates.Any())
             {
                 <MudText Typo="Typo.body2" Class="mt-3">

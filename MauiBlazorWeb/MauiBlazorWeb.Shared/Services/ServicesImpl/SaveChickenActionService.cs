@@ -16,7 +16,6 @@ namespace MauiBlazorWeb.Shared.Services.ServicesImpl
         {
             SaveChickenActionSearch search = new SaveChickenActionSearch
             {
-                IsActive = true,
                 PageSize = 1
             };
 

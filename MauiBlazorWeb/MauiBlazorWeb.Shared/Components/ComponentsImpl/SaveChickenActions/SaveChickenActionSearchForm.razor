@@ -1,21 +1,12 @@
 ﻿@using global::Shared.Dtos.DtosImpl
 
 <MudGrid>
-    <MudItem xs="12" sm="8">
+    <MudItem xs="12">
         <MudTextField @bind-Value="Model.SearchTerm"
                       Label="Suche"
                       Variant="Variant.Outlined"
                       Placeholder="Nach Titel suchen..."
                       Immediate="true" />
-    </MudItem>
-    <MudItem xs="12" sm="4">
-        <MudSelect @bind-Value="Model.IsActive"
-                   Label="Status"
-                   Variant="Variant.Outlined"
-                   Clearable="true">
-            <MudSelectItem Value="@((bool?)true)">Nur Aktive</MudSelectItem>
-            <MudSelectItem Value="@((bool?)false)">Nur Inaktive</MudSelectItem>
-        </MudSelect>
     </MudItem>
 </MudGrid>
 

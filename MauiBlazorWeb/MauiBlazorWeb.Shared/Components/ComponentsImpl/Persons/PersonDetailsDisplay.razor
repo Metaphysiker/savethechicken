@@ -7,26 +7,27 @@
 @using global::Shared.Dtos.DtosImpl
 @using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.Extensions.Localization
+@using MauiBlazorWeb.Shared.Resources.Strings
 @inject GenericDtoServiceFactory DtoServiceFactory
 @inject IDialogService DialogService
+@inject IStringLocalizer<AppResources> L
 
 @if (displayPerson != null)
 {
     <MudPaper Class="pa-4 my-4" Elevation="2">
-        <MudText Typo="Typo.h6" Class="mb-3">Status</MudText>
+        <MudText Typo="Typo.h6" Class="mb-3">@L["Status"]</MudText>
 
         @if (displayPerson.IsBlacklisted)
         {
             <MudAlert Severity="Severity.Error" Class="mb-2" data-testid="blacklist-status">
-                <MudText>Blacklisted: Yes</MudText>
-                <MudText Typo="Typo.caption">Auf der schwarzen Liste</MudText>
+                <MudText>@L["Blacklisted_Yes"]</MudText>
             </MudAlert>
         }
         else
         {
             <MudAlert Severity="Severity.Success" Class="mb-2" data-testid="blacklist-status">
-                <MudText>Blacklisted: No</MudText>
-                <MudText Typo="Typo.caption">Nicht auf der schwarzen Liste</MudText>
+                <MudText>@L["Blacklisted_No"]</MudText>
             </MudAlert>
         }
     </MudPaper>
@@ -42,13 +43,13 @@
     }
 
     <MudPaper Class="pa-4 my-4" Elevation="2">
-        <MudText Typo="Typo.h6" Class="mb-3">Actions</MudText>
+        <MudText Typo="Typo.h6" Class="mb-3">@L["Actions"]</MudText>
         <MudStack Direction="Row" Spacing="2">
             <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OpenAddSaveChickenRequestDialog" StartIcon="@Icons.Material.Filled.Add">
-                Add Save Chicken Request
+                @L["AddSaveChickenRequest"]
             </MudButton>
             <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="OpenAddSaveChickenDriveRequestDialog" StartIcon="@Icons.Material.Filled.Add">
-                Add Drive Request
+                @L["AddDriveRequest"]
             </MudButton>
         </MudStack>
     </MudPaper>
@@ -56,7 +57,7 @@
     @if (saveChickenRequests.Any())
     {
         <MudPaper Class="pa-4 my-4" Elevation="2">
-            <MudText Typo="Typo.h6" Class="mb-3">Save Chicken Requests</MudText>
+            <MudText Typo="Typo.h6" Class="mb-3">@L["SaveChickenRequests"]</MudText>
             <SaveChickenRequestTable items="@saveChickenRequests" />
         </MudPaper>
     }
@@ -64,7 +65,7 @@
     @if (saveChickenDriveRequests.Any())
     {
         <MudPaper Class="pa-4 my-4" Elevation="2">
-            <MudText Typo="Typo.h6" Class="mb-3">Save Chicken Drive Requests</MudText>
+            <MudText Typo="Typo.h6" Class="mb-3">@L["SaveChickenDriveRequests"]</MudText>
             <SaveChickenDriveRequestTable items="@saveChickenDriveRequests" />
         </MudPaper>
     }
@@ -117,8 +118,8 @@
 
         // Load SaveChickenRequests for this person
         var saveChickenRequestService = DtoServiceFactory.Create<SaveChickenRequestDto, SaveChickenRequestSearch>();
-        var saveChickenRequestSearchParams = new SaveChickenRequestSearch 
-        { 
+        var saveChickenRequestSearchParams = new SaveChickenRequestSearch
+        {
             PersonId = displayPerson.Id,
             PageSize = 100 // Load up to 100 requests
         };
@@ -127,8 +128,8 @@
 
         // Load SaveChickenDriveRequests for this person
         var saveChickenDriveRequestService = DtoServiceFactory.Create<SaveChickenDriveRequestDto, SaveChickenDriveRequestSearch>();
-        var saveChickenDriveRequestSearchParams = new SaveChickenDriveRequestSearch 
-        { 
+        var saveChickenDriveRequestSearchParams = new SaveChickenDriveRequestSearch
+        {
             PersonId = displayPerson.Id,
             PageSize = 100 // Load up to 100 requests
         };

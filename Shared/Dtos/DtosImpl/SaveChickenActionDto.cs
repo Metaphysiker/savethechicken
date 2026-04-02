@@ -19,7 +19,6 @@ namespace Shared.Dtos.DtosImpl
         public string Title { get; set; } = string.Empty;
         [Required]
         public string Description { get; set; } = string.Empty;
-        public bool IsActive { get; set; } = false;
         public string GenericName { get; set; } = string.Empty;
 
     }

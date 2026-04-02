@@ -28,9 +28,6 @@ namespace Services.ServicesImpl
             if (search.Ids != null && search.Ids.Any())
                 query = query.Where(x => search.Ids.Contains(x.Id));
 
-            if (search.IsActive != null)
-                query = query.Where(x => x.IsActive == search.IsActive.Value);
-
             // Use SearchTerm from ISearchDto for consistency
             if (!string.IsNullOrEmpty(search.SearchTerm))
             {

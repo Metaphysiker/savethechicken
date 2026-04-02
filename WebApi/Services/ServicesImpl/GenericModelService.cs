@@ -40,18 +40,7 @@ namespace WebApi.Services.ServicesImpl
             }
         }
 
-        public async Task UpdateIsActiveInSaveChickenActions(TModel model)
-        {
-            {
-                if (model is SaveChickenAction saveChickenAction && saveChickenAction.IsActive)
-                {
-                    var others = _db.Set<SaveChickenAction>()
-                        .Where(a => a.Id != saveChickenAction.Id && a.IsActive);
 
-                    await others.ForEachAsync(a => a.IsActive = false);
-                }
-            }
-        }
 
         public async Task CheckForBlackListMatches(TModel model)
         {
@@ -111,7 +100,7 @@ namespace WebApi.Services.ServicesImpl
                 {
                     // Note: We don't need to manually update existing files here.
                     // Because you are calling _db.Update(model), EF will automatically
-                    // detect changes in the Files collection of the model and 
+                    // detect changes in the Files collection of the model and
                     // generate UPDATE statements for them.
                 }
             }
@@ -123,7 +112,6 @@ namespace WebApi.Services.ServicesImpl
             model.UpdatedAt = DateTime.UtcNow;
 
             await UpdateCoordinatesAsync(model);
-            await UpdateIsActiveInSaveChickenActions(model);
             await UpdateFiles(model);
             await CheckForBlackListMatches(model);
 
@@ -205,7 +193,6 @@ namespace WebApi.Services.ServicesImpl
             model.UpdatedAt = DateTime.UtcNow;
 
             await UpdateCoordinatesAsync(model);
-            await UpdateIsActiveInSaveChickenActions(model);
             await UpdateFiles(model);
 
             _db.Set<TModel>().Update(model);

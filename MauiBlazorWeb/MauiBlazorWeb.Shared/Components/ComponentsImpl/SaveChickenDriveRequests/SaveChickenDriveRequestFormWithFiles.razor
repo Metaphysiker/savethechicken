@@ -47,21 +47,21 @@
 }
 
 <MudPaper Class="pa-4 my-4">
-    <MudText Typo="Typo.h6">Person Selection</MudText>
+    <MudText Typo="Typo.h6">@L["PersonSelection"]</MudText>
     <MudAlert Severity="Severity.Info" Dense="true" Class="my-2">
-        <strong>Admin:</strong> Select an existing person for this drive request. PersonId is required for admin submissions.
+        @L["PersonSelection_AdminInfo"]
     </MudAlert>
 
     <PersonSelector SelectedPersonId="@EntityWithFiles.Item.PersonId"
                     SelectedPersonIdChanged="OnPersonIdChanged"
-                    Label="Select Person*"
+                    Label="@L["SelectPerson"]"
                     IsReadOnly="@isPersonSelectorReadOnly" />
     <ValidationMessage For="@(() => EntityWithFiles.Item.PersonId)" />
-    
+
     @if (PreSelectedPersonId.HasValue)
     {
         <MudAlert Severity="Severity.Info" Dense="true" Class="mt-2">
-            Person is pre-selected and cannot be changed for this request.
+            @L["PersonPreselected_Info"]
         </MudAlert>
     }
 </MudPaper>
@@ -69,16 +69,16 @@
 @if (person != null)
 {
     <MudPaper Class="pa-4 my-4">
-        <MudText Typo="Typo.h6">Selected Person Details</MudText>
-        <MudText Typo="Typo.body2"><strong>Name:</strong> @person.Contact?.FirstName @person.Contact?.LastName</MudText>
-        <MudText Typo="Typo.body2"><strong>Email:</strong> @person.Contact?.Email</MudText>
-        <MudText Typo="Typo.body2"><strong>Phone:</strong> @person.Contact?.PhoneNumber</MudText>
-        <MudText Typo="Typo.body2"><strong>Address:</strong> @person.Address?.Street, @person.Address?.PostalCode @person.Address?.City</MudText>
+        <MudText Typo="Typo.h6">@L["SelectedPersonDetails"]</MudText>
+        <MudText Typo="Typo.body2"><strong>@L["Name"]</strong> @person.Contact?.FirstName @person.Contact?.LastName</MudText>
+        <MudText Typo="Typo.body2"><strong>@L["Email"]</strong> @person.Contact?.Email</MudText>
+        <MudText Typo="Typo.body2"><strong>@L["Phone"]</strong> @person.Contact?.PhoneNumber</MudText>
+        <MudText Typo="Typo.body2"><strong>@L["Address_Label"]</strong> @person.Address?.Street, @person.Address?.PostalCode @person.Address?.City</MudText>
     </MudPaper>
 }
 
 <MudPaper Class="pa-4 my-4" Elevation="2" data-testid="drive-request-general-info">
-    <MudText Typo="Typo.h6">Drive Request Information</MudText>
+    <MudText Typo="Typo.h6">@L["DriveRequestInformation"]</MudText>
 
     <MudTextField ReadOnly="@IsReadOnly"
                   @bind-Value="EntityWithFiles.Item.CarMake"
@@ -99,7 +99,7 @@
 
     <MudItem Class="my-2">
         <MudText>
-            Additional message:
+            @L["AdditionalMessage"]
         </MudText>
         <MudTextField ReadOnly="@IsReadOnly"
                      @bind-Value="EntityWithFiles.Item.Message"
@@ -111,7 +111,7 @@
     </MudItem>
 </MudPaper>
 
-<MultiDateOnlySelector Text="Available driving dates:"
+<MultiDateOnlySelector Text="@L["AvailableDrivingDates"]"
                       @bind-SelectedDates="EntityWithFiles.Item.AvailableDates"
                       MinDate="@minDate"
                       MaxDate="@maxDate" />
@@ -121,7 +121,7 @@
 
 <StoredFilesEdit @bind-Files="EntityWithFiles.Item.Files" />
 
-<FilesUploadForm @bind-Value="EntityWithFiles.Files" Label="Upload Files" Text="Route plan" />
+<FilesUploadForm @bind-Value="EntityWithFiles.Files" Label="@L["UploadFiles"]" Text="@L["RoutePlan"]" />
 
 
 @code {

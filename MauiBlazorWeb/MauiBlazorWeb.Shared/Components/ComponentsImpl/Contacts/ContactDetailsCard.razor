@@ -1,6 +1,9 @@
 @using global::Shared.Dtos.DtosImpl
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using Microsoft.Extensions.Localization
+@using MauiBlazorWeb.Shared.Resources.Strings
 @inject GenericDtoServiceFactory DtoServiceFactory
+@inject IStringLocalizer<AppResources> L
 
 @if (displayContact != null)
 {
@@ -12,7 +15,7 @@
             }
             else
             {
-                <span>Contact Information</span>
+                <span>@L["ContactInformation"]</span>
             }
         </MudText>
 
@@ -34,7 +37,7 @@
         {
             <MudText Typo="Typo.body1" Class="mb-1">
                 <MudIcon Icon="@Icons.Material.Filled.Email" Size="Size.Small" Class="mr-2" />
-                <strong>Email:</strong> <span data-testid="contact-email">@displayContact.Email</span>
+                <strong>@L["Contact_Email"]:</strong> <span data-testid="contact-email">@displayContact.Email</span>
             </MudText>
         }
 
@@ -42,7 +45,7 @@
         {
             <MudText Typo="Typo.body1" Class="mb-1">
                 <MudIcon Icon="@Icons.Material.Filled.Phone" Size="Size.Small" Class="mr-2" />
-                <strong>Telefon:</strong> <span data-testid="contact-phone">@displayContact.PhoneNumber</span>
+                <strong>@L["Contact_Phone"]:</strong> <span data-testid="contact-phone">@displayContact.PhoneNumber</span>
             </MudText>
         }
     </MudPaper>

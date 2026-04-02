@@ -123,8 +123,14 @@
   <data name="HomePage" xml:space="preserve">
     <value>Startseite</value>
   </data>
+  <data name="Address" xml:space="preserve">
+    <value>Adresse</value>
+  </data>
   <data name="Contact" xml:space="preserve">
     <value>Kontakt</value>
+  </data>
+  <data name="ContactInformation" xml:space="preserve">
+    <value>Kontaktinformationen</value>
   </data>
   <data name="SaveTheChicken" xml:space="preserve">
     <value>Rettet das Huhn</value>
@@ -260,5 +266,77 @@
   </data>
   <data name="copy" xml:space="preserve">
     <value>Copy</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Blacklisted_Yes" xml:space="preserve">
+    <value>Auf der schwarzen Liste: Ja</value>
+  </data>
+  <data name="Blacklisted_No" xml:space="preserve">
+    <value>Nicht auf der schwarzen Liste: Nein</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Aktionen</value>
+  </data>
+  <data name="AddSaveChickenRequest" xml:space="preserve">
+    <value>Hühner-Rettungsanfrage hinzufügen</value>
+  </data>
+  <data name="AddDriveRequest" xml:space="preserve">
+    <value>Transportanfrage hinzufügen</value>
+  </data>
+  <data name="SaveChickenRequests" xml:space="preserve">
+    <value>Hühner-Rettungsanfragen</value>
+  </data>
+  <data name="SaveChickenDriveRequests" xml:space="preserve">
+    <value>Transport-Anfragen</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="TransferDates" xml:space="preserve">
+    <value>Übergabe an diesen Daten:</value>
+  </data>
+  <data name="PersonSelection" xml:space="preserve">
+    <value>Personen-Auswahl</value>
+  </data>
+  <data name="PersonSelection_AdminInfo" xml:space="preserve">
+    <value>Admin: Wählen Sie eine existierende Person für diese Transportanfrage aus. PersonId ist für Admin-Einreichungen erforderlich.</value>
+  </data>
+  <data name="SelectPerson" xml:space="preserve">
+    <value>Person auswählen*</value>
+  </data>
+  <data name="PersonPreselected_Info" xml:space="preserve">
+    <value>Person ist vorausgewählt und kann für diese Anfrage nicht geändert werden.</value>
+  </data>
+  <data name="SelectedPersonDetails" xml:space="preserve">
+    <value>Details der ausgewählten Person</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name:</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email:</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Telefon:</value>
+  </data>
+  <data name="Address_Label" xml:space="preserve">
+    <value>Adresse:</value>
+  </data>
+  <data name="DriveRequestInformation" xml:space="preserve">
+    <value>Transport-Anfrage Informationen</value>
+  </data>
+  <data name="AdditionalMessage" xml:space="preserve">
+    <value>Zusätzliche Nachricht:</value>
+  </data>
+  <data name="AvailableDrivingDates" xml:space="preserve">
+    <value>Verfügbare Fahrtage:</value>
+  </data>
+  <data name="UploadFiles" xml:space="preserve">
+    <value>Dateien hochladen</value>
+  </data>
+  <data name="RoutePlan" xml:space="preserve">
+    <value>Routenplan</value>
   </data>
 </root>

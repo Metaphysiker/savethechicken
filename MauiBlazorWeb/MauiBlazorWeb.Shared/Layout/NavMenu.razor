@@ -5,11 +5,7 @@
 
 <MudNavMenu>
     <MudNavLink Href="/" Class="nav-link-entry" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-    <MudNavLink Href="/platz-anbieten" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Support">Platz für Hühner anbieten</MudNavLink>
-    <MudNavLink Href="/fahrer-werden" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.DirectionsCar">Fahrer werden</MudNavLink>
-    <MudNavLink Href="/betrieb-anmelden" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Agriculture">Betrieb anmelden</MudNavLink>
     <MudDivider Class="my-2" />
-
 
     @if (authService.isLoading == true)
     {
@@ -19,10 +15,17 @@
     {
         @if (!authResponseSingleton.IsLoggedIn)
         {
+            <MudNavLink Href="/platz-anbieten" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Support">Platz für Hühner anbieten</MudNavLink>
+            <MudNavLink Href="/fahrer-werden" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.DirectionsCar">Fahrer werden</MudNavLink>
+            <MudNavLink Href="/betrieb-anmelden" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Agriculture">Betrieb anmelden</MudNavLink>
+            <MudDivider Class="my-2" />
             <MudNavLink Href="/login" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Login">Login</MudNavLink>
         }
         else
         {
+            <MudNavLink Href="/admin/persons" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.People">Personen verwalten</MudNavLink>
+            <MudNavLink Href="/admin/persons/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.PersonAdd">Neue Person</MudNavLink>
+            <MudDivider Class="my-2" />
 
             <MudNavLink Href="/admin/save-chicken-actions" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Dashboard">Rettungs-Aktionen</MudNavLink>
             <MudNavLink Href="/admin/save-chicken-actions/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Neue Rettungs-Aktion</MudNavLink>
@@ -38,17 +41,6 @@
 
             <MudNavLink Href="/admin/farms" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Agriculture">Betriebe</MudNavLink>
             <MudNavLink Href="/admin/farms/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Neuer Betrieb</MudNavLink>
-            <MudDivider Class="my-2" />
-
-            <MudNavLink Href="/admin/persons" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.People">Personen verwalten</MudNavLink>
-            <MudNavLink Href="/admin/persons/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.PersonAdd">Neue Person</MudNavLink>
-            <MudDivider Class="my-2" />
-
-            <MudNavLink Href="/admin/black-listed-persons" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Cancel">Schwarze Liste</MudNavLink>
-            <MudNavLink Href="/admin/black-listed-persons/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Neuer Eintrag</MudNavLink>
-            <MudDivider Class="my-2" />
-
-            <MudNavLink Href="/admin/global-search" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Search">Globale Suche</MudNavLink>
             <MudDivider Class="my-2" />
 
             <MudNavLink Href="/admin/workflow" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.NextPlan">Workflow</MudNavLink>

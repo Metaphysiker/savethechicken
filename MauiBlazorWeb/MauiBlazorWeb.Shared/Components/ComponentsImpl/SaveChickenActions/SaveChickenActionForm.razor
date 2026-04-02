@@ -1,6 +1,9 @@
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Addresses
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Contacts
 @using global::Shared.Dtos.DtosImpl
+@using Microsoft.Extensions.Localization
+@using MauiBlazorWeb.Shared.Resources.Strings
+@inject IStringLocalizer<AppResources> L
 @code {
     [Parameter, EditorRequired] public SaveChickenActionDto Model { get; set; }
 
@@ -11,25 +14,20 @@
 <MudPaper Class="pa-4 my-4" Elevation="2">
     <MudTextField ReadOnly="@IsReadOnly"
                   @bind-Value="Model.Title"
-                  Label="Title"
+                  Label="@L["Title"]"
                   Variant="Variant.Outlined"
                   data-testid="action-title" />
     <ValidationMessage For="@(() => Model.Title)" />
     <MudTextField ReadOnly="@IsReadOnly"
                   @bind-Value="Model.Description"
-                  Label="Description"
+                  Label="@L["Description"]"
                   Variant="Variant.Outlined"
                   Lines="4"
                   TextFieldStyle="MudBlazor.TextFieldStyle.TextArea"
                   data-testid="action-description" />
     <ValidationMessage For="@(() => Model.Description)" />
-    <MudCheckBox ReadOnly="@IsReadOnly"
-                 @bind-Value="Model.IsActive"
-                 Label="Aktiv"
-                 data-testid="action-isactive"></MudCheckBox>
-    <ValidationMessage For="@(() => Model.IsActive)" />
     </MudPaper>
 
-<MauiBlazorWeb.Shared.Components.MultiDateSelecters.MultiDateOnlySelector Text="Übergabe an diesen Daten:" @bind-SelectedDates="Model.Dates" />
+<MauiBlazorWeb.Shared.Components.MultiDateSelecters.MultiDateOnlySelector Text="@L["TransferDates"]" @bind-SelectedDates="Model.Dates" />
 
 
