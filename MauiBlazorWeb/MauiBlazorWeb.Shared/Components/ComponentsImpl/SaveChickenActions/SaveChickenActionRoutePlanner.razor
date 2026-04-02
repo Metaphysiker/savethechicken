@@ -248,10 +248,11 @@
 
     public HashSet<DateOnly> GetAllUniqueRescueDates(IEnumerable<FarmDto> farms)
     {
-        return farms
-            .Where(f => f.DatesForRescues != null)
-            .SelectMany(f => f.DatesForRescues)
-            .ToHashSet();
+        // Use SaveChickenAction dates as the source of truth
+        if (saveChickenActionDto?.Dates == null || !saveChickenActionDto.Dates.Any())
+            return new HashSet<DateOnly>();
+        
+        return saveChickenActionDto.Dates.ToHashSet();
     }
 
     private void PlanRoutes()
@@ -264,9 +265,7 @@
         {
             @foreach(var farm in Farms)
             {
-                if(!farm.DatesForRescues.Contains(date))
-                    continue;
-
+                // All farms are already filtered by SaveChickenActionId, so they're all associated with these dates
                 var saveChickenRequestsForDate = copyOfRequests
                     .Where(r => r.DatesForHandOver.Contains(date))
                     .ToList();
@@ -328,7 +327,11 @@
 
     private List<FarmDto> GetFarmByDate(DateOnly date)
     {
-        return Farms.Where(f => f.DatesForRescues.Contains(date)).ToList();
+        // All farms are associated with the SaveChickenAction, so return all farms for any date in the action
+        if (saveChickenActionDto?.Dates == null || !saveChickenActionDto.Dates.Contains(date))
+            return new List<FarmDto>();
+        
+        return Farms.ToList();
     }
 
     private List<DrivePlan> GetDriversByDateAndFarm(DateOnly date, FarmDto farm)

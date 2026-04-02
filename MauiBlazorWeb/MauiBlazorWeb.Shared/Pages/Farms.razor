@@ -73,19 +73,6 @@
                 </MudText>
             }
 
-            @if (item.DatesForRescues != null && item.DatesForRescues.Any())
-            {
-                <MudText Typo="Typo.body2" Class="mt-3">
-                    <strong>Rettungsdaten:</strong>
-                </MudText>
-                <div>
-                    @foreach (var date in item.DatesForRescues.OrderBy(d => d))
-                    {
-                        <MudChip T="string" Size="Size.Small" Class="mr-1">@date.ToString("dd.MM.yyyy")</MudChip>
-                    }
-                </div>
-            }
-
             @if (!string.IsNullOrWhiteSpace(item.GeneralInformation))
             {
                 <MudText Typo="Typo.body1" Class="mt-2">

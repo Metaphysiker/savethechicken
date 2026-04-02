@@ -20,9 +20,6 @@ namespace Shared.Dtos.DtosImpl
         public int NumberOfRoosters { get; set; } = 0;
         public string Size { get; set; } = String.Empty;
         public string Color { get; set; } = String.Empty;
-        // at least one date required
-        [MinLength(1, ErrorMessage = "At least one date for rescue is required")]
-        public List<DateOnly> DatesForRescues { get; set; } = new List<DateOnly>();
         public string GeneralInformation { get; set; } = String.Empty;
         [Required]
         public string Name { get; set; } = String.Empty;

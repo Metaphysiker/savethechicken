@@ -73,7 +73,6 @@ test.describe('Admin Farm Management', () => {
         addressCity: 'Bern',
         addressPostalCode: '3000',
         addressStreet: 'Farm Road 321',
-        datesForRescues: datesToSelect,
       });
 
       // Wait a bit and check the current URL before clicking submit
@@ -181,7 +180,6 @@ test.describe('Admin Farm Management', () => {
         addressCity: 'Zurich',
         addressPostalCode: '8000',
         addressStreet: 'Original St 1',
-        datesForRescues: datesToSelect,
       });
 
       await page.getByRole('button', { name: /erstellen/i }).click();
@@ -320,7 +318,6 @@ test.describe('Admin Farm Management', () => {
         addressCity: 'Basel',
         addressPostalCode: '4000',
         addressStreet: 'Delete St 1',
-        datesForRescues: datesToSelect,
       });
 
       await page.getByRole('button', { name: /erstellen/i }).click();

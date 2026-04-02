@@ -176,7 +176,6 @@ namespace WebApi.Controllers.ControllersImpl
                 NumberOfRoosters = publicDto.NumberOfRoosters,
                 Size = publicDto.Size,
                 Color = publicDto.Color,
-                DatesForRescues = publicDto.DatesForRescues,
                 GeneralInformation = publicDto.GeneralInformation,
                 SaveChickenActionId = publicDto.SaveChickenActionId,
                 CreatedAt = DateTime.UtcNow,
@@ -274,7 +273,6 @@ namespace WebApi.Controllers.ControllersImpl
                     <p><strong>Adresse:</strong> {farm.Address?.Street}, {farm.Address?.PostalCode} {farm.Address?.City}</p>
                     <p><strong>Anzahl Hühner:</strong> {farm.NumberOfChickens}</p>
                     <p><strong>Anzahl Hähne:</strong> {farm.NumberOfRoosters}</p>
-                    <p><strong>Verfügbare Termine:</strong> {string.Join(", ", farm.DatesForRescues?.Select(d => d.ToString("dd.MM.yyyy")) ?? new List<string>())}</p>
                     <p><strong>Erstellt:</strong> {DateTime.Now:dd.MM.yyyy HH:mm}</p>
                     {(farm.SaveChickenActionId.HasValue ? $"<p><strong>Zugewiesen zu Aktion:</strong> {farm.SaveChickenAction?.Title ?? farm.SaveChickenActionId.ToString()}</p>" : "")}
                 </body>

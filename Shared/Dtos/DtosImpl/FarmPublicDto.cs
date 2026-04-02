@@ -23,9 +23,6 @@ namespace Shared.Dtos.DtosImpl
         public string Size { get; set; } = string.Empty;
         public string Color { get; set; } = string.Empty;
 
-        [MinLength(1, ErrorMessage = "At least one date for rescue is required")]
-        public List<DateOnly> DatesForRescues { get; set; } = new List<DateOnly>();
-
         public string GeneralInformation { get; set; } = string.Empty;
 
         public int? SaveChickenActionId { get; set; }

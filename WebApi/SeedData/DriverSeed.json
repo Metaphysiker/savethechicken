@@ -1,52 +1,84 @@
 [
   {
+    "id": 0,
     "createdAt": "2025-10-01T08:00:00",
     "updatedAt": "2025-10-01T08:00:00",
-    "contact": {
+    "personId": null,
+    "person": {
+      "id": 0,
       "createdAt": "2025-10-01T08:00:00",
       "updatedAt": "2025-10-01T08:00:00",
-      "firstName": "Peter",
-      "lastName": "Baumgartner",
-      "email": "peter.baumgartner@example.ch",
-      "phoneNumber": "+41 79 123 45 67"
+      "contact": {
+        "id": 0,
+        "createdAt": "2025-10-01T08:00:00",
+        "updatedAt": "2025-10-01T08:00:00",
+        "firstName": "Peter",
+        "lastName": "Baumgartner",
+        "email": "peter.baumgartner@example.ch",
+        "phoneNumber": "+41 79 123 45 67"
+      },
+      "contactId": 0,
+      "address": {
+        "id": 0,
+        "createdAt": "2025-10-01T08:00:00",
+        "updatedAt": "2025-10-01T08:00:00",
+        "street": "Fahrstrasse 1",
+        "city": "Zürich",
+        "postalCode": "8000",
+        "geoCoordinate": {
+          "latitude": 47.3769,
+          "longitude": 8.5417
+        }
+      },
+      "addressId": 0
     },
-    "address": {
-      "createdAt": "2025-10-01T08:00:00",
-      "updatedAt": "2025-10-01T08:00:00",
-      "street": "Fahrstrasse 1",
-      "city": "Zürich",
-      "postalCode": "8000"
-    },
-    "carMake": "VW",
+    "carMake": "VW Golf",
+    "message": "Ich fahre gerne für die Hühner!",
+    "capacityForChickens": 20,
     "availableDates": [ "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30" ],
-    "files": [],
     "saveChickenActionId": null,
     "saveChickenAction": null,
-    "capacityForChickens": 20
+    "files": []
   },
   {
+    "id": 0,
     "createdAt": "2025-10-02T09:30:00",
     "updatedAt": "2025-10-02T09:30:00",
-    "contact": {
+    "personId": null,
+    "person": {
+      "id": 0,
       "createdAt": "2025-10-02T09:30:00",
       "updatedAt": "2025-10-02T09:30:00",
-      "firstName": "Sandra",
-      "lastName": "Huber",
-      "email": "sandra.huber@example.ch",
-      "phoneNumber": "+41 78 987 65 43"
+      "contact": {
+        "id": 0,
+        "createdAt": "2025-10-02T09:30:00",
+        "updatedAt": "2025-10-02T09:30:00",
+        "firstName": "Sandra",
+        "lastName": "Huber",
+        "email": "sandra.huber@example.ch",
+        "phoneNumber": "+41 78 987 65 43"
+      },
+      "contactId": 0,
+      "address": {
+        "id": 0,
+        "createdAt": "2025-10-02T09:30:00",
+        "updatedAt": "2025-10-02T09:30:00",
+        "street": "Autoweg 22",
+        "city": "Bern",
+        "postalCode": "3000",
+        "geoCoordinate": {
+          "latitude": 46.9480,
+          "longitude": 7.4474
+        }
+      },
+      "addressId": 0
     },
-    "address": {
-      "createdAt": "2025-10-02T09:30:00",
-      "updatedAt": "2025-10-02T09:30:00",
-      "street": "Autoweg 22",
-      "city": "Bern",
-      "postalCode": "3000"
-    },
-    "carMake": "Toyota",
+    "carMake": "Toyota Corolla",
+    "message": "Ich helfe gerne beim Transport.",
+    "capacityForChickens": 30,
     "availableDates": [ "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30" ],
-    "files": [],
     "saveChickenActionId": null,
     "saveChickenAction": null,
-    "capacityForChickens": 30
+    "files": []
   }
 ]

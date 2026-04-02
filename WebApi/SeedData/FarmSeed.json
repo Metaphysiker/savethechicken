@@ -1,15 +1,16 @@
 [
   {
+    "id": 0,
     "createdAt": "2025-12-01T07:00:00",
     "updatedAt": "2025-12-01T07:00:00",
     "numberOfChickens": 600,
     "numberOfRoosters": 100,
     "size": "large",
     "color": "#A3CB38",
-    "datesForRescues": ["2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30"],
     "generalInformation": "Biohof mit großem Freilauf und moderner Ausstattung.",
     "name": "Biohof Zürichberg",
     "contact": {
+      "id": 0,
       "createdAt": "2025-12-01T07:00:00",
       "updatedAt": "2025-12-01T07:00:00",
       "firstName": "Urs",
@@ -17,14 +18,20 @@
       "phoneNumber": "+41 79 123 45 67",
       "email": "urs.kunz@biohof.ch"
     },
+    "contactId": 0,
     "address": {
+      "id": 0,
       "createdAt": "2025-12-01T07:00:00",
       "updatedAt": "2025-12-01T07:00:00",
       "street": "Zürichbergstrasse 100",
       "city": "Zürich",
       "postalCode": "8044",
-      "geoCoordinate": { "latitude": 47.3833, "longitude": 8.5706 }
+      "geoCoordinate": { 
+        "latitude": 47.3833, 
+        "longitude": 8.5706 
+      }
     },
+    "addressId": 0,
     "files": [],
     "saveChickenActionId": null,
     "saveChickenAction": null

@@ -180,17 +180,6 @@
         </MudItem>
     </MudPaper>
 
-    <!-- Rescue Dates -->
-    @if (_saveChickenActionDto != null)
-    {
-        <MudPaper Class="pa-4 my-4" Elevation="2">
-            <MultiDateOnlySelector @bind-SelectedDates="Model.DatesForRescues"
-                                  Text="Mögliche Termine für die Hühnerrettung (mindestens 1 erforderlich):*"
-                                  MinDate="@minDate"
-                                  MaxDate="@maxDate" />
-            <ValidationMessage For="@(() => Model.DatesForRescues)" />
-        </MudPaper>
-    }
 
     <!-- Action Selector (hidden, auto-selected) -->
     @if (_saveChickenActionDto != null)

@@ -212,21 +212,6 @@
 
             <TemplateColumn>
                 <HeaderTemplate>
-                    <MudButton OnClick="@(() => OnHeaderClick("DatesForRescues"))" Variant="Variant.Text" Style="text-transform: none;">
-                        @L["DatesForRescues"]
-                        @if (GetSortIcon("DatesForRescues") != null)
-                        {
-                            <MudIcon Icon="@GetSortIcon("DatesForRescues")" Size="Size.Small" />
-                        }
-                    </MudButton>
-                </HeaderTemplate>
-                <CellTemplate>
-                    @string.Join(", ", context.Item.DatesForRescues.Select(d => d.ToString("dd.MM.yyyy")))
-                </CellTemplate>
-            </TemplateColumn>
-
-            <TemplateColumn>
-                <HeaderTemplate>
                     <MudButton OnClick="@(() => OnHeaderClick("GeneralInformation"))" Variant="Variant.Text" Style="text-transform: none;">
                         @L["GeneralInformation"]
                         @if (GetSortIcon("GeneralInformation") != null)

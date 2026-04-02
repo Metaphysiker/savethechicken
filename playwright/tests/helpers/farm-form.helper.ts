@@ -24,9 +24,6 @@ export interface FarmFormData {
 
   // SaveChickenAction (required for admin forms)
   saveChickenActionId?: number;
-
-  // Dates (optional)
-  datesForRescues?: number[];
 }
 
 export async function fillFarmForm(page: Page, data: FarmFormData): Promise<void> {
@@ -59,19 +56,5 @@ export async function fillFarmForm(page: Page, data: FarmFormData): Promise<void
     await selectSaveChickenAction(page, data.saveChickenActionId);
     // Wait for action to load and calendar to update
     await page.waitForTimeout(1000);
-  }
-
-  // Select dates if provided
-  if (data.datesForRescues && data.datesForRescues.length > 0) {
-    // Wait a bit for any previous operations to complete
-    await page.waitForTimeout(500);
-
-    const dateSelector = getMultiDateSelector(page);
-
-    // Select dates one by one with a small delay between each
-    for (const date of data.datesForRescues) {
-      await dateSelector.selectDate(date);
-      await page.waitForTimeout(300);
-    }
   }
 }
