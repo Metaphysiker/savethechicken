@@ -32,7 +32,7 @@
             @if (selectedAction.Dates != null && selectedAction.Dates.Any())
             {
                 <MudText Typo="Typo.body2" Class="mt-3">
-                    <strong>@L["TransferDates"]:</strong>
+                    <strong>@L["TransferDates"]</strong>
                 </MudText>
                 <div data-testid="action-transfer-dates">
                     @foreach (var date in selectedAction.Dates.OrderBy(d => d))
@@ -41,6 +41,18 @@
                     }
                 </div>
             }
+        </MudPaper>
+
+        <MudPaper Class="pa-4 my-4">
+            <MudButton Variant="Variant.Filled"
+                      Color="Color.Success"
+                      OnClick="OpenRoutePlannerDialog"
+                      StartIcon="@Icons.Material.Filled.Route"
+                      Size="Size.Large"
+                      FullWidth="true"
+                      data-testid="open-route-planner-button">
+                <MudText Typo="Typo.h6">Routen-Planer öffnen</MudText>
+            </MudButton>
         </MudPaper>
 
         <MudPaper Class="pa-4">
@@ -122,11 +134,6 @@
         @if (selectedAction != null)
         {
             <MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions.SaveChickenActionStatistic saveChickenActionDto="selectedAction" />
-        }
-
-        @if (selectedAction != null)
-        {
-            <MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions.SaveChickenActionRoutePlanner saveChickenActionDto="selectedAction" />
         }
     }
 </MudContainer>
@@ -376,5 +383,29 @@
         // Force GenericSearch to refresh by changing the key
         farmRefreshKey++;
         StateHasChanged();
+    }
+
+    private async Task OpenRoutePlannerDialog()
+    {
+        if (selectedAction == null)
+            return;
+
+        var parameters = new DialogParameters
+        {
+            { "SaveChickenActionDto", selectedAction }
+        };
+
+        var options = new DialogOptions
+        {
+            FullScreen = true,
+            CloseButton = true,
+            MaxWidth = MaxWidth.False,
+            CloseOnEscapeKey = true
+        };
+
+        await DialogService.ShowAsync<MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions.SaveChickenActionRoutePlannerDialog>(
+            "Routen-Planer",
+            parameters,
+            options);
     }
 }

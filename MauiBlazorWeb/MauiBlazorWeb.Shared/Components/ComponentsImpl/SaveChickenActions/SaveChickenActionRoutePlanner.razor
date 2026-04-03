@@ -1,14 +1,44 @@
 ﻿@using MauiBlazorWeb.Shared.Classes
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Shared.Helpers
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
 @using Microsoft.JSInterop
+@using System.Text.Json
 @implements IAsyncDisposable
 @inject GenericDtoServiceFactory DtoServiceFactory
 @inject IJSRuntime JS
+@inject ISnackbar Snackbar
 
 <MudPaper Class="pa-4 my-4" Elevation="2">
-    <MudText Typo="Typo.h3">Routen-Planer</MudText>
+    <MudText Typo="Typo.h3" Class="mb-4">Routen-Planer</MudText>
+
+    @* Action buttons *@
+    <MudPaper Class="mb-4 pa-3" Elevation="1">
+        <MudButton Variant="Variant.Outlined"
+                   Color="Color.Secondary"
+                   StartIcon="@Icons.Material.Filled.Refresh"
+                   OnClick="ResetAndAutoPlan"
+                   Class="mr-2">
+            Reset
+        </MudButton>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Success"
+                   StartIcon="@Icons.Material.Filled.Save"
+                   OnClick="SaveRoutePlans"
+                   Disabled="_isSaving"
+                   Class="mr-2">
+            @if (_isSaving)
+            {
+                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                <MudText Class="ms-2">Speichern...</MudText>
+            }
+            else
+            {
+                <MudText>Speichern</MudText>
+            }
+        </MudButton>
+    </MudPaper>
 
     <MudDropContainer T="DropItem"
                       Items="_items"
@@ -16,127 +46,30 @@
                       ItemDropped="ItemUpdated"
                       Class="d-flex flex-column">
         <ChildContent>
-            @foreach (var drivePlan in drivePlans.OrderBy(d => d.RouteDate).ThenBy(d => d.Farm.Name).ThenBy(d => d.NumberOfDrive))
-            {
-                var totalSelected = GetTotalSelectedAnimals(drivePlan);
-                <MudPaper Class="ma-4 pa-3" Elevation="3">
-                    <MudGrid Spacing="2">
-                        @* Column 1: Drag & Drop Area *@
-                        <MudItem xs="12" md="4">
-                            <MudText Typo="Typo.subtitle2" Class="mb-2">
-                                <strong>Fahrt #@drivePlan.NumberOfDrive - @drivePlan.Farm.Name</strong>
-                            </MudText>
-                            <MudPaper Class="pa-2" Elevation="1">
-                                <MudList T="DropItem" Class="d-flex flex-column mud-height-full">
-                                    <MudDropZone T="DropItem" Identifier="@drivePlan.Id.ToString()" Class="flex-grow-1 always-dropzone" AllowReorder="true" />
-                                    @if (!_items.Any(i => i.Selector == drivePlan.Id.ToString()))
-                                    {
-                                        <div class="empty-dropzone-placeholder">Hier ablegen</div>
-                                    }
-                                </MudList>
-                            </MudPaper>
-                        </MudItem>
-
-                        @* Column 2: Map *@
-                        <MudItem xs="12" md="4">
-                            <MudText Typo="Typo.subtitle2" Class="mb-2">Karte</MudText>
-                            <OpenStreetMap Markers="drivePlan.RouteMarkers" Arrows="drivePlan.RouteArrows" />
-                        </MudItem>
-
-                        @* Column 3: Controls and Info *@
-                        <MudItem xs="12" md="4">
-                            <MudText Typo="Typo.subtitle2" Class="mb-2">Details</MudText>
-
-                            @* Date Selector *@
-                            <MudSelect T="DateOnly"
-                                       Label="Datum"
-                                       Value="@drivePlan.RouteDate"
-                                       ValueChanged="@((DateOnly newDate) => ChangeDate(drivePlan, newDate))"
-                                       Variant="Variant.Outlined"
-                                       Dense="true"
-                                       Margin="Margin.Dense"
-                                       Class="mb-2">
-                                @foreach (var date in uniqueDates.OrderBy(d => d))
-                                {
-                                    <MudSelectItem Value="@date">@date.ToString("dd.MM.yyyy")</MudSelectItem>
-                                }
-                            </MudSelect>
-
-                            @* Driver Selector *@
-                            <MudSelect T="SaveChickenDriveRequestDto"
-                                       Label="Fahrer"
-                                       Value="@drivePlan.Driver"
-                                       ValueChanged="@((SaveChickenDriveRequestDto newDriver) => ChangeDriver(drivePlan, newDriver))"
-                                       Variant="Variant.Outlined"
-                                       Dense="true"
-                                       Margin="Margin.Dense"
-                                       Class="mb-3">
-                                @foreach (var driver in GetAvailableDriversForDate(drivePlan.RouteDate))
-                                {
-                                    <MudSelectItem Value="@driver">
-                                        @driver.Person?.Contact?.FirstName @driver.Person?.Contact?.LastName
-                                        (Kap: @driver.CapacityForChickens)
-                                    </MudSelectItem>
-                                }
-                            </MudSelect>
-
-                            @* Capacity Info *@
-                            <MudPaper Class="pa-2 mb-2" Elevation="0" Style="background-color: #f5f5f5;">
-                                <MudText Typo="Typo.body2">
-                                    <strong>Kapazität:</strong> @totalSelected / @drivePlan.Driver.CapacityForChickens
-                                    @if (totalSelected > drivePlan.Driver.CapacityForChickens)
-                                    {
-                                        <MudChip T="string" Color="Color.Error" Size="Size.Small">Überladen!</MudChip>
-                                    }
-                                </MudText>
-                                <MudText Typo="Typo.body2" Color="Color.Info">
-                                    <strong>Strecke (Luftlinie):</strong> @drivePlan.TotalDistanceInKm.ToString("F1") km
-                                </MudText>
-                            </MudPaper>
-
-                            @* Delete Button *@
-                            @if (drivePlans.Count > 1)
-                            {
-                                <MudButton Variant="Variant.Outlined"
-                                           Color="Color.Error"
-                                           Size="Size.Small"
-                                           FullWidth="true"
-                                           StartIcon="@Icons.Material.Filled.Delete"
-                                           OnClick="@(() => DeleteDrivePlan(drivePlan))">
-                                    Route löschen
-                                </MudButton>
-                            }
-                        </MudItem>
-                    </MudGrid>
-                </MudPaper>
-            }
-
-            @* Add new route button *@
-            <MudPaper Class="ma-4 pa-3" Elevation="1">
-                <MudButton Variant="Variant.Filled"
-                           Color="Color.Primary"
-                           StartIcon="@Icons.Material.Filled.Add"
-                           OnClick="AddNewRoute"
-                           Class="mr-2">
-                    Neue Route hinzufügen
-                </MudButton>
-                <MudButton Variant="Variant.Outlined"
-                           Color="Color.Secondary"
-                           StartIcon="@Icons.Material.Filled.Refresh"
-                           OnClick="ResetAndAutoPlan">
-                    Auto-Planung zurücksetzen
-                </MudButton>
-            </MudPaper>
-
             @* Unassigned Items *@
-            <MudPaper Class="ma-4 flex-grow-1" Elevation="2">
-                <MudList T="DropItem" Class="d-flex flex-column mud-height-full">
+            <MudPaper Class="mb-3" Elevation="2">
+                <MudList T="DropItem" Class="d-flex flex-column">
                     <MudListSubheader>
                         <MudText Typo="Typo.h6">Nicht zugeordnet</MudText>
                     </MudListSubheader>
-                    <MudDropZone T="DropItem" Identifier="unassigned" Class="flex-grow-1" AllowReorder="true" />
+                    <MudDropZone T="DropItem" Identifier="unassigned" Class="pa-2" AllowReorder="true" Style="min-height: 100px;" />
                 </MudList>
             </MudPaper>
+
+            @foreach (var drivePlan in drivePlans.OrderBy(d => d.NumberOfDrive))
+            {
+                <DrivePlanCard DrivePlan="@drivePlan"
+                               Items="_items"
+                               AllDrivers="Drivers"
+                               AllFarms="Farms"
+                               AvailableDrivers="@GetAvailableDriversForDate(drivePlan.RouteDate)"
+                               TotalSelectedAnimals="@GetTotalSelectedAnimals(drivePlan)"
+                               ShowDeleteButton="@(drivePlans.Count > 1)"
+                               OnDateChanged="@(newDate => ChangeDate(drivePlan, newDate))"
+                               OnDriverChanged="@(newDriver => ChangeDriver(drivePlan, newDriver))"
+                               OnFarmChanged="@(newFarm => ChangeFarm(drivePlan, newFarm))"
+                               OnDeleteClicked="@(() => DeleteDrivePlan(drivePlan))" />
+            }
         </ChildContent>
 
         <ItemRenderer>
@@ -155,12 +88,23 @@
             </MudPaper>
         </ItemRenderer>
     </MudDropContainer>
+
+    @* Add Route Button - Bottom *@
+    <MudPaper Class="mt-3 pa-3" Elevation="1">
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Add"
+                   OnClick="AddNewRoute"
+                   FullWidth="true">
+            Neue Route hinzufügen
+        </MudButton>
+    </MudPaper>
 </MudPaper>
 
 @code {
     List<DrivePlan> drivePlans = new();
-    HashSet<DateOnly> uniqueDates = new();
     private bool _isLoading = false;
+    private bool _isSaving = false;
     private int _lastLoadedActionId = 0;
     private bool _isDisposed = false;
     private CancellationTokenSource? _cancellationTokenSource;
@@ -199,17 +143,30 @@
     {
         if (_isDisposed) return;
 
-        if (saveChickenActionDto?.Id == _lastLoadedActionId)
-            return;
-
+        // Skip if already loading, but track that it should reload again
         if (_isLoading)
             return;
 
+        // Check if this is actually a new action or just a re-render of the same one
+        var currentActionId = saveChickenActionDto?.Id ?? 0;
+        var isNewAction = _lastLoadedActionId != currentActionId;
+
+        // Always reload data when parameters change (e.g., dialog reopened with same or different action)
+        // This ensures new requests are detected even if the same action is opened multiple times
         _isLoading = true;
         try
         {
-            _lastLoadedActionId = saveChickenActionDto?.Id ?? 0;
             await LoadDataAndBuildItems();
+            _lastLoadedActionId = currentActionId;
+
+            if (isNewAction)
+            {
+                Snackbar.Add("Route-Planer geladen", Severity.Info);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Fehler beim Laden: {ex.Message}", Severity.Error);
         }
         finally
         {
@@ -222,24 +179,36 @@
         // Maps are updated via OpenStreetMap component
     }
 
+    /// <summary>
+    /// Main initialization method - loads all data and builds the UI items
+    /// </summary>
     private async Task LoadDataAndBuildItems()
     {
         if (_isDisposed) return;
 
+        // Clear all existing data
         drivePlans.Clear();
         Drivers.Clear();
         Farms.Clear();
         SaveChickenRequests.Clear();
         _items = new List<DropItem>();
-        uniqueDates = new HashSet<DateOnly>();
 
+        // Load fresh data from database
         await GetAndSetDriversRequestsAndFarms();
 
-        PlanRoutes();
+        // Try to load saved plans, otherwise auto-generate
+        if (!LoadSavedPlans())
+        {
+            PlanRoutes();
+        }
+
+        // Calculate routes and display maps
         RenderAllMaps();
 
+        // Build the drag-and-drop items list
         var newItems = new List<DropItem>();
 
+        // Add requests assigned to drive plans
         foreach (var drivePlan in drivePlans)
         {
             foreach (var request in drivePlan.SaveChickenRequests)
@@ -253,9 +222,24 @@
             }
         }
 
+        // Add unassigned requests
+        var assignedRequestIds = newItems.Select(i => i.saveChickenRequest.Id).ToHashSet();
+        foreach (var request in SaveChickenRequests.Where(r => !assignedRequestIds.Contains(r.Id)))
+        {
+            newItems.Add(new DropItem
+            {
+                Name = $"{request.Person?.Contact?.FirstName} {request.Person?.Contact?.LastName}",
+                Selector = "unassigned",
+                saveChickenRequest = request
+            });
+        }
+
         _items = newItems;
     }
 
+    /// <summary>
+    /// Handles drag-and-drop events when user moves a request between plans
+    /// </summary>
     private async Task ItemUpdated(MudItemDropInfo<DropItem> dropItem)
     {
         if (_isDisposed || dropItem.Item == null || dropItem.Item.saveChickenRequest == null)
@@ -265,12 +249,12 @@
         var sourceDrivePlan = drivePlans.FirstOrDefault(p =>
             p.SaveChickenRequests.Any(r => r.Id == dropItem.Item.saveChickenRequest.Id));
 
-        // Prevent moving items between different dates
+        // Don't allow moving requests between different dates
         if (targetDrivePlan != null && sourceDrivePlan != null &&
             targetDrivePlan.RouteDate != sourceDrivePlan.RouteDate)
             return;
 
-        // If moving to unassigned zone, just remove from source
+        // Moving to unassigned zone
         if (dropItem.DropzoneIdentifier == "unassigned")
         {
             if (sourceDrivePlan != null)
@@ -278,19 +262,19 @@
                 sourceDrivePlan.SaveChickenRequests.RemoveAll(r => r.Id == dropItem.Item.saveChickenRequest.Id);
                 dropItem.Item.Selector = "unassigned";
                 _items = new List<DropItem>(_items);
-
-                // Recalculate source plan map
                 UpdateMapForPlan(sourceDrivePlan);
             }
             StateHasChanged();
             return;
         }
 
+        // Remove from source plan
         if (sourceDrivePlan != null)
         {
             sourceDrivePlan.SaveChickenRequests.RemoveAll(r => r.Id == dropItem.Item.saveChickenRequest.Id);
         }
 
+        // Add to target plan at the dropped position
         if (targetDrivePlan != null)
         {
             targetDrivePlan.SaveChickenRequests.RemoveAll(r => r.Id == dropItem.Item.saveChickenRequest.Id);
@@ -306,10 +290,11 @@
             }
         }
 
+        // Update UI
         dropItem.Item.Selector = dropItem.DropzoneIdentifier;
         _items = new List<DropItem>(_items);
 
-// Recalculate map display for affected drive plans
+        // Recalculate maps
         if (sourceDrivePlan != null)
         {
             UpdateMapForPlan(sourceDrivePlan);
@@ -359,81 +344,8 @@
 
     private void PlanRoutes()
     {
-        drivePlans.Clear();
-        var copyOfRequests = new List<SaveChickenRequestDto>(SaveChickenRequests);
-        uniqueDates = GetAllUniqueRescueDates();
-
-        foreach(var date in uniqueDates)
-        {
-            foreach(var farm in Farms)
-            {
-                var sortedRequests = copyOfRequests
-                    .Where(r => r.Person?.Address != null && !string.IsNullOrWhiteSpace(r.Person.Address.PostalCode))
-                    .OrderBy(r => r.Person.Address.PostalCode)
-                    .ToList();
-
-                var driversForDate = Drivers.Where(d => d.AvailableDates.Contains(date)).ToList();
-
-                var driversCount = driversForDate.Count;
-
-                if (driversCount == 0)
-                    continue;
-
-                if(sortedRequests.Count == 0)
-                    continue;
-
-                var currentDriverIndex = 0;
-                DrivePlan? currentDrivePlan = null;
-
-                for (int i = 0; i < sortedRequests.Count; i++)
-                {
-                    var request = sortedRequests[i];
-
-                    // Skip if already assigned to another drive plan
-                    if (drivePlans.Any(drp => drp.SaveChickenRequests.Any(r => r.Id == request.Id)))
-                        continue;
-
-                    var driver = driversForDate[currentDriverIndex];
-
-                    var sumOfAnimalsInCurrentRoute = currentDrivePlan != null
-                        ? currentDrivePlan.SaveChickenRequests.Sum(r => r.NumberOfChickensToBeSaved + r.NumberOfRoostersToBeSaved)
-                        : 0;
-
-                    var totalAnimals = request.NumberOfChickensToBeSaved + request.NumberOfRoostersToBeSaved + sumOfAnimalsInCurrentRoute;
-
-                    if(totalAnimals > driver.CapacityForChickens)
-                    {
-                        currentDriverIndex = (currentDriverIndex + 1) % driversCount;
-                        driver = driversForDate[currentDriverIndex];
-                        currentDrivePlan = null;
-                    }
-
-                    if (currentDrivePlan == null)
-                    {
-                        int NumberOfDrive = drivePlans.Count();
-                        currentDrivePlan = new DrivePlan
-                        {
-                            Driver = driver,
-                            SaveChickenRequests = new List<SaveChickenRequestDto>(),
-                            RouteDate = date,
-                            Farm = farm,
-                            NumberOfDrive = NumberOfDrive
-                        };
-                        drivePlans.Add(currentDrivePlan);
-                    }
-
-                    currentDrivePlan.SaveChickenRequests.Add(request);
-                }
-            }
-        }
-    }
-
-    private HashSet<DateOnly> GetAllUniqueRescueDates()
-    {
-        if (saveChickenActionDto?.Dates == null || !saveChickenActionDto.Dates.Any())
-            return new HashSet<DateOnly>();
-
-        return saveChickenActionDto.Dates.ToHashSet();
+        var uniqueDates = RoutePlanningHelper.GetAllUniqueRescueDates(saveChickenActionDto);
+        drivePlans = RoutePlanningHelper.PlanRoutes(SaveChickenRequests, Drivers, Farms, uniqueDates);
     }
 
     private int GetTotalSelectedAnimals(DrivePlan drivePlan)
@@ -452,12 +364,45 @@
     private async Task ChangeDate(DrivePlan drivePlan, DateOnly newDate)
     {
         drivePlan.RouteDate = newDate;
+
+        // Check if current driver is available on new date
+        if (drivePlan.Driver != null && !drivePlan.Driver.AvailableDates.Contains(newDate))
+        {
+            Snackbar.Add($"Warnung: Fahrer {drivePlan.Driver.Person?.Contact?.FirstName} {drivePlan.Driver.Person?.Contact?.LastName} ist am {newDate:dd.MM.yyyy} nicht verfügbar", Severity.Warning);
+        }
+
         StateHasChanged();
     }
 
-    private async Task ChangeDriver(DrivePlan drivePlan, SaveChickenDriveRequestDto newDriver)
+    private async Task ChangeDriver(DrivePlan drivePlan, SaveChickenDriveRequestDto? newDriver)
     {
+        if (newDriver == null)
+        {
+            return;
+        }
+
+        // Check if new driver is available on current date
+        if (!newDriver.AvailableDates.Contains(drivePlan.RouteDate))
+        {
+            Snackbar.Add($"Warnung: Fahrer {newDriver.Person?.Contact?.FirstName} {newDriver.Person?.Contact?.LastName} ist am {drivePlan.RouteDate:dd.MM.yyyy} nicht verfügbar", Severity.Warning);
+        }
+
         drivePlan.Driver = newDriver;
+        StateHasChanged();
+    }
+
+    private async Task ChangeFarm(DrivePlan drivePlan, FarmDto? newFarm)
+    {
+        if (newFarm == null)
+        {
+            return;
+        }
+
+        drivePlan.Farm = newFarm;
+
+        // Update map to show new farm location
+        UpdateMapForPlan(drivePlan);
+
         StateHasChanged();
     }
 
@@ -465,13 +410,27 @@
     {
         if (_isDisposed) return;
 
-        // Get first available date and driver
-        var firstDate = uniqueDates.FirstOrDefault();
+        // Use today or first action date as default
+        var firstDate = saveChickenActionDto.Dates.OrderBy(d => d).FirstOrDefault();
+        if (firstDate == default)
+        {
+            firstDate = DateOnly.FromDateTime(DateTime.Now);
+        }
+
         var firstFarm = Farms.FirstOrDefault();
         var firstDriver = GetAvailableDriversForDate(firstDate).FirstOrDefault();
 
-        if (firstDriver == null || firstFarm == null)
+        if (firstFarm == null)
+        {
+            Snackbar.Add("Keine Farm verfügbar", Severity.Warning);
             return;
+        }
+
+        if (firstDriver == null)
+        {
+            Snackbar.Add($"Kein Fahrer am {firstDate:dd.MM.yyyy} verfügbar", Severity.Warning);
+            return;
+        }
 
         var newPlan = new DrivePlan
         {
@@ -483,7 +442,179 @@
         };
 
         drivePlans.Add(newPlan);
+
+        // Generate map markers and arrows for the new route
+        UpdateMapForPlan(newPlan);
+
+        // Rebuild the items list to include the new route in the UI
+        var newItems = new List<DropItem>();
+
+        // Add requests assigned to drive plans
+        foreach (var drivePlan in drivePlans)
+        {
+            foreach (var request in drivePlan.SaveChickenRequests)
+            {
+                newItems.Add(new DropItem
+                {
+                    Name = $"{request.Person?.Contact?.FirstName} {request.Person?.Contact?.LastName}",
+                    Selector = drivePlan.Id.ToString(),
+                    saveChickenRequest = request
+                });
+            }
+        }
+
+        // Add unassigned requests
+        var assignedRequestIds = newItems.Select(i => i.saveChickenRequest.Id).ToHashSet();
+        foreach (var request in SaveChickenRequests.Where(r => !assignedRequestIds.Contains(r.Id)))
+        {
+            newItems.Add(new DropItem
+            {
+                Name = $"{request.Person?.Contact?.FirstName} {request.Person?.Contact?.LastName}",
+                Selector = "unassigned",
+                saveChickenRequest = request
+            });
+        }
+
+        _items = newItems;
+
         StateHasChanged();
+    }
+
+
+
+    private async Task SaveRoutePlans()
+    {
+        if (_isDisposed || _saveChickenActionService == null)
+            return;
+
+        _isSaving = true;
+        StateHasChanged();
+
+        try
+        {
+            // Convert full DrivePlan objects to lightweight DrivePlanJson
+            var drivePlansJson = drivePlans.Select(dp => new DrivePlanJson
+            {
+                Version = 1,
+                Id = dp.Id,
+                NumberOfDrive = dp.NumberOfDrive,
+                FarmId = dp.Farm.Id,
+                DriverId = dp.Driver.Id,
+                RouteDate = dp.RouteDate,
+                SaveChickenRequestIds = dp.SaveChickenRequests.Select(r => r.Id).ToList()
+            }).ToList();
+
+            // Create wrapper
+            var savedData = new SavedRoutePlansData
+            {
+                Version = 1,
+                Plans = drivePlansJson,
+                AllRequestIdsAtSaveTime = SaveChickenRequests.Select(r => r.Id).ToList()
+            };
+
+            // Serialize and save
+            var json = JsonSerializer.Serialize(savedData);
+            saveChickenActionDto.RoutePlansJson = json;
+            await _saveChickenActionService.UpdateAsync(saveChickenActionDto);
+
+            Snackbar.Add("Routen erfolgreich gespeichert!", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Fehler beim Speichern: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isSaving = false;
+            StateHasChanged();
+        }
+    }
+
+    /// <summary>
+    /// Load saved drive plans from JSON - simple approach
+    /// Returns true if plans were loaded, false if should generate new ones
+    /// </summary>
+    private bool LoadSavedPlans()
+    {
+        // Early exit if no saved plans exist
+        if (string.IsNullOrWhiteSpace(saveChickenActionDto.RoutePlansJson))
+            return false;
+
+        try
+        {
+            // Try to deserialize
+            SavedRoutePlansData? savedData = null;
+            List<DrivePlanJson>? drivePlansJson = null;
+
+            try
+            {
+                savedData = JsonSerializer.Deserialize<SavedRoutePlansData>(saveChickenActionDto.RoutePlansJson);
+                if (savedData != null && savedData.Plans.Any())
+                {
+                    drivePlansJson = savedData.Plans;
+                }
+                else
+                {
+                    // Try old format
+                    drivePlansJson = JsonSerializer.Deserialize<List<DrivePlanJson>>(saveChickenActionDto.RoutePlansJson)!;
+                }
+            }
+            catch
+            {
+                // Fallback to old format
+                drivePlansJson = JsonSerializer.Deserialize<List<DrivePlanJson>>(saveChickenActionDto.RoutePlansJson)!;
+            }
+
+            if (drivePlansJson == null || !drivePlansJson.Any())
+                return false;
+
+            drivePlans.Clear();
+
+            // Rehydrate each saved plan
+            foreach (var planJson in drivePlansJson)
+            {
+                var farm = Farms.FirstOrDefault(f => f.Id == planJson.FarmId);
+                var driver = Drivers.FirstOrDefault(d => d.Id == planJson.DriverId);
+
+                // Create a dictionary for fast lookup while preserving order
+                var requestDict = SaveChickenRequests.ToDictionary(r => r.Id);
+                var requests = new List<SaveChickenRequestDto>();
+
+                // Preserve the saved order by iterating through saved IDs
+                foreach (var requestId in planJson.SaveChickenRequestIds)
+                {
+                    if (requestDict.TryGetValue(requestId, out var request))
+                    {
+                        requests.Add(request);
+                    }
+                }
+
+                // Skip if farm or driver not found
+                if (farm == null || driver == null)
+                    continue;
+
+                // Create the plan even if some requests are missing
+                var drivePlan = new DrivePlan
+                {
+                    Id = planJson.Id,
+                    NumberOfDrive = planJson.NumberOfDrive,
+                    Farm = farm,
+                    Driver = driver,
+                    RouteDate = planJson.RouteDate,
+                    SaveChickenRequests = requests
+                };
+
+                drivePlans.Add(drivePlan);
+            }
+
+            // If we loaded at least one plan, return success
+            return drivePlans.Any();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading saved plans: {ex.Message}");
+            return false;
+        }
     }
 
     private async Task ResetAndAutoPlan()
@@ -500,6 +631,8 @@
 
         // Rebuild items list
         var newItems = new List<DropItem>();
+
+        // Add items from drive plans
         foreach (var drivePlan in drivePlans)
         {
             foreach (var request in drivePlan.SaveChickenRequests)
@@ -512,6 +645,19 @@
                 });
             }
         }
+
+        // Add unassigned requests
+        var assignedRequestIds = newItems.Select(i => i.saveChickenRequest.Id).ToHashSet();
+        foreach (var request in SaveChickenRequests.Where(r => !assignedRequestIds.Contains(r.Id)))
+        {
+            newItems.Add(new DropItem
+            {
+                Name = $"{request.Person?.Contact?.FirstName} {request.Person?.Contact?.LastName}",
+                Selector = "unassigned",
+                saveChickenRequest = request
+            });
+        }
+
         _items = newItems;
 
         // Update all maps
@@ -590,7 +736,8 @@
             {
                 Latitude = drivePlan.Farm.Address.GeoCoordinate.Latitude,
                 Longitude = drivePlan.Farm.Address.GeoCoordinate.Longitude,
-                Info = $"Start: {drivePlan.Farm.Name}"
+                Info = $"Start: {drivePlan.Farm.Name}",
+                Color = "green" // Farm marker in green
             };
             drivePlan.RouteMarkers.Add(farmMarker);
         }
@@ -680,20 +827,3 @@
 
 
 }
-
-<style>
-    .always-dropzone {
-        min-height: 64px;
-    }
-
-    .empty-dropzone-placeholder {
-        color: #bbb;
-        text-align: center;
-        padding: 16px 0;
-        font-style: italic;
-        pointer-events: none;
-        margin-top: -48px;
-        z-index: 1;
-        position: relative;
-    }
-</style>

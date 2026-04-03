@@ -11,5 +11,6 @@ namespace MauiBlazorWeb.Shared.Classes
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public string Info { get; set; } = string.Empty;
+        public string Color { get; set; } = "blue"; // Default blue for regular markers
     }
 }
