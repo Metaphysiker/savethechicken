@@ -321,13 +321,13 @@
     <value>Aktionen</value>
   </data>
   <data name="AddSaveChickenRequest" xml:space="preserve">
-    <value>Hühner-Rettungsanfrage hinzufügen</value>
+    <value>Platzangebot hinzufügen</value>
   </data>
   <data name="AddDriveRequest" xml:space="preserve">
     <value>Transportanfrage hinzufügen</value>
   </data>
   <data name="SaveChickenRequests" xml:space="preserve">
-    <value>Hühner-Rettungsanfragen</value>
+    <value>Platzangebote</value>
   </data>
   <data name="SaveChickenDriveRequests" xml:space="preserve">
     <value>Transport-Anfragen</value>
@@ -525,7 +525,7 @@
     <value>Anzahl Boxen</value>
   </data>
   <data name="CreateSaveChickenRequest" xml:space="preserve">
-    <value>Hühner-Rettungsanfrage erstellen</value>
+    <value>Platzangebot erstellen</value>
   </data>
   <data name="CreateDriveRequest" xml:space="preserve">
     <value>Transportanfrage erstellen</value>
