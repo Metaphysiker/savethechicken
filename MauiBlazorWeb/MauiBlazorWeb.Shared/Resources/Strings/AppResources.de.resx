@@ -324,13 +324,13 @@
     <value>Platzangebot hinzufügen</value>
   </data>
   <data name="AddDriveRequest" xml:space="preserve">
-    <value>Transportanfrage hinzufügen</value>
+    <value>Fahrangebot hinzufügen</value>
   </data>
   <data name="SaveChickenRequests" xml:space="preserve">
     <value>Platzangebote</value>
   </data>
   <data name="SaveChickenDriveRequests" xml:space="preserve">
-    <value>Transport-Anfragen</value>
+    <value>Fahrangebote</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>Titel</value>
@@ -342,7 +342,7 @@
     <value>Personen-Auswahl</value>
   </data>
   <data name="PersonSelection_AdminInfo" xml:space="preserve">
-    <value>Wählen Sie eine existierende Person für diese Transportanfrage aus. PersonId ist für Admin-Einreichungen erforderlich.</value>
+    <value>Wählen Sie eine existierende Person für dieses Fahrangebot aus. PersonId ist für Admin-Einreichungen erforderlich.</value>
   </data>
   <data name="SelectPerson" xml:space="preserve">
     <value>Person auswählen*</value>
@@ -366,7 +366,7 @@
     <value>Adresse:</value>
   </data>
   <data name="DriveRequestInformation" xml:space="preserve">
-    <value>Transport-Anfrage Informationen</value>
+    <value>Fahrangebot Informationen</value>
   </data>
   <data name="AdditionalMessage" xml:space="preserve">
     <value>Zusätzliche Nachricht:</value>
@@ -528,7 +528,7 @@
     <value>Platzangebot erstellen</value>
   </data>
   <data name="CreateDriveRequest" xml:space="preserve">
-    <value>Transportanfrage erstellen</value>
+    <value>Fahrangebot erstellen</value>
   </data>
   <data name="Adopters" xml:space="preserve">
     <value>Abnehmer</value>
@@ -547,5 +547,71 @@
   </data>
   <data name="CreateFarm" xml:space="preserve">
     <value>Betrieb erstellen</value>
+  </data>
+  <data name="SaveChickenDriveRequestDetails" xml:space="preserve">
+    <value>Fahrangebot Details</value>
+  </data>
+  <data name="SaveChickenDriveRequestInformation" xml:space="preserve">
+    <value>Fahrangebot Information</value>
+  </data>
+  <data name="NoSaveChickenDriveRequestSelected" xml:space="preserve">
+    <value>Kein Fahrangebot ausgewählt.</value>
+  </data>
+  <data name="Car" xml:space="preserve">
+    <value>Auto:</value>
+  </data>
+  <data name="Capacity" xml:space="preserve">
+    <value>Kapazität:</value>
+  </data>
+  <data name="AvailableDates_Label" xml:space="preserve">
+    <value>Verfügbare Daten:</value>
+  </data>
+  <data name="Message_Label" xml:space="preserve">
+    <value>Nachricht:</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Logout</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Schliessen</value>
+  </data>
+  <data name="Open" xml:space="preserve">
+    <value>Öffnen</value>
+  </data>
+  <data name="PleaseWait" xml:space="preserve">
+    <value>Bitte warten ...</value>
+  </data>
+  <data name="OfferPlace" xml:space="preserve">
+    <value>Platz für Hühner anbieten</value>
+  </data>
+  <data name="BecomeDriver" xml:space="preserve">
+    <value>Fahrer werden</value>
+  </data>
+  <data name="RegisterFarm" xml:space="preserve">
+    <value>Betrieb anmelden</value>
+  </data>
+  <data name="ManagePersons" xml:space="preserve">
+    <value>Personen verwalten</value>
+  </data>
+  <data name="NewPerson" xml:space="preserve">
+    <value>Neue Person</value>
+  </data>
+  <data name="RescueActions" xml:space="preserve">
+    <value>Rettungs-Aktionen</value>
+  </data>
+  <data name="NewRescueAction" xml:space="preserve">
+    <value>Neue Rettungs-Aktion</value>
+  </data>
+  <data name="NewPlaceOffer" xml:space="preserve">
+    <value>Neues Platzangebot</value>
+  </data>
+  <data name="NewDriveOffer" xml:space="preserve">
+    <value>Neues Fahrangebot</value>
+  </data>
+  <data name="NewFarm" xml:space="preserve">
+    <value>Neuer Betrieb</value>
   </data>
 </root>

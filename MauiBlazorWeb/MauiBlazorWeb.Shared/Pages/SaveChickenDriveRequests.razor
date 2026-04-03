@@ -12,7 +12,7 @@
 @inject IStringLocalizer<AppResources> L
 
 <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
-    <h3>Fahrangebot Details</h3>
+    <h3>@L["SaveChickenDriveRequestDetails"]</h3>
 
     @if (item != null)
     {
@@ -23,26 +23,26 @@
         }
 
         <MudPaper Class="pa-4 my-4" Elevation="2">
-            <MudText Typo="Typo.h6" Class="mb-3">Fahrangebot Information</MudText>
+            <MudText Typo="Typo.h6" Class="mb-3">@L["SaveChickenDriveRequestInformation"]</MudText>
 
             @if (!string.IsNullOrWhiteSpace(item.CarMake))
             {
                 <MudText Typo="Typo.body1" Class="mt-2" data-testid="drive-request-car">
-                    <strong>Auto:</strong> @item.CarMake
+                    <strong>@L["Car"]</strong> @item.CarMake
                 </MudText>
             }
 
             @if (item.CapacityForChickens > 0)
             {
                 <MudText Typo="Typo.body1" Class="mt-2" data-testid="drive-request-capacity">
-                    <strong>Kapazität:</strong> @item.CapacityForChickens
+                    <strong>@L["Capacity"]</strong> @item.CapacityForChickens
                 </MudText>
             }
 
             @if (item.AvailableDates != null && item.AvailableDates.Any())
             {
                 <MudText Typo="Typo.body2" Class="mt-3">
-                    <strong>Verfügbare Daten:</strong>
+                    <strong>@L["AvailableDates_Label"]</strong>
                 </MudText>
                 <div>
                     @foreach (var date in item.AvailableDates.OrderBy(d => d))
@@ -55,13 +55,13 @@
             @if (!string.IsNullOrWhiteSpace(item.Message))
             {
                 <MudText Typo="Typo.body1" Class="mt-2" data-testid="drive-request-message-display">
-                    <strong>Nachricht:</strong> @item.Message
+                    <strong>@L["Message_Label"]</strong> @item.Message
                 </MudText>
             }
         </MudPaper>
 
         <MudPaper Class="pa-4 my-4" Elevation="2">
-            <MudText Typo="Typo.h6" Class="mb-3">Actions</MudText>
+            <MudText Typo="Typo.h6" Class="mb-3">@L["Actions"]</MudText>
             <MudStack Row="true" Spacing="2">
                 <GenericUpdateDialogLauncher TDto="SaveChickenDriveRequestDto"
                                              model="item"
@@ -78,13 +78,13 @@
     else if (Id.HasValue)
     {
         <MudPaper Class="pa-4">
-            <MudText>Laden...</MudText>
+            <MudText>@L["Loading"]</MudText>
         </MudPaper>
     }
     else
     {
         <MudPaper Class="pa-4">
-            <MudText>Kein Fahrangebot ausgewählt.</MudText>
+            <MudText>@L["NoSaveChickenDriveRequestSelected"]</MudText>
         </MudPaper>
     }
 </MudContainer>

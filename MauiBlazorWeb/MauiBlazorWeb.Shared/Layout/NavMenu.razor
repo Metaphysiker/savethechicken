@@ -1,7 +1,10 @@
 ﻿@using MauiBlazorWeb.Shared.Singletons.SingletonsImpl
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
 @inject AuthResponseSingleton authResponseSingleton
 @inject NavigationManager navigationManager
 @inject AuthService authService
+@inject IStringLocalizer<AppResources> L
 
 <MudNavMenu>
     <MudNavLink Href="@HomeUrl" Class="nav-link-entry" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
@@ -9,42 +12,42 @@
 
     @if (authService.isLoading == true)
     {
-        <MudNavLink Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Downloading">Bitte warten ...</MudNavLink>
+        <MudNavLink Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Downloading">@L["PleaseWait"]</MudNavLink>
 
     } else
     {
         @if (!authResponseSingleton.IsLoggedIn)
         {
-            <MudNavLink Href="/platz-anbieten" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Support">Platz für Hühner anbieten</MudNavLink>
-            <MudNavLink Href="/fahrer-werden" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.DirectionsCar">Fahrer werden</MudNavLink>
-            <MudNavLink Href="/betrieb-anmelden" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Agriculture">Betrieb anmelden</MudNavLink>
+            <MudNavLink Href="/platz-anbieten" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Support">@L["OfferPlace"]</MudNavLink>
+            <MudNavLink Href="/fahrer-werden" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.DirectionsCar">@L["BecomeDriver"]</MudNavLink>
+            <MudNavLink Href="/betrieb-anmelden" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Agriculture">@L["RegisterFarm"]</MudNavLink>
             <MudDivider Class="my-2" />
-            <MudNavLink Href="/login" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Login">Login</MudNavLink>
+            <MudNavLink Href="/login" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Login">@L["Login"]</MudNavLink>
         }
         else
         {
-            <MudNavLink Href="/admin/persons" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.People">Personen verwalten</MudNavLink>
-            <MudNavLink Href="/admin/persons/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.PersonAdd">Neue Person</MudNavLink>
+            <MudNavLink Href="/admin/persons" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.People">@L["ManagePersons"]</MudNavLink>
+            <MudNavLink Href="/admin/persons/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.PersonAdd">@L["NewPerson"]</MudNavLink>
             <MudDivider Class="my-2" />
 
-            <MudNavLink Href="/admin/save-chicken-actions" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Dashboard">Rettungs-Aktionen</MudNavLink>
-            <MudNavLink Href="/admin/save-chicken-actions/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Neue Rettungs-Aktion</MudNavLink>
+            <MudNavLink Href="/admin/save-chicken-actions" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Dashboard">@L["RescueActions"]</MudNavLink>
+            <MudNavLink Href="/admin/save-chicken-actions/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">@L["NewRescueAction"]</MudNavLink>
             <MudDivider Class="my-2" />
 
-            <MudNavLink Href="/admin/save-chicken-requests" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Support">Platzangebote</MudNavLink>
-            <MudNavLink Href="/admin/save-chicken-requests/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Neues Platzangebot</MudNavLink>
+            <MudNavLink Href="/admin/save-chicken-requests" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Support">@L["SaveChickenRequests"]</MudNavLink>
+            <MudNavLink Href="/admin/save-chicken-requests/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">@L["NewPlaceOffer"]</MudNavLink>
             <MudDivider Class="my-2" />
 
-            <MudNavLink Href="/admin/save-chicken-drive-requests" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.DirectionsCar">Fahrangebote</MudNavLink>
-            <MudNavLink Href="/admin/save-chicken-drive-requests/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Neues Fahrangebot</MudNavLink>
+            <MudNavLink Href="/admin/save-chicken-drive-requests" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.DirectionsCar">@L["SaveChickenDriveRequests"]</MudNavLink>
+            <MudNavLink Href="/admin/save-chicken-drive-requests/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">@L["NewDriveOffer"]</MudNavLink>
             <MudDivider Class="my-2" />
 
-            <MudNavLink Href="/admin/farms" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Agriculture">Betriebe</MudNavLink>
-            <MudNavLink Href="/admin/farms/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Neuer Betrieb</MudNavLink>
+            <MudNavLink Href="/admin/farms" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Agriculture">@L["Farms"]</MudNavLink>
+            <MudNavLink Href="/admin/farms/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">@L["NewFarm"]</MudNavLink>
             <MudDivider Class="my-2" />
 
             <MudButton Class="nav-link-entry ml-4" StartIcon="@Icons.Material.Filled.Logout" Color="Color.Inherit" Variant="Variant.Text" Style="justify-content: flex-start; width: 100%;" OnClick="logout">
-                Logout
+                @L["Logout"]
             </MudButton>
         }
     }
@@ -52,9 +55,9 @@
     <MudDivider Class="my-2" />
     @if (_drawerOpen)
     {
-        <MudNavLink OnClick="@HandleCloseDrawer" Icon="@Icons.Material.Filled.ArrowLeft">Schliessen</MudNavLink>
+        <MudNavLink OnClick="@HandleCloseDrawer" Icon="@Icons.Material.Filled.ArrowLeft">@L["Close"]</MudNavLink>
     } else {
-        <MudNavLink OnClick="@HandleOpenDrawer" Icon="@Icons.Material.Filled.ArrowRight">Öffnen</MudNavLink>
+        <MudNavLink OnClick="@HandleOpenDrawer" Icon="@Icons.Material.Filled.ArrowRight">@L["Open"]</MudNavLink>
     }
 </MudNavMenu>
 

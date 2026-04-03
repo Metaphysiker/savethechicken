@@ -2,14 +2,17 @@
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenDriveRequests
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Shared.Resources.Strings
 @using global::Shared.Dtos.DtosImpl
+@using Microsoft.Extensions.Localization
 @inject GenericDtoServiceFactory DtoServiceFactory
+@inject IStringLocalizer<AppResources> L
 
 <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
-    <h3>Fahrangebote</h3>
+    <h3>@L["SaveChickenDriveRequests"]</h3>
 
     <MudPaper Class="pa-4">
-        <MudText Typo="Typo.h6">Fahrangebote</MudText>
+        <MudText Typo="Typo.h6">@L["SaveChickenDriveRequests"]</MudText>
 
         <GenericSearch TDto="SaveChickenDriveRequestDto" TSearchDto="SaveChickenDriveRequestSearch">
             <SearchForm Context="search">
