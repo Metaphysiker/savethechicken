@@ -266,6 +266,7 @@ public class CsvImportService
         // Store vehicle info in Comment: "Fahrzeug: {vehicle}. {Bemerkungen}"
         var persons = records.Select(r => new Person
         {
+            IsDriver = true,
             Contact = new Contact
             {
                 FirstName = r.Vorname ?? string.Empty,
