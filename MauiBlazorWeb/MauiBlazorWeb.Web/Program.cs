@@ -20,8 +20,7 @@ builder.Services.AddSingleton<AuthResponseSingleton>();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents()
-    .AddInteractiveWebAssemblyComponents();
+    .AddInteractiveServerComponents();
 
 // Add device-specific services used by the MauiBlazorWeb.Shared project
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
@@ -62,7 +61,7 @@ app.MapStaticAssets();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseWebAssemblyDebugging();
+    //app.UseWebAssemblyDebugging();
 }
 else
 {
@@ -85,10 +84,7 @@ app.UseRequestLocalization(localizationOptions);
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
-    .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(
-        typeof(MauiBlazorWeb.Shared._Imports).Assembly,
-        typeof(MauiBlazorWeb.Web.Client._Imports).Assembly);
+    .AddAdditionalAssemblies(typeof(MauiBlazorWeb.Shared._Imports).Assembly);
 
 app.MapControllers();
 app.MapFallbackToFile("index.html");
