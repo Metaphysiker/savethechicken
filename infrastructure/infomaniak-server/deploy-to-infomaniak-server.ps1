@@ -152,18 +152,25 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Host "`nDeploying on remote server..." -ForegroundColor Yellow
-$sshCommands = @'
-cd /home/deploy/savethechicken
-docker compose --file docker-compose.remote.yml down
-docker compose --file docker-compose.remote.yml up -d
-docker system prune -f
-'@
 
-ssh deploy@84.234.19.192 $sshCommands
+# Stop and remove old containers
+Write-Host "Stopping old containers..." -ForegroundColor Gray
+ssh deploy@84.234.19.192 "cd /home/deploy/savethechicken && docker compose --file docker-compose.remote.yml down"
 if ($LASTEXITCODE -ne 0) {
-    Write-Error "Failed to deploy on remote server"
+    Write-Warning "Failed to stop old containers (they may not exist yet)"
+}
+
+# Start new containers
+Write-Host "Starting new containers..." -ForegroundColor Gray
+ssh deploy@84.234.19.192 "cd /home/deploy/savethechicken && docker compose --file docker-compose.remote.yml up -d"
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "Failed to start containers on remote server"
     exit 1
 }
+
+# Clean up unused Docker resources
+Write-Host "Cleaning up unused Docker resources..." -ForegroundColor Gray
+ssh deploy@84.234.19.192 "docker system prune -f"
 
 Write-Host "`nDeployment completed successfully!" -ForegroundColor Green
 Write-Host "Deployment tracked in:" -ForegroundColor Cyan
