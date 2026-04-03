@@ -28,7 +28,7 @@
 
     private PersonDto? person;
     private bool isPersonSelectorReadOnly => IsReadOnly || EntityWithFiles.Item.Id > 0 || PreSelectedPersonId.HasValue;
-    private bool isSaveChickenActionSelectorReadOnly => IsReadOnly || EntityWithFiles.Item.Id > 0 || PreSelectedSaveChickenActionId.HasValue;
+    private bool isSaveChickenActionSelectorReadOnly => IsReadOnly || PreSelectedSaveChickenActionId.HasValue;
 
     private async Task OnPersonIdChanged(int? newPersonId)
     {
