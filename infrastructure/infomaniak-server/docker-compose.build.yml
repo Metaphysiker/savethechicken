@@ -27,8 +27,7 @@ services:
     build:
       context: ../../
       dockerfile: DockerfileMauiBlazorWeb
-      args:
-      - API_BASE_URL=${API_BASE_URL}
+      # Removed API_BASE_URL build arg - using SERVER_API_BASE_URL env var at runtime
     env_file:
       - .env
     ports:
