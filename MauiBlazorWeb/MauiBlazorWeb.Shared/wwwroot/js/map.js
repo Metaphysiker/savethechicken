@@ -195,11 +195,11 @@ async function drawRouteWithOSRM(element, from, to, options = {}) {
                 try {
                     // Get route from OSRM with timeout
                     const url = `https://router.project-osrm.org/route/v1/driving/${from.longitude},${from.latitude};${to.longitude},${to.latitude}?overview=full&geometries=geojson`;
-                    
+
                     // Create AbortController for timeout
                     const controller = new AbortController();
                     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-                    
+
                     try {
                         const response = await fetch(url, { signal: controller.signal });
                         clearTimeout(timeoutId);
@@ -239,7 +239,7 @@ async function drawRouteWithOSRM(element, from, to, options = {}) {
                 } catch (error) {
                     const errorMsg = error.name === 'AbortError' ? 'Request timeout' : error.message;
                     console.error(`OSRM API attempt ${attempt + 1} failed:`, errorMsg);
-                    
+
                     // Retry with exponential backoff
                     if (attempt < maxRetries - 1) {
                         const backoffDelay = Math.pow(2, attempt) * 500; // 500ms, 1s, 2s
