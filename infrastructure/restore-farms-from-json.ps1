@@ -4,10 +4,10 @@
 param(
     [Parameter(Mandatory=$true)]
     [string]$JsonFile,
-    
+
     [Parameter(Mandatory=$true)]
     [string]$ApiUrl,
-    
+
     [Parameter(Mandatory=$true)]
     [string]$Token
 )
@@ -55,7 +55,7 @@ $errors = @()
 foreach ($farm in $farms) {
     $farmName = $farm.name
     Write-Host "Processing: $farmName" -ForegroundColor White
-    
+
     try {
         # Prepare the DTO for API (without read-only fields like id, createdAt, updatedAt, genericName)
         $farmDto = @{
@@ -85,13 +85,13 @@ foreach ($farm in $farms) {
                 geoCoordinate = $farm.address.geoCoordinate
             }
         }
-        
+
         $jsonBody = $farmDto | ConvertTo-Json -Depth 10
-        
+
         # POST to API
         $apiEndpoint = "$ApiUrl/api/farm"
         $response = Invoke-RestMethod -Uri $apiEndpoint -Method Post -Headers $headers -Body $jsonBody -ErrorAction Stop
-        
+
         Write-Host "  ✓ Success (New ID: $($response.id))" -ForegroundColor Green
         $successCount++
     }
@@ -103,7 +103,7 @@ foreach ($farm in $farms) {
             Error = $_.Exception.Message
         }
     }
-    
+
     # Small delay to avoid overwhelming the API
     Start-Sleep -Milliseconds 100
 }

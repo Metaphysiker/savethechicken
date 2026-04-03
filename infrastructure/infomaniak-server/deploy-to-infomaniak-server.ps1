@@ -77,18 +77,53 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-Write-Host "`nTransferring WebAPI image to server..." -ForegroundColor Yellow
-docker save savethechicken-production-webapi | ssh deploy@84.234.19.192 docker load
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "Failed to transfer WebAPI image"
-    exit 1
-}
+# Create temp directory for image archives
+$tempDir = Join-Path $env:TEMP "savethechicken-deploy"
+New-Item -ItemType Directory -Force -Path $tempDir | Out-Null
 
-Write-Host "`nTransferring Web image to server..." -ForegroundColor Yellow
-docker save savethechicken-production-web | ssh deploy@84.234.19.192 docker load
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "Failed to transfer Web image"
-    exit 1
+try {
+    Write-Host "`nExporting WebAPI image..." -ForegroundColor Yellow
+    $webApiTar = Join-Path $tempDir "webapi.tar"
+    docker save savethechicken-production-webapi -o $webApiTar
+    if ($LASTEXITCODE -ne 0) {
+        throw "Failed to export WebAPI image"
+    }
+
+    Write-Host "Transferring WebAPI image to server..." -ForegroundColor Yellow
+    scp $webApiTar deploy@84.234.19.192:/tmp/savethechicken-webapi.tar
+    if ($LASTEXITCODE -ne 0) {
+        throw "Failed to transfer WebAPI image"
+    }
+
+    Write-Host "Loading WebAPI image on server..." -ForegroundColor Yellow
+    ssh deploy@84.234.19.192 "docker load -i /tmp/savethechicken-webapi.tar && rm /tmp/savethechicken-webapi.tar"
+    if ($LASTEXITCODE -ne 0) {
+        throw "Failed to load WebAPI image on server"
+    }
+
+    Write-Host "`nExporting Web image..." -ForegroundColor Yellow
+    $webTar = Join-Path $tempDir "web.tar"
+    docker save savethechicken-production-web -o $webTar
+    if ($LASTEXITCODE -ne 0) {
+        throw "Failed to export Web image"
+    }
+
+    Write-Host "Transferring Web image to server..." -ForegroundColor Yellow
+    scp $webTar deploy@84.234.19.192:/tmp/savethechicken-web.tar
+    if ($LASTEXITCODE -ne 0) {
+        throw "Failed to transfer Web image"
+    }
+
+    Write-Host "Loading Web image on server..." -ForegroundColor Yellow
+    ssh deploy@84.234.19.192 "docker load -i /tmp/savethechicken-web.tar && rm /tmp/savethechicken-web.tar"
+    if ($LASTEXITCODE -ne 0) {
+        throw "Failed to load Web image on server"
+    }
+}
+finally {
+    # Cleanup temp files
+    Write-Host "`nCleaning up temporary files..." -ForegroundColor Gray
+    Remove-Item -Recurse -Force $tempDir -ErrorAction SilentlyContinue
 }
 
 Write-Host "`nCopying configuration files to server..." -ForegroundColor Yellow
