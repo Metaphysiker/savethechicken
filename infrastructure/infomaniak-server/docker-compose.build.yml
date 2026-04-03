@@ -36,6 +36,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
+      - SERVER_API_BASE_URL=${SERVER_API_BASE_URL}
     depends_on:
       - webapi
   postgres:
