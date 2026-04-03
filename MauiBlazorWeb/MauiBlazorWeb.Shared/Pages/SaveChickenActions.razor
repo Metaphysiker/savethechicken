@@ -124,9 +124,16 @@
             <MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions.SaveChickenActionStatistic saveChickenActionDto="selectedAction" />
         }
 
+        @* Hide original route planner for now
         @if (selectedAction != null)
         {
             <MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions.SaveChickenActionRoutePlanner saveChickenActionDto="selectedAction" />
+        }
+        *@
+
+        @if (selectedAction != null)
+        {
+            <MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions.SaveChickenActionRoutePlanner2 saveChickenActionDto="selectedAction" />
         }
     }
 </MudContainer>

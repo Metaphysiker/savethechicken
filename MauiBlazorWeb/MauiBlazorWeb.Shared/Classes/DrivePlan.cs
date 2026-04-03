@@ -20,6 +20,9 @@ namespace MauiBlazorWeb.Shared.Classes
 
         public List<MapArrow> RouteArrows { get; set; } = new List<MapArrow>();
 
+        // Total distance of the route in kilometers (straight-line distance)
+        public double TotalDistanceInKm { get; set; } = 0;
+
         public DrivePlan() {
             Farm = new FarmDto();
             Driver = new SaveChickenDriveRequestDto();
