@@ -192,11 +192,12 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
             entity.Property(e => e.Dates)
                 .HasConversion(
                     v => string.Join(";", v.Select(d => d.ToString("yyyy-MM-dd"))),
-                    // Handle empty or legacy PostgreSQL array format ({})
+                    // Handle empty, semicolon-separated, or legacy PostgreSQL array format
                     v => string.IsNullOrWhiteSpace(v) || v == "{}"
                         ? new List<DateOnly>()
-                        : v.Split(';', StringSplitOptions.RemoveEmptyEntries)
-                            .Select(s => DateOnly.Parse(s)).ToList()
+                        : v.TrimStart('{').TrimEnd('}')  // Remove PostgreSQL array braces
+                            .Split(new[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries)
+                            .Select(s => DateOnly.Parse(s.Trim())).ToList()
                 );
         });
 
