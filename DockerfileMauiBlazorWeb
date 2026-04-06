@@ -32,10 +32,7 @@ WORKDIR /app
 EXPOSE 8080
 COPY --from=publish /app/publish .
 
-ARG API_BASE_URL=http://localhost:8081/
-ENV API_BASE_URL=${API_BASE_URL}
-
-# 🔥 Replace API_BASE_URL in appsettings.json at runtime
-RUN sed -i "s#\"API_BASE_URL\": .*#\"API_BASE_URL\": \"${API_BASE_URL}\"#" wwwroot/appsettings.json
+# API_BASE_URL is no longer needed - using SERVER_API_BASE_URL environment variable instead
+# The Web app is now server-side only (no WebAssembly client needing runtime config)
 
 ENTRYPOINT ["dotnet", "MauiBlazorWeb.Web.dll"]

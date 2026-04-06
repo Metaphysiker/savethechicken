@@ -1,6 +1,6 @@
-﻿@page "/save-chicken-actions-list"
+﻿@page "/admin/save-chicken-actions-list"
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl
-@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Drivers
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenDriveRequests
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Farms
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
@@ -33,11 +33,11 @@
     private SaveChickenActionDto? selectedAction;
     private int? selectedActionId;
     private SaveChickenRequestSearch saveChickenRequestSearch = new SaveChickenRequestSearch();
-    private DriverSearch driverSearch = new DriverSearch();
+    private SaveChickenDriveRequestSearch saveChickenDriveRequestSearch = new SaveChickenDriveRequestSearch();
     private FarmSearch farmSearch = new FarmSearch();
     private List<SaveChickenRequestDto> foundSaveChickenRequests = new();
     private List<FarmDto> foundFarms = new();
-    private List<DriverDto> drivers = new();
+    private List<SaveChickenDriveRequestDto> saveChickenDriveRequests = new();
 
     private void OnItemsFound(List<SaveChickenRequestDto> foundItems)
     {
@@ -51,9 +51,9 @@
         StateHasChanged();
     }
 
-    private void OnDriverItemsFound(List<DriverDto> driverDtos)
+    private void OnSaveChickenDriveRequestItemsFound(List<SaveChickenDriveRequestDto> driveRequests)
     {
-        drivers = driverDtos;
+        saveChickenDriveRequests = driveRequests;
         StateHasChanged();
     }
 
@@ -67,7 +67,7 @@
     private void UpdateSearches()
     {
         UpdateSaveChickenRequestSearch();
-        UpdateDriverSearch();
+        UpdateSaveChickenDriveRequestSearch();
         UpdateFarmSearch();
     }
 
@@ -106,12 +106,12 @@
         };
     }
 
-    private void UpdateDriverSearch()
+    private void UpdateSaveChickenDriveRequestSearch()
     {
         var saveChickenActionIds = selectedAction != null
          ? new List<int> { selectedAction.Id }
          : new List<int>();
-        driverSearch = new DriverSearch
+        saveChickenDriveRequestSearch = new SaveChickenDriveRequestSearch
         {
             SaveChickenActionIds = saveChickenActionIds
         };

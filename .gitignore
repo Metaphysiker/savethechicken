@@ -29,9 +29,18 @@ Thumbs.db
 *.tmp
 *.bak
 
+# CSV downloads
+rettet-das-huhn-downloads/
+
 # Environment files
 .env
 .env.
+
+# Production configuration files (contain sensitive credentials)
+**/appsettings.Production.json
+
+# Deployment tracking (generated during deployment)
+deployment.txt
 
 # Ignore Copilot Chat sessions and .vs
 WebApi/.vs/

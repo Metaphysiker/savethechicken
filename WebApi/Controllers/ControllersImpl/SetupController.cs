@@ -43,8 +43,7 @@ public class SetupController : ControllerBase
                 new DateOnly(2026, 4, 30)
             },
             Title = "Test - Rettungsaktion April 2026",
-            Description = "Test",
-            IsActive = true
+            Description = "Test"
         };
 
         _db.SaveChickenActions.Add(action);
@@ -70,20 +69,6 @@ public class SetupController : ControllerBase
             await _db.SaveChangesAsync();
         }
 
-        // Read and seed Drivers
-        var drivers = await ReadSeedFile<Driver>("DriverSeed.json", options);
-        if (drivers != null && drivers.Count > 0)
-        {
-            // Assign the action ID to each driver
-            foreach (var driver in drivers)
-            {
-                driver.SaveChickenActionId = action.Id;
-            }
-
-            _db.Drivers.AddRange(drivers);
-            await _db.SaveChangesAsync();
-        }
-
         // Read and seed Farms
         var farms = await ReadSeedFile<Farm>("FarmSeed.json", options);
         if (farms != null && farms.Count > 0)
@@ -95,6 +80,20 @@ public class SetupController : ControllerBase
             }
 
             _db.Farms.AddRange(farms);
+            await _db.SaveChangesAsync();
+        }
+
+        // Read and seed SaveChickenDriveRequests (Drivers)
+        var drivers = await ReadSeedFile<SaveChickenDriveRequest>("DriverSeed.json", options);
+        if (drivers != null && drivers.Count > 0)
+        {
+            // Assign the action ID to each driver
+            foreach (var driver in drivers)
+            {
+                driver.SaveChickenActionId = action.Id;
+            }
+
+            _db.SaveChickenDriveRequests.AddRange(drivers);
             await _db.SaveChangesAsync();
         }
 
@@ -122,6 +121,14 @@ public class SetupController : ControllerBase
         await CreateRoles();
         await CreateAdminUser();
         await CreateRettetDasHuhnUser();
+
+        // Only create test user in testing environment
+        var isTestingEnvironment = Environment.GetEnvironmentVariable("TESTING_ENVIRONMENT") == "true";
+        if (isTestingEnvironment)
+        {
+            await CreateTestUser();
+        }
+
         return Ok();
     }
 
@@ -158,6 +165,18 @@ public class SetupController : ControllerBase
     {
         const string email = "rettetdashuhn@stinah.ch";
         var user = await EnsureUserExists(email, "RETTET_DAS_HUHN_PASSWORD");
+
+        if (user != null)
+        {
+            await EnsureRole(user, UserRole.Admin);
+            await EnsureRole(user, UserRole.User);
+        }
+    }
+
+    private async Task CreateTestUser()
+    {
+        const string email = "test@example.com";
+        var user = await EnsureUserExists(email, "TEST_PASSWORD");
 
         if (user != null)
         {

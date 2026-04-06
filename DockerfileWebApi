@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 
 WORKDIR /App
 
@@ -15,20 +15,15 @@ RUN dotnet restore WebApi/WebApi.csproj
 RUN dotnet publish WebApi/WebApi.csproj -c Release -o out
 
 # Stage 2: Runtime
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 
 WORKDIR /App
 
-RUN dotnet nuget locals all --clear \
-	&& dotnet tool install --global dotnet-ef --version 8.0.0
+# Copy built app
+COPY --from=build /App/out ./
 
-ENV PATH="$PATH:/root/.dotnet/tools"
-
-# Copy built app and global tools
-COPY --from=build /App ./
-
-COPY WebApi/SeedData ./SeedData
+COPY --from=build /App/WebApi/SeedData ./SeedData
 
 EXPOSE 8080
 
-ENTRYPOINT [ "dotnet", "out/WebApi.dll" ]
+ENTRYPOINT [ "dotnet", "WebApi.dll" ]

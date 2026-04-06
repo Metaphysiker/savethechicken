@@ -12,7 +12,7 @@ namespace MauiBlazorWeb.Shared.Classes
         public Guid Id { get; set; } = Guid.NewGuid();
         public int NumberOfDrive { get; set; } = 1;
         public FarmDto Farm { get; set; }
-        public DriverDto Driver { get; set; }
+        public SaveChickenDriveRequestDto Driver { get; set; }
         public DateOnly RouteDate { get; set; }
         public List<SaveChickenRequestDto> SaveChickenRequests { get; set; }
 
@@ -20,9 +20,12 @@ namespace MauiBlazorWeb.Shared.Classes
 
         public List<MapArrow> RouteArrows { get; set; } = new List<MapArrow>();
 
+        // Total distance of the route in kilometers (straight-line distance)
+        public double TotalDistanceInKm { get; set; } = 0;
+
         public DrivePlan() {
             Farm = new FarmDto();
-            Driver = new DriverDto();
+            Driver = new SaveChickenDriveRequestDto();
             SaveChickenRequests = new List<SaveChickenRequestDto>();
             RouteDate = DateOnly.FromDateTime(DateTime.Now);
         }

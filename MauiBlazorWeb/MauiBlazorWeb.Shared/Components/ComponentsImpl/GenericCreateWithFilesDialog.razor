@@ -1,0 +1,31 @@
+@using MudBlazor
+@using global::Shared.Dtos
+@typeparam TDto where TDto : class, IDto, IEntityWithFileDtos
+
+<MudDialog>
+    <DialogContent>
+        <MudDivider />
+
+        @if(Model != null && ChildContent != null)
+        {
+            <GenericCreateWithFiles TDto="TDto" 
+                                   model="@Model" 
+                                   ChildContent="@ChildContent"
+                                   OnCreated="@HandleCreated" />
+        }
+    </DialogContent>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance? MudDialog { get; set; }
+
+    [Parameter, EditorRequired] public ItemWithBrowserFiles<TDto> Model { get; set; } = default!;
+    [Parameter, EditorRequired] public RenderFragment<ItemWithBrowserFiles<TDto>> ChildContent { get; set; } = default!;
+    [Parameter] public EventCallback OnCreated { get; set; }
+    
+    private async Task HandleCreated()
+    {
+        await OnCreated.InvokeAsync();
+        MudDialog?.Close(DialogResult.Ok(true));
+    }
+}

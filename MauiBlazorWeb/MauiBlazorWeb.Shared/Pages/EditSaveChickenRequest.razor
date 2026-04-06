@@ -1,4 +1,4 @@
-@page "/save-chicken-requests/{Id:int}/edit"
+@page "/admin/save-chicken-requests/{Id:int}/edit"
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
@@ -9,6 +9,10 @@
 <MudContainer>
 
 <h2>Edit Save Chicken Request</h2>
+
+<MudAlert Severity="Severity.Info" Dense="true" Class="my-4">
+    <strong>Admin Mode:</strong> You can link this request to an existing person or create a new person.
+</MudAlert>
 
 @if (modelWithFiles != null)
 {

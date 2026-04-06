@@ -7,7 +7,7 @@ namespace WebApi.Services.ServicesImpl
 {
     public class BlackListDetectorService
     {
-        public List<BlackListedPerson> CheckIfEntityMatchesBlackListedPersons(List<BlackListedPerson> blackListedPersons, Address address, Contact contact)
+        public List<Person> CheckIfEntityMatchesBlackListedPersons(List<Person> blackListedPersons, Address address, Contact contact)
         {
             return blackListedPersons
                 .Where(p =>

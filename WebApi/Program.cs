@@ -2,10 +2,12 @@ using Amazon.Extensions.NETCore.Setup;
 using Amazon.S3;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using System.Text;
 using WebApi.Factories.FactoriesImpl;
+using WebApi.Services;
 using WebApi.Services.ServicesImpl;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +19,8 @@ builder.Services.AddScoped<AutoMapperService>();
 builder.Services.AddScoped<GenericModelServiceFactory>();
 builder.Services.AddScoped<ModelSearchFactory>();
 builder.Services.AddScoped<BlackListDetectorService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<CsvImportService>();
 builder.Services.AddDbContext<DatabaseContext>();
 builder.Services.AddEndpointsApiExplorer();
 
@@ -24,6 +28,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     options.JsonSerializerOptions.WriteIndented = true;
+    options.JsonSerializerOptions.MaxDepth = 32; // Limit depth to prevent stack overflow
 });
 
 builder.Services.AddSwaggerGen(option =>
@@ -65,7 +70,7 @@ builder.Services
         };
     });
 builder.Services.AddAuthorization();
-builder.Services.AddIdentityApiEndpoints<IdentityUser>();
+
 
 builder.Services.AddScoped<TokenService, TokenService>();
 
@@ -111,7 +116,26 @@ if (!isDocker)
 builder.Services.AddAWSService<IAmazonS3>();
 
 var app = builder.Build();
-app.MapIdentityApi<IdentityUser>();
+
+// Automatically create database and apply migrations on startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+
+    try
+    {
+        // Ensure the database exists and apply migrations
+        logger.LogInformation("Ensuring database exists and applying migrations...");
+        db.Database.Migrate();
+        logger.LogInformation("Database migrations completed successfully");
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "An error occurred while creating/migrating the database");
+        throw;
+    }
+}
 
 // Enable Swagger in production
 app.UseSwagger();

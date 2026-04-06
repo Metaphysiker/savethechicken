@@ -12,10 +12,15 @@ namespace WebApi.Models.ModelsImpl
         public String LastName { get; set; } = String.Empty;
         public String PhoneNumber { get; set; } = String.Empty;
         public String Email { get; set; } = String.Empty;
+        public String CarMake { get; set; } = String.Empty;
         public List<ContactCategory> Categories { get; set; } = new List<ContactCategory>();
         public List<DateOnly> AvailableDates { get; set; } = new List<DateOnly>();
 
+        // Navigation properties
+        public Person? Person { get; set; }
+        public Farm? Farm { get; set; }
+
         [Column(TypeName = "tsvector")]
-        public NpgsqlTsVector SearchVector { get; set; }
+        public NpgsqlTsVector SearchVector { get; set; } = null!;
     }
 }

@@ -16,14 +16,12 @@ namespace WebApi.Controllers.ControllersImpl
 
         private readonly GenericModelService<SaveChickenAction, SaveChickenActionSearch> _saveChickenActionService;
         private readonly GenericModelService<SaveChickenRequest, SaveChickenRequestSearch> _saveChickenRequestService;
-        private readonly GenericModelService<Driver, DriverSearch> _driverService;
         private readonly GenericModelService<Farm, FarmSearch> _farmService;
 
         public CsvController(GenericModelServiceFactory genericModelServiceFactory)
         {
             _saveChickenActionService = genericModelServiceFactory.Create<SaveChickenAction, SaveChickenActionSearch>();
             _saveChickenRequestService = genericModelServiceFactory.Create<SaveChickenRequest, SaveChickenRequestSearch>();
-            _driverService = genericModelServiceFactory.Create<Driver, DriverSearch>();
             _farmService = genericModelServiceFactory.Create<Farm, FarmSearch>();
         }
 
@@ -59,20 +57,23 @@ namespace WebApi.Controllers.ControllersImpl
                 {
                     Message = record.Bemerkungen + " " + record.Zusatz,
                     SaveChickenActionId = archive.Id,
-                    Contact = new Contact
+                    Person = new Person
                     {
-                        FirstName = record.Vorname,
-                        LastName = record.Name,
-                        Email = record.Email,
-                        PhoneNumber = record.Telefon1 ?? record.Telefon2
-                    },
-                    Address = new Address
-                    {
-                        Street = record.Strasse,
-                        City = record.Ort,
-                        PostalCode = record.PLZ
+                        Contact = new Contact
+                        {
+                            FirstName = record.Vorname,
+                            LastName = record.Name,
+                            Email = record.Email,
+                            PhoneNumber = record.Telefon1 ?? record.Telefon2
+                        },
+                        Address = new Address
+                        {
+                            Street = record.Strasse,
+                            City = record.Ort,
+                            PostalCode = record.PLZ
+                        }
                     }
-                };
+               };
                 saveChickenRequests.Add(saveChickenRequest);
             }
 
@@ -97,7 +98,7 @@ namespace WebApi.Controllers.ControllersImpl
             if (file == null || file.Length == 0)
                 return BadRequest("CSV file is required.");
 
-            
+
             var search = new SaveChickenActionSearch
             {
                 Title = "Archiv (vor 2026)"
@@ -153,71 +154,6 @@ namespace WebApi.Controllers.ControllersImpl
             {
                 request.SaveChickenActionId = archive.Id;
                 await _farmService.Create(request);
-            }
-
-            return Ok("CSV processed successfully.");
-        }
-
-        [HttpPost("upload/driver")]
-        [Consumes("multipart/form-data")]
-        public async Task<IActionResult> UploadCsvForDriver(IFormFile file)
-        {
-            if (file == null || file.Length == 0)
-                return BadRequest("CSV file is required.");
-
-            var search = new SaveChickenActionSearch
-            {
-                Title = "Archiv (vor 2026)"
-            };
-
-            var results = await _saveChickenActionService.Search(search);
-
-            if (results.Data.Count == 0)
-            {
-                return BadRequest("Archive action does not exist");
-            }
-
-            SaveChickenAction archive = results.Data.First();
-
-            if (archive == null)
-                return StatusCode(500, "Failed to create archive action.");
-
-            using var stream = file.OpenReadStream();
-            using var reader = new StreamReader(stream);
-            using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-
-            var drivers = new List<Driver>();
-
-            var records = csv.GetRecords<FahrerCsvRecord>();
-
-            foreach (var record in records)
-            {
-                var driver = new Driver();
-
-                driver.CarMake = record.Fahrzeug;
-
-                driver.Contact = new Contact
-                {
-                    FirstName = record.Vorname,
-                    LastName = record.Name,
-                    Email = record.Email,
-                    PhoneNumber = record.Telefon1 ?? record.Telefon2
-                };
-
-                driver.Address = new Address
-                {
-                    Street = record.Strasse,
-                    City = record.Ort,
-                    PostalCode = record.PLZ
-                };
-
-                drivers.Add(driver);
-            }
-
-            foreach (var request in drivers)
-            {
-                request.SaveChickenActionId = archive.Id;
-                await _driverService.Create(request);
             }
 
             return Ok("CSV processed successfully.");

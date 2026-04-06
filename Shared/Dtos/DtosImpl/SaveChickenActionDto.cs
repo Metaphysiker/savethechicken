@@ -19,8 +19,12 @@ namespace Shared.Dtos.DtosImpl
         public string Title { get; set; } = string.Empty;
         [Required]
         public string Description { get; set; } = string.Empty;
-        public bool IsActive { get; set; } = false;
         public string GenericName { get; set; } = string.Empty;
+
+        /// <summary>
+        /// JSON serialized drive plans from the route planner
+        /// </summary>
+        public string? RoutePlansJson { get; set; }
 
     }
 }

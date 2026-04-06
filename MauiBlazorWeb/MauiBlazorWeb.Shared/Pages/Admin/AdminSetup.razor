@@ -1,0 +1,160 @@
+@page "/admin/setup"
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
+@inject HttpClient Http
+@inject ISnackbar Snackbar
+@inject IStringLocalizer<AppResources> L
+
+<PageTitle>@L["Admin_Setup_Title"]</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-8">
+    <MudPaper Class="pa-6" Elevation="2">
+        <MudText Typo="Typo.h3" Class="mb-4">@L["Admin_Setup_Heading"]</MudText>
+
+        <MudAlert Severity="Severity.Warning" Dense="true" Class="my-4">
+            <strong>@L["Warning"]:</strong> @L["Admin_Setup_WarningText"]
+        </MudAlert>
+
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudPaper Class="pa-4" Elevation="1">
+                    <MudText Typo="Typo.h5" Class="mb-2">@L["Admin_Setup_IdentityTitle"]</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-4">
+                        @L["Admin_Setup_IdentityDescription"]
+                    </MudText>
+                    <MudButton
+                        Variant="Variant.Filled"
+                        Color="Color.Primary"
+                        OnClick="CallSetupEndpoint"
+                        Disabled="@_isSetupLoading"
+                        FullWidth="true"
+                        data-testid="setup-identity-button">
+                        @if (_isSetupLoading)
+                        {
+                            <MudProgressCircular Class="mr-2" Size="Size.Small" Indeterminate="true" />
+                            <span>@L["Admin_Setup_IdentityButton"]...</span>
+                        }
+                        else
+                        {
+                            <span>@L["Admin_Setup_IdentityButton"]</span>
+                        }
+                    </MudButton>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" md="6">
+                <MudPaper Class="pa-4" Elevation="1">
+                    <MudText Typo="Typo.h5" Class="mb-2">@L["Admin_Setup_SeedTitle"]</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-4">
+                        @L["Admin_Setup_SeedDescription"]
+                    </MudText>
+                    <MudButton
+                        Variant="Variant.Filled"
+                        Color="Color.Secondary"
+                        OnClick="CallSeedEndpoint"
+                        Disabled="@_isSeedLoading"
+                        FullWidth="true"
+                        data-testid="seed-data-button">
+                        @if (_isSeedLoading)
+                        {
+                            <MudProgressCircular Class="mr-2" Size="Size.Small" Indeterminate="true" />
+                            <span>@L["Admin_Setup_SeedButton"]...</span>
+                        }
+                        else
+                        {
+                            <span>@L["Admin_Setup_SeedButton"]</span>
+                        }
+                    </MudButton>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+
+        @if (!string.IsNullOrEmpty(_lastResult))
+        {
+            <MudAlert Severity="@_lastResultSeverity" Class="mt-4" Dense="true">
+                @_lastResult
+            </MudAlert>
+        }
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private bool _isSetupLoading = false;
+    private bool _isSeedLoading = false;
+    private string _lastResult = string.Empty;
+    private Severity _lastResultSeverity = Severity.Success;
+
+    private async Task CallSetupEndpoint()
+    {
+        _isSetupLoading = true;
+        _lastResult = string.Empty;
+        StateHasChanged();
+
+        try
+        {
+            var response = await Http.GetAsync("api/setup/setup");
+
+            if (response.IsSuccessStatusCode)
+            {
+                _lastResult = "✓ Identity setup completed successfully!";
+                _lastResultSeverity = Severity.Success;
+                Snackbar.Add("Identity setup completed!", Severity.Success);
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                _lastResult = $"✗ Setup failed: {response.StatusCode} - {errorContent}";
+                _lastResultSeverity = Severity.Error;
+                Snackbar.Add("Setup failed!", Severity.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            _lastResult = $"✗ Exception: {ex.Message}";
+            _lastResultSeverity = Severity.Error;
+            Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isSetupLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task CallSeedEndpoint()
+    {
+        _isSeedLoading = true;
+        _lastResult = string.Empty;
+        StateHasChanged();
+
+        try
+        {
+            var response = await Http.GetAsync("api/setup/seed");
+
+            if (response.IsSuccessStatusCode)
+            {
+                _lastResult = "✓ Test data seeded successfully!";
+                _lastResultSeverity = Severity.Success;
+                Snackbar.Add("Test data seeded!", Severity.Success);
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                _lastResult = $"✗ Seeding failed: {response.StatusCode} - {errorContent}";
+                _lastResultSeverity = Severity.Error;
+                Snackbar.Add("Seeding failed!", Severity.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            _lastResult = $"✗ Exception: {ex.Message}";
+            _lastResultSeverity = Severity.Error;
+            Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isSeedLoading = false;
+            StateHasChanged();
+        }
+    }
+}

@@ -1,0 +1,114 @@
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Web.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+@using System.Net.Http.Json
+@inject GenericDtoServiceFactory DtoServiceFactory
+@inject HttpClient HttpClient
+
+<MudAutocomplete T="PersonDto"
+                 Label="@Label"
+                 SearchFunc="@SearchPersons"
+                 Value="@_selectedPerson"
+                 ValueChanged="@OnPersonChanged"
+                 ToStringFunc="@(p => p == null ? "" : GetDisplayText(p))"
+                 Variant="Variant.Outlined"
+                 Disabled="@IsReadOnly"
+                 Clearable="true"
+                 MinCharacters="2"
+                 ResetValueOnEmptyText="true"
+                 CoerceText="false"
+                 CoerceValue="false"
+                 DebounceInterval="300"
+                 UserAttributes="@(new Dictionary<string, object> { { "data-testid", "person-selector" } })">
+    <ItemTemplate Context="person">
+        <MudText>@GetDisplayText(person)</MudText>
+        @if (!string.IsNullOrWhiteSpace(person.Contact?.Email))
+        {
+            <MudText Typo="Typo.caption" Class="mud-text-secondary">@person.Contact.Email</MudText>
+        }
+    </ItemTemplate>
+</MudAutocomplete>
+
+@code {
+    [Parameter]
+    public int? SelectedPersonId { get; set; }
+
+    [Parameter]
+    public EventCallback<int?> SelectedPersonIdChanged { get; set; }
+
+    [Parameter]
+    public string Label { get; set; } = "Select Person";
+
+    [Parameter]
+    public bool IsReadOnly { get; set; } = false;
+
+    private PersonDto? _selectedPerson;
+    private GenericDtoService<PersonDto, PersonSearch>? _service;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _service = DtoServiceFactory.Create<PersonDto, PersonSearch>();
+
+        // Load the selected person if an ID is provided
+        if (SelectedPersonId.HasValue && SelectedPersonId.Value > 0)
+        {
+            _selectedPerson = await _service.GetByIdAsync(SelectedPersonId.Value);
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        // If SelectedPersonId changed externally, update the selected person
+        if (SelectedPersonId.HasValue && SelectedPersonId.Value > 0 &&
+            (_selectedPerson == null || _selectedPerson.Id != SelectedPersonId.Value))
+        {
+            _selectedPerson = await _service.GetByIdAsync(SelectedPersonId.Value);
+        }
+        else if (!SelectedPersonId.HasValue)
+        {
+            _selectedPerson = null;
+        }
+    }
+
+    private async Task<IEnumerable<PersonDto>> SearchPersons(string searchText, CancellationToken cancellationToken)
+    {
+        // If search text is empty or too short, return empty list
+        if (string.IsNullOrWhiteSpace(searchText) || searchText.Length < 2)
+            return Enumerable.Empty<PersonDto>();
+
+        try
+        {
+            // Use the new autocomplete endpoint that does partial matching on firstname, lastname, and email
+            var result = await HttpClient.GetFromJsonAsync<List<PersonDto>>(
+                $"api/person/autocomplete?searchText={Uri.EscapeDataString(searchText)}&limit=10",
+                cancellationToken);
+
+            return result ?? Enumerable.Empty<PersonDto>();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error searching persons: {ex.Message}");
+            return Enumerable.Empty<PersonDto>();
+        }
+    }
+
+    private async Task OnPersonChanged(PersonDto? person)
+    {
+        _selectedPerson = person;
+        SelectedPersonId = person?.Id;
+        await SelectedPersonIdChanged.InvokeAsync(person?.Id);
+    }
+
+    private string GetDisplayText(PersonDto person)
+    {
+        if (person == null)
+            return string.Empty;
+
+        var displayText = $"{person.Contact?.FirstName} {person.Contact?.LastName}";
+        if (!string.IsNullOrWhiteSpace(person.Contact?.Email))
+        {
+            displayText += $" ({person.Contact.Email})";
+        }
+        return displayText.Trim();
+    }
+}

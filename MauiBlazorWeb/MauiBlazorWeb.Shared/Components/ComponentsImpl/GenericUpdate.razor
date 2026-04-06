@@ -1,3 +1,7 @@
+@*
+Requires interactive rendering mode for OnValidSubmit to work.
+App uses global @rendermode="InteractiveServer" in App.razor.
+*@
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
 @using MauiBlazorWeb.Shared.Resources.Strings
 @using MauiBlazorWeb.Web.Services.ServicesImpl
@@ -6,6 +10,7 @@
 @typeparam TDto where TDto : class
 @inject GenericDtoServiceFactory DtoServiceFactory
 @inject IStringLocalizer<AppResources> L
+@inject NavigationManager NavigationManager
 
 @if (model != null)
 {
@@ -25,6 +30,7 @@
 @code {
     [Parameter, EditorRequired] public TDto model { get; set; } = default!;
     [Parameter, EditorRequired] public RenderFragment<TDto> ChildContent { get; set; } = default!;
+    [Parameter] public string? ResourceName { get; set; }
 
     [Parameter]
     public EventCallback OnEdited { get; set; }
@@ -40,8 +46,20 @@
     {
         if (_service != null)
         {
-            await _service.UpdateAsync(model);
+            var updatedDto = await _service.UpdateAsync(model);
+
             await OnEdited.InvokeAsync();
+
+            // Navigate to detail page if ResourceName is provided and dto has Id property
+            if (!string.IsNullOrEmpty(ResourceName) && updatedDto != null)
+            {
+                var idProperty = updatedDto.GetType().GetProperty("Id");
+                if (idProperty != null)
+                {
+                    var id = idProperty.GetValue(updatedDto);
+                    NavigationManager.NavigateTo($"/{ResourceName}/{id}");
+                }
+            }
         }
     }
 }

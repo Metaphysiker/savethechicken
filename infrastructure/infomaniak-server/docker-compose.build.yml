@@ -8,6 +8,11 @@ services:
       - "${PORT_WEBAPI}:8080"
     env_file:
       - .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    volumes:
+      - ./appsettings.Production.json:/app/appsettings.Production.json:ro
+      - webapi-temp:/tmp
     depends_on:
       - postgres
   dotnet:
@@ -22,8 +27,7 @@ services:
     build:
       context: ../../
       dockerfile: DockerfileMauiBlazorWeb
-      args:
-      - API_BASE_URL=${API_BASE_URL}
+      # Removed API_BASE_URL build arg - using SERVER_API_BASE_URL env var at runtime
     env_file:
       - .env
     ports:
@@ -31,6 +35,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
+      - SERVER_API_BASE_URL=${SERVER_API_BASE_URL}
     depends_on:
       - webapi
   postgres:
@@ -45,3 +50,4 @@ services:
 
 volumes:
   postgres-data:
+  webapi-temp:

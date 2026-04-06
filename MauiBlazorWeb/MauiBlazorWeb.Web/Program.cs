@@ -10,6 +10,7 @@ using MudBlazor.Services;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<AuthenticationHandler>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<AwsFileService>();
 builder.Services.AddScoped<SaveChickenActionService>();
@@ -19,17 +20,29 @@ builder.Services.AddSingleton<AuthResponseSingleton>();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents()
-    .AddInteractiveWebAssemblyComponents();
+    .AddInteractiveServerComponents();
 
 // Add device-specific services used by the MauiBlazorWeb.Shared project
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
 
-var isDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
-var baseUrl = isDocker ? "http://webapi:8080/" : "https://localhost:7101/";
+// Server-side API calls use internal Docker hostname
+// Client-side (browser) gets API URL from /api/config endpoint
+var serverApiUrl = Environment.GetEnvironmentVariable("SERVER_API_BASE_URL")
+    ?? builder.Configuration["SERVER_API_BASE_URL"]
+    ?? "http://localhost:8081/";
 
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseUrl) });
+// Register HttpClient with AuthenticationHandler
+builder.Services.AddScoped(sp =>
+{
+    var handler = sp.GetRequiredService<AuthenticationHandler>();
+    handler.InnerHandler = new HttpClientHandler();
+    var httpClient = new HttpClient(handler)
+    {
+        BaseAddress = new Uri(serverApiUrl)
+    };
+    return httpClient;
+});
 builder.Services.AddScoped<GenericDtoServiceFactory>(sp =>
 {
     var httpClient = sp.GetRequiredService<HttpClient>();
@@ -48,7 +61,7 @@ app.MapStaticAssets();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseWebAssemblyDebugging();
+    //app.UseWebAssemblyDebugging();
 }
 else
 {
@@ -71,10 +84,7 @@ app.UseRequestLocalization(localizationOptions);
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
-    .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(
-        typeof(MauiBlazorWeb.Shared._Imports).Assembly,
-        typeof(MauiBlazorWeb.Web.Client._Imports).Assembly);
+    .AddAdditionalAssemblies(typeof(MauiBlazorWeb.Shared._Imports).Assembly);
 
 app.MapControllers();
 app.MapFallbackToFile("index.html");

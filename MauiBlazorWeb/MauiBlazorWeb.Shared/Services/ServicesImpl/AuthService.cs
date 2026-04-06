@@ -51,9 +51,10 @@ public class AuthService
     {
         var token = await _tokenService.GetTokenAsync();
         if (string.IsNullOrEmpty(token)) return null;
-        _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
         var response = await _httpClient.GetAsync("api/auth/refresh-token");
         if (!response.IsSuccessStatusCode) return null;
+
         var authResponse = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
         if (authResponse != null)
         {
@@ -70,7 +71,7 @@ public class AuthService
         {
             var token = await _tokenService.GetTokenAsync();
             if (string.IsNullOrEmpty(token)) return false;
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
             var response = await _httpClient.GetAsync("api/auth/is-logged-in");
             return response.IsSuccessStatusCode;
         }
@@ -92,19 +93,15 @@ public class AuthService
                 return false;
             }
 
-            using var request = new HttpRequestMessage(HttpMethod.Get, "api/auth/is-logged-in");
-            request.Headers.Authorization =
-                new AuthenticationHeaderValue("Bearer", token);
+            var response = await _httpClient.GetAsync("api/auth/is-logged-in", cancellationToken);
 
-            var response = await _httpClient.SendAsync(request, cancellationToken);
-            
             if (!response.IsSuccessStatusCode)
             {
                 await _tokenService.RemoveTokenAsync();
                 _authResponseSingleton.AuthResponse = null;
                 return false;
             }
-            
+
             return true;
         }
         catch (Exception)

@@ -1,0 +1,201 @@
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Persons
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.FileUploads
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.StoredFiles
+@using MauiBlazorWeb.Shared.Components.MultiDateSelecters
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using MauiBlazorWeb.Shared.Services.ServicesImpl
+@using MauiBlazorWeb.Web.Services.ServicesImpl
+@using Microsoft.Extensions.Localization
+@using global::Shared.Dtos.DtosImpl
+@using MudBlazor
+@inject IStringLocalizer<AppResources> L
+@inject GenericDtoServiceFactory DtoServiceFactory
+
+@code {
+    [Parameter, EditorRequired]
+    public ItemWithBrowserFiles<SaveChickenDriveRequestDto> EntityWithFiles { get; set; } = default!;
+
+    [Parameter]
+    public bool IsReadOnly { get; set; } = false;
+
+    [Parameter]
+    public int? PreSelectedPersonId { get; set; }
+
+    [Parameter]
+    public int? PreSelectedSaveChickenActionId { get; set; }
+
+    private PersonDto? person;
+    private bool isPersonSelectorReadOnly => IsReadOnly || EntityWithFiles.Item.Id > 0 || PreSelectedPersonId.HasValue;
+    private bool isSaveChickenActionSelectorReadOnly => IsReadOnly || PreSelectedSaveChickenActionId.HasValue;
+
+    private async Task OnPersonIdChanged(int? newPersonId)
+    {
+        EntityWithFiles.Item.PersonId = newPersonId;
+
+        if (newPersonId.HasValue && newPersonId.Value > 0)
+        {
+            // Load the selected person
+            var personService = DtoServiceFactory.Create<PersonDto, PersonSearch>();
+            person = await personService.GetByIdAsync(newPersonId.Value);
+        }
+        else
+        {
+            // Clear person reference when deselected
+            person = null;
+        }
+
+        StateHasChanged();
+    }
+}
+
+<MudPaper Class="pa-4 my-4">
+    <MudText Typo="Typo.h6">@L["PersonSelection"]</MudText>
+    <MudAlert Severity="Severity.Info" Dense="true" Class="my-2">
+        <strong>@L["Admin_Persons_AlertTitle"]</strong> @L["PersonSelection_AdminInfo"]
+    </MudAlert>
+
+    <PersonSelector SelectedPersonId="@EntityWithFiles.Item.PersonId"
+                    SelectedPersonIdChanged="OnPersonIdChanged"
+                    Label="@L["SelectPerson"]"
+                    IsReadOnly="@isPersonSelectorReadOnly" />
+
+    <SaveChickenActionSelector SelectedActionId="EntityWithFiles.Item.SaveChickenActionId"
+            SelectedActionIdChanged="OnSaveChickenActionIdChanged"
+            IsReadOnly="@isSaveChickenActionSelectorReadOnly" />
+
+    <ValidationMessage For="@(() => EntityWithFiles.Item.PersonId)" />
+
+    @if (PreSelectedPersonId.HasValue)
+    {
+        <MudAlert Severity="Severity.Info" Dense="true" Class="mt-2">
+            @L["PersonPreselected_Info"]
+        </MudAlert>
+    }
+
+    @if (PreSelectedSaveChickenActionId.HasValue)
+    {
+        <MudAlert Severity="Severity.Info" Dense="true" Class="mt-2">
+            @L["ActionPreselected_Info"]
+        </MudAlert>
+    }
+</MudPaper>
+
+@if (person != null)
+{
+    <MudPaper Class="pa-4 my-4">
+        <MudText Typo="Typo.h6">@L["SelectedPersonDetails"]</MudText>
+        <MudText Typo="Typo.body2"><strong>@L["Name"]</strong> @person.Contact?.FirstName@(" ")@person.Contact?.LastName</MudText>
+        <MudText Typo="Typo.body2"><strong>@L["Email"]</strong> @person.Contact?.Email</MudText>
+        <MudText Typo="Typo.body2"><strong>@L["Phone"]</strong> @person.Contact?.PhoneNumber</MudText>
+        <MudText Typo="Typo.body2"><strong>@L["Address"]</strong> @person.Address?.Street, @person.Address?.PostalCode@(" ")@person.Address?.City</MudText>
+    </MudPaper>
+}
+
+<MudPaper Class="pa-4 my-4" Elevation="2" data-testid="drive-request-general-info">
+    <MudText Typo="Typo.h6">@L["DriveRequestInformation"]</MudText>
+
+    <MudTextField ReadOnly="@IsReadOnly"
+                  @bind-Value="EntityWithFiles.Item.CarMake"
+                  Label="@L["CarMake"]"
+                  Variant="Variant.Outlined"
+                  UserAttributes="@(new Dictionary<string, object> { { "data-testid", "car-make" } })" />
+    <ValidationMessage For="@(() => EntityWithFiles.Item.CarMake)" />
+
+    <div class="my-5">
+        <MudNumericField T="int"
+                         ReadOnly="@IsReadOnly"
+                         @bind-Value="EntityWithFiles.Item.CapacityForChickens"
+                         Label="@L["CapacityForChickens"]"
+                         Variant="Variant.Outlined"
+                         UserAttributes="@(new Dictionary<string, object> { { "data-testid", "capacity-for-chickens" } })" />
+        <ValidationMessage For="@(() => EntityWithFiles.Item.CapacityForChickens)" />
+    </div>
+
+    <MudItem Class="my-2">
+        <MudText>
+            @L["AdditionalMessage"]
+        </MudText>
+        <MudTextField ReadOnly="@IsReadOnly"
+                     @bind-Value="EntityWithFiles.Item.Message"
+                     Label="@L["Message"]"
+                     Variant="Variant.Outlined"
+                     Lines="3"
+                     UserAttributes="@(new Dictionary<string, object> { { "data-testid", "drive-request-message" } })" />
+        <ValidationMessage For="@(() => EntityWithFiles.Item.Message)" />
+    </MudItem>
+</MudPaper>
+
+<MultiDateOnlySelector Text="@L["AvailableDrivingDates"]"
+                      @bind-SelectedDates="EntityWithFiles.Item.AvailableDates"
+                      MinDate="@minDate"
+                      MaxDate="@maxDate" />
+
+
+
+<StoredFilesEdit @bind-Files="EntityWithFiles.Item.Files" />
+
+<FilesUploadForm @bind-Value="EntityWithFiles.Files" Label="Upload Files" Text="Route plan" />
+
+
+@code {
+    private GenericDtoService<SaveChickenActionDto, SaveChickenActionSearch>? _saveChickenActionService;
+    private SaveChickenActionDto? _saveChickenActionDto;
+    private DateOnly? minDate =>
+    _saveChickenActionDto != null && _saveChickenActionDto.Dates != null && _saveChickenActionDto.Dates.Count > 0
+        ? _saveChickenActionDto.Dates.Min()
+        : null;
+
+    private DateOnly? maxDate =>
+    _saveChickenActionDto != null && _saveChickenActionDto.Dates != null && _saveChickenActionDto.Dates.Count > 0
+        ? _saveChickenActionDto.Dates.Max()
+        : null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _saveChickenActionService = DtoServiceFactory.Create<SaveChickenActionDto, SaveChickenActionSearch>();
+        await getSaveChickenAction();
+
+        // Set PreSelectedPersonId if provided
+        if (PreSelectedPersonId.HasValue && EntityWithFiles.Item.PersonId == null)
+        {
+            EntityWithFiles.Item.PersonId = PreSelectedPersonId.Value;
+        }
+
+        // Set PreSelectedSaveChickenActionId if provided
+        if (PreSelectedSaveChickenActionId.HasValue && EntityWithFiles.Item.SaveChickenActionId == null)
+        {
+            EntityWithFiles.Item.SaveChickenActionId = PreSelectedSaveChickenActionId.Value;
+            await getSaveChickenAction();
+        }
+
+        // Load person if PersonId already set
+        if (EntityWithFiles.Item.PersonId.HasValue && EntityWithFiles.Item.PersonId.Value > 0)
+        {
+            var personService = DtoServiceFactory.Create<PersonDto, PersonSearch>();
+            person = await personService.GetByIdAsync(EntityWithFiles.Item.PersonId.Value);
+        }
+    }
+
+    private async Task getSaveChickenAction()
+    {
+        if(_saveChickenActionService == null)
+        {
+            return;
+        }
+
+        if (EntityWithFiles.Item.SaveChickenActionId.HasValue)
+        {
+            _saveChickenActionDto = await _saveChickenActionService.GetByIdAsync(EntityWithFiles.Item.SaveChickenActionId.Value);
+        }
+    }
+
+    private async Task OnSaveChickenActionIdChanged(int? newId)
+    {
+        EntityWithFiles.Item.SaveChickenActionId = newId;
+        await getSaveChickenAction();
+        StateHasChanged();
+    }
+
+}

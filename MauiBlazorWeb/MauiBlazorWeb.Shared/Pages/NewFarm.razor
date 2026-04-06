@@ -1,14 +1,8 @@
 ﻿@using MauiBlazorWeb.Shared.Components.ComponentsImpl
-@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Drivers
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Farms
-@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
-@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
-@using MauiBlazorWeb.Shared.Services.ServicesImpl
-@using MauiBlazorWeb.Web.Services.ServicesImpl
-@inject SaveChickenActionService saveChickenActionService;
 @using global::Shared.Dtos.DtosImpl
 
-@page "/farms/new"
+@page "/admin/farms/new"
 
 <PageTitle>Landwirtschaftsbetrieb anmelden</PageTitle>
 
@@ -17,11 +11,11 @@
     <h3>Ich möchte meinen Landwirtschaftsbetrieb anmelden</h3>
     @if(newItemWithBrowserFiles != null)
     {
-       <GenericCreateWithFiles TDto="FarmDto" model="newItemWithBrowserFiles">
+       <GenericCreateWithFiles TDto="FarmDto" model="newItemWithBrowserFiles" ResourceName="admin/farms">
             <ChildContent Context="model">
                 <FarmFormWithFiles EntityWithFiles="model"  />
             </ChildContent>
-        </GenericCreateWithFiles>  
+        </GenericCreateWithFiles>
     }
 
 </MudContainer>
@@ -31,19 +25,15 @@
         private FarmDto farmDto = new();
         private ItemWithBrowserFiles<FarmDto>? newItemWithBrowserFiles;
 
-        protected override async Task OnInitializedAsync()
+        protected override Task OnInitializedAsync()
         {
-            SaveChickenActionDto? activeSaveChickenAction = await saveChickenActionService.GetActiveSaveChickenAction();
-
-            if (activeSaveChickenAction != null)
-            {
-                farmDto.SaveChickenActionId = activeSaveChickenAction?.Id;
-            }
             newItemWithBrowserFiles = new ItemWithBrowserFiles<FarmDto>
             {
                 Item = farmDto,
                 Files = new List<IBrowserFile>()
             };
+
+            return Task.CompletedTask;
         }
     }
 }

@@ -39,7 +39,7 @@ namespace WebApi.Controllers.ControllersImpl
             return NoContent();
         }
 
-        [Authorize(Roles = nameof(UserRole.Admin))]
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<SaveChickenActionDto>> Read(int id)
         {
@@ -49,7 +49,7 @@ namespace WebApi.Controllers.ControllersImpl
             return Ok(resultDto);
         }
 
-        [Authorize(Roles = nameof(UserRole.Admin))]
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<List<SaveChickenActionDto>>> ReadAll()
         {
@@ -58,7 +58,7 @@ namespace WebApi.Controllers.ControllersImpl
             return Ok(resultDto);
         }
 
-        [Authorize(Roles = nameof(UserRole.Admin))]
+        [AllowAnonymous]
         [HttpPost("search")]
         public async Task<ActionResult<PaginationDto<SaveChickenActionDto>>> Search([FromBody] SaveChickenActionSearch search)
         {

@@ -1,29 +1,64 @@
-﻿@page "/save-chicken-actions"
-@page "/save-chicken-actions/{id:int}"
+﻿@page "/admin/save-chicken-actions/{id:int}"
 
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl
-@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Drivers
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenDriveRequests
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Farms
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
 @using MauiBlazorWeb.Shared.Services.ServicesImpl
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Components.Forms
 @inject GenericDtoServiceFactory DtoServiceFactory
 @inject SaveChickenActionService saveChickenActionService
+@inject IStringLocalizer<AppResources> L
+@inject IDialogService DialogService
 
 <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
-    <h3>Rettungs-Aktionen</h3>
-
-    <MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions.SaveChickenActionSelector @bind-SelectedActionId="selectedActionId" OnActionSelected="OnActionSelected" />
+    <h3>@L["SaveChickenAction"]</h3>
 
     @if(selectedAction != null)
     {
+        <MudPaper Class="pa-4 my-4" data-testid="action-details">
+            <MudText Typo="Typo.h5" Class="mb-2" data-testid="action-title">@selectedAction.Title</MudText>
+
+            @if (!string.IsNullOrWhiteSpace(selectedAction.Description))
+            {
+                <MudText Typo="Typo.body1" Class="mb-3" data-testid="action-description">@selectedAction.Description</MudText>
+            }
+
+            @if (selectedAction.Dates != null && selectedAction.Dates.Any())
+            {
+                <MudText Typo="Typo.body2" Class="mt-3">
+                    <strong>@L["TransferDates"]</strong>
+                </MudText>
+                <div data-testid="action-transfer-dates">
+                    @foreach (var date in selectedAction.Dates.OrderBy(d => d))
+                    {
+                        <MudChip T="string" Size="Size.Small" Class="mr-1">@date.ToString("dd.MM.yyyy")</MudChip>
+                    }
+                </div>
+            }
+        </MudPaper>
+
+        <MudPaper Class="pa-4 my-4">
+            <MudButton Variant="Variant.Filled"
+                      Color="Color.Success"
+                      OnClick="OpenRoutePlannerDialog"
+                      StartIcon="@Icons.Material.Filled.Route"
+                      Size="Size.Large"
+                      FullWidth="true"
+                      data-testid="open-route-planner-button">
+                <MudText Typo="Typo.h6">Routen-Planer öffnen</MudText>
+            </MudButton>
+        </MudPaper>
 
         <MudPaper Class="pa-4">
-            <MudText Typo="Typo.h6">Abnehmer</MudText>
+            <MudText Typo="Typo.h6">@L["Adopters"]</MudText>
 
-            <GenericSearch TDto="SaveChickenRequestDto" TSearchDto="SaveChickenRequestSearch" search="saveChickenRequestSearch" OnItemsFound="OnItemsFound">
+            <GenericSearch @key="@searchRefreshKey" TDto="SaveChickenRequestDto" TSearchDto="SaveChickenRequestSearch" search="saveChickenRequestSearch" OnItemsFound="OnItemsFound">
                 <SearchForm Context="search">
                     <SaveChickenRequestSearchForm Model="search" />
                 </SearchForm>
@@ -31,6 +66,15 @@
                     <SaveChickenRequestTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" OnItemsChanged="ctx.Item4.InvokeAsync" />
                 </Table>
             </GenericSearch>
+
+            <MudButton Variant="Variant.Filled"
+                      Color="Color.Primary"
+                      OnClick="OpenAddSaveChickenRequestDialog"
+                      StartIcon="@Icons.Material.Filled.Add"
+                      Class="mt-3"
+                      data-testid="add-save-chicken-request-button">
+                @L["AddSaveChickenRequest"]
+            </MudButton>
         </MudPaper>
 
         <MudPaper Class="pa-4 my-4">
@@ -38,22 +82,31 @@
         </MudPaper>
 
         <MudPaper Class="pa-4 my-4">
-            <MudText Typo="Typo.h6">Fahrer</MudText>
+            <MudText Typo="Typo.h6">@L["Drivers"]</MudText>
 
-            <GenericSearch TDto="DriverDto" TSearchDto="DriverSearch" search="driverSearch" OnItemsFound="OnDriverItemsFound">
+            <GenericSearch @key="@driveRequestRefreshKey" TDto="SaveChickenDriveRequestDto" TSearchDto="SaveChickenDriveRequestSearch" search="saveChickenDriveRequestSearch" OnItemsFound="OnSaveChickenDriveRequestItemsFound">
                 <SearchForm Context="search">
-                    <DriverSearchForm Model="search" />
+                    <SaveChickenDriveRequestSearchForm Model="search" />
                 </SearchForm>
                 <Table Context="ctx">
-                    <DriverTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" OnItemsChanged="ctx.Item4.InvokeAsync" />
+                    <SaveChickenDriveRequestTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" OnItemsChanged="ctx.Item4.InvokeAsync" />
                 </Table>
             </GenericSearch>
+
+            <MudButton Variant="Variant.Filled"
+                      Color="Color.Secondary"
+                      OnClick="OpenAddSaveChickenDriveRequestDialog"
+                      StartIcon="@Icons.Material.Filled.Add"
+                      Class="mt-3"
+                      data-testid="add-drive-request-button">
+                @L["AddDriveRequest"]
+            </MudButton>
         </MudPaper>
 
         <MudPaper Class="pa-4 my-4">
-            <MudText Typo="Typo.h6">Betriebe</MudText>
+            <MudText Typo="Typo.h6">@L["Farms"]</MudText>
 
-            <GenericSearch TDto="FarmDto" TSearchDto="FarmSearch" search="farmSearch" OnItemsFound="OnFarmItemsFound">
+            <GenericSearch @key="@farmRefreshKey" TDto="FarmDto" TSearchDto="FarmSearch" search="farmSearch" OnItemsFound="OnFarmItemsFound">
                 <SearchForm Context="search">
                     <FarmSearchForm Model="search" />
                 </SearchForm>
@@ -61,6 +114,15 @@
                     <FarmTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" OnItemsChanged="ctx.Item4.InvokeAsync" />
                 </Table>
             </GenericSearch>
+
+            <MudButton Variant="Variant.Filled"
+                      Color="Color.Tertiary"
+                      OnClick="OpenAddFarmDialog"
+                      StartIcon="@Icons.Material.Filled.Add"
+                      Class="mt-3"
+                      data-testid="add-farm-button">
+                @L["AddFarm"]
+            </MudButton>
         </MudPaper>
 
         <MudPaper Class="pa-4 my-4">
@@ -73,11 +135,6 @@
         {
             <MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions.SaveChickenActionStatistic saveChickenActionDto="selectedAction" />
         }
-
-        @if (selectedAction != null)
-        {
-            <MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions.SaveChickenActionRoutePlanner saveChickenActionDto="selectedAction" />
-        }
     }
 </MudContainer>
 
@@ -86,11 +143,14 @@
     private SaveChickenActionDto? selectedAction;
     private int? selectedActionId;
     private SaveChickenRequestSearch saveChickenRequestSearch = new SaveChickenRequestSearch();
-    private DriverSearch driverSearch = new DriverSearch();
+    private SaveChickenDriveRequestSearch saveChickenDriveRequestSearch = new SaveChickenDriveRequestSearch();
     private FarmSearch farmSearch = new FarmSearch();
     private List<SaveChickenRequestDto> foundSaveChickenRequests = new();
     private List<FarmDto> foundFarms = new();
-    private List<DriverDto> drivers = new();
+    private List<SaveChickenDriveRequestDto> saveChickenDriveRequests = new();
+    private int searchRefreshKey = 0;
+    private int driveRequestRefreshKey = 0;
+    private int farmRefreshKey = 0;
 
     [Parameter]
     public int? id { get; set; }
@@ -107,9 +167,9 @@
         StateHasChanged();
     }
 
-    private void OnDriverItemsFound(List<DriverDto> driverDtos)
+    private void OnSaveChickenDriveRequestItemsFound(List<SaveChickenDriveRequestDto> driveRequests)
     {
-        drivers = driverDtos;
+        saveChickenDriveRequests = driveRequests;
         StateHasChanged();
     }
 
@@ -123,7 +183,7 @@
     private void UpdateSearches()
     {
         UpdateSaveChickenRequestSearch();
-        UpdateDriverSearch();
+        UpdateSaveChickenDriveRequestSearch();
         UpdateFarmSearch();
     }
 
@@ -132,8 +192,15 @@
 
         if (id.HasValue)
         {
-            selectedActionId = id.Value;
-            UpdateSearches();
+            // Load the SaveChickenAction by ID
+            var service = DtoServiceFactory.Create<SaveChickenActionDto, SaveChickenActionSearch>();
+            selectedAction = await service.GetByIdAsync(id.Value);
+
+            if (selectedAction != null)
+            {
+                selectedActionId = selectedAction.Id;
+                UpdateSearches();
+            }
         }
         else
         {
@@ -172,14 +239,173 @@
         };
     }
 
-    private void UpdateDriverSearch()
+    private void UpdateSaveChickenDriveRequestSearch()
     {
         var saveChickenActionIds = selectedAction != null
          ? new List<int> { selectedAction.Id }
          : new List<int>();
-        driverSearch = new DriverSearch
+        saveChickenDriveRequestSearch = new SaveChickenDriveRequestSearch
         {
             SaveChickenActionIds = saveChickenActionIds
         };
+    }
+
+    private async Task OpenAddSaveChickenRequestDialog()
+    {
+        if (selectedAction == null || selectedAction.Id == 0)
+            return;
+
+        // Create a new SaveChickenRequestDto with the action preselected
+        var newRequest = new SaveChickenRequestDto
+        {
+            SaveChickenActionId = selectedAction.Id,
+            Files = new List<StoredFileDto>()
+        };
+
+        var modelWithFiles = new ItemWithBrowserFiles<SaveChickenRequestDto>
+        {
+            Item = newRequest,
+            Files = new List<IBrowserFile>()
+        };
+
+        // Create the render fragment with PreSelectedSaveChickenActionId parameter
+        RenderFragment<ItemWithBrowserFiles<SaveChickenRequestDto>> childContent = (editModel) => builder =>
+        {
+            builder.OpenComponent<SaveChickenRequestFormWithFiles>(0);
+            builder.AddAttribute(1, "EntityWithFiles", editModel);
+            builder.AddAttribute(2, "PreSelectedSaveChickenActionId", selectedAction.Id);
+            builder.CloseComponent();
+        };
+
+        var parameters = new DialogParameters
+        {
+            { "Model", modelWithFiles },
+            { "ChildContent", childContent },
+            { "OnCreated", EventCallback.Factory.Create(this, HandleRequestCreated) }
+        };
+
+        var options = new DialogOptions { FullScreen = true, CloseButton = true, MaxWidth = MaxWidth.False };
+        await DialogService.ShowAsync<GenericCreateWithFilesDialog<SaveChickenRequestDto>>(L["CreateSaveChickenRequest"], parameters, options);
+    }
+
+    private void HandleRequestCreated()
+    {
+        // Force GenericSearch to refresh by changing the key
+        searchRefreshKey++;
+        StateHasChanged();
+    }
+
+    private async Task OpenAddSaveChickenDriveRequestDialog()
+    {
+        if (selectedAction == null || selectedAction.Id == 0)
+            return;
+
+        // Create a new SaveChickenDriveRequestDto with the action preselected
+        var newRequest = new SaveChickenDriveRequestDto
+        {
+            SaveChickenActionId = selectedAction.Id,
+            Files = new List<StoredFileDto>()
+        };
+
+        var modelWithFiles = new ItemWithBrowserFiles<SaveChickenDriveRequestDto>
+        {
+            Item = newRequest,
+            Files = new List<IBrowserFile>()
+        };
+
+        // Create the render fragment with PreSelectedSaveChickenActionId parameter
+        RenderFragment<ItemWithBrowserFiles<SaveChickenDriveRequestDto>> childContent = (editModel) => builder =>
+        {
+            builder.OpenComponent<SaveChickenDriveRequestFormWithFiles>(0);
+            builder.AddAttribute(1, "EntityWithFiles", editModel);
+            builder.AddAttribute(2, "PreSelectedSaveChickenActionId", selectedAction.Id);
+            builder.CloseComponent();
+        };
+
+        var parameters = new DialogParameters
+        {
+            { "Model", modelWithFiles },
+            { "ChildContent", childContent },
+            { "OnCreated", EventCallback.Factory.Create(this, HandleDriveRequestCreated) }
+        };
+
+        var options = new DialogOptions { FullScreen = true, CloseButton = true, MaxWidth = MaxWidth.False };
+        await DialogService.ShowAsync<GenericCreateWithFilesDialog<SaveChickenDriveRequestDto>>(L["CreateDriveRequest"], parameters, options);
+    }
+
+    private void HandleDriveRequestCreated()
+    {
+        // Force GenericSearch to refresh by changing the key
+        driveRequestRefreshKey++;
+        StateHasChanged();
+    }
+
+    private async Task OpenAddFarmDialog()
+    {
+        if (selectedAction == null || selectedAction.Id == 0)
+            return;
+
+        // Create a new FarmDto with the action preselected
+        var newFarm = new FarmDto
+        {
+            SaveChickenActionId = selectedAction.Id,
+            Files = new List<StoredFileDto>()
+        };
+
+        var modelWithFiles = new ItemWithBrowserFiles<FarmDto>
+        {
+            Item = newFarm,
+            Files = new List<IBrowserFile>()
+        };
+
+        // Create the render fragment with PreSelectedSaveChickenActionId parameter
+        RenderFragment<ItemWithBrowserFiles<FarmDto>> childContent = (editModel) => builder =>
+        {
+            builder.OpenComponent<FarmFormWithFiles>(0);
+            builder.AddAttribute(1, "EntityWithFiles", editModel);
+            builder.AddAttribute(2, "PreSelectedSaveChickenActionId", selectedAction.Id);
+            builder.CloseComponent();
+        };
+
+        var parameters = new DialogParameters
+        {
+            { "Model", modelWithFiles },
+            { "ChildContent", childContent },
+            { "OnCreated", EventCallback.Factory.Create(this, HandleFarmCreated) }
+        };
+
+        var options = new DialogOptions { FullScreen = true, CloseButton = true, MaxWidth = MaxWidth.False };
+        await DialogService.ShowAsync<GenericCreateWithFilesDialog<FarmDto>>(L["CreateFarm"], parameters, options);
+    }
+
+    private void HandleFarmCreated()
+    {
+        // Force GenericSearch to refresh by changing the key
+        farmRefreshKey++;
+        StateHasChanged();
+    }
+
+    private async Task OpenRoutePlannerDialog()
+    {
+        if (selectedAction == null)
+            return;
+
+        var parameters = new DialogParameters
+        {
+            { "SaveChickenActionDto", selectedAction }
+        };
+
+        var options = new DialogOptions
+        {
+            FullScreen = true,
+            CloseButton = true,
+            MaxWidth = MaxWidth.False,
+            CloseOnEscapeKey = true
+        };
+
+        await DialogService.ShowAsync<MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions.SaveChickenActionRoutePlannerDialog>(
+            "Routen-Planer",
+            parameters,
+            options);
     }
 }

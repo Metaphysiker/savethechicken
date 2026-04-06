@@ -23,9 +23,9 @@ namespace MauiBlazorWeb.Shared.Factories.FactoriesImpl
             {
                 resource = "SaveChickenRequest";
             }
-            else if (typeof(TDto).Name.EndsWith(typeof(DriverDto).Name))
+            else if (typeof(TDto).Name.EndsWith(typeof(SaveChickenDriveRequestDto).Name))
             {
-                resource = "Driver";
+                resource = "SaveChickenDriveRequest";
             }
             else if (typeof(TDto).Name.EndsWith(typeof(FarmDto).Name))
             {
@@ -35,9 +35,9 @@ namespace MauiBlazorWeb.Shared.Factories.FactoriesImpl
             {
                 resource = "SaveChickenAction";
             }
-            else if (typeof(TDto).Name.EndsWith(typeof(BlackListedPersonDto).Name))
+            else if (typeof(TDto).Name.EndsWith(typeof(PersonDto).Name))
             {
-                resource = "BlackListedPerson";
+                resource = "Person";
             }
 
                 return new GenericDtoService<TDto, TSearchDto>(_httpClient, resource);

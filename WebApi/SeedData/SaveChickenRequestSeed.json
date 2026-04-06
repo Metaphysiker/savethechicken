@@ -1,721 +1,15 @@
-[
+﻿[
   {
+    "id": 0,
     "createdAt": "2025-11-20T08:10:00",
     "updatedAt": "2025-11-20T08:10:00",
-    "contact": {
+    "personId": null,
+    "person": {
+      "id": 0,
       "createdAt": "2025-11-20T08:00:00",
       "updatedAt": "2025-11-20T08:00:00",
-      "firstName": "Peter",
-      "lastName": "Hug",
-      "email": "peter.hug@example.ch",
-      "phoneNumber": "+41 44 321 12 34"
-    },
-    "address": {
-      "createdAt": "2025-12-05T11:30:00",
-      "updatedAt": "2025-12-05T11:30:00",
-      "street": "Dorfstrasse 18",
-      "city": "Uster",
-      "postalCode": "8610",
-      "geoCoordinate": {
-        "latitude": 47.347,
-        "longitude": 8.716
-      }
-    },
-    "isHandoverAtDifferentAddress": false,
-    "addressForHandOver": null,
-    "numberOfChickensToBeSaved": 3,
-    "numberOfRoostersToBeSaved": 0,
-    "numberOfBoxes": 1,
-    "descriptionOfPlaceForChickens": "Ruhiger Garten am Dorfrand",
-    "acceptTermsAndConditions": true,
-    "alreadyReceivedChickenPreviously": false,
-    "confirmThatIFulfillCriteria": true,
-    "message": "Erste Hühner für unseren Garten.",
-    "saveChickenActionId": null,
-    "saveChickenAction": null,
-    "datesForHandOver": [ "2026-04-27", "2026-04-28" ],
-    "color": "Grün",
-    "files": [],
-    "blackListedPersonIds": []
-  },
-  {
-    "createdAt": "2025-11-20T09:00:00",
-    "updatedAt": "2025-11-20T09:00:00",
-    "contact": {
-      "createdAt": "2025-11-20T08:50:00",
-      "updatedAt": "2025-11-20T08:50:00",
-      "firstName": "Nina",
-      "lastName": "Baumann",
-      "email": "nina.baumann@example.ch",
-      "phoneNumber": "+41 44 654 78 90"
-    },
-    "address": {
-      "createdAt": "2025-12-05T11:30:00",
-      "updatedAt": "2025-12-05T11:30:00",
-      "street": "Alte Landstrasse 92",
-      "city": "Wetzikon",
-      "postalCode": "8620",
-      "geoCoordinate": {
-        "latitude": 47.326,
-        "longitude": 8.796
-      }
-    },
-    "isHandoverAtDifferentAddress": false,
-    "addressForHandOver": null,
-    "numberOfChickensToBeSaved": 4,
-    "numberOfRoostersToBeSaved": 1,
-    "numberOfBoxes": 2,
-    "descriptionOfPlaceForChickens": "Hühnerstall mit überdachtem Auslauf",
-    "acceptTermsAndConditions": true,
-    "alreadyReceivedChickenPreviously": true,
-    "confirmThatIFulfillCriteria": true,
-    "message": "Unser Stall ist bereit.",
-    "saveChickenActionId": null,
-    "saveChickenAction": null,
-    "datesForHandOver": [ "2026-04-27" ],
-    "color": "Blau",
-    "files": [],
-    "blackListedPersonIds": []
-  },
-  {
-    "createdAt": "2025-11-20T10:15:00",
-    "updatedAt": "2025-11-20T10:15:00",
-    "contact": {
-      "createdAt": "2025-11-20T10:00:00",
-      "updatedAt": "2025-11-20T10:00:00",
-      "firstName": "Daniel",
-      "lastName": "Roth",
-      "email": "daniel.roth@example.ch",
-      "phoneNumber": "+41 43 222 44 55"
-    },
-    "address": {
-      "createdAt": "2025-12-05T11:30:00",
-      "updatedAt": "2025-12-05T11:30:00",
-      "street": "Im Sonnenrain 7",
-      "city": "Dietikon",
-      "postalCode": "8953",
-      "geoCoordinate": {
-        "latitude": 47.401,
-        "longitude": 8.401
-      }
-    },
-    "isHandoverAtDifferentAddress": true,
-    "addressForHandOver": {
-      "street": "Zürcherstrasse 55",
-      "postalCode": "8952",
-      "city": "Schlieren",
-      "country": "Switzerland"
-    },
-    "numberOfChickensToBeSaved": 2,
-    "numberOfRoostersToBeSaved": 0,
-    "numberOfBoxes": 1,
-    "descriptionOfPlaceForChickens": "Kleiner Stadtgarten mit gesichertem Auslauf",
-    "acceptTermsAndConditions": true,
-    "alreadyReceivedChickenPreviously": false,
-    "confirmThatIFulfillCriteria": true,
-    "message": "Abholung in Schlieren bevorzugt.",
-    "saveChickenActionId": null,
-    "saveChickenAction": null,
-    "datesForHandOver": [ "2026-04-28", "2026-04-29", "2026-04-30" ],
-    "color": "Violett",
-    "files": [],
-    "blackListedPersonIds": []
-  },
-  {
-    "createdAt": "2025-11-20T11:30:00",
-    "updatedAt": "2025-11-20T11:30:00",
-    "contact": {
-      "createdAt": "2025-11-20T11:10:00",
-      "updatedAt": "2025-11-20T11:10:00",
-      "firstName": "Claudia",
-      "lastName": "Steiner",
-      "email": "claudia.steiner@example.ch",
-      "phoneNumber": "+41 44 777 88 99"
-    },
-    "address": {
-      "createdAt": "2025-12-05T11:30:00",
-      "updatedAt": "2025-12-05T11:30:00",
-      "street": "Höhenweg 12",
-      "city": "Meilen",
-      "postalCode": "8706",
-      "geoCoordinate": {
-        "latitude": 47.273,
-        "longitude": 8.645
-      }
-    },
-    "isHandoverAtDifferentAddress": false,
-    "addressForHandOver": null,
-    "numberOfChickensToBeSaved": 5,
-    "numberOfRoostersToBeSaved": 0,
-    "numberOfBoxes": 2,
-    "descriptionOfPlaceForChickens": "Großer Garten mit Seesicht",
-    "acceptTermsAndConditions": true,
-    "alreadyReceivedChickenPreviously": true,
-    "confirmThatIFulfillCriteria": true,
-    "message": "Wir haben bereits gerettete Hühner.",
-    "saveChickenActionId": null,
-    "saveChickenAction": null,
-    "datesForHandOver": [ "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30" ],
-    "color": "Orange",
-    "files": [],
-    "blackListedPersonIds": []
-  },
-  {
-    "createdAt": "2025-11-21T08:20:00",
-    "updatedAt": "2025-11-21T08:20:00",
-    "contact": {
-      "createdAt": "2025-11-21T08:00:00",
-      "updatedAt": "2025-11-21T08:00:00",
-      "firstName": "Martin",
-      "lastName": "Frei",
-      "email": "martin.frei@example.ch",
-      "phoneNumber": "+41 44 111 22 33"
-    },
-    "address": {
-      "createdAt": "2025-12-05T11:30:00",
-      "updatedAt": "2025-12-05T11:30:00",
-      "street": "Bahnhofstrasse 41",
-      "city": "Kloten",
-      "postalCode": "8302",
-      "geoCoordinate": {
-        "latitude": 47.451,
-        "longitude": 8.585
-      }
-    },
-    "isHandoverAtDifferentAddress": false,
-    "addressForHandOver": null,
-    "numberOfChickensToBeSaved": 2,
-    "numberOfRoostersToBeSaved": 0,
-    "numberOfBoxes": 1,
-    "descriptionOfPlaceForChickens": "Kleiner Garten hinter dem Haus",
-    "acceptTermsAndConditions": true,
-    "alreadyReceivedChickenPreviously": false,
-    "confirmThatIFulfillCriteria": true,
-    "message": "Ideal für zwei Hühner.",
-    "saveChickenActionId": null,
-    "saveChickenAction": null,
-    "datesForHandOver": [ "2026-04-29" ],
-    "color": "Gelb",
-    "files": [],
-    "blackListedPersonIds": []
-  },
-  {
-    "createdAt": "2025-11-21T09:10:00",
-    "updatedAt": "2025-11-21T09:10:00",
-    "contact": {
-      "createdAt": "2025-11-21T08:55:00",
-      "updatedAt": "2025-11-21T08:55:00",
-      "firstName": "Sabine",
-      "lastName": "Kunz",
-      "email": "sabine.kunz@example.ch",
-      "phoneNumber": "+41 44 234 56 78"
-    },
-    "address": {
-      "createdAt": "2025-12-05T11:30:00",
-      "updatedAt": "2025-12-05T11:30:00",
-      "street": "Seestrasse 210",
-      "city": "Horgen",
-      "postalCode": "8810",
-      "geoCoordinate": {
-        "latitude": 47.256,
-        "longitude": 8.598
-      }
-    },
-    "isHandoverAtDifferentAddress": false,
-    "addressForHandOver": null,
-    "numberOfChickensToBeSaved": 6,
-    "numberOfRoostersToBeSaved": 1,
-    "numberOfBoxes": 2,
-    "descriptionOfPlaceForChickens": "Großer Garten mit Hühnerhaus",
-    "acceptTermsAndConditions": true,
-    "alreadyReceivedChickenPreviously": true,
-    "confirmThatIFulfillCriteria": true,
-    "message": "Wir haben ausreichend Platz.",
-    "saveChickenActionId": null,
-    "saveChickenAction": null,
-    "datesForHandOver": [ "2026-04-28", "2026-04-30" ],
-    "color": "Rot",
-    "files": [],
-    "blackListedPersonIds": []
-  },
-  {
-    "createdAt": "2025-11-21T10:30:00",
-    "updatedAt": "2025-11-21T10:30:00",
-    "contact": {
-      "createdAt": "2025-11-21T10:15:00",
-      "updatedAt": "2025-11-21T10:15:00",
-      "firstName": "Oliver",
-      "lastName": "Graf",
-      "email": "oliver.graf@example.ch",
-      "phoneNumber": "+41 44 876 54 32"
-    },
-    "address": {
-      "createdAt": "2025-12-05T11:30:00",
-      "updatedAt": "2025-12-05T11:30:00",
-      "street": "Zürichstrasse 88",
-      "city": "Bülach",
-      "postalCode": "8180",
-      "geoCoordinate": {
-        "latitude": 47.521,
-        "longitude": 8.539
-      }
-    },
-    "isHandoverAtDifferentAddress": false,
-    "addressForHandOver": null,
-    "numberOfChickensToBeSaved": 3,
-    "numberOfRoostersToBeSaved": 0,
-    "numberOfBoxes": 1,
-    "descriptionOfPlaceForChickens": "Stall mit überdachtem Außenbereich",
-    "acceptTermsAndConditions": true,
-    "alreadyReceivedChickenPreviously": false,
-    "confirmThatIFulfillCriteria": true,
-    "message": "Langjährige Tiererfahrung.",
-    "saveChickenActionId": null,
-    "saveChickenAction": null,
-    "datesForHandOver": [ "2026-04-27", "2026-04-28", "2026-04-29" ],
-    "color": "Braun",
-    "files": [],
-    "blackListedPersonIds": []
-  },
-  {
-    "createdAt": "2025-11-21T11:45:00",
-    "updatedAt": "2025-11-21T11:45:00",
-    "contact": {
-      "createdAt": "2025-11-21T11:30:00",
-      "updatedAt": "2025-11-21T11:30:00",
-      "firstName": "Julia",
-      "lastName": "Moser",
-      "email": "julia.moser@example.ch",
-      "phoneNumber": "+41 44 998 77 66"
-    },
-    "address": {
-      "createdAt": "2025-12-05T11:30:00",
-      "updatedAt": "2025-12-05T11:30:00",
-      "street": "Feldweg 6",
-      "city": "Dübendorf",
-      "postalCode": "8600",
-      "geoCoordinate": {
-        "latitude": 47.397,
-        "longitude": 8.621
-      }
-    },
-    "isHandoverAtDifferentAddress": false,
-    "addressForHandOver": null,
-    "numberOfChickensToBeSaved": 4,
-    "numberOfRoostersToBeSaved": 1,
-    "numberOfBoxes": 2,
-    "descriptionOfPlaceForChickens": "Großer Schrebergarten",
-    "acceptTermsAndConditions": true,
-    "alreadyReceivedChickenPreviously": true,
-    "confirmThatIFulfillCriteria": true,
-    "message": "Hühner leben bei uns sehr ruhig.",
-    "saveChickenActionId": null,
-    "saveChickenAction": null,
-    "datesForHandOver": [ "2026-04-30" ],
-    "color": "Türkis",
-    "files": [],
-    "blackListedPersonIds": []
-  },
-  {
-    "createdAt": "2025-11-22T08:05:00",
-    "updatedAt": "2025-11-22T08:05:00",
-    "contact": {
-      "createdAt": "2025-11-22T07:45:00",
-      "updatedAt": "2025-11-22T07:45:00",
-      "firstName": "Andreas",
-      "lastName": "Brunner",
-      "email": "andreas.brunner@example.ch",
-      "phoneNumber": "+41 44 310 20 10"
-    },
-    "address": {
-      "createdAt": "2025-12-05T11:30:00",
-      "updatedAt": "2025-12-05T11:30:00",
-      "street": "Rainweg 14",
-      "city": "Winterthur",
-      "postalCode": "8405",
-      "geoCoordinate": {
-        "latitude": 47.498,
-        "longitude": 8.751
-      }
-    },
-    "isHandoverAtDifferentAddress": false,
-    "addressForHandOver": null,
-    "numberOfChickensToBeSaved": 5,
-    "numberOfRoostersToBeSaved": 0,
-    "numberOfBoxes": 2,
-    "descriptionOfPlaceForChickens": "Großer Garten mit separatem Stall",
-    "acceptTermsAndConditions": true,
-    "alreadyReceivedChickenPreviously": true,
-    "confirmThatIFulfillCriteria": true,
-    "message": "Wir haben viel Platz.",
-    "saveChickenActionId": null,
-    "saveChickenAction": null,
-    "datesForHandOver": [ "2026-04-27", "2026-04-29" ],
-    "color": "Grau",
-    "files": [],
-    "blackListedPersonIds": []
-  },
-  {
-    "createdAt": "2025-11-22T09:00:00",
-    "updatedAt": "2025-11-22T09:00:00",
-    "contact": {
-      "createdAt": "2025-11-22T08:45:00",
-      "updatedAt": "2025-11-22T08:45:00",
-      "firstName": "Melanie",
-      "lastName": "Schmid",
-      "email": "melanie.schmid@example.ch",
-      "phoneNumber": "+41 44 765 43 21"
-    },
-    "address": {
-      "createdAt": "2025-12-05T11:30:00",
-      "updatedAt": "2025-12-05T11:30:00",
-      "street": "Hinterdorfstrasse 9",
-      "city": "Pfäffikon ZH",
-      "postalCode": "8330",
-      "geoCoordinate": {
-        "latitude": 47.365,
-        "longitude": 8.791
-      }
-    },
-    "isHandoverAtDifferentAddress": false,
-    "addressForHandOver": null,
-    "numberOfChickensToBeSaved": 3,
-    "numberOfRoostersToBeSaved": 0,
-    "numberOfBoxes": 1,
-    "descriptionOfPlaceForChickens": "Kleiner Hof mit Auslauf",
-    "acceptTermsAndConditions": true,
-    "alreadyReceivedChickenPreviously": false,
-    "confirmThatIFulfillCriteria": true,
-    "message": "Ideal für wenige Hühner.",
-    "saveChickenActionId": null,
-    "saveChickenAction": null,
-    "datesForHandOver": [ "2026-04-28" ],
-    "color": "Rosa",
-    "files": [],
-    "blackListedPersonIds": []
-  },
-  {
-    "createdAt": "2025-11-22T10:15:00",
-    "updatedAt": "2025-11-22T10:15:00",
-    "contact": {
-      "createdAt": "2025-11-22T10:00:00",
-      "updatedAt": "2025-11-22T10:00:00",
-      "firstName": "Thomas",
-      "lastName": "Widmer",
-      "email": "thomas.widmer@example.ch",
-      "phoneNumber": "+41 44 909 88 77"
-    },
-    "address": {
-      "createdAt": "2025-12-05T11:30:00",
-      "updatedAt": "2025-12-05T11:30:00",
-      "street": "Lindenweg 21",
-      "city": "Affoltern am Albis",
-      "postalCode": "8910",
-      "geoCoordinate": {
-        "latitude": 47.281,
-        "longitude": 8.453
-      }
-    },
-    "isHandoverAtDifferentAddress": true,
-    "addressForHandOver": {
-      "street": "Industriestrasse 5",
-      "postalCode": "8910",
-      "city": "Affoltern am Albis",
-      "country": "Switzerland"
-    },
-    "numberOfChickensToBeSaved": 4,
-    "numberOfRoostersToBeSaved": 1,
-    "numberOfBoxes": 2,
-    "descriptionOfPlaceForChickens": "Großer Garten hinter Bauernhaus",
-    "acceptTermsAndConditions": true,
-    "alreadyReceivedChickenPreviously": true,
-    "confirmThatIFulfillCriteria": true,
-    "message": "Abholung flexibel.",
-    "saveChickenActionId": null,
-    "saveChickenAction": null,
-    "datesForHandOver": [ "2026-04-27", "2026-04-28", "2026-04-30" ],
-    "color": "Beige",
-    "files": [],
-    "blackListedPersonIds": []
-  },
-  {
-    "createdAt": "2025-11-22T11:30:00",
-    "updatedAt": "2025-11-22T11:30:00",
-    "contact": {
-      "createdAt": "2025-11-22T11:10:00",
-      "updatedAt": "2025-11-22T11:10:00",
-      "firstName": "Eva",
-      "lastName": "Lang",
-      "email": "eva.lang@example.ch",
-      "phoneNumber": "+41 44 600 55 44"
-    },
-    "address": {
-      "createdAt": "2025-12-05T11:30:00",
-      "updatedAt": "2025-12-05T11:30:00",
-      "street": "Rebhaldenstrasse 30",
-      "city": "Thalwil",
-      "postalCode": "8800",
-      "geoCoordinate": {
-        "latitude": 47.292,
-        "longitude": 8.563
-      }
-    },
-    "isHandoverAtDifferentAddress": false,
-    "addressForHandOver": null,
-    "numberOfChickensToBeSaved": 2,
-    "numberOfRoostersToBeSaved": 0,
-    "numberOfBoxes": 1,
-    "descriptionOfPlaceForChickens": "Terrassierter Garten mit Stall",
-    "acceptTermsAndConditions": true,
-    "alreadyReceivedChickenPreviously": false,
-    "confirmThatIFulfillCriteria": true,
-    "message": "Ruhige Lage.",
-    "saveChickenActionId": null,
-    "saveChickenAction": null,
-    "datesForHandOver": [ "2026-04-29", "2026-04-30" ],
-    "color": "Mint",
-    "files": [],
-    "blackListedPersonIds": []
-  },
-  {
-    "createdAt": "2025-12-02T10:20:00",
-    "updatedAt": "2025-12-02T10:20:00",
-    "contact": {
-      "createdAt": "2025-12-02T10:00:00",
-      "updatedAt": "2025-12-02T10:00:00",
-      "firstName": "Martin",
-      "lastName": "Keller",
-      "email": "martin.keller@example.ch",
-      "phoneNumber": "+41 56 712 34 78"
-    },
-    "address": {
-      "createdAt": "2025-12-02T10:05:00",
-      "updatedAt": "2025-12-02T10:05:00",
-      "street": "Birkenweg 8",
-      "city": "Baden",
-      "postalCode": "5400",
-      "geoCoordinate": {
-        "latitude": 47.477,
-        "longitude": 8.306
-      }
-    },
-    "isHandoverAtDifferentAddress": false,
-    "addressForHandOver": null,
-    "numberOfChickensToBeSaved": 5,
-    "numberOfRoostersToBeSaved": 2,
-    "numberOfBoxes": 2,
-    "descriptionOfPlaceForChickens": "Kleiner Hof mit Auslauf",
-    "acceptTermsAndConditions": true,
-    "alreadyReceivedChickenPreviously": false,
-    "confirmThatIFulfillCriteria": true,
-    "message": "Bereits Hühner gehalten.",
-    "saveChickenActionId": null,
-    "saveChickenAction": null,
-    "datesForHandOver": [ "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30" ],
-    "color": "Braun",
-    "files": [],
-    "blackListedPersonIds": []
-  },
-  {
-    "createdAt": "2025-12-03T11:10:00",
-    "updatedAt": "2025-12-03T11:10:00",
-    "contact": {
-      "createdAt": "2025-12-03T11:00:00",
-      "updatedAt": "2025-12-03T11:00:00",
-      "firstName": "Claudia",
-      "lastName": "Frei",
-      "email": "claudia.frei@example.ch",
-      "phoneNumber": "+41 62 723 98 21"
-    },
-    "address": {
-      "createdAt": "2025-12-03T11:05:00",
-      "updatedAt": "2025-12-03T11:05:00",
-      "street": "Kirchweg 5",
-      "city": "Zofingen",
-      "postalCode": "4800",
-      "geoCoordinate": {
-        "latitude": 47.316,
-        "longitude": 7.942
-      }
-    },
-    "isHandoverAtDifferentAddress": false,
-    "addressForHandOver": null,
-    "numberOfChickensToBeSaved": 7,
-    "numberOfRoostersToBeSaved": 3,
-    "numberOfBoxes": 3,
-    "descriptionOfPlaceForChickens": "Großes Grundstück mit Auslauf",
-    "acceptTermsAndConditions": true,
-    "alreadyReceivedChickenPreviously": true,
-    "confirmThatIFulfillCriteria": true,
-    "message": "Langjährige Erfahrung mit Hühnern.",
-    "saveChickenActionId": null,
-    "saveChickenAction": null,
-    "datesForHandOver": [ "2026-04-27", "2026-04-28" ],
-    "color": "Schwarz-Weiß",
-    "files": [],
-    "blackListedPersonIds": []
-  },
-  {
-    "createdAt": "2025-12-04T08:30:00",
-    "updatedAt": "2025-12-04T08:30:00",
-    "contact": {
-      "createdAt": "2025-12-04T08:00:00",
-      "updatedAt": "2025-12-04T08:00:00",
-      "firstName": "Peter",
-      "lastName": "Hofmann",
-      "email": "peter.hofmann@example.ch",
-      "phoneNumber": "+41 62 814 56 90"
-    },
-    "address": {
-      "createdAt": "2025-12-04T08:05:00",
-      "updatedAt": "2025-12-04T08:05:00",
-      "street": "Wiesenstrasse 20",
-      "city": "Lenzburg",
-      "postalCode": "5600",
-      "geoCoordinate": {
-        "latitude": 47.390,
-        "longitude": 8.164
-      }
-    },
-    "isHandoverAtDifferentAddress": false,
-    "addressForHandOver": null,
-    "numberOfChickensToBeSaved": 4,
-    "numberOfRoostersToBeSaved": 1,
-    "numberOfBoxes": 2,
-    "descriptionOfPlaceForChickens": "Hof mit Freilauf für Hühner",
-    "acceptTermsAndConditions": true,
-    "alreadyReceivedChickenPreviously": false,
-    "confirmThatIFulfillCriteria": true,
-    "message": "Freilandhaltung möglich.",
-    "saveChickenActionId": null,
-    "saveChickenAction": null,
-    "datesForHandOver": [ "2026-04-27" ],
-    "color": "Rot",
-    "files": [],
-    "blackListedPersonIds": []
-  },
-  {
-    "createdAt": "2025-12-05T09:50:00",
-    "updatedAt": "2025-12-05T09:50:00",
-    "contact": {
-      "createdAt": "2025-12-05T09:45:00",
-      "updatedAt": "2025-12-05T09:45:00",
-      "firstName": "Laura",
-      "lastName": "Schneider",
-      "email": "laura.schneider@example.ch",
-      "phoneNumber": "+41 62 835 67 89"
-    },
-    "address": {
-      "createdAt": "2025-12-05T09:48:00",
-      "updatedAt": "2025-12-05T09:48:00",
-      "street": "Mühlenstrasse 3",
-      "city": "Bremgarten",
-      "postalCode": "5620",
-      "geoCoordinate": {
-        "latitude": 47.361,
-        "longitude": 8.298
-      }
-    },
-    "isHandoverAtDifferentAddress": false,
-    "addressForHandOver": null,
-    "numberOfChickensToBeSaved": 6,
-    "numberOfRoostersToBeSaved": 2,
-    "numberOfBoxes": 2,
-    "descriptionOfPlaceForChickens": "Großer Garten mit Auslauf",
-    "acceptTermsAndConditions": true,
-    "alreadyReceivedChickenPreviously": true,
-    "confirmThatIFulfillCriteria": true,
-    "message": "Erfahrene Hühnerhalterin.",
-    "saveChickenActionId": null,
-    "saveChickenAction": null,
-    "datesForHandOver": [ "2026-04-28", "2026-04-29", "2026-04-30" ],
-    "color": "Gold",
-    "files": [],
-    "blackListedPersonIds": []
-  },
-  {
-    "createdAt": "2025-12-06T10:10:00",
-    "updatedAt": "2025-12-06T10:10:00",
-    "contact": {
-      "createdAt": "2025-12-06T10:00:00",
-      "updatedAt": "2025-12-06T10:00:00",
-      "firstName": "Thomas",
-      "lastName": "Meier",
-      "email": "thomas.meier@example.ch",
-      "phoneNumber": "+41 62 845 12 34"
-    },
-    "address": {
-      "createdAt": "2025-12-06T10:05:00",
-      "updatedAt": "2025-12-06T10:05:00",
-      "street": "Lindenweg 15",
-      "city": "Suhr",
-      "postalCode": "5034",
-      "geoCoordinate": {
-        "latitude": 47.367,
-        "longitude": 8.066
-      }
-    },
-    "isHandoverAtDifferentAddress": false,
-    "addressForHandOver": null,
-    "numberOfChickensToBeSaved": 5,
-    "numberOfRoostersToBeSaved": 1,
-    "numberOfBoxes": 2,
-    "descriptionOfPlaceForChickens": "Kleiner Hof mit Freilauf",
-    "acceptTermsAndConditions": true,
-    "alreadyReceivedChickenPreviously": false,
-    "confirmThatIFulfillCriteria": true,
-    "message": "Freilandhaltung möglich.",
-    "saveChickenActionId": null,
-    "saveChickenAction": null,
-    "datesForHandOver": [ "2026-04-27", "2026-04-28" ],
-    "color": "Schwarz",
-    "files": [],
-    "blackListedPersonIds": []
-  },
-  {
-    "createdAt": "2025-12-07T11:00:00",
-    "updatedAt": "2025-12-07T11:00:00",
-    "contact": {
-      "createdAt": "2025-12-07T10:50:00",
-      "updatedAt": "2025-12-07T10:50:00",
-      "firstName": "Stefan",
-      "lastName": "Zimmermann",
-      "email": "stefan.zimmermann@example.ch",
-      "phoneNumber": "+41 62 854 12 78"
-    },
-    "address": {
-      "createdAt": "2025-12-07T10:55:00",
-      "updatedAt": "2025-12-07T10:55:00",
-      "street": "Schulstrasse 7",
-      "city": "Muri",
-      "postalCode": "5630",
-      "geoCoordinate": {
-        "latitude": 47.349,
-        "longitude": 8.303
-      }
-    },
-    "isHandoverAtDifferentAddress": false,
-    "addressForHandOver": null,
-    "numberOfChickensToBeSaved": 7,
-    "numberOfRoostersToBeSaved": 2,
-    "numberOfBoxes": 3,
-    "descriptionOfPlaceForChickens": "Hof mit Auslauf und Garten",
-    "acceptTermsAndConditions": true,
-    "alreadyReceivedChickenPreviously": true,
-    "confirmThatIFulfillCriteria": true,
-    "message": "Erfahrene Hühnerhalter.",
-    "saveChickenActionId": null,
-    "saveChickenAction": null,
-    "datesForHandOver": [ "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30" ],
-    "color": "Braun",
-    "files": [],
-    "blackListedPersonIds": []
-  },
-  
-    {
-      "createdAt": "2025-11-20T08:10:00",
-      "updatedAt": "2025-11-20T08:10:00",
       "contact": {
+        "id": 0,
         "createdAt": "2025-11-20T08:00:00",
         "updatedAt": "2025-11-20T08:00:00",
         "firstName": "Peter",
@@ -723,7 +17,9 @@
         "email": "peter.hug@example.ch",
         "phoneNumber": "+41 44 321 12 34"
       },
+      "contactId": 0,
       "address": {
+        "id": 0,
         "createdAt": "2025-12-05T11:30:00",
         "updatedAt": "2025-12-05T11:30:00",
         "street": "Dorfstrasse 18",
@@ -734,27 +30,35 @@
           "longitude": 8.716
         }
       },
-      "isHandoverAtDifferentAddress": false,
-      "addressForHandOver": null,
-      "numberOfChickensToBeSaved": 3,
-      "numberOfRoostersToBeSaved": 0,
-      "numberOfBoxes": 1,
-      "descriptionOfPlaceForChickens": "Ruhiger Garten am Dorfrand",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": false,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Erste Hühner für unseren Garten.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-27", "2026-04-28" ],
-      "color": "Grün",
-      "files": [],
-      "blackListedPersonIds": []
+      "addressId": 0
     },
-    {
-      "createdAt": "2025-11-20T09:00:00",
-      "updatedAt": "2025-11-20T09:00:00",
+    "addressForHandOver": null,
+    "addressForHandOverId": null,
+    "numberOfChickensToBeSaved": 3,
+    "numberOfRoostersToBeSaved": 0,
+    "numberOfBoxes": 1,
+    "descriptionOfPlaceForChickens": "Ruhiger Garten am Dorfrand",
+    "acceptTermsAndConditions": true,
+    "alreadyReceivedChickenPreviously": false,
+    "confirmThatIFulfillCriteria": true,
+    "message": "Erste Hühner für unseren Garten.",
+    "saveChickenActionId": null,
+    "saveChickenAction": null,
+    "color": "Grün",
+    "files": [],
+    "blackListedPersonIds": []
+  },
+  {
+    "id": 0,
+    "createdAt": "2025-11-20T09:00:00",
+    "updatedAt": "2025-11-20T09:00:00",
+    "personId": null,
+    "person": {
+      "id": 0,
+      "createdAt": "2025-11-20T08:50:00",
+      "updatedAt": "2025-11-20T08:50:00",
       "contact": {
+        "id": 0,
         "createdAt": "2025-11-20T08:50:00",
         "updatedAt": "2025-11-20T08:50:00",
         "firstName": "Nina",
@@ -762,7 +66,9 @@
         "email": "nina.baumann@example.ch",
         "phoneNumber": "+41 44 654 78 90"
       },
+      "contactId": 0,
       "address": {
+        "id": 0,
         "createdAt": "2025-12-05T11:30:00",
         "updatedAt": "2025-12-05T11:30:00",
         "street": "Alte Landstrasse 92",
@@ -773,27 +79,34 @@
           "longitude": 8.796
         }
       },
-      "isHandoverAtDifferentAddress": false,
-      "addressForHandOver": null,
-      "numberOfChickensToBeSaved": 4,
-      "numberOfRoostersToBeSaved": 1,
-      "numberOfBoxes": 2,
-      "descriptionOfPlaceForChickens": "Hühnerstall mit überdachtem Auslauf",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": true,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Unser Stall ist bereit.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-27" ],
-      "color": "Blau",
-      "files": [],
-      "blackListedPersonIds": []
+      "addressId": 0
     },
-    {
-      "createdAt": "2025-11-20T10:15:00",
-      "updatedAt": "2025-11-20T10:15:00",
+    "addressForHandOver": null,
+    "addressForHandOverId": null,
+    "numberOfChickensToBeSaved": 4,
+    "numberOfRoostersToBeSaved": 1,
+    "numberOfBoxes": 2,
+    "descriptionOfPlaceForChickens": "Hühnerstall mit überdachtem Auslauf",
+    "acceptTermsAndConditions": true,
+    "alreadyReceivedChickenPreviously": true,
+    "confirmThatIFulfillCriteria": true,
+    "message": "Unser Stall ist bereit.",
+    "saveChickenActionId": null,
+    "saveChickenAction": null,
+    "color": "Blau",
+    "files": [],
+    "blackListedPersonIds": []
+  },
+  {
+    "id": 0,    "createdAt": "2025-11-20T10:15:00",
+    "updatedAt": "2025-11-20T10:15:00",
+    "personId": null,
+    "person": {
+      "id": 0,
+      "createdAt": "2025-11-20T10:00:00",
+      "updatedAt": "2025-11-20T10:00:00",
       "contact": {
+        "id": 0,
         "createdAt": "2025-11-20T10:00:00",
         "updatedAt": "2025-11-20T10:00:00",
         "firstName": "Daniel",
@@ -801,7 +114,9 @@
         "email": "daniel.roth@example.ch",
         "phoneNumber": "+41 43 222 44 55"
       },
+      "contactId": 0,
       "address": {
+        "id": 0,
         "createdAt": "2025-12-05T11:30:00",
         "updatedAt": "2025-12-05T11:30:00",
         "street": "Im Sonnenrain 7",
@@ -812,32 +127,46 @@
           "longitude": 8.401
         }
       },
-      "isHandoverAtDifferentAddress": true,
-      "addressForHandOver": {
-        "street": "Zürcherstrasse 55",
-        "postalCode": "8952",
-        "city": "Schlieren",
-        "country": "Switzerland"
-      },
-      "numberOfChickensToBeSaved": 2,
-      "numberOfRoostersToBeSaved": 0,
-      "numberOfBoxes": 1,
-      "descriptionOfPlaceForChickens": "Kleiner Stadtgarten mit gesichertem Auslauf",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": false,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Abholung in Schlieren bevorzugt.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-28", "2026-04-29", "2026-04-30" ],
-      "color": "Violett",
-      "files": [],
-      "blackListedPersonIds": []
+      "addressId": 0
     },
-    {
-      "createdAt": "2025-11-20T11:30:00",
-      "updatedAt": "2025-11-20T11:30:00",
+    "addressForHandOver": {
+      "id": 0,
+      "createdAt": "2025-11-20T10:15:00",
+      "updatedAt": "2025-11-20T10:15:00",
+      "street": "Zürcherstrasse 55",
+      "city": "Schlieren",
+      "postalCode": "8952",
+      "geoCoordinate": {
+        "latitude": 47.397,
+        "longitude": 8.447
+      }
+    },
+    "addressForHandOverId": 0,
+    "numberOfChickensToBeSaved": 2,
+    "numberOfRoostersToBeSaved": 0,
+    "numberOfBoxes": 1,
+    "descriptionOfPlaceForChickens": "Kleiner Stadtgarten mit gesichertem Auslauf",
+    "acceptTermsAndConditions": true,
+    "alreadyReceivedChickenPreviously": false,
+    "confirmThatIFulfillCriteria": true,
+    "message": "Abholung in Schlieren bevorzugt.",
+    "saveChickenActionId": null,
+    "saveChickenAction": null,
+    "color": "Violett",
+    "files": [],
+    "blackListedPersonIds": []
+  },
+  {
+    "id": 0,
+    "createdAt": "2025-11-20T11:30:00",
+    "updatedAt": "2025-11-20T11:30:00",
+    "personId": null,
+    "person": {
+      "id": 0,
+      "createdAt": "2025-11-20T11:10:00",
+      "updatedAt": "2025-11-20T11:10:00",
       "contact": {
+        "id": 0,
         "createdAt": "2025-11-20T11:10:00",
         "updatedAt": "2025-11-20T11:10:00",
         "firstName": "Claudia",
@@ -845,7 +174,9 @@
         "email": "claudia.steiner@example.ch",
         "phoneNumber": "+41 44 777 88 99"
       },
+      "contactId": 0,
       "address": {
+        "id": 0,
         "createdAt": "2025-12-05T11:30:00",
         "updatedAt": "2025-12-05T11:30:00",
         "street": "Höhenweg 12",
@@ -856,27 +187,35 @@
           "longitude": 8.645
         }
       },
-      "isHandoverAtDifferentAddress": false,
-      "addressForHandOver": null,
-      "numberOfChickensToBeSaved": 5,
-      "numberOfRoostersToBeSaved": 0,
-      "numberOfBoxes": 2,
-      "descriptionOfPlaceForChickens": "Großer Garten mit Seesicht",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": true,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Wir haben bereits gerettete Hühner.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30" ],
-      "color": "Orange",
-      "files": [],
-      "blackListedPersonIds": []
+      "addressId": 0
     },
-    {
-      "createdAt": "2025-11-21T08:20:00",
-      "updatedAt": "2025-11-21T08:20:00",
+    "addressForHandOver": null,
+    "addressForHandOverId": null,
+    "numberOfChickensToBeSaved": 5,
+    "numberOfRoostersToBeSaved": 0,
+    "numberOfBoxes": 2,
+    "descriptionOfPlaceForChickens": "Großer Garten mit Seesicht",
+    "acceptTermsAndConditions": true,
+    "alreadyReceivedChickenPreviously": true,
+    "confirmThatIFulfillCriteria": true,
+    "message": "Wir haben bereits gerettete Hühner.",
+    "saveChickenActionId": null,
+    "saveChickenAction": null,
+    "color": "Orange",
+    "files": [],
+    "blackListedPersonIds": []
+  },
+  {
+    "id": 0,
+    "createdAt": "2025-11-21T08:20:00",
+    "updatedAt": "2025-11-21T08:20:00",
+    "personId": null,
+    "person": {
+      "id": 0,
+      "createdAt": "2025-11-21T08:00:00",
+      "updatedAt": "2025-11-21T08:00:00",
       "contact": {
+        "id": 0,
         "createdAt": "2025-11-21T08:00:00",
         "updatedAt": "2025-11-21T08:00:00",
         "firstName": "Martin",
@@ -884,7 +223,9 @@
         "email": "martin.frei@example.ch",
         "phoneNumber": "+41 44 111 22 33"
       },
+      "contactId": 0,
       "address": {
+        "id": 0,
         "createdAt": "2025-12-05T11:30:00",
         "updatedAt": "2025-12-05T11:30:00",
         "street": "Bahnhofstrasse 41",
@@ -895,277 +236,146 @@
           "longitude": 8.585
         }
       },
-      "isHandoverAtDifferentAddress": false,
-      "addressForHandOver": null,
-      "numberOfChickensToBeSaved": 2,
-      "numberOfRoostersToBeSaved": 0,
-      "numberOfBoxes": 1,
-      "descriptionOfPlaceForChickens": "Kleiner Garten hinter dem Haus",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": false,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Ideal für zwei Hühner.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-29" ],
-      "color": "Gelb",
-      "files": [],
-      "blackListedPersonIds": []
+      "addressId": 0
     },
-    {
-      "createdAt": "2025-11-21T09:10:00",
-      "updatedAt": "2025-11-21T09:10:00",
+    "addressForHandOver": null,
+    "addressForHandOverId": null,
+    "numberOfChickensToBeSaved": 2,
+    "numberOfRoostersToBeSaved": 0,
+    "numberOfBoxes": 1,
+    "descriptionOfPlaceForChickens": "Kleiner Garten hinter dem Haus",
+    "acceptTermsAndConditions": true,
+    "alreadyReceivedChickenPreviously": false,
+    "confirmThatIFulfillCriteria": true,
+    "message": "Ideal für zwei Hühner.",
+    "saveChickenActionId": null,
+    "saveChickenAction": null,
+    "color": "Gelb",
+    "files": [],
+    "blackListedPersonIds": []
+  },
+  {
+    "id": 0,
+    "createdAt": "2025-11-21T09:00:00",
+    "updatedAt": "2025-11-21T09:00:00",
+    "personId": null,
+    "person": {
+      "id": 0,
+      "createdAt": "2025-11-21T08:50:00",
+      "updatedAt": "2025-11-21T08:50:00",
       "contact": {
-        "createdAt": "2025-11-21T08:55:00",
-        "updatedAt": "2025-11-21T08:55:00",
-        "firstName": "Sabine",
-        "lastName": "Kunz",
-        "email": "sabine.kunz@example.ch",
-        "phoneNumber": "+41 44 234 56 78"
+        "id": 0,
+        "createdAt": "2025-11-21T08:50:00",
+        "updatedAt": "2025-11-21T08:50:00",
+        "firstName": "Andrea",
+        "lastName": "Müller",
+        "email": "andrea.mueller@example.ch",
+        "phoneNumber": "+41 44 222 33 44"
       },
+      "contactId": 0,
       "address": {
+        "id": 0,
         "createdAt": "2025-12-05T11:30:00",
         "updatedAt": "2025-12-05T11:30:00",
-        "street": "Seestrasse 210",
-        "city": "Horgen",
-        "postalCode": "8810",
+        "street": "Bergstrasse 5",
+        "city": "Winterthur",
+        "postalCode": "8400",
         "geoCoordinate": {
-          "latitude": 47.256,
-          "longitude": 8.598
+          "latitude": 47.500,
+          "longitude": 8.724
         }
       },
-      "isHandoverAtDifferentAddress": false,
-      "addressForHandOver": null,
-      "numberOfChickensToBeSaved": 6,
-      "numberOfRoostersToBeSaved": 1,
-      "numberOfBoxes": 2,
-      "descriptionOfPlaceForChickens": "Großer Garten mit Hühnerhaus",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": true,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Wir haben ausreichend Platz.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-28", "2026-04-30" ],
-      "color": "Rot",
-      "files": [],
-      "blackListedPersonIds": []
+      "addressId": 0
     },
-    {
-      "createdAt": "2025-11-21T10:30:00",
-      "updatedAt": "2025-11-21T10:30:00",
+    "addressForHandOver": null,
+    "addressForHandOverId": null,
+    "numberOfChickensToBeSaved": 6,
+    "numberOfRoostersToBeSaved": 0,
+    "numberOfBoxes": 2,
+    "descriptionOfPlaceForChickens": "Großzügiger Garten mit Hühnerstall",
+    "acceptTermsAndConditions": true,
+    "alreadyReceivedChickenPreviously": false,
+    "confirmThatIFulfillCriteria": true,
+    "message": "Platz für mehrere Hühner vorhanden.",
+    "saveChickenActionId": null,
+    "saveChickenAction": null,
+    "color": "Rosa",
+    "files": [],
+    "blackListedPersonIds": []
+  },
+  {
+    "id": 0,
+    "createdAt": "2025-11-21T10:00:00",
+    "updatedAt": "2025-11-21T10:00:00",
+    "personId": null,
+    "person": {
+      "id": 0,
+      "createdAt": "2025-11-21T09:50:00",
+      "updatedAt": "2025-11-21T09:50:00",
       "contact": {
-        "createdAt": "2025-11-21T10:15:00",
-        "updatedAt": "2025-11-21T10:15:00",
-        "firstName": "Oliver",
-        "lastName": "Graf",
-        "email": "oliver.graf@example.ch",
-        "phoneNumber": "+41 44 876 54 32"
+        "id": 0,
+        "createdAt": "2025-11-21T09:50:00",
+        "updatedAt": "2025-11-21T09:50:00",
+        "firstName": "Thomas",
+        "lastName": "Weber",
+        "email": "thomas.weber@example.ch",
+        "phoneNumber": "+41 44 333 44 55"
       },
+      "contactId": 0,
       "address": {
+        "id": 0,
         "createdAt": "2025-12-05T11:30:00",
         "updatedAt": "2025-12-05T11:30:00",
-        "street": "Zürichstrasse 88",
-        "city": "Bülach",
-        "postalCode": "8180",
-        "geoCoordinate": {
-          "latitude": 47.521,
-          "longitude": 8.539
-        }
-      },
-      "isHandoverAtDifferentAddress": false,
-      "addressForHandOver": null,
-      "numberOfChickensToBeSaved": 3,
-      "numberOfRoostersToBeSaved": 0,
-      "numberOfBoxes": 1,
-      "descriptionOfPlaceForChickens": "Stall mit überdachtem Außenbereich",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": false,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Langjährige Tiererfahrung.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-27", "2026-04-28", "2026-04-29" ],
-      "color": "Braun",
-      "files": [],
-      "blackListedPersonIds": []
-    },
-    {
-      "createdAt": "2025-11-21T11:45:00",
-      "updatedAt": "2025-11-21T11:45:00",
-      "contact": {
-        "createdAt": "2025-11-21T11:30:00",
-        "updatedAt": "2025-11-21T11:30:00",
-        "firstName": "Julia",
-        "lastName": "Moser",
-        "email": "julia.moser@example.ch",
-        "phoneNumber": "+41 44 998 77 66"
-      },
-      "address": {
-        "createdAt": "2025-12-05T11:30:00",
-        "updatedAt": "2025-12-05T11:30:00",
-        "street": "Feldweg 6",
+        "street": "Dorfplatz 3",
         "city": "Dübendorf",
         "postalCode": "8600",
         "geoCoordinate": {
           "latitude": 47.397,
-          "longitude": 8.621
+          "longitude": 8.619
         }
       },
-      "isHandoverAtDifferentAddress": false,
-      "addressForHandOver": null,
-      "numberOfChickensToBeSaved": 4,
-      "numberOfRoostersToBeSaved": 1,
-      "numberOfBoxes": 2,
-      "descriptionOfPlaceForChickens": "Großer Schrebergarten",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": true,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Hühner leben bei uns sehr ruhig.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-30" ],
-      "color": "Türkis",
-      "files": [],
-      "blackListedPersonIds": []
+      "addressId": 0
     },
-    {
-      "createdAt": "2025-11-22T08:05:00",
-      "updatedAt": "2025-11-22T08:05:00",
+    "addressForHandOver": null,
+    "addressForHandOverId": null,
+    "numberOfChickensToBeSaved": 3,
+    "numberOfRoostersToBeSaved": 1,
+    "numberOfBoxes": 1,
+    "descriptionOfPlaceForChickens": "Kleiner Hof am Dorfrand",
+    "acceptTermsAndConditions": true,
+    "alreadyReceivedChickenPreviously": true,
+    "confirmThatIFulfillCriteria": true,
+    "message": "Erfahrung mit Hühnerhaltung vorhanden.",
+    "saveChickenActionId": null,
+    "saveChickenAction": null,
+    "color": "Braun",
+    "files": [],
+    "blackListedPersonIds": []
+  },
+  {
+    "id": 0,
+    "createdAt": "2025-11-21T11:00:00",
+    "updatedAt": "2025-11-21T11:00:00",
+    "personId": null,
+    "person": {
+      "id": 0,
+      "createdAt": "2025-11-21T10:50:00",
+      "updatedAt": "2025-11-21T10:50:00",
       "contact": {
-        "createdAt": "2025-11-22T07:45:00",
-        "updatedAt": "2025-11-22T07:45:00",
-        "firstName": "Andreas",
-        "lastName": "Brunner",
-        "email": "andreas.brunner@example.ch",
-        "phoneNumber": "+41 44 310 20 10"
+        "id": 0,
+        "createdAt": "2025-11-21T10:50:00",
+        "updatedAt": "2025-11-21T10:50:00",
+        "firstName": "Julia",
+        "lastName": "Fischer",
+        "email": "julia.fischer@example.ch",
+        "phoneNumber": "+41 44 444 55 66"
       },
+      "contactId": 0,
       "address": {
+        "id": 0,
         "createdAt": "2025-12-05T11:30:00",
         "updatedAt": "2025-12-05T11:30:00",
-        "street": "Rainweg 14",
-        "city": "Winterthur",
-        "postalCode": "8405",
-        "geoCoordinate": {
-          "latitude": 47.498,
-          "longitude": 8.751
-        }
-      },
-      "isHandoverAtDifferentAddress": false,
-      "addressForHandOver": null,
-      "numberOfChickensToBeSaved": 5,
-      "numberOfRoostersToBeSaved": 0,
-      "numberOfBoxes": 2,
-      "descriptionOfPlaceForChickens": "Großer Garten mit separatem Stall",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": true,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Wir haben viel Platz.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-27", "2026-04-29" ],
-      "color": "Grau",
-      "files": [],
-      "blackListedPersonIds": []
-    },
-    {
-      "createdAt": "2025-11-22T09:00:00",
-      "updatedAt": "2025-11-22T09:00:00",
-      "contact": {
-        "createdAt": "2025-11-22T08:45:00",
-        "updatedAt": "2025-11-22T08:45:00",
-        "firstName": "Melanie",
-        "lastName": "Schmid",
-        "email": "melanie.schmid@example.ch",
-        "phoneNumber": "+41 44 765 43 21"
-      },
-      "address": {
-        "createdAt": "2025-12-05T11:30:00",
-        "updatedAt": "2025-12-05T11:30:00",
-        "street": "Hinterdorfstrasse 9",
-        "city": "Pfäffikon ZH",
-        "postalCode": "8330",
-        "geoCoordinate": {
-          "latitude": 47.365,
-          "longitude": 8.791
-        }
-      },
-      "isHandoverAtDifferentAddress": false,
-      "addressForHandOver": null,
-      "numberOfChickensToBeSaved": 3,
-      "numberOfRoostersToBeSaved": 0,
-      "numberOfBoxes": 1,
-      "descriptionOfPlaceForChickens": "Kleiner Hof mit Auslauf",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": false,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Ideal für wenige Hühner.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-28" ],
-      "color": "Rosa",
-      "files": [],
-      "blackListedPersonIds": []
-    },
-    {
-      "createdAt": "2025-11-22T10:15:00",
-      "updatedAt": "2025-11-22T10:15:00",
-      "contact": {
-        "createdAt": "2025-11-22T10:00:00",
-        "updatedAt": "2025-11-22T10:00:00",
-        "firstName": "Thomas",
-        "lastName": "Widmer",
-        "email": "thomas.widmer@example.ch",
-        "phoneNumber": "+41 44 909 88 77"
-      },
-      "address": {
-        "createdAt": "2025-12-05T11:30:00",
-        "updatedAt": "2025-12-05T11:30:00",
-        "street": "Lindenweg 21",
-        "city": "Affoltern am Albis",
-        "postalCode": "8910",
-        "geoCoordinate": {
-          "latitude": 47.281,
-          "longitude": 8.453
-        }
-      },
-      "isHandoverAtDifferentAddress": true,
-      "addressForHandOver": {
-        "street": "Industriestrasse 5",
-        "postalCode": "8910",
-        "city": "Affoltern am Albis",
-        "country": "Switzerland"
-      },
-      "numberOfChickensToBeSaved": 4,
-      "numberOfRoostersToBeSaved": 1,
-      "numberOfBoxes": 2,
-      "descriptionOfPlaceForChickens": "Großer Garten hinter Bauernhaus",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": true,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Abholung flexibel.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-27", "2026-04-28", "2026-04-30" ],
-      "color": "Beige",
-      "files": [],
-      "blackListedPersonIds": []
-    },
-    {
-      "createdAt": "2025-11-22T11:30:00",
-      "updatedAt": "2025-11-22T11:30:00",
-      "contact": {
-        "createdAt": "2025-11-22T11:10:00",
-        "updatedAt": "2025-11-22T11:10:00",
-        "firstName": "Eva",
-        "lastName": "Lang",
-        "email": "eva.lang@example.ch",
-        "phoneNumber": "+41 44 600 55 44"
-      },
-      "address": {
-        "createdAt": "2025-12-05T11:30:00",
-        "updatedAt": "2025-12-05T11:30:00",
-        "street": "Rebhaldenstrasse 30",
+        "street": "Seestrasse 88",
         "city": "Thalwil",
         "postalCode": "8800",
         "geoCoordinate": {
@@ -1173,762 +383,71 @@
           "longitude": 8.563
         }
       },
-      "isHandoverAtDifferentAddress": false,
-      "addressForHandOver": null,
-      "numberOfChickensToBeSaved": 2,
-      "numberOfRoostersToBeSaved": 0,
-      "numberOfBoxes": 1,
-      "descriptionOfPlaceForChickens": "Terrassierter Garten mit Stall",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": false,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Ruhige Lage.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-29", "2026-04-30" ],
-      "color": "Mint",
-      "files": [],
-      "blackListedPersonIds": []
+      "addressId": 0
     },
-    {
-      "createdAt": "2025-11-22T12:45:00",
-      "updatedAt": "2025-11-22T12:45:00",
+    "addressForHandOver": null,
+    "addressForHandOverId": null,
+    "numberOfChickensToBeSaved": 4,
+    "numberOfRoostersToBeSaved": 0,
+    "numberOfBoxes": 2,
+    "descriptionOfPlaceForChickens": "Garten mit Seeblick",
+    "acceptTermsAndConditions": true,
+    "alreadyReceivedChickenPreviously": false,
+    "confirmThatIFulfillCriteria": true,
+    "message": "Freue mich auf Hühner in Seenähe.",
+    "saveChickenActionId": null,
+    "saveChickenAction": null,
+    "color": "Türkis",
+    "files": [],
+    "blackListedPersonIds": []
+  },
+  {
+    "id": 0,
+    "createdAt": "2025-11-21T12:00:00",
+    "updatedAt": "2025-11-21T12:00:00",
+    "personId": null,
+    "person": {
+      "id": 0,
+      "createdAt": "2025-11-21T11:50:00",
+      "updatedAt": "2025-11-21T11:50:00",
       "contact": {
-        "createdAt": "2025-11-22T12:30:00",
-        "updatedAt": "2025-11-22T12:30:00",
-        "firstName": "Patrick",
-        "lastName": "Lehmann",
-        "email": "patrick.lehmann@example.ch",
-        "phoneNumber": "+41 44 812 34 56"
+        "id": 0,
+        "createdAt": "2025-11-21T11:50:00",
+        "updatedAt": "2025-11-21T11:50:00",
+        "firstName": "Marco",
+        "lastName": "Schmid",
+        "email": "marco.schmid@example.ch",
+        "phoneNumber": "+41 44 555 66 77"
       },
+      "contactId": 0,
       "address": {
+        "id": 0,
         "createdAt": "2025-12-05T11:30:00",
         "updatedAt": "2025-12-05T11:30:00",
-        "street": "Hauptstrasse 67",
+        "street": "Landstrasse 42",
         "city": "Regensdorf",
         "postalCode": "8105",
         "geoCoordinate": {
-          "latitude": 47.432,
+          "latitude": 47.431,
           "longitude": 8.465
         }
       },
-      "isHandoverAtDifferentAddress": false,
-      "addressForHandOver": null,
-      "numberOfChickensToBeSaved": 6,
-      "numberOfRoostersToBeSaved": 2,
-      "numberOfBoxes": 2,
-      "descriptionOfPlaceForChickens": "Großzügiger Hof mit Freilauf",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": true,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Erfahrene Hühnerhalter.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-27", "2026-04-28", "2026-04-29" ],
-      "color": "Schwarz",
-      "files": [],
-      "blackListedPersonIds": []
+      "addressId": 0
     },
-    {
-      "createdAt": "2025-11-23T08:15:00",
-      "updatedAt": "2025-11-23T08:15:00",
-      "contact": {
-        "createdAt": "2025-11-23T08:00:00",
-        "updatedAt": "2025-11-23T08:00:00",
-        "firstName": "Sandra",
-        "lastName": "Vogel",
-        "email": "sandra.vogel@example.ch",
-        "phoneNumber": "+41 44 123 45 67"
-      },
-      "address": {
-        "createdAt": "2025-12-05T11:30:00",
-        "updatedAt": "2025-12-05T11:30:00",
-        "street": "Gartenweg 22",
-        "city": "Wallisellen",
-        "postalCode": "8304",
-        "geoCoordinate": {
-          "latitude": 47.417,
-          "longitude": 8.597
-        }
-      },
-      "isHandoverAtDifferentAddress": false,
-      "addressForHandOver": null,
-      "numberOfChickensToBeSaved": 3,
-      "numberOfRoostersToBeSaved": 1,
-      "numberOfBoxes": 1,
-      "descriptionOfPlaceForChickens": "Hinterhof mit kleinem Stall",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": false,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Freuen uns auf die Hühner.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-27" ],
-      "color": "Lila",
-      "files": [],
-      "blackListedPersonIds": []
-    },
-    {
-      "createdAt": "2025-11-23T09:30:00",
-      "updatedAt": "2025-11-23T09:30:00",
-      "contact": {
-        "createdAt": "2025-11-23T09:15:00",
-        "updatedAt": "2025-11-23T09:15:00",
-        "firstName": "Marco",
-        "lastName": "Bianchi",
-        "email": "marco.bianchi@example.ch",
-        "phoneNumber": "+41 44 234 56 78"
-      },
-      "address": {
-        "createdAt": "2025-12-05T11:30:00",
-        "updatedAt": "2025-12-05T11:30:00",
-        "street": "Bergstrasse 45",
-        "city": "Opfikon",
-        "postalCode": "8152",
-        "geoCoordinate": {
-          "latitude": 47.427,
-          "longitude": 8.573
-        }
-      },
-      "isHandoverAtDifferentAddress": false,
-      "addressForHandOver": null,
-      "numberOfChickensToBeSaved": 4,
-      "numberOfRoostersToBeSaved": 0,
-      "numberOfBoxes": 2,
-      "descriptionOfPlaceForChickens": "Moderner Garten mit Hühnergehege",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": true,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Haben bereits Erfahrung.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-28", "2026-04-29" ],
-      "color": "Grün",
-      "files": [],
-      "blackListedPersonIds": []
-    },
-    {
-      "createdAt": "2025-11-23T10:45:00",
-      "updatedAt": "2025-11-23T10:45:00",
-      "contact": {
-        "createdAt": "2025-11-23T10:30:00",
-        "updatedAt": "2025-11-23T10:30:00",
-        "firstName": "Ursula",
-        "lastName": "Gerber",
-        "email": "ursula.gerber@example.ch",
-        "phoneNumber": "+41 44 345 67 89"
-      },
-      "address": {
-        "createdAt": "2025-12-05T11:30:00",
-        "updatedAt": "2025-12-05T11:30:00",
-        "street": "Seeblickstrasse 8",
-        "city": "Küsnacht",
-        "postalCode": "8700",
-        "geoCoordinate": {
-          "latitude": 47.319,
-          "longitude": 8.583
-        }
-      },
-      "isHandoverAtDifferentAddress": false,
-      "addressForHandOver": null,
-      "numberOfChickensToBeSaved": 5,
-      "numberOfRoostersToBeSaved": 1,
-      "numberOfBoxes": 2,
-      "descriptionOfPlaceForChickens": "Großzügiges Anwesen mit Auslauf",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": false,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Perfekte Umgebung für Hühner.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-27", "2026-04-30" ],
-      "color": "Blau",
-      "files": [],
-      "blackListedPersonIds": []
-    },
-    {
-      "createdAt": "2025-11-23T11:50:00",
-      "updatedAt": "2025-11-23T11:50:00",
-      "contact": {
-        "createdAt": "2025-11-23T11:35:00",
-        "updatedAt": "2025-11-23T11:35:00",
-        "firstName": "Felix",
-        "lastName": "Blaser",
-        "email": "felix.blaser@example.ch",
-        "phoneNumber": "+41 44 456 78 90"
-      },
-      "address": {
-        "createdAt": "2025-12-05T11:30:00",
-        "updatedAt": "2025-12-05T11:30:00",
-        "street": "Waldweg 33",
-        "city": "Zollikon",
-        "postalCode": "8702",
-        "geoCoordinate": {
-          "latitude": 47.341,
-          "longitude": 8.574
-        }
-      },
-      "isHandoverAtDifferentAddress": false,
-      "addressForHandOver": null,
-      "numberOfChickensToBeSaved": 2,
-      "numberOfRoostersToBeSaved": 0,
-      "numberOfBoxes": 1,
-      "descriptionOfPlaceForChickens": "Ruhiger Garten am Waldrand",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": false,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Naturnahe Haltung möglich.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-29" ],
-      "color": "Braun",
-      "files": [],
-      "blackListedPersonIds": []
-    },
-    {
-      "createdAt": "2025-11-24T08:20:00",
-      "updatedAt": "2025-11-24T08:20:00",
-      "contact": {
-        "createdAt": "2025-11-24T08:05:00",
-        "updatedAt": "2025-11-24T08:05:00",
-        "firstName": "Anna",
-        "lastName": "Meier",
-        "email": "anna.meier@example.ch",
-        "phoneNumber": "+41 44 567 89 01"
-      },
-      "address": {
-        "createdAt": "2025-12-05T11:30:00",
-        "updatedAt": "2025-12-05T11:30:00",
-        "street": "Dorfplatz 5",
-        "city": "Volketswil",
-        "postalCode": "8604",
-        "geoCoordinate": {
-          "latitude": 47.393,
-          "longitude": 8.690
-        }
-      },
-      "isHandoverAtDifferentAddress": false,
-      "addressForHandOver": null,
-      "numberOfChickensToBeSaved": 6,
-      "numberOfRoostersToBeSaved": 2,
-      "numberOfBoxes": 3,
-      "descriptionOfPlaceForChickens": "Großer Bauernhof mit viel Platz",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": true,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Können viele Hühner aufnehmen.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30" ],
-      "color": "Gelb",
-      "files": [],
-      "blackListedPersonIds": []
-    },
-    {
-      "createdAt": "2025-11-24T09:35:00",
-      "updatedAt": "2025-11-24T09:35:00",
-      "contact": {
-        "createdAt": "2025-11-24T09:20:00",
-        "updatedAt": "2025-11-24T09:20:00",
-        "firstName": "Beat",
-        "lastName": "Stocker",
-        "email": "beat.stocker@example.ch",
-        "phoneNumber": "+41 44 678 90 12"
-      },
-      "address": {
-        "createdAt": "2025-12-05T11:30:00",
-        "updatedAt": "2025-12-05T11:30:00",
-        "street": "Sonnenhang 17",
-        "city": "Rüti",
-        "postalCode": "8630",
-        "geoCoordinate": {
-          "latitude": 47.255,
-          "longitude": 8.856
-        }
-      },
-      "isHandoverAtDifferentAddress": false,
-      "addressForHandOver": null,
-      "numberOfChickensToBeSaved": 3,
-      "numberOfRoostersToBeSaved": 0,
-      "numberOfBoxes": 1,
-      "descriptionOfPlaceForChickens": "Hanggrundstück mit Auslauf",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": false,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Sonnige Lage für die Hühner.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-28" ],
-      "color": "Orange",
-      "files": [],
-      "blackListedPersonIds": []
-    },
-    {
-      "createdAt": "2025-11-24T10:40:00",
-      "updatedAt": "2025-11-24T10:40:00",
-      "contact": {
-        "createdAt": "2025-11-24T10:25:00",
-        "updatedAt": "2025-11-24T10:25:00",
-        "firstName": "Christine",
-        "lastName": "Wyss",
-        "email": "christine.wyss@example.ch",
-        "phoneNumber": "+41 44 789 01 23"
-      },
-      "address": {
-        "createdAt": "2025-12-05T11:30:00",
-        "updatedAt": "2025-12-05T11:30:00",
-        "street": "Brunnengasse 12",
-        "city": "Embrach",
-        "postalCode": "8424",
-        "geoCoordinate": {
-          "latitude": 47.505,
-          "longitude": 8.596
-        }
-      },
-      "isHandoverAtDifferentAddress": false,
-      "addressForHandOver": null,
-      "numberOfChickensToBeSaved": 4,
-      "numberOfRoostersToBeSaved": 1,
-      "numberOfBoxes": 2,
-      "descriptionOfPlaceForChickens": "Landhaus mit großem Garten",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": true,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Freuen uns auf weitere Hühner.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-27", "2026-04-29" ],
-      "color": "Rot",
-      "files": [],
-      "blackListedPersonIds": []
-    },
-    {
-      "createdAt": "2025-11-24T11:45:00",
-      "updatedAt": "2025-11-24T11:45:00",
-      "contact": {
-        "createdAt": "2025-11-24T11:30:00",
-        "updatedAt": "2025-11-24T11:30:00",
-        "firstName": "David",
-        "lastName": "Suter",
-        "email": "david.suter@example.ch",
-        "phoneNumber": "+41 44 890 12 34"
-      },
-      "address": {
-        "createdAt": "2025-12-05T11:30:00",
-        "updatedAt": "2025-12-05T11:30:00",
-        "street": "Feldstrasse 29",
-        "city": "Bassersdorf",
-        "postalCode": "8303",
-        "geoCoordinate": {
-          "latitude": 47.445,
-          "longitude": 8.628
-        }
-      },
-      "isHandoverAtDifferentAddress": false,
-      "addressForHandOver": null,
-      "numberOfChickensToBeSaved": 5,
-      "numberOfRoostersToBeSaved": 0,
-      "numberOfBoxes": 2,
-      "descriptionOfPlaceForChickens": "Hof am Feldrand",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": false,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Viel Platz und Auslauf vorhanden.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-30" ],
-      "color": "Grau",
-      "files": [],
-      "blackListedPersonIds": []
-    },
-    {
-      "createdAt": "2025-11-25T08:25:00",
-      "updatedAt": "2025-11-25T08:25:00",
-      "contact": {
-        "createdAt": "2025-11-25T08:10:00",
-        "updatedAt": "2025-11-25T08:10:00",
-        "firstName": "Elisabeth",
-        "lastName": "Herzog",
-        "email": "elisabeth.herzog@example.ch",
-        "phoneNumber": "+41 44 901 23 45"
-      },
-      "address": {
-        "createdAt": "2025-12-05T11:30:00",
-        "updatedAt": "2025-12-05T11:30:00",
-        "street": "Mühleweg 19",
-        "city": "Egg",
-        "postalCode": "8132",
-        "geoCoordinate": {
-          "latitude": 47.299,
-          "longitude": 8.694
-        }
-      },
-      "isHandoverAtDifferentAddress": false,
-      "addressForHandOver": null,
-      "numberOfChickensToBeSaved": 2,
-      "numberOfRoostersToBeSaved": 0,
-      "numberOfBoxes": 1,
-      "descriptionOfPlaceForChickens": "Kleines Grundstück mit Stall",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": false,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Perfekt für zwei Hühner.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-28", "2026-04-29" ],
-      "color": "Rosa",
-      "files": [],
-      "blackListedPersonIds": []
-    },
-    {
-      "createdAt": "2025-11-25T09:30:00",
-      "updatedAt": "2025-11-25T09:30:00",
-      "contact": {
-        "createdAt": "2025-11-25T09:15:00",
-        "updatedAt": "2025-11-25T09:15:00",
-        "firstName": "Frank",
-        "lastName": "Bachmann",
-        "email": "frank.bachmann@example.ch",
-        "phoneNumber": "+41 44 012 34 56"
-      },
-      "address": {
-        "createdAt": "2025-12-05T11:30:00",
-        "updatedAt": "2025-12-05T11:30:00",
-        "street": "Panoramaweg 6",
-        "city": "Männedorf",
-        "postalCode": "8708",
-        "geoCoordinate": {
-          "latitude": 47.255,
-          "longitude": 8.699
-        }
-      },
-      "isHandoverAtDifferentAddress": false,
-      "addressForHandOver": null,
-      "numberOfChickensToBeSaved": 7,
-      "numberOfRoostersToBeSaved": 1,
-      "numberOfBoxes": 3,
-      "descriptionOfPlaceForChickens": "Großes Anwesen mit Seeblick",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": true,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Haben viel Platz für Hühner.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-27", "2026-04-28" ],
-      "color": "Türkis",
-      "files": [],
-      "blackListedPersonIds": []
-    },
-    {
-      "createdAt": "2025-11-25T10:35:00",
-      "updatedAt": "2025-11-25T10:35:00",
-      "contact": {
-        "createdAt": "2025-11-25T10:20:00",
-        "updatedAt": "2025-11-25T10:20:00",
-        "firstName": "Gisela",
-        "lastName": "Rüegg",
-        "email": "gisela.rueegg@example.ch",
-        "phoneNumber": "+41 44 123 45 78"
-      },
-      "address": {
-        "createdAt": "2025-12-05T11:30:00",
-        "updatedAt": "2025-12-05T11:30:00",
-        "street": "Kirchgasse 24",
-        "city": "Richterswil",
-        "postalCode": "8805",
-        "geoCoordinate": {
-          "latitude": 47.206,
-          "longitude": 8.704
-        }
-      },
-      "isHandoverAtDifferentAddress": false,
-      "addressForHandOver": null,
-      "numberOfChickensToBeSaved": 3,
-      "numberOfRoostersToBeSaved": 0,
-      "numberOfBoxes": 1,
-      "descriptionOfPlaceForChickens": "Dorfhaus mit Garten",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": false,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Zentral aber ruhig gelegen.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-29", "2026-04-30" ],
-      "color": "Violett",
-      "files": [],
-      "blackListedPersonIds": []
-    },
-    {
-      "createdAt": "2025-11-25T11:40:00",
-      "updatedAt": "2025-11-25T11:40:00",
-      "contact": {
-        "createdAt": "2025-11-25T11:25:00",
-        "updatedAt": "2025-11-25T11:25:00",
-        "firstName": "Hans",
-        "lastName": "Wenger",
-        "email": "hans.wenger@example.ch",
-        "phoneNumber": "+41 44 234 56 89"
-      },
-      "address": {
-        "createdAt": "2025-12-05T11:30:00",
-        "updatedAt": "2025-12-05T11:30:00",
-        "street": "Bergweg 11",
-        "city": "Wädenswil",
-        "postalCode": "8820",
-        "geoCoordinate": {
-          "latitude": 47.228,
-          "longitude": 8.669
-        }
-      },
-      "isHandoverAtDifferentAddress": false,
-      "addressForHandOver": null,
-      "numberOfChickensToBeSaved": 4,
-      "numberOfRoostersToBeSaved": 1,
-      "numberOfBoxes": 2,
-      "descriptionOfPlaceForChickens": "Hanglage mit viel Auslauf",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": true,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Ideal für Hühner.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-27" ],
-      "color": "Beige",
-      "files": [],
-      "blackListedPersonIds": []
-    },
-    {
-      "createdAt": "2025-11-26T08:30:00",
-      "updatedAt": "2025-11-26T08:30:00",
-      "contact": {
-        "createdAt": "2025-11-26T08:15:00",
-        "updatedAt": "2025-11-26T08:15:00",
-        "firstName": "Iris",
-        "lastName": "Meili",
-        "email": "iris.meili@example.ch",
-        "phoneNumber": "+41 44 345 67 90"
-      },
-      "address": {
-        "createdAt": "2025-12-05T11:30:00",
-        "updatedAt": "2025-12-05T11:30:00",
-        "street": "Hauptstrasse 88",
-        "city": "Stäfa",
-        "postalCode": "8712",
-        "geoCoordinate": {
-          "latitude": 47.243,
-          "longitude": 8.726
-        }
-      },
-      "isHandoverAtDifferentAddress": false,
-      "addressForHandOver": null,
-      "numberOfChickensToBeSaved": 5,
-      "numberOfRoostersToBeSaved": 0,
-      "numberOfBoxes": 2,
-      "descriptionOfPlaceForChickens": "Großer Garten am Ortsrand",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": false,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Ruhige Lage für Hühner.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-28", "2026-04-30" ],
-      "color": "Mint",
-      "files": [],
-      "blackListedPersonIds": []
-    },
-    {
-      "createdAt": "2025-11-26T09:35:00",
-      "updatedAt": "2025-11-26T09:35:00",
-      "contact": {
-        "createdAt": "2025-11-26T09:20:00",
-        "updatedAt": "2025-11-26T09:20:00",
-        "firstName": "Jakob",
-        "lastName": "Stirnemann",
-        "email": "jakob.stirnemann@example.ch",
-        "phoneNumber": "+41 44 456 78 01"
-      },
-      "address": {
-        "createdAt": "2025-12-05T11:30:00",
-        "updatedAt": "2025-12-05T11:30:00",
-        "street": "Bahnhofweg 15",
-        "city": "Rümlang",
-        "postalCode": "8153",
-        "geoCoordinate": {
-          "latitude": 47.451,
-          "longitude": 8.532
-        }
-      },
-      "isHandoverAtDifferentAddress": false,
-      "addressForHandOver": null,
-      "numberOfChickensToBeSaved": 6,
-      "numberOfRoostersToBeSaved": 2,
-      "numberOfBoxes": 2,
-      "descriptionOfPlaceForChickens": "Hof mit moderner Ausstattung",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": true,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Professionelle Hühnerhaltung.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-27", "2026-04-29", "2026-04-30" ],
-      "color": "Gold",
-      "files": [],
-      "blackListedPersonIds": []
-    },
-    {
-      "createdAt": "2025-11-26T10:40:00",
-      "updatedAt": "2025-11-26T10:40:00",
-      "contact": {
-        "createdAt": "2025-11-26T10:25:00",
-        "updatedAt": "2025-11-26T10:25:00",
-        "firstName": "Karin",
-        "lastName": "Hess",
-        "email": "karin.hess@example.ch",
-        "phoneNumber": "+41 44 567 89 12"
-      },
-      "address": {
-        "createdAt": "2025-12-05T11:30:00",
-        "updatedAt": "2025-12-05T11:30:00",
-        "street": "Seeweg 7",
-        "city": "Uetikon am See",
-        "postalCode": "8707",
-        "geoCoordinate": {
-          "latitude": 47.267,
-          "longitude": 8.683
-        }
-      },
-      "isHandoverAtDifferentAddress": false,
-      "addressForHandOver": null,
-      "numberOfChickensToBeSaved": 2,
-      "numberOfRoostersToBeSaved": 0,
-      "numberOfBoxes": 1,
-      "descriptionOfPlaceForChickens": "Seenahe Lage mit Garten",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": false,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Traumhafte Umgebung.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-28" ],
-      "color": "Blau",
-      "files": [],
-      "blackListedPersonIds": []
-    },
-    {
-      "createdAt": "2025-11-26T11:45:00",
-      "updatedAt": "2025-11-26T11:45:00",
-      "contact": {
-        "createdAt": "2025-11-26T11:30:00",
-        "updatedAt": "2025-11-26T11:30:00",
-        "firstName": "Lars",
-        "lastName": "Petersen",
-        "email": "lars.petersen@example.ch",
-        "phoneNumber": "+41 44 678 90 23"
-      },
-      "address": {
-        "createdAt": "2025-12-05T11:30:00",
-        "updatedAt": "2025-12-05T11:30:00",
-        "street": "Rainstrasse 42",
-        "city": "Gossau ZH",
-        "postalCode": "8625",
-        "geoCoordinate": {
-          "latitude": 47.304,
-          "longitude": 8.759
-        }
-      },
-      "isHandoverAtDifferentAddress": false,
-      "addressForHandOver": null,
-      "numberOfChickensToBeSaved": 8,
-      "numberOfRoostersToBeSaved": 1,
-      "numberOfBoxes": 3,
-      "descriptionOfPlaceForChickens": "Großer Bauernhof mit viel Land",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": true,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Können viele Hühner aufnehmen.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-27", "2026-04-28", "2026-04-29" ],
-      "color": "Grün",
-      "files": [],
-      "blackListedPersonIds": []
-    },
-    {
-      "createdAt": "2025-11-27T08:35:00",
-      "updatedAt": "2025-11-27T08:35:00",
-      "contact": {
-        "createdAt": "2025-11-27T08:20:00",
-        "updatedAt": "2025-11-27T08:20:00",
-        "firstName": "Monika",
-        "lastName": "Zbinden",
-        "email": "monika.zbinden@example.ch",
-        "phoneNumber": "+41 44 789 01 34"
-      },
-      "address": {
-        "createdAt": "2025-12-05T11:30:00",
-        "updatedAt": "2025-12-05T11:30:00",
-        "street": "Tannenweg 9",
-        "city": "Greifensee",
-        "postalCode": "8606",
-        "geoCoordinate": {
-          "latitude": 47.358,
-          "longitude": 8.678
-        }
-      },
-      "isHandoverAtDifferentAddress": false,
-      "addressForHandOver": null,
-      "numberOfChickensToBeSaved": 3,
-      "numberOfRoostersToBeSaved": 0,
-      "numberOfBoxes": 1,
-      "descriptionOfPlaceForChickens": "Garten nahe Greifensee",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": false,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Naturnahe Umgebung.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-29" ],
-      "color": "Braun",
-      "files": [],
-      "blackListedPersonIds": []
-    },
-    {
-      "createdAt": "2025-11-27T09:40:00",
-      "updatedAt": "2025-11-27T09:40:00",
-      "contact": {
-        "createdAt": "2025-11-27T09:25:00",
-        "updatedAt": "2025-11-27T09:25:00",
-        "firstName": "Niklaus",
-        "lastName": "Stucki",
-        "email": "niklaus.stucki@example.ch",
-        "phoneNumber": "+41 44 890 12 45"
-      },
-      "address": {
-        "createdAt": "2025-12-05T11:30:00",
-        "updatedAt": "2025-12-05T11:30:00",
-        "street": "Hofwiese 28",
-        "city": "Illnau-Effretikon",
-        "postalCode": "8307",
-        "geoCoordinate": {
-          "latitude": 47.423,
-          "longitude": 8.716
-        }
-      },
-      "isHandoverAtDifferentAddress": false,
-      "addressForHandOver": null,
-      "numberOfChickensToBeSaved": 4,
-      "numberOfRoostersToBeSaved": 1,
-      "numberOfBoxes": 2,
-      "descriptionOfPlaceForChickens": "Ländliche Umgebung mit Stall",
-      "acceptTermsAndConditions": true,
-      "alreadyReceivedChickenPreviously": true,
-      "confirmThatIFulfillCriteria": true,
-      "message": "Erfahren in der Hühnerhaltung.",
-      "saveChickenActionId": null,
-      "saveChickenAction": null,
-      "datesForHandOver": [ "2026-04-30" ],
-      "color": "Rot",
-      "files": [],
-      "blackListedPersonIds": []
-    }
-  ]
+    "addressForHandOver": null,
+    "addressForHandOverId": null,
+    "numberOfChickensToBeSaved": 5,
+    "numberOfRoostersToBeSaved": 0,
+    "numberOfBoxes": 2,
+    "descriptionOfPlaceForChickens": "Ländlicher Garten mit viel Platz",
+    "acceptTermsAndConditions": true,
+    "alreadyReceivedChickenPreviously": false,
+    "confirmThatIFulfillCriteria": true,
+    "message": "Ideal für Hühner.",
+    "saveChickenActionId": null,
+    "saveChickenAction": null,
+    "color": "Lila",
+    "files": [],
+    "blackListedPersonIds": []
+  }
+]

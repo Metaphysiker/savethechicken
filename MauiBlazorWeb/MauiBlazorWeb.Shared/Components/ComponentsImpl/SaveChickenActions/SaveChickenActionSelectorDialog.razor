@@ -1,0 +1,123 @@
+@typeparam TDto where TDto : class, IEntityWithSaveChickenActionDto
+@using MudBlazor
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Shared.Helpers
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using MauiBlazorWeb.Web.Services.ServicesImpl
+@using Microsoft.Extensions.Localization
+@using global::Shared.Dtos.DtosImpl
+@inject GenericDtoServiceFactory DtoServiceFactory
+@inject ISnackbar Snackbar
+@inject IStringLocalizer<AppResources> L
+
+<MudDialog>
+    <DialogContent>
+        <MudStack Spacing="3" Class="mt-4">
+            <MudText Typo="Typo.body1">Kopiere zu Aktion:</MudText>
+
+            <SaveChickenActionSelector @bind-SelectedActionId="selectedActionId"
+                                      ExcludeIds="ExcludeIds"
+                                      OnActionSelected="OnActionSelected" />
+
+            @if (selectedAction != null)
+            {
+                <MudPaper Class="pa-3" Elevation="1">
+                    <MudText Typo="Typo.subtitle2">Ausgewählte Aktion:</MudText>
+                    <MudText Typo="Typo.body2"><strong>Titel:</strong> @selectedAction.Title</MudText>
+                    <MudText Typo="Typo.body2"><strong>Beschreibung:</strong> @selectedAction.Description</MudText>
+                    @if (selectedAction.Dates != null && selectedAction.Dates.Any())
+                    {
+                        <MudText Typo="Typo.body2">
+                            <strong>Termine:</strong> @string.Join(", ", selectedAction.Dates.Select(d => d.ToString("dd.MM.yyyy")))
+                        </MudText>
+                    }
+                </MudPaper>
+            }
+        </MudStack>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Abbrechen</MudButton>
+        <MudButton Color="Color.Primary"
+                   Variant="Variant.Filled"
+                   OnClick="AssignAction"
+                   Disabled="@(selectedAction == null || isProcessing)">
+            @if (isProcessing)
+            {
+                <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+            }
+            else
+            {
+                <text>@L["copy"]</text>
+            }
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance? MudDialog { get; set; }
+
+    [Parameter, EditorRequired] public TDto Model { get; set; } = default!;
+    [Parameter] public EventCallback OnCopied { get; set; }
+    [Parameter] public List<int>? ExcludeIds { get; set; }
+
+    private int? selectedActionId;
+    private SaveChickenActionDto? selectedAction;
+    private bool isProcessing = false;
+    private GenericDtoService<TDto, ISearchDto>? _service;
+
+    protected override void OnInitialized()
+    {
+        _service = DtoServiceFactory.Create<TDto, ISearchDto>();
+
+        // Set the currently assigned action if any
+        selectedActionId = Model.SaveChickenActionId;
+    }
+
+    private async Task OnActionSelected(SaveChickenActionDto? action)
+    {
+        selectedAction = action;
+    }
+
+    private async Task AssignAction()
+    {
+        if (selectedAction == null || _service == null)
+            return;
+
+        isProcessing = true;
+        try
+        {
+            // Create a deep copy of the model
+            TDto? modelCopy = CopyHelper.DeepCopy(Model);
+
+            if (modelCopy == null)
+                return;
+
+            // Reset all IDs to create a new entity
+            CopyHelper.SetIdsToDefault(modelCopy);
+
+            // Reference the existing SaveChickenAction by ID only (don't copy the entity itself)
+            modelCopy.SaveChickenAction = null;
+            modelCopy.SaveChickenActionId = selectedAction.Id;
+
+            // Save to database as a new entity
+            await _service.CreateAsync(modelCopy);
+
+            Snackbar.Add("Kopiert!", Severity.Success);
+            await OnCopied.InvokeAsync();
+            MudDialog?.Close(DialogResult.Ok(true));
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Fehler beim Kopieren: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            isProcessing = false;
+        }
+    }
+
+    private void Cancel()
+    {
+        MudDialog?.Close(DialogResult.Cancel());
+    }
+}

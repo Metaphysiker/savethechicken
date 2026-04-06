@@ -1,4 +1,5 @@
-﻿@using MauiBlazorWeb.Shared.Components.ComponentsImpl.StoredFiles
+﻿@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.StoredFiles
 @using MauiBlazorWeb.Shared.Resources.Strings
 @using Microsoft.Extensions.Localization
 @using MudBlazor
@@ -19,6 +20,8 @@
 
     [Parameter] public EventCallback OnItemsChanged { get; set; }
 
+    [Parameter] public bool ShowContactAndAddress { get; set; } = true;
+
     private string? currentColumnName = null;
     private bool? currentSortDescending = null;
 
@@ -36,9 +39,14 @@
         return currentSortDescending == true ? Icons.Material.Filled.ArrowDownward : Icons.Material.Filled.ArrowUpward;
     }
 
+    private void ShowItem(int id)
+    {
+        NavigationManager.NavigateTo($"/admin/save-chicken-requests/{id}");
+    }
+
     private void EditItem(SaveChickenRequestDto saveChickenRequestDto)
     {
-        NavigationManager.NavigateTo($"/save-chicken-requests/{saveChickenRequestDto.Id}/edit");
+        NavigationManager.NavigateTo($"/admin/save-chicken-requests/{saveChickenRequestDto.Id}/edit");
 
     }
 
@@ -54,96 +62,99 @@
 <div style="overflow-x: auto; max-width: 100%;">
     <MudDataGrid Items="@items" Hover="true" Dense="true" Striped="true" Bordered="true" SortMode="SortMode.None" RowClassFunc="GetRowClass">
     <Columns>
-        <TemplateColumn>
-            <HeaderTemplate>
-                <MudButton OnClick="@(() => OnHeaderClick("Contact.FirstName"))" Variant="Variant.Text" Style="text-transform: none;">
-                        @L["Contact_FirstName"]
-                        @if (GetSortIcon("Contact.FirstName") != null)
-                    {
-                            <MudIcon Icon="@GetSortIcon("Contact.FirstName")" Size="Size.Small" />
-                    }
-                </MudButton>
-            </HeaderTemplate>
-            <CellTemplate>@context.Item.Contact.FirstName</CellTemplate>
-        </TemplateColumn>
+        @if (ShowContactAndAddress)
+        {
+            <TemplateColumn>
+                <HeaderTemplate>
+                    <MudButton OnClick="@(() => OnHeaderClick("Person.Contact.FirstName"))" Variant="Variant.Text" Style="text-transform: none;">
+                            @L["Contact_FirstName"]
+                            @if (GetSortIcon("Person.Contact.FirstName") != null)
+                        {
+                                <MudIcon Icon="@GetSortIcon("Person.Contact.FirstName")" Size="Size.Small" />
+                        }
+                    </MudButton>
+                </HeaderTemplate>
+                <CellTemplate>@context.Item.Person?.Contact?.FirstName</CellTemplate>
+            </TemplateColumn>
 
-        <TemplateColumn>
-            <HeaderTemplate>
-                <MudButton OnClick="@(() => OnHeaderClick("Contact.LastName"))" Variant="Variant.Text" Style="text-transform: none;">
-                        @L["Contact_LastName"]
-                        @if (GetSortIcon("Contact.LastName") != null)
-                    {
-                            <MudIcon Icon="@GetSortIcon("Contact.LastName")" Size="Size.Small" />
-                    }
-                </MudButton>
-            </HeaderTemplate>
-            <CellTemplate>@context.Item.Contact.LastName</CellTemplate>
-        </TemplateColumn>
+            <TemplateColumn>
+                <HeaderTemplate>
+                    <MudButton OnClick="@(() => OnHeaderClick("Person.Contact.LastName"))" Variant="Variant.Text" Style="text-transform: none;">
+                            @L["Contact_LastName"]
+                            @if (GetSortIcon("Person.Contact.LastName") != null)
+                        {
+                                <MudIcon Icon="@GetSortIcon("Person.Contact.LastName")" Size="Size.Small" />
+                        }
+                    </MudButton>
+                </HeaderTemplate>
+                <CellTemplate>@context.Item.Person?.Contact?.LastName</CellTemplate>
+            </TemplateColumn>
 
-        <TemplateColumn>
-            <HeaderTemplate>
-                <MudButton OnClick="@(() => OnHeaderClick("Address.Street"))" Variant="Variant.Text" Style="text-transform: none;">
-                        @L["Address_Street"]
-                        @if (GetSortIcon("Address.Street") != null)
-                    {
-                            <MudIcon Icon="@GetSortIcon("Address.Street")" Size="Size.Small" />
-                    }
-                </MudButton>
-            </HeaderTemplate>
-            <CellTemplate>@context.Item.Address.Street</CellTemplate>
-        </TemplateColumn>
+            <TemplateColumn>
+                <HeaderTemplate>
+                    <MudButton OnClick="@(() => OnHeaderClick("Person.Address.Street"))" Variant="Variant.Text" Style="text-transform: none;">
+                            @L["Address_Street"]
+                            @if (GetSortIcon("Person.Address.Street") != null)
+                        {
+                                <MudIcon Icon="@GetSortIcon("Person.Address.Street")" Size="Size.Small" />
+                        }
+                    </MudButton>
+                </HeaderTemplate>
+                <CellTemplate>@context.Item.Person?.Address?.Street</CellTemplate>
+            </TemplateColumn>
 
-        <TemplateColumn>
-            <HeaderTemplate>
-                    <MudButton OnClick="@(() => OnHeaderClick("Address.City"))" Variant="Variant.Text" Style="text-transform: none;">
-                        @L["Address_City"]
-                        @if (GetSortIcon("Address.City") != null)
-                    {
-                            <MudIcon Icon="@GetSortIcon("Address.City")" Size="Size.Small" />
-                    }
-                </MudButton>
-            </HeaderTemplate>
-            <CellTemplate>@context.Item.Address.City</CellTemplate>
-        </TemplateColumn>
+            <TemplateColumn>
+                <HeaderTemplate>
+                        <MudButton OnClick="@(() => OnHeaderClick("Person.Address.City"))" Variant="Variant.Text" Style="text-transform: none;">
+                            @L["Address_City"]
+                            @if (GetSortIcon("Person.Address.City") != null)
+                        {
+                                <MudIcon Icon="@GetSortIcon("Person.Address.City")" Size="Size.Small" />
+                        }
+                    </MudButton>
+                </HeaderTemplate>
+                <CellTemplate>@context.Item.Person?.Address?.City</CellTemplate>
+            </TemplateColumn>
 
-        <TemplateColumn>
-            <HeaderTemplate>
-                    <MudButton OnClick="@(() => OnHeaderClick("Address.PostalCode"))" Variant="Variant.Text" Style="text-transform: none;">
-                        @L["Address_PostalCode"]
-                        @if (GetSortIcon("Address.PostalCode") != null)
-                    {
-                            <MudIcon Icon="@GetSortIcon("Address.PostalCode")" Size="Size.Small" />
-                    }
-                </MudButton>
-            </HeaderTemplate>
-            <CellTemplate>@context.Item.Address.PostalCode</CellTemplate>
-        </TemplateColumn>
+            <TemplateColumn>
+                <HeaderTemplate>
+                        <MudButton OnClick="@(() => OnHeaderClick("Person.Address.PostalCode"))" Variant="Variant.Text" Style="text-transform: none;">
+                            @L["Address_PostalCode"]
+                            @if (GetSortIcon("Person.Address.PostalCode") != null)
+                        {
+                                <MudIcon Icon="@GetSortIcon("Person.Address.PostalCode")" Size="Size.Small" />
+                        }
+                    </MudButton>
+                </HeaderTemplate>
+                <CellTemplate>@context.Item.Person?.Address?.PostalCode</CellTemplate>
+            </TemplateColumn>
 
-        <TemplateColumn>
-            <HeaderTemplate>
-                    <MudButton OnClick="@(() => OnHeaderClick("Contact.PhoneNumber"))" Variant="Variant.Text" Style="text-transform: none;">
-                    @L["Contact_Phone"]
-                        @if (GetSortIcon("Contact.PhoneNumber") != null)
-                    {
-                            <MudIcon Icon="@GetSortIcon("Contact.PhoneNumber")" Size="Size.Small" />
-                    }
-                </MudButton>
-            </HeaderTemplate>
-            <CellTemplate>@context.Item.Contact.PhoneNumber</CellTemplate>
-        </TemplateColumn>
+            <TemplateColumn>
+                <HeaderTemplate>
+                        <MudButton OnClick="@(() => OnHeaderClick("Person.Contact.PhoneNumber"))" Variant="Variant.Text" Style="text-transform: none;">
+                        @L["Contact_Phone"]
+                            @if (GetSortIcon("Person.Contact.PhoneNumber") != null)
+                        {
+                                <MudIcon Icon="@GetSortIcon("Person.Contact.PhoneNumber")" Size="Size.Small" />
+                        }
+                    </MudButton>
+                </HeaderTemplate>
+                <CellTemplate>@context.Item.Person?.Contact?.PhoneNumber</CellTemplate>
+            </TemplateColumn>
 
-        <TemplateColumn>
-            <HeaderTemplate>
-                    <MudButton OnClick="@(() => OnHeaderClick("Contact.Email"))" Variant="Variant.Text" Style="text-transform: none;">
-                        @L["Contact_Email"]
-                        @if (GetSortIcon("Contact.Email") != null)
-                    {
-                            <MudIcon Icon="@GetSortIcon("Contact.Email")" Size="Size.Small" />
-                    }
-                </MudButton>
-            </HeaderTemplate>
-            <CellTemplate>@context.Item.Contact.Email</CellTemplate>
-        </TemplateColumn>
+            <TemplateColumn>
+                <HeaderTemplate>
+                        <MudButton OnClick="@(() => OnHeaderClick("Person.Contact.Email"))" Variant="Variant.Text" Style="text-transform: none;">
+                            @L["Contact_Email"]
+                            @if (GetSortIcon("Person.Contact.Email") != null)
+                        {
+                                <MudIcon Icon="@GetSortIcon("Person.Contact.Email")" Size="Size.Small" />
+                        }
+                    </MudButton>
+                </HeaderTemplate>
+                <CellTemplate>@context.Item.Person?.Contact?.Email</CellTemplate>
+            </TemplateColumn>
+        }
 
         <TemplateColumn>
             <HeaderTemplate>
@@ -218,21 +229,6 @@
 
         <TemplateColumn>
             <HeaderTemplate>
-                <MudButton OnClick="@(() => OnHeaderClick("DatesForHandOver"))" Variant="Variant.Text" Style="text-transform: none;">
-                    @L["DatesForHandOver"]
-                    @if (GetSortIcon("DatesForHandOver") != null)
-                    {
-                        <MudIcon Icon="@GetSortIcon("DatesForHandOver")" Size="Size.Small" />
-                    }
-                </MudButton>
-            </HeaderTemplate>
-            <CellTemplate>
-                @string.Join(", ", context.Item.DatesForHandOver.Select(d => d.ToString("dd.MM.yyyy")))
-            </CellTemplate>
-        </TemplateColumn>
-
-        <TemplateColumn>
-            <HeaderTemplate>
                     @L["Files"]
             </HeaderTemplate>
             <CellTemplate>
@@ -253,6 +249,17 @@
                         <MudChip>@id</MudChip>
                     }
 
+                </CellTemplate>
+            </TemplateColumn>
+
+            <TemplateColumn>
+                <HeaderTemplate>@L["show"]</HeaderTemplate>
+                <CellTemplate>
+                    <MudButton Variant="Variant.Filled"
+                               OnClick="@(() => ShowItem(context.Item.Id))"
+                               UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "view-button" })">
+                        <MudIcon Icon="@Icons.Material.Filled.Visibility" />
+                    </MudButton>
                 </CellTemplate>
             </TemplateColumn>
 

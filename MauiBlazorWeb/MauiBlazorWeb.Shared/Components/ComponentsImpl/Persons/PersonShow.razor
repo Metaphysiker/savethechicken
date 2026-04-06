@@ -1,0 +1,202 @@
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenDriveRequests
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using global::Shared.Dtos.DtosImpl
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.Extensions.Localization
+@using MauiBlazorWeb.Shared.Resources.Strings
+@inject GenericDtoServiceFactory DtoServiceFactory
+@inject IDialogService DialogService
+@inject IStringLocalizer<AppResources> L
+
+@if (displayPerson != null)
+{
+    <PersonDetailsCard Person="displayPerson"
+                      ContactTitle="@ContactTitle"
+                      AddressTitle="@AddressTitle" />
+
+    <MudPaper Class="pa-4 my-4" Elevation="2">
+        <MudText Typo="Typo.h6" Class="mb-3">@L["SaveChickenRequests"]</MudText>
+        @if (saveChickenRequests.Any())
+        {
+            <SaveChickenRequestTable items="@saveChickenRequests" ShowContactAndAddress="false" OnItemsChanged="@LoadPersonRequests" />
+        }
+        <MudButton Variant="Variant.Filled"
+                  Color="Color.Primary"
+                  OnClick="OpenAddSaveChickenRequestDialog"
+                  StartIcon="@Icons.Material.Filled.Add"
+                  Class="mt-3"
+                  data-testid="add-save-chicken-request-button">
+            @L["AddSaveChickenRequest"]
+        </MudButton>
+    </MudPaper>
+
+    <MudPaper Class="pa-4 my-4" Elevation="2">
+        <MudText Typo="Typo.h6" Class="mb-3">@L["SaveChickenDriveRequests"]</MudText>
+        @if (saveChickenDriveRequests.Any())
+        {
+            <SaveChickenDriveRequestTable items="@saveChickenDriveRequests" ShowContactAndAddress="false" OnItemsChanged="@LoadPersonRequests" />
+        }
+        <MudButton Variant="Variant.Filled"
+                  Color="Color.Secondary"
+                  OnClick="OpenAddSaveChickenDriveRequestDialog"
+                  StartIcon="@Icons.Material.Filled.Add"
+                  Class="mt-3"
+                  data-testid="add-drive-request-button">
+            @L["AddDriveRequest"]
+        </MudButton>
+    </MudPaper>
+}
+
+@code {
+    [Parameter]
+    public PersonDto? Person { get; set; }
+
+    [Parameter]
+    public int? PersonId { get; set; }
+
+    [Parameter]
+    public string? ContactTitle { get; set; }
+
+    [Parameter]
+    public string? AddressTitle { get; set; }
+
+    private PersonDto? displayPerson;
+    private List<SaveChickenRequestDto> saveChickenRequests = new();
+    private List<SaveChickenDriveRequestDto> saveChickenDriveRequests = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadPerson();
+        await LoadPersonRequests();
+    }
+
+    private async Task LoadPerson()
+    {
+        // Use Person parameter if provided
+        if (Person != null)
+        {
+            displayPerson = Person;
+        }
+        // Otherwise, if PersonId is provided, fetch the person
+        else if (PersonId.HasValue)
+        {
+            var personService = DtoServiceFactory.Create<PersonDto, PersonSearch>();
+            displayPerson = await personService.GetByIdAsync(PersonId.Value);
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task LoadPersonRequests()
+    {
+        if (displayPerson == null || displayPerson.Id == 0)
+            return;
+
+        // Load SaveChickenRequests for this person
+        var saveChickenRequestService = DtoServiceFactory.Create<SaveChickenRequestDto, SaveChickenRequestSearch>();
+        var saveChickenRequestSearchParams = new SaveChickenRequestSearch
+        {
+            PersonId = displayPerson.Id,
+            PageSize = 100 // Load up to 100 requests
+        };
+        var saveChickenRequestResult = await saveChickenRequestService.SearchAsync(saveChickenRequestSearchParams);
+        saveChickenRequests = saveChickenRequestResult.Data;
+
+        // Load SaveChickenDriveRequests for this person
+        var saveChickenDriveRequestService = DtoServiceFactory.Create<SaveChickenDriveRequestDto, SaveChickenDriveRequestSearch>();
+        var saveChickenDriveRequestSearchParams = new SaveChickenDriveRequestSearch
+        {
+            PersonId = displayPerson.Id,
+            PageSize = 100 // Load up to 100 requests
+        };
+        var saveChickenDriveRequestResult = await saveChickenDriveRequestService.SearchAsync(saveChickenDriveRequestSearchParams);
+        saveChickenDriveRequests = saveChickenDriveRequestResult.Data;
+
+        StateHasChanged();
+    }
+
+    private async Task OpenAddSaveChickenRequestDialog()
+    {
+        if (displayPerson == null || displayPerson.Id == 0)
+            return;
+
+        // Create a new SaveChickenRequestDto with the person preselected
+        var newRequest = new SaveChickenRequestDto
+        {
+            PersonId = displayPerson.Id,
+            Files = new List<StoredFileDto>()
+        };
+
+        var modelWithFiles = new ItemWithBrowserFiles<SaveChickenRequestDto>
+        {
+            Item = newRequest,
+            Files = new List<IBrowserFile>()
+        };
+
+        // Create the render fragment with PreSelectedPersonId parameter
+        RenderFragment<ItemWithBrowserFiles<SaveChickenRequestDto>> childContent = (editModel) => builder =>
+        {
+            builder.OpenComponent<SaveChickenRequestFormWithFiles>(0);
+            builder.AddAttribute(1, "EntityWithFiles", editModel);
+            builder.AddAttribute(2, "PreSelectedPersonId", displayPerson.Id);
+            builder.CloseComponent();
+        };
+
+        var parameters = new DialogParameters
+        {
+            { "Model", modelWithFiles },
+            { "ChildContent", childContent },
+            { "OnCreated", EventCallback.Factory.Create(this, HandleRequestCreated) }
+        };
+
+        var options = new DialogOptions { FullScreen = true, CloseButton = true, MaxWidth = MaxWidth.False };
+        await DialogService.ShowAsync<GenericCreateWithFilesDialog<SaveChickenRequestDto>>(L["CreateSaveChickenRequest"], parameters, options);
+    }
+
+    private async Task HandleRequestCreated()
+    {
+        // Reload the person's requests after creating a new one
+        await LoadPersonRequests();
+        StateHasChanged();
+    }
+
+    private async Task OpenAddSaveChickenDriveRequestDialog()
+    {
+        if (displayPerson == null || displayPerson.Id == 0)
+            return;
+
+        // Create a new SaveChickenDriveRequestDto with the person preselected
+        var newRequest = new SaveChickenDriveRequestDto
+        {
+            PersonId = displayPerson.Id,
+            Files = new List<StoredFileDto>()
+        };
+
+        var modelWithFiles = new ItemWithBrowserFiles<SaveChickenDriveRequestDto>
+        {
+            Item = newRequest,
+            Files = new List<IBrowserFile>()
+        };
+
+        // Create the render fragment with PreSelectedPersonId parameter
+        RenderFragment<ItemWithBrowserFiles<SaveChickenDriveRequestDto>> childContent = (editModel) => builder =>
+        {
+            builder.OpenComponent<SaveChickenDriveRequestFormWithFiles>(0);
+            builder.AddAttribute(1, "EntityWithFiles", editModel);
+            builder.AddAttribute(2, "PreSelectedPersonId", displayPerson.Id);
+            builder.CloseComponent();
+        };
+
+        var parameters = new DialogParameters
+        {
+            { "Model", modelWithFiles },
+            { "ChildContent", childContent },
+            { "OnCreated", EventCallback.Factory.Create(this, HandleRequestCreated) }
+        };
+
+        var options = new DialogOptions { FullScreen = true, CloseButton = true, MaxWidth = MaxWidth.False };
+        await DialogService.ShowAsync<GenericCreateWithFilesDialog<SaveChickenDriveRequestDto>>(L["CreateDriveRequest"], parameters, options);
+    }
+}

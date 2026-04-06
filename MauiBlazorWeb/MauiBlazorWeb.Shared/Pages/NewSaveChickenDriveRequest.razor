@@ -1,0 +1,42 @@
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenDriveRequests
+@using MudBlazor
+@using global::Shared.Dtos.DtosImpl
+
+@page "/admin/save-chicken-drive-requests/new"
+
+<PageTitle>Fahrer werden</PageTitle>
+
+<MudContainer>
+
+    <h3>Ich biete mich als Fahrer an</h3>
+
+    @if(newItemWithBrowserFiles != null)
+    {
+      <GenericCreateWithFiles TDto="SaveChickenDriveRequestDto" model="newItemWithBrowserFiles" ResourceName="admin/save-chicken-drive-requests" >
+        <ChildContent Context="model">
+            <SaveChickenDriveRequestFormWithFiles EntityWithFiles="model" />
+        </ChildContent>
+    </GenericCreateWithFiles>
+    }
+
+
+</MudContainer>
+
+@code {
+    @code {
+        private SaveChickenDriveRequestDto saveChickenDriveRequestDto = new();
+        private ItemWithBrowserFiles<SaveChickenDriveRequestDto>? newItemWithBrowserFiles;
+
+        protected override Task OnInitializedAsync()
+        {
+            newItemWithBrowserFiles = new ItemWithBrowserFiles<SaveChickenDriveRequestDto>
+            {
+                Item = saveChickenDriveRequestDto,
+                Files = new List<IBrowserFile>()
+            };
+
+            return Task.CompletedTask;
+        }
+    }
+}

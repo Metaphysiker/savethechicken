@@ -40,32 +40,21 @@ namespace WebApi.Services.ServicesImpl
             }
         }
 
-        public async Task UpdateIsActiveInSaveChickenActions(TModel model)
-        {
-            {
-                if (model is SaveChickenAction saveChickenAction && saveChickenAction.IsActive)
-                {
-                    var others = _db.Set<SaveChickenAction>()
-                        .Where(a => a.Id != saveChickenAction.Id && a.IsActive);
 
-                    await others.ForEachAsync(a => a.IsActive = false);
-                }
-            }
-        }
 
         public async Task CheckForBlackListMatches(TModel model)
         {
             if (model is SaveChickenRequest saveChickenRequest)
             {
-                if (saveChickenRequest.Address != null)
+                if (saveChickenRequest.Person?.Address != null)
                 {
-                    var query = _db.Set<BlackListedPerson>().AsQueryable();
-                    foreach (var include in BlackListedPersonIncludes.Default)
+                    var query = _db.Set<Person>().Where(p => p.IsBlacklisted).AsQueryable();
+                    foreach (var include in PersonIncludes.Default)
                     {
                         query = query.Include(include);
                     }
                     var allBlackListedPersons = await query.ToListAsync();
-                    var blackListedPersonsThatMatch = _blackListDetectorService.CheckIfEntityMatchesBlackListedPersons(allBlackListedPersons, saveChickenRequest.Address, saveChickenRequest.Contact);
+                    var blackListedPersonsThatMatch = _blackListDetectorService.CheckIfEntityMatchesBlackListedPersons(allBlackListedPersons, saveChickenRequest.Person.Address, saveChickenRequest.Person.Contact);
                     List<int> blackListedPersonThatMatchIds = blackListedPersonsThatMatch.Select(p => p.Id).ToList();
                     saveChickenRequest.BlackListedPersonIds = blackListedPersonThatMatchIds;
                 }
@@ -111,7 +100,7 @@ namespace WebApi.Services.ServicesImpl
                 {
                     // Note: We don't need to manually update existing files here.
                     // Because you are calling _db.Update(model), EF will automatically
-                    // detect changes in the Files collection of the model and 
+                    // detect changes in the Files collection of the model and
                     // generate UPDATE statements for them.
                 }
             }
@@ -123,7 +112,6 @@ namespace WebApi.Services.ServicesImpl
             model.UpdatedAt = DateTime.UtcNow;
 
             await UpdateCoordinatesAsync(model);
-            await UpdateIsActiveInSaveChickenActions(model);
             await UpdateFiles(model);
             await CheckForBlackListMatches(model);
 
@@ -148,9 +136,9 @@ namespace WebApi.Services.ServicesImpl
                         .Where(f => f.SaveChickenActionId == saveChickenAction.Id);
                     await relatedFarms.ForEachAsync(f => f.SaveChickenActionId = null);
 
-                    var relatedDrivers = _db.Set<Driver>()
+                    var relatedSaveChickenDriveRequests = _db.Set<SaveChickenDriveRequest>()
                         .Where(d => d.SaveChickenActionId == saveChickenAction.Id);
-                    await relatedDrivers.ForEachAsync(d => d.SaveChickenActionId = null);
+                    await relatedSaveChickenDriveRequests.ForEachAsync(d => d.SaveChickenActionId = null);
 
                     await _db.SaveChangesAsync();
                 }
@@ -205,7 +193,6 @@ namespace WebApi.Services.ServicesImpl
             model.UpdatedAt = DateTime.UtcNow;
 
             await UpdateCoordinatesAsync(model);
-            await UpdateIsActiveInSaveChickenActions(model);
             await UpdateFiles(model);
 
             _db.Set<TModel>().Update(model);

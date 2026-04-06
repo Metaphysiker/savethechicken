@@ -1,7 +1,14 @@
 ﻿@using global::Shared.Dtos.DtosImpl
 
-    <MudTextField @bind-Value="Model.SearchTerm" Label="Suche" Variant="Variant.Outlined" Placeholder="Suchbegriff eingeben" />
-    <ValidationMessage For="@(() => Model.SearchTerm)" />
+<MudGrid>
+    <MudItem xs="12">
+        <MudTextField @bind-Value="Model.SearchTerm"
+                      Label="Suche"
+                      Variant="Variant.Outlined"
+                      Placeholder="Nach Titel suchen..."
+                      Immediate="true" />
+    </MudItem>
+</MudGrid>
 
 @code {
     [Parameter] public SaveChickenActionSearch Model { get; set; } = default!;

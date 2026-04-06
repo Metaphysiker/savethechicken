@@ -1,0 +1,27 @@
+@page "/admin/save-chicken-requests"
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
+@using MauiBlazorWeb.Web.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<AppResources> L
+
+<PageTitle>@L["Admin_SaveChickenRequests_Title"]</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+    <MudText Typo="Typo.h3" Class="mb-4">@L["Admin_SaveChickenRequests_Management"]</MudText>
+
+    <MudAlert Severity="Severity.Info" Dense="true" Class="my-4">
+        <strong>@L["Admin_Persons_AlertTitle"]</strong> @L["Admin_SaveChickenRequests_AlertText"]
+    </MudAlert>
+
+    <GenericSearch TDto="SaveChickenRequestDto" TSearchDto="SaveChickenRequestSearch">
+        <SearchForm Context="search">
+            <SaveChickenRequestSearchForm Model="search" />
+        </SearchForm>
+        <Table Context="ctx">
+            <SaveChickenRequestTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" OnItemsChanged="ctx.Item4.InvokeAsync" />
+        </Table>
+    </GenericSearch>
+</MudContainer>

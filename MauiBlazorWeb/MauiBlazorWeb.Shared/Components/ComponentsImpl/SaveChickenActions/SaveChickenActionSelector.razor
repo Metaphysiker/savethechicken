@@ -10,8 +10,10 @@
            ValueChanged="OnValueChanged"
            Dense="true"
            Variant="Variant.Outlined"
-           Clearable="true">
-    @foreach (var action in actions)
+           Clearable="true"
+           Disabled="@IsReadOnly"
+           UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "save-chicken-action-selector" })">
+    @foreach (var action in GetFilteredActions())
     {
         <MudSelectItem Value="@((int?)action.Id)">
             #@action.Id | @action.Title | @string.Join(", ", action.Dates.Select(d => d.ToString("dd.MM.yyyy")))
@@ -24,6 +26,8 @@
     [Parameter] public int? SelectedActionId { get; set; }
     [Parameter] public EventCallback<int?> SelectedActionIdChanged { get; set; }
     [Parameter] public EventCallback<SaveChickenActionDto?> OnActionSelected { get; set; }
+    [Parameter] public List<int>? ExcludeIds { get; set; }
+    [Parameter] public bool IsReadOnly { get; set; } = false;
 
     private GenericDtoService<SaveChickenActionDto, SaveChickenActionSearch>? _service;
     private List<SaveChickenActionDto> actions = new();
@@ -37,6 +41,14 @@
         {
             await OnValueChanged(SelectedActionId);
         }
+    }
+
+    private IEnumerable<SaveChickenActionDto> GetFilteredActions()
+    {
+        if (ExcludeIds == null || !ExcludeIds.Any())
+            return actions;
+
+        return actions.Where(a => !ExcludeIds.Contains(a.Id));
     }
 
     private async Task OnValueChanged(int? newValue)

@@ -15,7 +15,11 @@ namespace WebApi.Models.ModelsImpl
         public String PostalCode { get; set; } = String.Empty;
         public GeoCoordinate? GeoCoordinate { get; set; }
 
+        // Navigation properties
+        public Person? Person { get; set; }
+        public Farm? Farm { get; set; }
+
         [Column(TypeName = "tsvector")]
-        public NpgsqlTsVector SearchVector { get; set; }
+        public NpgsqlTsVector SearchVector { get; set; } = null!;
     }
 }

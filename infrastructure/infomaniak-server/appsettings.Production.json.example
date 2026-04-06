@@ -1,0 +1,27 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "Kestrel": {
+    "Limits": {
+      "MaxRequestBodySize": 104857600,
+      "RequestHeadersTimeout": "00:05:00"
+    }
+  },
+  "Email": {
+    "SmtpHost": "smtp.infomaniak.com",
+    "SmtpPort": "587",
+    "FromEmail": "noreply@your-domain.com",
+    "FromName": "Your App Name",
+    "Username": "YOUR_SMTP_USERNAME",
+    "Password": "YOUR_SMTP_PASSWORD",
+    "EnableSsl": true,
+    "NotificationRecipients": [
+      "admin@your-domain.com"
+    ]
+  }
+}

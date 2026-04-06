@@ -43,7 +43,7 @@
 
     private void ShowItem(int id)
     {
-        NavigationManager.NavigateTo($"/save-chicken-actions/{id}");
+        NavigationManager.NavigateTo($"/admin/save-chicken-actions/{id}");
     }
 }
 
@@ -76,25 +76,12 @@
             <CellTemplate>@context.Item.Description</CellTemplate>
         </TemplateColumn>
 
-        <TemplateColumn>
-            <HeaderTemplate>
-                    <MudButton OnClick="@(() => OnHeaderClick("IsActive"))" Variant="Variant.Text" Style="text-transform: none;">
-                        @L["IsActive"]
-                        @if (GetSortIcon("IsActive") != null)
-                    {
-                            <MudIcon Icon="@GetSortIcon("IsActive")" Size="Size.Small" />
-                    }
-                </MudButton>
-            </HeaderTemplate>
-            <CellTemplate>
-                @(context.Item.IsActive ? L["yes"] : L["no"])
-            </CellTemplate>
-        </TemplateColumn>
-
             <TemplateColumn>
                 <HeaderTemplate>@L["show"]</HeaderTemplate>
                 <CellTemplate>
-                    <MudButton Variant="Variant.Filled" OnClick="@(() => ShowItem(context.Item.Id))">
+                    <MudButton Variant="Variant.Filled"
+                               OnClick="@(() => ShowItem(context.Item.Id))"
+                               data-testid="view-button">
                         <MudIcon Icon="@Icons.Material.Filled.Visibility" />
                     </MudButton>
                 </CellTemplate>

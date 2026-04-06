@@ -1,10 +1,10 @@
 ﻿@using MauiBlazorWeb.Shared.Components.ComponentsImpl
-@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Drivers
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenDriveRequests
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Farms
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
 @using global::Shared.Dtos.DtosImpl
 
-@page "/global-search"
+@page "/admin/global-search"
 
 <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
     <h3>Globale Suche</h3>
@@ -24,12 +24,12 @@
         <MudPaper Class="pa-4 my-4">
             <MudText Typo="Typo.h6">Fahrer</MudText>
 
-            <GenericSearch TDto="DriverDto" TSearchDto="DriverSearch">
+            <GenericSearch TDto="SaveChickenDriveRequestDto" TSearchDto="SaveChickenDriveRequestSearch">
                 <SearchForm Context="search">
-                    <DriverSearchForm Model="search" />
+                    <SaveChickenDriveRequestSearchForm Model="search" />
                 </SearchForm>
                 <Table Context="ctx">
-                <DriverTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" OnItemsChanged="ctx.Item4.InvokeAsync" />
+                <SaveChickenDriveRequestTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" OnItemsChanged="ctx.Item4.InvokeAsync" />
                 </Table>
             </GenericSearch>
         </MudPaper>

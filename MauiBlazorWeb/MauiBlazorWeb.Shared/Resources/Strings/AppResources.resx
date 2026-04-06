@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
+  <!--
+    Microsoft ResX Schema
+
     Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
     associated with the data types.
-    
+
     Example:
-    
+
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-                
-    There are any number of "resheader" rows that contain simple 
+
+    There are any number of "resheader" rows that contain simple
     name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
     mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
     extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
     read any of the formats listed below.
-    
+
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-    
+
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
+    value   : The object must be serialized into a byte array
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -120,11 +120,20 @@
   <data name="B" xml:space="preserve">
     <value>swag</value>
   </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
   <data name="HomePage" xml:space="preserve">
     <value>Startseite</value>
   </data>
+  <data name="Address" xml:space="preserve">
+    <value>Adresse</value>
+  </data>
   <data name="Contact" xml:space="preserve">
     <value>Kontakt</value>
+  </data>
+  <data name="ContactInformation" xml:space="preserve">
+    <value>Kontaktinformationen</value>
   </data>
   <data name="SaveTheChicken" xml:space="preserve">
     <value>Rettet das Huhn</value>
@@ -173,6 +182,18 @@
   </data>
   <data name="Color" xml:space="preserve">
     <value>Farbe</value>
+  </data>
+  <data name="Comment" xml:space="preserve">
+    <value>Comment</value>
+  </data>
+  <data name="IsDriver" xml:space="preserve">
+    <value>Driver</value>
+  </data>
+  <data name="IsDriver_Yes" xml:space="preserve">
+    <value>This person is a driver</value>
+  </data>
+  <data name="IsDriver_No" xml:space="preserve">
+    <value>This person is not a driver</value>
   </data>
   <data name="GeneralInformation" xml:space="preserve">
     <value>Allgemeine Information</value>
@@ -238,21 +259,294 @@
     <value>löschen</value>
   </data>
   <data name="show" xml:space="preserve">
-    <value>zeigen</value>
+    <value>show</value>
   </data>
   <data name="isActive" xml:space="preserve">
-    <value>aktiv</value>
+    <value>active</value>
   </data>
   <data name="edit" xml:space="preserve">
-    <value>bearbeiten</value>
+    <value>edit</value>
   </data>
   <data name="yes" xml:space="preserve">
-    <value>ja</value>
+    <value>yes</value>
   </data>
   <data name="no" xml:space="preserve">
-    <value>nein</value>
+    <value>no</value>
   </data>
   <data name="CapacityForChickens" xml:space="preserve">
-    <value>Wie viele Hühner kannst du mitnehmen?</value>
+    <value>How many chickens can you take with you?</value>
+  </data>
+  <data name="assign" xml:space="preserve">
+    <value>Assign</value>
+  </data>
+  <data name="copy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Blacklisted_Yes" xml:space="preserve">
+    <value>Auf der schwarzen Liste</value>
+  </data>
+  <data name="Blacklisted_No" xml:space="preserve">
+    <value>Nicht auf der schwarzen Liste</value>
+  </data>
+  <data name="Blacklisted_Warning" xml:space="preserve">
+    <value>This person is blacklisted and should not receive chickens or participate in drives.</value>
+  </data>
+  <data name="BlacklistFilter" xml:space="preserve">
+    <value>Blacklist Filter</value>
+  </data>
+  <data name="BlacklistedOnly" xml:space="preserve">
+    <value>Blacklisted Only</value>
+  </data>
+  <data name="NotBlacklisted" xml:space="preserve">
+    <value>Not Blacklisted</value>
+  </data>
+  <data name="DriverFilter" xml:space="preserve">
+    <value>Driver Filter</value>
+  </data>
+  <data name="DriversOnly" xml:space="preserve">
+    <value>Drivers Only</value>
+  </data>
+  <data name="NotDrivers" xml:space="preserve">
+    <value>Not Drivers</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Aktionen</value>
+  </data>
+  <data name="AddSaveChickenRequest" xml:space="preserve">
+    <value>Hühner-Rettungsanfrage hinzufügen</value>
+  </data>
+  <data name="AddDriveRequest" xml:space="preserve">
+    <value>Transportanfrage hinzufügen</value>
+  </data>
+  <data name="SaveChickenRequests" xml:space="preserve">
+    <value>Hühner-Rettungsanfragen</value>
+  </data>
+  <data name="SaveChickenDriveRequests" xml:space="preserve">
+    <value>Transport-Anfragen</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="TransferDates" xml:space="preserve">
+    <value>Übergabe an diesen Daten:</value>
+  </data>
+  <data name="PersonSelection" xml:space="preserve">
+    <value>Person Selection</value>
+  </data>
+  <data name="PersonSelection_AdminInfo" xml:space="preserve">
+    <value>Select an existing person for this request. PersonId is required for admin submissions.</value>
+  </data>
+  <data name="SelectPerson" xml:space="preserve">
+    <value>Select Person*</value>
+  </data>
+  <data name="PersonPreselected_Info" xml:space="preserve">
+    <value>Person is pre-selected and cannot be changed for this request.</value>
+  </data>
+  <data name="SelectedPersonDetails" xml:space="preserve">
+    <value>Selected Person Details</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name:</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email:</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Telefon:</value>
+  </data>
+  <data name="Address_Label" xml:space="preserve">
+    <value>Adresse:</value>
+  </data>
+  <data name="DriveRequestInformation" xml:space="preserve">
+    <value>Transport-Anfrage Informationen</value>
+  </data>
+  <data name="AdditionalMessage" xml:space="preserve">
+    <value>Zusätzliche Nachricht:</value>
+  </data>
+  <data name="AvailableDrivingDates" xml:space="preserve">
+    <value>Verfügbare Fahrtage:</value>
+  </data>
+  <data name="UploadFiles" xml:space="preserve">
+    <value>Dateien hochladen</value>
+  </data>
+  <data name="RoutePlan" xml:space="preserve">
+    <value>Routenplan</value>
+  </data>
+  <data name="SaveChickenRequestDetails" xml:space="preserve">
+    <value>Platzangebot Details</value>
+  </data>
+  <data name="ContactPerson" xml:space="preserve">
+    <value>Kontaktperson</value>
+  </data>
+  <data name="SaveChickenRequestInformation" xml:space="preserve">
+    <value>Platzangebot Information</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Laden...</value>
+  </data>
+  <data name="NoSaveChickenRequestSelected" xml:space="preserve">
+    <value>Kein Platzangebot ausgewählt.</value>
+  </data>
+  <data name="PersonDetails" xml:space="preserve">
+    <value>Person Details</value>
+  </data>
+  <data name="Admin" xml:space="preserve">
+    <value>Admin</value>
+  </data>
+  <data name="Persons" xml:space="preserve">
+    <value>Persons</value>
+  </data>
+  <data name="BackToList" xml:space="preserve">
+    <value>Back to List</value>
+  </data>
+  <data name="InvalidPersonId" xml:space="preserve">
+    <value>Invalid person ID.</value>
+  </data>
+  <data name="Created" xml:space="preserve">
+    <value>Created</value>
+  </data>
+  <data name="Updated" xml:space="preserve">
+    <value>Updated</value>
+  </data>
+  <data name="ViewPerson" xml:space="preserve">
+    <value>View Person</value>
+  </data>
+  <data name="Admin_Persons_Title" xml:space="preserve">
+    <value>Admin - Persons Management</value>
+  </data>
+  <data name="Admin_Persons_Management" xml:space="preserve">
+    <value>Admin - Persons Management</value>
+  </data>
+  <data name="Admin_Persons_AlertTitle" xml:space="preserve">
+    <value>Admin Mode:</value>
+  </data>
+  <data name="Admin_Persons_AlertText" xml:space="preserve">
+    <value>Manage all persons in the system. Create, edit, and blacklist persons.</value>
+  </data>
+  <data name="Admin_Persons_CreateButton" xml:space="preserve">
+    <value>Create New Person</value>
+  </data>
+  <data name="Admin_NewPerson_Title" xml:space="preserve">
+    <value>Admin - Create New Person</value>
+  </data>
+  <data name="Admin_NewPerson_Heading" xml:space="preserve">
+    <value>Create New Person</value>
+  </data>
+  <data name="Admin_NewPerson_AlertText" xml:space="preserve">
+    <value>Create a new person in the system.</value>
+  </data>
+  <data name="Admin_EditPerson_Title" xml:space="preserve">
+    <value>Admin - Edit Person</value>
+  </data>
+  <data name="Admin_EditPerson_Heading" xml:space="preserve">
+    <value>Edit Person</value>
+  </data>
+  <data name="Admin_EditPerson_AlertText" xml:space="preserve">
+    <value>Edit person information and manage blacklist status.</value>
+  </data>
+  <data name="Admin_Farms_Title" xml:space="preserve">
+    <value>Admin - Farms Management</value>
+  </data>
+  <data name="Admin_Farms_Management" xml:space="preserve">
+    <value>Admin - Farms Management</value>
+  </data>
+  <data name="Admin_Farms_AlertText" xml:space="preserve">
+    <value>Manage all farms.</value>
+  </data>
+  <data name="Admin_SaveChickenRequests_Title" xml:space="preserve">
+    <value>Admin - Save Chicken Requests Management</value>
+  </data>
+  <data name="Admin_SaveChickenRequests_Management" xml:space="preserve">
+    <value>Admin - Save Chicken Requests Management</value>
+  </data>
+  <data name="Admin_SaveChickenRequests_AlertText" xml:space="preserve">
+    <value>Manage all chicken save requests. Edit existing requests and link them to existing persons.</value>
+  </data>
+  <data name="Admin_SaveChickenDriveRequests_Title" xml:space="preserve">
+    <value>Admin - Drive Requests Management</value>
+  </data>
+  <data name="Admin_SaveChickenDriveRequests_Management" xml:space="preserve">
+    <value>Admin - Drive Requests Management</value>
+  </data>
+  <data name="Admin_SaveChickenDriveRequests_AlertText" xml:space="preserve">
+    <value>Manage all drive requests. Edit existing requests and link them to existing persons.</value>
+  </data>
+  <data name="Admin_SaveChickenActions_Title" xml:space="preserve">
+    <value>Admin - Save Chicken Actions Management</value>
+  </data>
+  <data name="Admin_SaveChickenActions_Management" xml:space="preserve">
+    <value>Admin - Save Chicken Actions Management</value>
+  </data>
+  <data name="Admin_SaveChickenActions_AlertText" xml:space="preserve">
+    <value>Manage all save chicken actions (rescue events).</value>
+  </data>
+  <data name="Admin_Setup_Title" xml:space="preserve">
+    <value>Admin - Database Setup</value>
+  </data>
+  <data name="Admin_Setup_Heading" xml:space="preserve">
+    <value>Database Setup &amp; Seeding</value>
+  </data>
+  <data name="Admin_Setup_WarningText" xml:space="preserve">
+    <value>These actions will modify the database. Use with caution!</value>
+  </data>
+  <data name="Admin_Setup_IdentityTitle" xml:space="preserve">
+    <value>Setup Identity</value>
+  </data>
+  <data name="Admin_Setup_IdentityDescription" xml:space="preserve">
+    <value>Creates roles and admin users for authentication.</value>
+  </data>
+  <data name="Admin_Setup_IdentityButton" xml:space="preserve">
+    <value>Setup Identity</value>
+  </data>
+  <data name="Admin_Setup_SeedTitle" xml:space="preserve">
+    <value>Seed Test Data</value>
+  </data>
+  <data name="Admin_Setup_SeedDescription" xml:space="preserve">
+    <value>Creates test data including SaveChickenAction, farms, and requests.</value>
+  </data>
+  <data name="Admin_Setup_SeedButton" xml:space="preserve">
+    <value>Seed Test Data</value>
+  </data>
+  <data name="RequestInformation" xml:space="preserve">
+    <value>Request Information</value>
+  </data>
+  <data name="DescriptionOfPlaceForChickens_Label" xml:space="preserve">
+    <value>Please briefly describe your chicken home (coop, outdoor space m2), number of existing chickens, experience, etc.</value>
+  </data>
+  <data name="NumberOfBoxes" xml:space="preserve">
+    <value>Number of Boxes</value>
+  </data>
+  <data name="CreateSaveChickenRequest" xml:space="preserve">
+    <value>Create Save Chicken Request</value>
+  </data>
+  <data name="CreateDriveRequest" xml:space="preserve">
+    <value>Create Drive Request</value>
+  </data>
+  <data name="Adopters" xml:space="preserve">
+    <value>Adopters</value>
+  </data>
+  <data name="Drivers" xml:space="preserve">
+    <value>Drivers</value>
+  </data>
+  <data name="Farms" xml:space="preserve">
+    <value>Farms</value>
+  </data>
+  <data name="ActionPreselected_Info" xml:space="preserve">
+    <value>Action is pre-selected and cannot be changed.</value>
+  </data>
+  <data name="AddFarm" xml:space="preserve">
+    <value>Add Farm</value>
+  </data>
+  <data name="CreateFarm" xml:space="preserve">
+    <value>Create Farm</value>
   </data>
 </root>

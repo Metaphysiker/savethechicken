@@ -1,15 +1,16 @@
 [
   {
+    "id": 0,
     "createdAt": "2025-12-01T07:00:00",
     "updatedAt": "2025-12-01T07:00:00",
     "numberOfChickens": 600,
     "numberOfRoosters": 100,
     "size": "large",
     "color": "#A3CB38",
-    "datesForRescues": ["2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30"],
     "generalInformation": "Biohof mit großem Freilauf und moderner Ausstattung.",
     "name": "Biohof Zürichberg",
     "contact": {
+      "id": 0,
       "createdAt": "2025-12-01T07:00:00",
       "updatedAt": "2025-12-01T07:00:00",
       "firstName": "Urs",
@@ -17,14 +18,57 @@
       "phoneNumber": "+41 79 123 45 67",
       "email": "urs.kunz@biohof.ch"
     },
+    "contactId": 0,
     "address": {
+      "id": 0,
       "createdAt": "2025-12-01T07:00:00",
       "updatedAt": "2025-12-01T07:00:00",
       "street": "Zürichbergstrasse 100",
       "city": "Zürich",
       "postalCode": "8044",
-      "geoCoordinate": { "latitude": 47.3833, "longitude": 8.5706 }
+      "geoCoordinate": {
+        "latitude": 47.3833,
+        "longitude": 8.5706
+      }
     },
+    "addressId": 0,
+    "files": [],
+    "saveChickenActionId": null,
+    "saveChickenAction": null
+  },
+  {
+    "id": 0,
+    "createdAt": "2025-12-02T08:00:00",
+    "updatedAt": "2025-12-02T08:00:00",
+    "numberOfChickens": 400,
+    "numberOfRoosters": 50,
+    "size": "medium",
+    "color": "#FF6B6B",
+    "generalInformation": "Familienbetrieb mit Bodenhaltung.",
+    "name": "Hof Alpenblick",
+    "contact": {
+      "id": 0,
+      "createdAt": "2025-12-02T08:00:00",
+      "updatedAt": "2025-12-02T08:00:00",
+      "firstName": "Maria",
+      "lastName": "Berger",
+      "phoneNumber": "+41 79 987 65 43",
+      "email": "maria.berger@alpenblick.ch"
+    },
+    "contactId": 0,
+    "address": {
+      "id": 0,
+      "createdAt": "2025-12-02T08:00:00",
+      "updatedAt": "2025-12-02T08:00:00",
+      "street": "Bergweg 25",
+      "city": "Pfäffikon",
+      "postalCode": "8330",
+      "geoCoordinate": {
+        "latitude": 47.3647,
+        "longitude": 8.7784
+      }
+    },
+    "addressId": 0,
     "files": [],
     "saveChickenActionId": null,
     "saveChickenAction": null

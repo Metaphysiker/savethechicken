@@ -1,0 +1,65 @@
+{
+  "data": [
+    {
+      "id": 2,
+      "createdAt": "2026-01-06T21:21:28.569771Z",
+      "updatedAt": "2026-01-06T21:21:28.5698Z",
+      "dates": [],
+      "title": "Archiv (vor 2026)",
+      "description": "",
+      "isActive": false,
+      "genericName": "Archiv (vor 2026)"
+    },
+    {
+      "id": 3,
+      "createdAt": "2026-01-18T11:37:56.260044Z",
+      "updatedAt": "2026-01-18T11:38:11.318471Z",
+      "dates": [],
+      "title": "Warteliste",
+      "description": "Warteliste",
+      "isActive": false,
+      "genericName": "Warteliste"
+    },
+    {
+      "id": 4,
+      "createdAt": "2026-03-29T21:31:07.808304Z",
+      "updatedAt": "2026-03-29T21:34:06.495271Z",
+      "dates": [
+        "2026-04-25"
+      ],
+      "title": "25. April 2026 Maur ZH",
+      "description": "Stefan Zollinger\nca. 160 braun",
+      "isActive": true,
+      "genericName": "25. April 2026 Maur ZH"
+    },
+    {
+      "id": 5,
+      "createdAt": "2026-03-29T21:32:14.961887Z",
+      "updatedAt": "2026-03-29T21:33:56.924494Z",
+      "dates": [
+        "2026-06-20"
+      ],
+      "title": "20. Juni 2026 Braunau TG",
+      "description": "Silvan\nca. 140 weiss\nam Abend",
+      "isActive": false,
+      "genericName": "20. Juni 2026 Braunau TG"
+    },
+    {
+      "id": 6,
+      "createdAt": "2026-03-29T21:33:13.714811Z",
+      "updatedAt": "2026-03-29T21:33:13.714813Z",
+      "dates": [
+        "2026-06-28",
+        "2026-07-04"
+      ],
+      "title": "28. Juni und 4. Juli in Remetschwil AG",
+      "description": "Judith\n",
+      "isActive": false,
+      "genericName": "28. Juni und 4. Juli in Remetschwil AG"
+    }
+  ],
+  "page": 1,
+  "pageSize": 10,
+  "totalPages": 1,
+  "totalItems": 5
+}

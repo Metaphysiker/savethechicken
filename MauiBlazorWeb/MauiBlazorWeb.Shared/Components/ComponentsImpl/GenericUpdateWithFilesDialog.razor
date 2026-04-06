@@ -1,5 +1,6 @@
 ﻿@using MudBlazor
-@typeparam TDto where TDto : class, IEntityWithFileDtos
+@using global::Shared.Dtos
+@typeparam TDto where TDto : class, IDto, IEntityWithFileDtos
 
 <MudDialog>
     <DialogContent>

@@ -7,13 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MauiBlazorWeb.Web.Client\MauiBlazorWeb.Web.Client.csproj" />
+    <!-- Removed WebAssembly Client - using InteractiveServer only -->
+    <!-- <ProjectReference Include="..\MauiBlazorWeb.Web.Client\MauiBlazorWeb.Web.Client.csproj" /> -->
+    <ProjectReference Include="..\MauiBlazorWeb.Shared\MauiBlazorWeb.Shared.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.DataAnnotations.Validation" Version="3.2.0-rc1.20223.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.8" />
+    <!-- Removed WebAssembly Server package - using InteractiveServer only -->
+    <!-- <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.8" /> -->
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.0" />
   </ItemGroup>
 
-  <PropertyGroup>
+  <!-- Removed WebAssembly globalization - using InteractiveServer only -->
+  <!-- <PropertyGroup>
     <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
-  </PropertyGroup>
+  </PropertyGroup> -->
 
 </Project>

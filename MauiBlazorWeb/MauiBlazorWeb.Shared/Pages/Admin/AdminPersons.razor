@@ -1,0 +1,36 @@
+@page "/admin/persons"
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Persons
+@using MauiBlazorWeb.Web.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
+@inject NavigationManager NavigationManager
+@inject IStringLocalizer<AppResources> L
+
+<PageTitle>@L["Admin_Persons_Title"]</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+    <MudText Typo="Typo.h3" Class="mb-4">@L["Admin_Persons_Management"]</MudText>
+
+    <MudAlert Severity="Severity.Info" Dense="true" Class="my-4">
+        <strong>@L["Admin_Persons_AlertTitle"]</strong> @L["Admin_Persons_AlertText"]
+    </MudAlert>
+
+    <MudButton Variant="Variant.Filled"
+               Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.Add"
+               OnClick="@(() => NavigationManager.NavigateTo("/admin/persons/new"))"
+               Class="mb-4">
+        @L["Admin_Persons_CreateButton"]
+    </MudButton>
+
+    <GenericSearch TDto="PersonDto" TSearchDto="PersonSearch">
+        <SearchForm Context="search">
+            <PersonSearchForm Model="search" />
+        </SearchForm>
+        <Table Context="ctx">
+            <PersonTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3" OnItemsChanged="ctx.Item4.InvokeAsync" />
+        </Table>
+    </GenericSearch>
+</MudContainer>

@@ -59,6 +59,14 @@ h1:focus {
     border-left: 4px solid #b71c1c;
 }
 
+.row-driver {
+    background-color: #e3f2fd !important; /* Light blue background */
+    color: #1565c0 !important; /* Dark blue text for contrast */
+    font-weight: 500; /* Slightly bolder text */
+    /* Optional: add a left border for extra emphasis */
+    border-left: 4px solid #1565c0;
+}
+
 .form-wrapper-div {
     margin-bottom: 4rem;
 }

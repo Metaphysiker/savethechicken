@@ -1,4 +1,4 @@
-@page "/save-chicken-actions/{Id:int}/edit"
+@page "/admin/save-chicken-actions/{Id:int}/edit"
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
@@ -11,7 +11,7 @@
 
 @if (model != null)
 {
-    <GenericUpdate TDto="SaveChickenActionDto" model="model">
+    <GenericUpdate TDto="SaveChickenActionDto" model="model" ResourceName="admin/save-chicken-actions">
         <ChildContent Context="editModel">
             <MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions.SaveChickenActionForm Model="model" />
         </ChildContent>

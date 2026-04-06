@@ -11,15 +11,15 @@
 }
 
 <MudPaper Class="pa-4 my-4" Elevation="2">
-    <MudText Typo="Typo.h6">Adresse</MudText>
+    <MudText Typo="Typo.h6">@L["Address"]</MudText>
 
 <MudGrid>
     <MudItem xs="12" sm="6">
-        <MudTextField ReadOnly="@IsReadOnly" @bind-Value="Address.City" Label="@L["Address_City"]" Variant="Variant.Outlined" />
+        <MudTextField ReadOnly="@IsReadOnly" @bind-Value="Address.City" Label="@L["Address_City"]" Variant="Variant.Outlined" UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "address-city" })" />
         <ValidationMessage For="@(() => Address.City)" />
     </MudItem>
     <MudItem xs="12" sm="6">
-        <MudTextField ReadOnly="@IsReadOnly" @bind-Value="Address.PostalCode" Label="@L["Address_PostalCode"]" Variant="Variant.Outlined" />
+        <MudTextField ReadOnly="@IsReadOnly" @bind-Value="Address.PostalCode" Label="@L["Address_PostalCode"]" Variant="Variant.Outlined" UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "address-postalcode" })" />
         <ValidationMessage For="@(() => Address.PostalCode)" />
     </MudItem>
 </MudGrid>
@@ -27,7 +27,7 @@
 <MudGrid>
 
     <MudItem xs="12">
-        <MudTextField ReadOnly="@IsReadOnly" @bind-Value="Address.Street" Label="@L["Address_Street"]" Variant="Variant.Outlined" />
+        <MudTextField ReadOnly="@IsReadOnly" @bind-Value="Address.Street" Label="@L["Address_Street"]" Variant="Variant.Outlined" UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "address-street" })" />
         <ValidationMessage For="@(() => Address.Street)" />
     </MudItem>
 </MudGrid>

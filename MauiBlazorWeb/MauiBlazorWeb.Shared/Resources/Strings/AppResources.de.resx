@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
+  <!--
+    Microsoft ResX Schema
+
     Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
     associated with the data types.
-    
+
     Example:
-    
+
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-                
-    There are any number of "resheader" rows that contain simple 
+
+    There are any number of "resheader" rows that contain simple
     name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
     mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
     extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
     read any of the formats listed below.
-    
+
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-    
+
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
+    value   : The object must be serialized into a byte array
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -120,11 +120,20 @@
   <data name="B" xml:space="preserve">
     <value>swag</value>
   </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Warnung</value>
+  </data>
   <data name="HomePage" xml:space="preserve">
     <value>Startseite</value>
   </data>
+  <data name="Address" xml:space="preserve">
+    <value>Adresse</value>
+  </data>
   <data name="Contact" xml:space="preserve">
     <value>Kontakt</value>
+  </data>
+  <data name="ContactInformation" xml:space="preserve">
+    <value>Kontaktinformationen</value>
   </data>
   <data name="SaveTheChicken" xml:space="preserve">
     <value>Rettet das Huhn</value>
@@ -173,6 +182,18 @@
   </data>
   <data name="Color" xml:space="preserve">
     <value>Farbe</value>
+  </data>
+  <data name="Comment" xml:space="preserve">
+    <value>Kommentar</value>
+  </data>
+  <data name="IsDriver" xml:space="preserve">
+    <value>Fahrer</value>
+  </data>
+  <data name="IsDriver_Yes" xml:space="preserve">
+    <value>Diese Person ist ein Fahrer</value>
+  </data>
+  <data name="IsDriver_No" xml:space="preserve">
+    <value>Diese Person ist kein Fahrer</value>
   </data>
   <data name="GeneralInformation" xml:space="preserve">
     <value>Allgemeine Information</value>
@@ -254,5 +275,343 @@
   </data>
   <data name="CapacityForChickens" xml:space="preserve">
     <value>Wie viele Hühner kannst du pro Fahrt mitnehmen?</value>
+  </data>  <data name="assign" xml:space="preserve">
+    <value>zuweisen</value>
+  </data>
+  <data name="copy" xml:space="preserve">
+    <value>kopieren</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Blacklisted_Yes" xml:space="preserve">
+    <value>Auf der schwarzen Liste</value>
+  </data>
+  <data name="Blacklisted_No" xml:space="preserve">
+    <value>Nicht auf der schwarzen Liste</value>
+  </data>
+  <data name="Blacklisted_Warning" xml:space="preserve">
+    <value>Diese Person steht auf der schwarzen Liste und sollte keine Hühner erhalten oder an Fahrten teilnehmen.</value>
+  </data>
+  <data name="BlacklistFilter" xml:space="preserve">
+    <value>Schwarze Liste Filter</value>
+  </data>
+  <data name="BlacklistedOnly" xml:space="preserve">
+    <value>Nur auf schwarzer Liste</value>
+  </data>
+  <data name="NotBlacklisted" xml:space="preserve">
+    <value>Nicht auf schwarzer Liste</value>
+  </data>
+  <data name="DriverFilter" xml:space="preserve">
+    <value>Fahrer Filter</value>
+  </data>
+  <data name="DriversOnly" xml:space="preserve">
+    <value>Nur Fahrer</value>
+  </data>
+  <data name="NotDrivers" xml:space="preserve">
+    <value>Keine Fahrer</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Alle</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Suchen</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Aktionen</value>
+  </data>
+  <data name="AddSaveChickenRequest" xml:space="preserve">
+    <value>Platzangebot hinzufügen</value>
+  </data>
+  <data name="AddDriveRequest" xml:space="preserve">
+    <value>Fahrangebot hinzufügen</value>
+  </data>
+  <data name="SaveChickenRequests" xml:space="preserve">
+    <value>Platzangebote</value>
+  </data>
+  <data name="SaveChickenDriveRequests" xml:space="preserve">
+    <value>Fahrangebote</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="TransferDates" xml:space="preserve">
+    <value>Übergabe an diesen Daten:</value>
+  </data>
+  <data name="PersonSelection" xml:space="preserve">
+    <value>Personen-Auswahl</value>
+  </data>
+  <data name="PersonSelection_AdminInfo" xml:space="preserve">
+    <value>Wählen Sie eine existierende Person für dieses Fahrangebot aus. PersonId ist für Admin-Einreichungen erforderlich.</value>
+  </data>
+  <data name="SelectPerson" xml:space="preserve">
+    <value>Person auswählen*</value>
+  </data>
+  <data name="PersonPreselected_Info" xml:space="preserve">
+    <value>Person ist vorausgewählt und kann für diese Anfrage nicht geändert werden.</value>
+  </data>
+  <data name="SelectedPersonDetails" xml:space="preserve">
+    <value>Details der ausgewählten Person</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name:</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email:</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Telefon:</value>
+  </data>
+  <data name="Address_Label" xml:space="preserve">
+    <value>Adresse:</value>
+  </data>
+  <data name="DriveRequestInformation" xml:space="preserve">
+    <value>Fahrangebot Informationen</value>
+  </data>
+  <data name="AdditionalMessage" xml:space="preserve">
+    <value>Zusätzliche Nachricht:</value>
+  </data>
+  <data name="AvailableDrivingDates" xml:space="preserve">
+    <value>Verfügbare Fahrtage:</value>
+  </data>
+  <data name="UploadFiles" xml:space="preserve">
+    <value>Dateien hochladen</value>
+  </data>
+  <data name="RoutePlan" xml:space="preserve">
+    <value>Routenplan</value>
+  </data>
+  <data name="SaveChickenRequestDetails" xml:space="preserve">
+    <value>Platzangebot Details</value>
+  </data>
+  <data name="ContactPerson" xml:space="preserve">
+    <value>Kontaktperson</value>
+  </data>
+  <data name="SaveChickenRequestInformation" xml:space="preserve">
+    <value>Platzangebot Information</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Laden...</value>
+  </data>
+  <data name="NoSaveChickenRequestSelected" xml:space="preserve">
+    <value>Kein Platzangebot ausgewählt.</value>
+  </data>
+  <data name="PersonDetails" xml:space="preserve">
+    <value>Person Details</value>
+  </data>
+  <data name="Admin" xml:space="preserve">
+    <value>Admin</value>
+  </data>
+  <data name="Persons" xml:space="preserve">
+    <value>Personen</value>
+  </data>
+  <data name="BackToList" xml:space="preserve">
+    <value>Zurück zur Liste</value>
+  </data>
+  <data name="InvalidPersonId" xml:space="preserve">
+    <value>Ungültige Personen-ID.</value>
+  </data>
+  <data name="Created" xml:space="preserve">
+    <value>Erstellt</value>
+  </data>
+  <data name="Updated" xml:space="preserve">
+    <value>Aktualisiert</value>
+  </data>
+  <data name="ViewPerson" xml:space="preserve">
+    <value>Person anzeigen</value>
+  </data>
+  <data name="Admin_Persons_Title" xml:space="preserve">
+    <value>Admin - Personenverwaltung</value>
+  </data>
+  <data name="Admin_Persons_Management" xml:space="preserve">
+    <value>Admin - Personenverwaltung</value>
+  </data>
+  <data name="Admin_Persons_AlertTitle" xml:space="preserve">
+    <value>Admin-Modus:</value>
+  </data>
+  <data name="Admin_Persons_AlertText" xml:space="preserve">
+    <value>Verwalten Sie alle Personen im System. Erstellen, bearbeiten und sperren Sie Personen.</value>
+  </data>
+  <data name="Admin_Persons_CreateButton" xml:space="preserve">
+    <value>Neue Person erstellen</value>
+  </data>
+  <data name="Admin_NewPerson_Title" xml:space="preserve">
+    <value>Admin - Neue Person erstellen</value>
+  </data>
+  <data name="Admin_NewPerson_Heading" xml:space="preserve">
+    <value>Neue Person erstellen</value>
+  </data>
+  <data name="Admin_NewPerson_AlertText" xml:space="preserve">
+    <value>Erstellen Sie eine neue Person im System.</value>
+  </data>
+  <data name="Admin_EditPerson_Title" xml:space="preserve">
+    <value>Admin - Person bearbeiten</value>
+  </data>
+  <data name="Admin_EditPerson_Heading" xml:space="preserve">
+    <value>Person bearbeiten</value>
+  </data>
+  <data name="Admin_EditPerson_AlertText" xml:space="preserve">
+    <value>Bearbeiten Sie Personeninformationen und verwalten Sie den Sperrstatus.</value>
+  </data>
+  <data name="Admin_Farms_Title" xml:space="preserve">
+    <value>Admin - Betriebe-Verwaltung</value>
+  </data>
+  <data name="Admin_Farms_Management" xml:space="preserve">
+    <value>Admin - Betriebe-Verwaltung</value>
+  </data>
+  <data name="Admin_Farms_AlertText" xml:space="preserve">
+    <value>Verwalten Sie alle Betriebe.</value>
+  </data>
+  <data name="Admin_SaveChickenRequests_Title" xml:space="preserve">
+    <value>Admin - Platzangebote-Verwaltung</value>
+  </data>
+  <data name="Admin_SaveChickenRequests_Management" xml:space="preserve">
+    <value>Admin - Platzangebote-Verwaltung</value>
+  </data>
+  <data name="Admin_SaveChickenRequests_AlertText" xml:space="preserve">
+    <value>Verwalten Sie alle Platzangebote. Bearbeiten Sie bestehende Anfragen und verknüpfen Sie sie mit Personen.</value>
+  </data>
+  <data name="Admin_SaveChickenDriveRequests_Title" xml:space="preserve">
+    <value>Admin - Fahrangebote-Verwaltung</value>
+  </data>
+  <data name="Admin_SaveChickenDriveRequests_Management" xml:space="preserve">
+    <value>Admin - Fahrangebote-Verwaltung</value>
+  </data>
+  <data name="Admin_SaveChickenDriveRequests_AlertText" xml:space="preserve">
+    <value>Verwalten Sie alle Fahrangebote. Bearbeiten Sie bestehende Anfragen und verknüpfen Sie sie mit Personen.</value>
+  </data>
+  <data name="Admin_SaveChickenActions_Title" xml:space="preserve">
+    <value>Admin - Rettungsaktionen-Verwaltung</value>
+  </data>
+  <data name="Admin_SaveChickenActions_Management" xml:space="preserve">
+    <value>Admin - Rettungsaktionen-Verwaltung</value>
+  </data>
+  <data name="Admin_SaveChickenActions_AlertText" xml:space="preserve">
+    <value>Verwalten Sie alle Rettungsaktionen.</value>
+  </data>
+  <data name="Admin_Setup_Title" xml:space="preserve">
+    <value>Admin - Datenbank-Setup</value>
+  </data>
+  <data name="Admin_Setup_Heading" xml:space="preserve">
+    <value>Datenbank-Setup &amp; Daten</value>
+  </data>
+  <data name="Admin_Setup_WarningText" xml:space="preserve">
+    <value>Diese Aktionen werden die Datenbank ändern. Mit Vorsicht verwenden!</value>
+  </data>
+  <data name="Admin_Setup_IdentityTitle" xml:space="preserve">
+    <value>Identity einrichten</value>
+  </data>
+  <data name="Admin_Setup_IdentityDescription" xml:space="preserve">
+    <value>Erstellt Rollen und Admin-Benutzer für die Authentifizierung.</value>
+  </data>
+  <data name="Admin_Setup_IdentityButton" xml:space="preserve">
+    <value>Identity einrichten</value>
+  </data>
+  <data name="Admin_Setup_SeedTitle" xml:space="preserve">
+    <value>Testdaten hinzufügen</value>
+  </data>
+  <data name="Admin_Setup_SeedDescription" xml:space="preserve">
+    <value>Erstellt Testdaten inklusive Rettungsaktionen, Betriebe und Anfragen.</value>
+  </data>
+  <data name="Admin_Setup_SeedButton" xml:space="preserve">
+    <value>Testdaten hinzufügen</value>
+  </data>
+  <data name="RequestInformation" xml:space="preserve">
+    <value>Anfrage-Informationen</value>
+  </data>
+  <data name="DescriptionOfPlaceForChickens_Label" xml:space="preserve">
+    <value>Bitte beschreiben Sie kurz Ihr Hühnerzuhause (Stall, Auslauf m2), Anzahl bestehende Hühner, Erfahrung etc.</value>
+  </data>
+  <data name="NumberOfBoxes" xml:space="preserve">
+    <value>Anzahl Boxen</value>
+  </data>
+  <data name="CreateSaveChickenRequest" xml:space="preserve">
+    <value>Platzangebot erstellen</value>
+  </data>
+  <data name="CreateDriveRequest" xml:space="preserve">
+    <value>Fahrangebot erstellen</value>
+  </data>
+  <data name="Adopters" xml:space="preserve">
+    <value>Abnehmer</value>
+  </data>
+  <data name="Drivers" xml:space="preserve">
+    <value>Fahrer</value>
+  </data>
+  <data name="Farms" xml:space="preserve">
+    <value>Betriebe</value>
+  </data>
+  <data name="ActionPreselected_Info" xml:space="preserve">
+    <value>Aktion ist vorausgewählt und kann nicht geändert werden.</value>
+  </data>
+  <data name="AddFarm" xml:space="preserve">
+    <value>Betrieb hinzufügen</value>
+  </data>
+  <data name="CreateFarm" xml:space="preserve">
+    <value>Betrieb erstellen</value>
+  </data>
+  <data name="SaveChickenDriveRequestDetails" xml:space="preserve">
+    <value>Fahrangebot Details</value>
+  </data>
+  <data name="SaveChickenDriveRequestInformation" xml:space="preserve">
+    <value>Fahrangebot Information</value>
+  </data>
+  <data name="NoSaveChickenDriveRequestSelected" xml:space="preserve">
+    <value>Kein Fahrangebot ausgewählt.</value>
+  </data>
+  <data name="Car" xml:space="preserve">
+    <value>Auto:</value>
+  </data>
+  <data name="Capacity" xml:space="preserve">
+    <value>Kapazität:</value>
+  </data>
+  <data name="AvailableDates_Label" xml:space="preserve">
+    <value>Verfügbare Daten:</value>
+  </data>
+  <data name="Message_Label" xml:space="preserve">
+    <value>Nachricht:</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Logout</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Schliessen</value>
+  </data>
+  <data name="Open" xml:space="preserve">
+    <value>Öffnen</value>
+  </data>
+  <data name="PleaseWait" xml:space="preserve">
+    <value>Bitte warten ...</value>
+  </data>
+  <data name="OfferPlace" xml:space="preserve">
+    <value>Platz für Hühner anbieten</value>
+  </data>
+  <data name="BecomeDriver" xml:space="preserve">
+    <value>Fahrer werden</value>
+  </data>
+  <data name="RegisterFarm" xml:space="preserve">
+    <value>Betrieb anmelden</value>
+  </data>
+  <data name="ManagePersons" xml:space="preserve">
+    <value>Personen verwalten</value>
+  </data>
+  <data name="NewPerson" xml:space="preserve">
+    <value>Neue Person</value>
+  </data>
+  <data name="RescueActions" xml:space="preserve">
+    <value>Rettungs-Aktionen</value>
+  </data>
+  <data name="NewRescueAction" xml:space="preserve">
+    <value>Neue Rettungs-Aktion</value>
+  </data>
+  <data name="NewPlaceOffer" xml:space="preserve">
+    <value>Neues Platzangebot</value>
+  </data>
+  <data name="NewDriveOffer" xml:space="preserve">
+    <value>Neues Fahrangebot</value>
+  </data>
+  <data name="NewFarm" xml:space="preserve">
+    <value>Neuer Betrieb</value>
   </data>
 </root>

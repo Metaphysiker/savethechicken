@@ -1,0 +1,90 @@
+@page "/admin/persons/{Id:int}"
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Persons
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using global::Shared.Dtos.DtosImpl
+@using Microsoft.Extensions.Localization
+@using MauiBlazorWeb.Shared.Resources.Strings
+@inject GenericDtoServiceFactory DtoServiceFactory
+@inject NavigationManager NavigationManager
+@inject IStringLocalizer<AppResources> L
+
+<PageTitle>@L["Admin"] - @L["PersonDetails"]</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge">
+    <MudBreadcrumbs Items="_breadcrumbs" Class="mb-4"></MudBreadcrumbs>
+
+    <MudText Typo="Typo.h3" Class="mb-4">@L["PersonDetails"]</MudText>
+
+    @if (item != null)
+    {
+        <PersonShow PersonId="Id"
+                   ContactTitle="@L["ContactPerson"]"
+                   AddressTitle="@L["Address"]" />
+
+        <MudPaper Class="pa-4 my-4" Elevation="2">
+            <MudText Typo="Typo.h6" class="mb-3">@L["Actions"]</MudText>
+            <MudStack Row="true" Spacing="2">
+                <MudButton Variant="Variant.Filled"
+                          Color="Color.Primary"
+                          StartIcon="@Icons.Material.Filled.Edit"
+                          OnClick="@(() => NavigationManager.NavigateTo($"/admin/persons/{Id}/edit"))">
+                    @L["edit"]
+                </MudButton>
+                <GenericDeleteDialog TDto="PersonDto" Model="item" OnDeleted="OnDeleted" ButtonText="@L["delete"]" />
+                <MudButton Variant="Variant.Outlined"
+                          OnClick="@(() => NavigationManager.NavigateTo("/admin/persons"))">
+                    @L["BackToList"]
+                </MudButton>
+            </MudStack>
+        </MudPaper>
+
+        <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mt-2">
+            @L["Created"]: @item.CreatedAt.ToString("dd.MM.yyyy HH:mm") | @L["Updated"]: @item.UpdatedAt.ToString("dd.MM.yyyy HH:mm")
+        </MudText>
+    }
+    else if (Id > 0)
+    {
+        <MudPaper Class="pa-4">
+            <MudProgressCircular Indeterminate="true" />
+            <MudText>@L["Loading"]</MudText>
+        </MudPaper>
+    }
+    else
+    {
+        <MudPaper Class="pa-4">
+            <MudText Color="Color.Error">@L["InvalidPersonId"]</MudText>
+        </MudPaper>
+    }
+</MudContainer>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private PersonDto? item;
+    private List<BreadcrumbItem> _breadcrumbs = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id > 0)
+        {
+            var service = DtoServiceFactory.Create<PersonDto, PersonSearch>();
+            item = await service.GetByIdAsync(Id);
+
+            _breadcrumbs = new List<BreadcrumbItem>
+            {
+                new BreadcrumbItem(L["Admin"], href: "/"),
+                new BreadcrumbItem(L["Persons"], href: "/admin/persons"),
+                new BreadcrumbItem($"{item?.Contact?.FirstName} {item?.Contact?.LastName}", href: null, disabled: true)
+            };
+
+            StateHasChanged();
+        }
+    }
+
+    private void OnDeleted()
+    {
+        NavigationManager.NavigateTo("/admin/persons");
+    }
+}

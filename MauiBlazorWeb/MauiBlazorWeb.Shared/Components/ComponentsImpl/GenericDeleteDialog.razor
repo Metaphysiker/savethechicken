@@ -4,8 +4,13 @@
 @using global::Shared.Dtos
 @inject IDialogService DialogService
 
-<MudButton Variant="Variant.Filled" OnClick="OpenDialog" Color="Color.Error" Size="Size.Small">
-    <MudIcon Icon="@Icons.Material.Filled.Delete" />
+<MudButton Variant="Variant.Filled" OnClick="OpenDialog" Color="Color.Error" Size="Size.Small"
+           StartIcon="@Icons.Material.Filled.Delete"
+           UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "delete-button" })">
+    @if (!string.IsNullOrWhiteSpace(ButtonText))
+    {
+        @ButtonText
+    }
 </MudButton>
 
 @code {
@@ -15,6 +20,9 @@
 
     [Parameter]
     public EventCallback OnDeleted { get; set; }
+
+    [Parameter]
+    public string? ButtonText { get; set; }
 
     private async Task OpenDialog()
     {

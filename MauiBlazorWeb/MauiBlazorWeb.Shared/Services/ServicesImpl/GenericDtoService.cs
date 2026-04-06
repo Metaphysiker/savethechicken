@@ -42,6 +42,15 @@ namespace MauiBlazorWeb.Web.Services.ServicesImpl
             return result;
         }
 
+        public async Task<TDto> CreatePublicAsync(TDto dto)
+        {
+            var response = await _httpClient.PostAsJsonAsync($"{_baseUrl}/public", dto);
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadFromJsonAsync<TDto>();
+            if (result == null) throw new InvalidOperationException("Failed to create DTO");
+            return result;
+        }
+
         public async Task<TDto> UpdateAsync(TDto dto)
         {
             var response = await _httpClient.PutAsJsonAsync(_baseUrl, dto);

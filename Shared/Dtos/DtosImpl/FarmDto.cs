@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Shared.Dtos.DtosImpl
 {
-    public class FarmDto :IDto, IEntityWithFileDtos
+    public class FarmDto :IDto, IEntityWithFileDtos, IEntityWithSaveChickenActionDto
     {
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -20,18 +20,13 @@ namespace Shared.Dtos.DtosImpl
         public int NumberOfRoosters { get; set; } = 0;
         public string Size { get; set; } = String.Empty;
         public string Color { get; set; } = String.Empty;
-        // at least one date required
-        [MinLength(1, ErrorMessage = "At least one date for rescue is required")]
-        public List<DateOnly> DatesForRescues { get; set; } = new List<DateOnly>();
         public string GeneralInformation { get; set; } = String.Empty;
         [Required]
         public string Name { get; set; } = String.Empty;
         [ValidateComplexType]
-        [Required]
         public ContactDto Contact { get; set; }
         public int ContactId { get; set; }
         [ValidateComplexType]
-        [Required]
         public AddressDto Address { get; set; }
         public int AddressId { get; set; }
         public List<StoredFileDto> Files { get; set; }

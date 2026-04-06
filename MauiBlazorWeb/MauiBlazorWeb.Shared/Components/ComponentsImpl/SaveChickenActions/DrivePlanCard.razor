@@ -1,0 +1,196 @@
+@using MauiBlazorWeb.Shared.Classes
+@using global::Shared.Dtos.DtosImpl
+@using static MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions.SaveChickenActionRoutePlanner
+
+<MudPaper Class="mb-3 pa-3" Elevation="3">
+    <MudGrid Spacing="2">
+        @* Column 1: Drag & Drop Area *@
+        <MudItem xs="12" md="4">
+            <MudText Typo="Typo.subtitle2" Class="mb-2">
+                <strong>Fahrt #@DrivePlan.NumberOfDrive - @DrivePlan.Farm.Name</strong>
+            </MudText>
+            <MudPaper Class="pa-2" Elevation="1">
+                <MudList T="DropItem" Class="d-flex flex-column mud-height-full">
+                    <MudDropZone T="DropItem" Identifier="@DrivePlan.Id.ToString()" Class="flex-grow-1 always-dropzone" AllowReorder="true" />
+                    @if (!Items.Any(i => i.Selector == DrivePlan.Id.ToString()))
+                    {
+                        <div class="empty-dropzone-placeholder">Hier ablegen</div>
+                    }
+                </MudList>
+            </MudPaper>
+        </MudItem>
+
+        @* Column 2: Map *@
+        <MudItem xs="12" md="4">
+            <MudText Typo="Typo.subtitle2" Class="mb-2">Karte</MudText>
+            <OpenStreetMap Markers="DrivePlan.RouteMarkers" Arrows="DrivePlan.RouteArrows" />
+        </MudItem>
+
+        @* Column 3: Controls and Info *@
+        <MudItem xs="12" md="4">
+            <MudText Typo="Typo.subtitle2" Class="mb-2">Details</MudText>
+
+            @* Date Picker *@
+            <MudDatePicker Label="Datum"
+                           Date="@DrivePlan.RouteDate.ToDateTime(TimeOnly.MinValue)"
+                           DateChanged="@(async (DateTime? newDateTime) => { if (newDateTime.HasValue) await OnDateChanged.InvokeAsync(DateOnly.FromDateTime(newDateTime.Value)); })"
+                           Variant="Variant.Outlined"
+                           Dense="true"
+                           Margin="Margin.Dense"
+                           Class="mb-2"
+                           DateFormat="dd.MM.yyyy" />
+
+            @* Farm Selector *@
+            <MudSelect T="FarmDto"
+                       Label="Farm"
+                       Value="@DrivePlan.Farm"
+                       ValueChanged="@OnFarmChanged"
+                       Variant="Variant.Outlined"
+                       Dense="true"
+                       Margin="Margin.Dense"
+                       Class="mb-2">
+                @foreach (var farm in AllFarms)
+                {
+                    <MudSelectItem Value="@farm">
+                        @farm.Name
+                    </MudSelectItem>
+                }
+            </MudSelect>
+
+            @* Driver Selector *@
+            <MudSelect T="SaveChickenDriveRequestDto"
+                       Label="Fahrer"
+                       Value="@DrivePlan.Driver"
+                       ValueChanged="@OnDriverChanged"
+                       Variant="Variant.Outlined"
+                       Dense="true"
+                       Margin="Margin.Dense"
+                       Class="mb-3">
+                @foreach (var driver in AllDrivers)
+                {
+                    var isAvailable = driver.AvailableDates.Contains(DrivePlan.RouteDate);
+                    <MudSelectItem Value="@driver" Disabled="@(!isAvailable)">
+                        @driver.Person?.Contact?.FirstName @driver.Person?.Contact?.LastName
+                        (Kap: @driver.CapacityForChickens)
+                        @if (!isAvailable)
+                        {
+                            <MudChip T="string" Color="Color.Warning" Size="Size.Small" Class="ml-2">Nicht verfügbar</MudChip>
+                        }
+                    </MudSelectItem>
+                }
+            </MudSelect>
+
+            @* Capacity Info *@
+            <MudPaper Class="pa-2 mb-2" Elevation="0" Style="background-color: #f5f5f5;">
+                <MudText Typo="Typo.body2">
+                    <strong>Kapazität:</strong> @TotalSelectedAnimals / @DrivePlan.Driver.CapacityForChickens
+                    @if (TotalSelectedAnimals > DrivePlan.Driver.CapacityForChickens)
+                    {
+                        <MudChip T="string" Color="Color.Error" Size="Size.Small">Überladen!</MudChip>
+                    }
+                </MudText>
+                <MudText Typo="Typo.body2" Color="Color.Info">
+                    <strong>Strecke (Luftlinie):</strong> @DrivePlan.TotalDistanceInKm.ToString("F1") km
+                </MudText>
+            </MudPaper>
+
+            @* Delete Button *@
+            @if (ShowDeleteButton)
+            {
+                <MudButton Variant="Variant.Outlined"
+                           Color="Color.Error"
+                           Size="Size.Small"
+                           FullWidth="true"
+                           StartIcon="@Icons.Material.Filled.Delete"
+                           OnClick="@OnDeleteClicked">
+                    Route löschen
+                </MudButton>
+            }
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+@code {
+    /// <summary>
+    /// The drive plan to display
+    /// </summary>
+    [Parameter, EditorRequired]
+    public DrivePlan DrivePlan { get; set; } = default!;
+
+    /// <summary>
+    /// All drop items (needed to check what's in this plan's drop zone)
+    /// </summary>
+    [Parameter, EditorRequired]
+    public List<DropItem> Items { get; set; } = default!;
+
+    /// <summary>
+    /// All drivers (to show in dropdown with availability indicator)
+    /// </summary>
+    [Parameter, EditorRequired]
+    public List<SaveChickenDriveRequestDto> AllDrivers { get; set; } = default!;
+
+    /// <summary>
+    /// All farms (to show in dropdown)
+    /// </summary>
+    [Parameter, EditorRequired]
+    public List<FarmDto> AllFarms { get; set; } = default!;
+
+    /// <summary>
+    /// Available drivers for this plan's date (for backwards compatibility)
+    /// </summary>
+    [Parameter, EditorRequired]
+    public List<SaveChickenDriveRequestDto> AvailableDrivers { get; set; } = default!;
+
+    /// <summary>
+    /// Total animals selected in this plan (calculated by parent)
+    /// </summary>
+    [Parameter, EditorRequired]
+    public int TotalSelectedAnimals { get; set; }
+
+    /// <summary>
+    /// Whether to show the delete button (false if this is the only plan)
+    /// </summary>
+    [Parameter]
+    public bool ShowDeleteButton { get; set; } = true;
+
+    /// <summary>
+    /// Callback when date is changed
+    /// </summary>
+    [Parameter]
+    public EventCallback<DateOnly> OnDateChanged { get; set; }
+
+    /// <summary>
+    /// Callback when driver is changed
+    /// </summary>
+    [Parameter]
+    public EventCallback<SaveChickenDriveRequestDto> OnDriverChanged { get; set; }
+
+    /// <summary>
+    /// Callback when farm is changed
+    /// </summary>
+    [Parameter]
+    public EventCallback<FarmDto> OnFarmChanged { get; set; }
+
+    /// <summary>
+    /// Callback when delete button is clicked
+    /// </summary>
+    [Parameter]
+    public EventCallback OnDeleteClicked { get; set; }
+}
+
+<style>
+    .always-dropzone {
+        min-height: 64px;
+    }
+
+    .empty-dropzone-placeholder {
+        color: #bbb;
+        text-align: center;
+        padding: 16px 0;
+        font-style: italic;
+        pointer-events: none;
+        margin-top: -48px;
+        z-index: 1;
+        position: relative;
+    }
+</style>

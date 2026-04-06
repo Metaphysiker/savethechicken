@@ -1,0 +1,46 @@
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Farms
+@using global::Shared.Dtos.DtosImpl
+
+@page "/betrieb-anmelden"
+@page "/register-farm"
+
+<PageTitle>Betrieb anmelden</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large">
+
+    <MudPaper Class="pa-6 my-4" Elevation="2">
+        <MudText Typo="Typo.h3" Class="mb-4">Betrieb zur Hühnerrettung anmelden</MudText>
+
+        <MudAlert Severity="Severity.Info" Dense="false" Class="my-4">
+            <MudText Typo="Typo.body1">
+                <strong>Vielen Dank für Ihre Meldung!</strong>
+            </MudText>
+            <MudText Typo="Typo.body2" Class="mt-2">
+                Bitte melden Sie uns hier Betriebe, die Hühner abgeben möchten oder müssen.
+            </MudText>
+        </MudAlert>
+
+        @if (publicDto != null)
+        {
+            <PublicFarmForm Model="publicDto" OnSubmitSuccess="HandleSuccess" />
+        }
+    </MudPaper>
+
+</MudContainer>
+
+@code {
+    private FarmPublicDto? publicDto;
+
+    protected override void OnInitialized()
+    {
+        publicDto = new FarmPublicDto();
+    }
+
+    private void HandleSuccess()
+    {
+        NavigationManager.NavigateTo("/thank-you");
+    }
+
+    [Inject]
+    private NavigationManager NavigationManager { get; set; } = default!;
+}

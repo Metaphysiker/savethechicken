@@ -1,0 +1,115 @@
+@using global::Shared.Dtos.DtosImpl
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using Microsoft.Extensions.Localization
+@using MauiBlazorWeb.Shared.Resources.Strings
+@inject GenericDtoServiceFactory DtoServiceFactory
+@inject NavigationManager NavigationManager
+@inject IStringLocalizer<AppResources> L
+
+@if (displayPerson != null)
+{
+    <MudPaper Class="pa-3 my-2" Elevation="1">
+        <div style="display: flex; justify-content: space-between; align-items: start;">
+            <div style="flex: 1;">
+                @* Name *@
+                @if (displayPerson.Contact != null && (!string.IsNullOrWhiteSpace(displayPerson.Contact.FirstName) || !string.IsNullOrWhiteSpace(displayPerson.Contact.LastName)))
+                {
+                    <MudText Typo="Typo.subtitle1" Class="mb-1">
+                <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Small" Class="mr-1" />
+                @if (!string.IsNullOrWhiteSpace(displayPerson.Contact.FirstName))
+                {
+                    <span data-testid="contact-firstname">@displayPerson.Contact.FirstName</span>
+                }
+                @if (!string.IsNullOrWhiteSpace(displayPerson.Contact.LastName))
+                {
+                        @(" ")<span data-testid="contact-lastname">@displayPerson.Contact.LastName</span>
+                    }
+                </MudText>
+            }
+
+                @* Contact Info - Email and Phone inline *@
+                @if (displayPerson.Contact != null)
+                {
+                <MudText Typo="Typo.body2" Class="mb-1">
+                @if (!string.IsNullOrWhiteSpace(displayPerson.Contact.Email))
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.Email" Size="Size.Small" Class="mr-1" />
+                    <span data-testid="contact-email">@displayPerson.Contact.Email</span>
+                }
+                @if (!string.IsNullOrWhiteSpace(displayPerson.Contact.PhoneNumber))
+                {
+                    @if (!string.IsNullOrWhiteSpace(displayPerson.Contact.Email))
+                    {
+                        <span Class="mx-2">|</span>
+                    }
+                    <MudIcon Icon="@Icons.Material.Filled.Phone" Size="Size.Small" Class="mr-1" />
+                        <span data-testid="contact-phone">@displayPerson.Contact.PhoneNumber</span>
+                    }
+                </MudText>
+            }
+
+                @* Address *@
+                @if (displayPerson.Address != null)
+                {
+                    <MudText Typo="Typo.body2">
+                <MudIcon Icon="@Icons.Material.Filled.LocationOn" Size="Size.Small" Class="mr-1" />
+                @if (!string.IsNullOrWhiteSpace(displayPerson.Address.Street))
+                {
+                    <span data-testid="address-street">@displayPerson.Address.Street</span><span>, </span>
+                }
+                @if (!string.IsNullOrWhiteSpace(displayPerson.Address.PostalCode))
+                {
+                    <span data-testid="address-postalcode">@displayPerson.Address.PostalCode</span>
+                }
+                @if (!string.IsNullOrWhiteSpace(displayPerson.Address.City))
+                {
+                        @(" ")<span data-testid="address-city">@displayPerson.Address.City</span>
+                    }
+                </MudText>
+            }
+            </div>
+
+            @if (displayPerson.Id > 0)
+            {
+                <MudIconButton Icon="@Icons.Material.Filled.ArrowForward"
+                              Size="Size.Small"
+                              Color="Color.Primary"
+                              Variant="Variant.Outlined"
+                              OnClick="@(() => NavigationManager.NavigateTo($"/admin/persons/{displayPerson.Id}"))"
+                              Title="@L["ViewPerson"]" />
+            }
+        </div>
+    </MudPaper>
+}
+
+@code {
+    [Parameter]
+    public PersonDto? Person { get; set; }
+
+    [Parameter]
+    public int? PersonId { get; set; }
+
+    private PersonDto? displayPerson;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadPerson();
+    }
+
+    private async Task LoadPerson()
+    {
+        // Use Person parameter if provided
+        if (Person != null)
+        {
+            displayPerson = Person;
+        }
+        // Otherwise, if PersonId is provided, fetch the person
+        else if (PersonId.HasValue)
+        {
+            var personService = DtoServiceFactory.Create<PersonDto, PersonSearch>();
+            displayPerson = await personService.GetByIdAsync(PersonId.Value);
+        }
+
+        StateHasChanged();
+    }
+}

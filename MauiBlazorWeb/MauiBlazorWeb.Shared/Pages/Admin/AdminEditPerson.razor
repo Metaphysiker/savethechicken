@@ -1,0 +1,49 @@
+@page "/admin/persons/{Id:int}/edit"
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Persons
+@using MauiBlazorWeb.Web.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
+@inject GenericDtoServiceFactory DtoServiceFactory
+@inject NavigationManager NavigationManager
+@inject IStringLocalizer<AppResources> L
+
+<PageTitle>@L["Admin_EditPerson_Title"]</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large">
+    <MudText Typo="Typo.h3" Class="mb-4">@L["Admin_EditPerson_Heading"]</MudText>
+
+    <MudAlert Severity="Severity.Info" Dense="true" Class="my-4">
+        <strong>@L["Admin_Persons_AlertTitle"]</strong> @L["Admin_EditPerson_AlertText"]
+    </MudAlert>
+
+    @if (model != null)
+    {
+        <GenericUpdate TDto="PersonDto" model="model" ResourceName="admin/persons">
+            <ChildContent Context="editModel">
+                <PersonForm Person="editModel" />
+            </ChildContent>
+        </GenericUpdate>
+    }
+    else
+    {
+        <MudProgressCircular Indeterminate="true" />
+        <MudText>@L["Loading"]</MudText>
+    }
+</MudContainer>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private PersonDto? model = null;
+
+    private GenericDtoService<PersonDto, PersonSearch>? _service;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _service = DtoServiceFactory.Create<PersonDto, PersonSearch>();
+        model = await _service.GetByIdAsync(Id);
+        StateHasChanged();
+    }
+}

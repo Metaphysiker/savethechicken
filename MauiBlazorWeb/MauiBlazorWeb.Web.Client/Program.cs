@@ -13,6 +13,7 @@ using System.Net.Http.Json;
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<AuthenticationHandler>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<AwsFileService>();
 builder.Services.AddScoped<SaveChickenActionService>();
@@ -36,10 +37,16 @@ if (config is null)
 
 var apiBaseUrl = config.ApiBaseUrl ?? "https://localhost:7101/";
 
-// Register HttpClient for WebAssembly DI
-builder.Services.AddScoped(sp => new HttpClient
+// Register HttpClient with AuthenticationHandler for WebAssembly DI
+builder.Services.AddScoped(sp =>
 {
-    BaseAddress = new Uri(apiBaseUrl)
+    var handler = sp.GetRequiredService<AuthenticationHandler>();
+    handler.InnerHandler = new HttpClientHandler();
+    var httpClient = new HttpClient(handler)
+    {
+        BaseAddress = new Uri(apiBaseUrl)
+    };
+    return httpClient;
 });
 
 // Register factory and let it use HttpClient from DI

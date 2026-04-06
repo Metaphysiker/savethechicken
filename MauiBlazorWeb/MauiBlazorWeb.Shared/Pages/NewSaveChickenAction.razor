@@ -1,5 +1,4 @@
 ﻿@using MauiBlazorWeb.Shared.Components.ComponentsImpl
-@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Drivers
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Farms
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
@@ -7,13 +6,13 @@
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
 
-@page "/save-chicken-actions/new"
+@page "/admin/save-chicken-actions/new"
 
 <PageTitle>Neue Rettungsaktion für Hühner</PageTitle>
 
 <MudContainer>
     <h3>Neue Rettungsaktion für Hühner</h3>
-    <GenericCreate TDto="SaveChickenActionDto">
+    <GenericCreate TDto="SaveChickenActionDto" ResourceName="admin/save-chicken-actions">
         <ChildContent Context="model">
             <SaveChickenActionForm Model="model" />
         </ChildContent>

@@ -14,12 +14,21 @@ namespace WebApi.Models.ModelsImpl
         public string Title { get; set; } = string.Empty;
         [Required]
         public string Description { get; set; } = string.Empty;
+
+        /// <summary>
+        /// JSON serialized drive plans from the route planner
+        /// </summary>
+        public string? RoutePlansJson { get; set; }
+
         public List<SaveChickenRequest> SaveChickenRequests { get; set; }
-        public bool IsActive { get; set; } = false;
+        public List<Farm> Farms { get; set; }
+        public List<SaveChickenDriveRequest> SaveChickenDriveRequests { get; set; }
 
         public SaveChickenAction()
         {
             SaveChickenRequests = new List<SaveChickenRequest>();
+            Farms = new List<Farm>();
+            SaveChickenDriveRequests = new List<SaveChickenDriveRequest>();
         }
 
     }
