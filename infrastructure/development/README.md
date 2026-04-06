@@ -41,3 +41,19 @@ When running locally, migrations run automatically on startup. To manually creat
 cd ../../WebApi
 dotnet ef migrations add YourMigrationName
 ```
+
+## Restore Database Backup
+
+To restore a production backup to your development environment:
+
+```powershell
+# Restore the most recent backup automatically
+.\restore-backup-to-development.ps1
+
+# Or restore a specific backup file
+.\restore-backup-to-development.ps1 C:\Users\sraes\savethechicken-backups\dump_2026-04-06_19_40_18.dump
+```
+
+**Prerequisites:**
+- Docker development environment must be running (`docker compose up`)
+- Backup file must be in `.dump` format (created by `pg_dump -Fc`)
