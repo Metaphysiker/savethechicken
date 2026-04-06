@@ -15,19 +15,19 @@ $containerName = "savethechicken-development-postgres-1"
 # If no dump file is provided, find the most recent one
 if ([string]::IsNullOrEmpty($PathToDumpFile)) {
     Write-Host "No dump file specified. Looking for the most recent backup in: $defaultBackupFolder" -ForegroundColor Yellow
-    
+
     if (-not (Test-Path $defaultBackupFolder)) {
         Write-Error "Default backup folder does not exist: $defaultBackupFolder"
         exit 1
     }
-    
+
     $latestBackup = Get-ChildItem -Path $defaultBackupFolder -Filter "dump_*.dump" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
-    
+
     if ($null -eq $latestBackup) {
         Write-Error "No backup files found in: $defaultBackupFolder"
         exit 1
     }
-    
+
     $PathToDumpFile = $latestBackup.FullName
     Write-Host "Found most recent backup: $($latestBackup.Name)" -ForegroundColor Cyan
     Write-Host "Created: $($latestBackup.LastWriteTime)" -ForegroundColor Gray
