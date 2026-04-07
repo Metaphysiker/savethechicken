@@ -15,58 +15,68 @@
                 @if (displayPerson.Contact != null && (!string.IsNullOrWhiteSpace(displayPerson.Contact.FirstName) || !string.IsNullOrWhiteSpace(displayPerson.Contact.LastName)))
                 {
                     <MudText Typo="Typo.subtitle1" Class="mb-1">
-                <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Small" Class="mr-1" />
-                @if (!string.IsNullOrWhiteSpace(displayPerson.Contact.FirstName))
-                {
-                    <span data-testid="contact-firstname">@displayPerson.Contact.FirstName</span>
+                        <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Small" Class="mr-1" />
+                        <strong>@L["Name"]</strong><br/>
+                        @if (!string.IsNullOrWhiteSpace(displayPerson.Contact.FirstName))
+                        {
+                            <span data-testid="contact-firstname">@displayPerson.Contact.FirstName</span>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(displayPerson.Contact.LastName))
+                        {
+                            @if (!string.IsNullOrWhiteSpace(displayPerson.Contact.FirstName))
+                            {
+                                @(" ")
+                            }
+                            <span data-testid="contact-lastname">@displayPerson.Contact.LastName</span>
+                        }
+                    </MudText>
                 }
-                @if (!string.IsNullOrWhiteSpace(displayPerson.Contact.LastName))
-                {
-                        <span data-testid="contact-lastname"> @displayPerson.Contact.LastName</span>
-                    }
-                </MudText>
-            }
 
-                @* Contact Info - Email and Phone inline *@
+                @* Contact Info - Email and Phone *@
                 @if (displayPerson.Contact != null)
-                {
-                <MudText Typo="Typo.body2" Class="mb-1">
-                @if (!string.IsNullOrWhiteSpace(displayPerson.Contact.Email))
-                {
-                    <MudIcon Icon="@Icons.Material.Filled.Email" Size="Size.Small" Class="mr-1" />
-                    <span data-testid="contact-email">@displayPerson.Contact.Email</span>
-                }
-                @if (!string.IsNullOrWhiteSpace(displayPerson.Contact.PhoneNumber))
                 {
                     @if (!string.IsNullOrWhiteSpace(displayPerson.Contact.Email))
                     {
-                        <span Class="mx-2">|</span>
+                        <MudText Typo="Typo.body2" Class="mb-1">
+                            <MudIcon Icon="@Icons.Material.Filled.Email" Size="Size.Small" Class="mr-1" />
+                            <strong>@L["Email"]</strong><br/>
+                            <span data-testid="contact-email">@displayPerson.Contact.Email</span>
+                        </MudText>
                     }
-                    <MudIcon Icon="@Icons.Material.Filled.Phone" Size="Size.Small" Class="mr-1" />
-                        <span data-testid="contact-phone">@displayPerson.Contact.PhoneNumber</span>
+                    @if (!string.IsNullOrWhiteSpace(displayPerson.Contact.PhoneNumber))
+                    {
+                        <MudText Typo="Typo.body2" Class="mb-1">
+                            <MudIcon Icon="@Icons.Material.Filled.Phone" Size="Size.Small" Class="mr-1" />
+                            <strong>@L["PhoneNumber"]</strong><br/>
+                            <span data-testid="contact-phone">@displayPerson.Contact.PhoneNumber</span>
+                        </MudText>
                     }
-                </MudText>
-            }
+                }
 
                 @* Address *@
                 @if (displayPerson.Address != null)
                 {
                     <MudText Typo="Typo.body2">
-                <MudIcon Icon="@Icons.Material.Filled.LocationOn" Size="Size.Small" Class="mr-1" />
-                @if (!string.IsNullOrWhiteSpace(displayPerson.Address.Street))
-                {
-                    <span data-testid="address-street">@displayPerson.Address.Street</span><span>, </span>
+                        <MudIcon Icon="@Icons.Material.Filled.LocationOn" Size="Size.Small" Class="mr-1" />
+                        <strong>@L["Address"]</strong><br/>
+                        @if (!string.IsNullOrWhiteSpace(displayPerson.Address.Street))
+                        {
+                            <span data-testid="address-street">@displayPerson.Address.Street</span><span>, </span>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(displayPerson.Address.PostalCode))
+                        {
+                            <span data-testid="address-postalcode">@displayPerson.Address.PostalCode</span>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(displayPerson.Address.City))
+                        {
+                            @if (!string.IsNullOrWhiteSpace(displayPerson.Address.PostalCode))
+                            {
+                                @(" ")
+                            }
+                            <span data-testid="address-city">@displayPerson.Address.City</span>
+                        }
+                    </MudText>
                 }
-                @if (!string.IsNullOrWhiteSpace(displayPerson.Address.PostalCode))
-                {
-                    <span data-testid="address-postalcode">@displayPerson.Address.PostalCode </span>
-                }
-                @if (!string.IsNullOrWhiteSpace(displayPerson.Address.City))
-                {
-                        <span data-testid="address-city">@displayPerson.Address.City</span>
-                    }
-                </MudText>
-            }
             </div>
 
             @if (displayPerson.Id > 0)

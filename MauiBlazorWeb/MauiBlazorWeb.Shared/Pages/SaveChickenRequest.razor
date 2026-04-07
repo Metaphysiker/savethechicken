@@ -1,0 +1,273 @@
+@page "/admin/save-chicken-requests/{id:int}"
+
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Persons
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.StoredFiles
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Shared.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+@using Microsoft.Extensions.Localization
+@using MauiBlazorWeb.Shared.Resources.Strings
+@inject GenericDtoServiceFactory DtoServiceFactory
+@inject NavigationManager NavigationManager
+@inject IStringLocalizer<AppResources> L
+
+<PageTitle>@L["Admin"] - @L["SaveChickenRequestDetails"]</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+    <MudBreadcrumbs Items="_breadcrumbs" Class="mb-4"></MudBreadcrumbs>
+
+    <MudText Typo="Typo.h3" Class="mb-4">@L["SaveChickenRequestDetails"]</MudText>
+
+    @if (item != null)
+    {
+        <!-- Person Information -->
+        <CompactPersonDetailsCard Person="item.Person"
+                                 PersonId="item.PersonId" />
+
+        <!-- Request Information -->
+        <MudPaper Class="pa-4 my-4" Elevation="2">
+            <MudText Typo="Typo.h6" Class="mb-3">@L["SaveChickenRequestInformation"]</MudText>
+
+            @if (item.NumberOfChickensToBeSaved > 0)
+            {
+                <MudText Typo="Typo.body1" Class="mb-2">
+                    <strong>@L["NumberOfChickensToBeSaved"]:</strong><br/>
+                    @item.NumberOfChickensToBeSaved
+                </MudText>
+            }
+
+            @if (item.NumberOfRoostersToBeSaved > 0)
+            {
+                <MudText Typo="Typo.body1" Class="mb-2">
+                    <strong>@L["NumberOfRoostersToBeSaved"]:</strong><br/>
+                    @item.NumberOfRoostersToBeSaved
+                </MudText>
+            }
+
+            @if (item.NumberOfBoxes > 0)
+            {
+                <MudText Typo="Typo.body1" Class="mb-2">
+                    <strong>@L["NumberOfBoxes"]:</strong><br/>
+                    @item.NumberOfBoxes
+                </MudText>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(item.Color))
+            {
+                <MudText Typo="Typo.body1" Class="mb-2">
+                    <strong>@L["Color"]:</strong><br/>
+                    <span class="mud-chip" style="@($"background-color: {item.Color}; padding: 4px 12px; border-radius: 16px; display: inline-block;")">@item.Color</span>
+                </MudText>
+            }
+
+            <MudText Typo="Typo.body1" Class="mb-2">
+                <strong>@L["AcceptTermsAndConditions"]:</strong><br/>
+                @if (item.AcceptTermsAndConditions)
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small" />
+                    <span>@L["Yes"]</span>
+                }
+                else
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small" />
+                    <span>@L["No"]</span>
+                }
+            </MudText>
+
+            <MudText Typo="Typo.body1" Class="mb-2">
+                <strong>@L["AlreadyReceivedChickenPreviously"]:</strong><br/>
+                @if (item.AlreadyReceivedChickenPreviously)
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small" />
+                    <span>@L["Yes"]</span>
+                }
+                else
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Default" Size="Size.Small" />
+                    <span>@L["No"]</span>
+                }
+            </MudText>
+
+            <MudText Typo="Typo.body1" Class="mb-2">
+                <strong>@L["ConfirmThatIFulfillCriteria"]:</strong><br/>
+                @if (item.ConfirmThatIFulfillCriteria)
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small" />
+                    <span>@L["Yes"]</span>
+                }
+                else
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small" />
+                    <span>@L["No"]</span>
+                }
+            </MudText>
+
+            @if (!string.IsNullOrWhiteSpace(item.DescriptionOfPlaceForChickens))
+            {
+                <MudText Typo="Typo.body1" Class="mt-4">
+                    <strong>@L["DescriptionOfPlaceForChickens"]:</strong><br/>
+                    @item.DescriptionOfPlaceForChickens
+                </MudText>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(item.Message))
+            {
+                <MudText Typo="Typo.body1" Class="mt-3">
+                    <strong>@L["Message"]:</strong><br/>
+                    @item.Message
+                </MudText>
+            }
+
+            <MudDivider Class="my-3" />
+
+            <MudText Typo="Typo.caption" Class="mb-2">
+                <strong>@L["CreatedAt"]</strong> @item.CreatedAt.ToLocalTime().ToString("g")
+            </MudText>
+
+            <MudText Typo="Typo.caption">
+                <strong>@L["UpdatedAt"]</strong> @item.UpdatedAt.ToLocalTime().ToString("g")
+            </MudText>
+        </MudPaper>
+
+        <!-- Address for Hand Over -->
+        @if (item.AddressForHandOver != null)
+        {
+            <MudPaper Class="pa-4 my-4" Elevation="2">
+                <MudText Typo="Typo.h6" Class="mb-3">@L["AddressForHandOver"]</MudText>
+                @if (!string.IsNullOrWhiteSpace(item.AddressForHandOver.Street))
+                {
+                    <MudText Class="mb-2">
+                        <strong>@L["Address_Street"]:</strong><br/>
+                        @item.AddressForHandOver.Street
+                    </MudText>
+                }
+                @if (!string.IsNullOrWhiteSpace(item.AddressForHandOver.PostalCode) || !string.IsNullOrWhiteSpace(item.AddressForHandOver.City))
+                {
+                    <MudText>
+                        <strong>@L["Address_City"]:</strong><br/>
+                        @item.AddressForHandOver.PostalCode @item.AddressForHandOver.City
+                    </MudText>
+                }
+            </MudPaper>
+        }
+
+        <!-- Save Chicken Action -->
+        @if (item.SaveChickenAction != null)
+        {
+            <MudPaper Class="pa-4 my-4" Elevation="2">
+                <MudText Typo="Typo.h6" Class="mb-3">@L["SaveChickenAction"]</MudText>
+                <MudText Typo="Typo.body1">
+                    <strong>@L["Title"]:</strong><br/>
+                    @item.SaveChickenAction.Title
+                </MudText>
+                @if (item.SaveChickenAction.Dates.Any())
+                {
+                    <MudText Typo="Typo.body1" Class="mt-2">
+                        <strong>@L["Dates"]:</strong><br/>
+                        @string.Join(", ", item.SaveChickenAction.Dates.Select(d => d.ToString("d")))
+                    </MudText>
+                }
+                <MudButton Href="@($"/admin/save-chicken-actions/{item.SaveChickenActionId}")"
+                          Variant="Variant.Text"
+                          Color="Color.Primary"
+                          StartIcon="@Icons.Material.Filled.OpenInNew"
+                          Class="mt-2">
+                    @L["ViewAction"]
+                </MudButton>
+            </MudPaper>
+        }
+
+        <!-- Files -->
+        @if (item.Files != null && item.Files.Any())
+        {
+            <MudPaper Class="pa-4 my-4" Elevation="2">
+                <MudText Typo="Typo.h6" Class="mb-3">@L["Files"] (@item.Files.Count)</MudText>
+                @foreach (var file in item.Files)
+                {
+                    <div class="mb-2">
+                        <StoredFileViewer storedFileDto="file" />
+                    </div>
+                }
+            </MudPaper>
+        }
+
+        <!-- Blacklisted Persons -->
+        @if (item.BlackListedPersonIds != null && item.BlackListedPersonIds.Any())
+        {
+            <MudPaper Class="pa-4 my-4" Elevation="2">
+                <MudText Typo="Typo.h6" Class="mb-3">@L["BlackListedPersons"]</MudText>
+                <MudText Typo="Typo.body1">
+                    @string.Join(", ", item.BlackListedPersonIds)
+                </MudText>
+            </MudPaper>
+        }
+
+        <!-- Actions -->
+        <MudPaper Class="pa-4 my-4" Elevation="2">
+            <MudText Typo="Typo.h6" Class="mb-3">@L["Actions"]</MudText>
+            <MudStack Row="true" Spacing="2">
+                <GenericUpdateDialogLauncher TDto="SaveChickenRequestDto"
+                                             model="item"
+                                             OnEdited="RefreshItem"
+                                             ButtonText="@L["edit"]">
+                    <ChildContent Context="editModel">
+                        <SaveChickenRequestFormWithFiles EntityWithFiles="@(new ItemWithBrowserFiles<SaveChickenRequestDto> { Item = editModel })" />
+                    </ChildContent>
+                </GenericUpdateDialogLauncher>
+                <GenericDeleteDialog TDto="SaveChickenRequestDto" Model="item" ButtonText="@L["delete"]" />
+            </MudStack>
+        </MudPaper>
+    }
+    else if (Id.HasValue)
+    {
+        <MudPaper Class="pa-4">
+            <MudProgressCircular Indeterminate="true" />
+            <MudText Class="ml-2">@L["Loading"]</MudText>
+        </MudPaper>
+    }
+    else
+    {
+        <MudPaper Class="pa-4">
+            <MudText>@L["NoSaveChickenRequestSelected"]</MudText>
+        </MudPaper>
+    }
+</MudContainer>
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    private SaveChickenRequestDto? item;
+
+    private List<BreadcrumbItem> _breadcrumbs = new List<BreadcrumbItem>();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadItem();
+    }
+
+    private async Task LoadItem()
+    {
+        if (Id.HasValue)
+        {
+            var service = DtoServiceFactory.Create<SaveChickenRequestDto, SaveChickenRequestSearch>();
+            item = await service.GetByIdAsync(Id.Value);
+
+            _breadcrumbs = new List<BreadcrumbItem>
+            {
+                new BreadcrumbItem(L["Home"], href: "/admin/persons"),
+                new BreadcrumbItem(L["SaveChickenRequests"], href: "/admin/save-chicken-requests"),
+                new BreadcrumbItem(item?.GenericName ?? $"#{Id}", href: null, disabled: true)
+            };
+
+            StateHasChanged();
+        }
+    }
+
+    private async Task RefreshItem()
+    {
+        await LoadItem();
+    }
+}
