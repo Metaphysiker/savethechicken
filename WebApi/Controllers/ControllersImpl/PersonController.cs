@@ -143,6 +143,23 @@ namespace WebApi.Controllers.ControllersImpl
                 existingPerson.Address.Street = dto.Address.Street;
                 existingPerson.Address.City = dto.Address.City;
                 existingPerson.Address.PostalCode = dto.Address.PostalCode;
+                
+                // Update GeoCoordinate if provided
+                if (dto.Address.GeoCoordinate != null)
+                {
+                    if (existingPerson.Address.GeoCoordinate == null)
+                    {
+                        existingPerson.Address.GeoCoordinate = new GeoCoordinate();
+                    }
+                    existingPerson.Address.GeoCoordinate.Latitude = dto.Address.GeoCoordinate.Latitude;
+                    existingPerson.Address.GeoCoordinate.Longitude = dto.Address.GeoCoordinate.Longitude;
+                }
+                else
+                {
+                    // If dto has null coordinates, remove them
+                    existingPerson.Address.GeoCoordinate = null;
+                }
+                
                 existingPerson.Address.UpdatedAt = DateTime.UtcNow;
                 _db.Addresses.Update(existingPerson.Address);
             }
