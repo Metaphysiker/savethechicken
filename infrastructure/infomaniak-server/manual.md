@@ -132,7 +132,62 @@ docker compose -f docker-compose.remote.yml run -it --entrypoint bash webapi
 
 ## Backup
 
-### Create Database Backup from Server
+### Automated Backups (Recommended)
+
+**For computers that don't run 24/7**, use automated backups that run hourly and create ONE backup per day (whenever your PC is on).
+
+#### Setup (Windows Only)
+
+**1. Test Manual Backup First:**
+```powershell
+cd infrastructure\infomaniak-server
+.\create-infomaniak-backup.ps1
+```
+
+**2. Setup Hourly Scheduled Task (Run as Administrator):**
+```powershell
+.\setup-scheduled-infomaniak-backup.ps1
+```
+
+This creates a Windows Task Scheduler task that:
+- Runs every hour
+- Checks if a backup was already created today
+- If not, downloads a fresh backup from Infomaniak
+- Only creates ONE backup per day (first successful run)
+
+**Default backup location:** `C:\Users\sraes\savethechicken-backups\automatic-backups`
+
+#### Managing Automated Backups
+
+```powershell
+# Run backup manually
+Get-ScheduledTask -TaskName "SaveTheChicken-InfomaniakBackup" | Start-ScheduledTask
+
+# Check status
+Get-ScheduledTask -TaskName "SaveTheChicken-InfomaniakBackup" | Get-ScheduledTaskInfo
+
+# View in GUI
+taskschd.msc
+
+# Disable task
+Disable-ScheduledTask -TaskName "SaveTheChicken-InfomaniakBackup"
+
+# Remove task
+Unregister-ScheduledTask -TaskName "SaveTheChicken-InfomaniakBackup" -Confirm:$false
+```
+
+#### How It Works
+
+1. **Hourly Check:** Script runs every hour via Task Scheduler
+2. **Smart Skip:** If backup already exists for today's date, exits immediately
+3. **Download:** If no backup exists, connects to Infomaniak and downloads fresh backup
+4. **Organization:** Automatic backups are stored in `automatic-backups` subfolder to separate them from manual backups
+
+**Result:** You get one daily backup whenever your PC is running, without duplicates!
+
+### Manual Database Backup
+
+For one-time backups or if you don't want automation:
 
 **Linux/Mac:**
 ```bash

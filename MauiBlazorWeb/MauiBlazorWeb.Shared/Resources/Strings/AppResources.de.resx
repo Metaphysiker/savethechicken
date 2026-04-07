@@ -692,4 +692,13 @@
   <data name="ViewAction" xml:space="preserve">
     <value>Aktion ansehen</value>
   </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>Mehr anzeigen</value>
+  </data>
+  <data name="FullText" xml:space="preserve">
+    <value>Vollständiger Text</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Schließen</value>
+  </data>
 </root>
