@@ -83,12 +83,17 @@
 
     protected override void OnInitialized()
     {
-        authResponseSingleton.OnChange += StateHasChanged;
+        authResponseSingleton.OnChange += OnAuthStateChanged;
+    }
+
+    private void OnAuthStateChanged()
+    {
+        InvokeAsync(StateHasChanged);
     }
 
     public void Dispose()
     {
-        authResponseSingleton.OnChange -= StateHasChanged;
+        authResponseSingleton.OnChange -= OnAuthStateChanged;
     }
 
     private async Task HandleCloseDrawer()

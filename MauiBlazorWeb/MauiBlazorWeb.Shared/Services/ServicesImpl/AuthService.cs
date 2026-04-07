@@ -50,10 +50,20 @@ public class AuthService
     public async Task<AuthResponseDto?> RefreshTokenAsync()
     {
         var token = await _tokenService.GetTokenAsync();
-        if (string.IsNullOrEmpty(token)) return null;
+        if (string.IsNullOrEmpty(token))
+        {
+            _authResponseSingleton.AuthResponse = null;
+            return null;
+        }
 
         var response = await _httpClient.GetAsync("api/auth/refresh-token");
-        if (!response.IsSuccessStatusCode) return null;
+        if (!response.IsSuccessStatusCode)
+        {
+            // Token is invalid (e.g., after DB restore), clean up
+            await _tokenService.RemoveTokenAsync();
+            _authResponseSingleton.AuthResponse = null;
+            return null;
+        }
 
         var authResponse = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
         if (authResponse != null)

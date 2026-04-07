@@ -76,15 +76,21 @@ public class AuthController : ControllerBase
     {
         if (User.Identity == null || !User.Identity.IsAuthenticated)
         {
-            return BadRequest("User not authenticated");
+            return Unauthorized("User not authenticated");
         }
 
-        var claimsWithId = User.Claims.Where(c => c.Type == "UserId");
-        var foundUser = await _userManager.FindByIdAsync(claimsWithId.First().Value);
+        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId");
+        if (userIdClaim == null)
+        {
+            return Unauthorized("Invalid token claims");
+        }
+
+        var foundUser = await _userManager.FindByIdAsync(userIdClaim.Value);
 
         if (foundUser == null)
         {
-            return BadRequest("User not found");
+            // User was deleted or DB was restored - token is no longer valid
+            return Unauthorized("User not found");
         }
 
         return Ok(await BuildAuthResponse(foundUser));

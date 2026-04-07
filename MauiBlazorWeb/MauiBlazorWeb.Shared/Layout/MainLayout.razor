@@ -60,12 +60,14 @@
 
     private void OnAuthStateChanged()
     {
-        StateHasChanged();
-
         // If user just logged out or token became invalid, redirect to home/login
         if (!authResponseSingleton.IsLoggedIn && NavigationManager.Uri.Contains("/admin"))
         {
-            NavigationManager.NavigateTo("/");
+            NavigationManager.NavigateTo("/", forceLoad: false);
+        }
+        else
+        {
+            InvokeAsync(StateHasChanged);
         }
     }
 
@@ -83,6 +85,13 @@
             if (isTokenValid == true)
             {
                 await AuthService.RefreshTokenAsync();
+            }
+            else if (NavigationManager.Uri.Contains("/admin"))
+            {
+                // Token is invalid and user is trying to access admin page
+                // Redirect to home/login
+                NavigationManager.NavigateTo("/", forceLoad: true);
+                return;
             }
 
             StateHasChanged();
