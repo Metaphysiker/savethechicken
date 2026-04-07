@@ -614,4 +614,67 @@
   <data name="NewFarm" xml:space="preserve">
     <value>Neuer Betrieb</value>
   </data>
+  <data name="Address_Latitude" xml:space="preserve">
+    <value>Breitengrad</value>
+  </data>
+  <data name="Address_Longitude" xml:space="preserve">
+    <value>Längengrad</value>
+  </data>
+  <data name="Address_AddCoordinates" xml:space="preserve">
+    <value>Koordinaten hinzufügen</value>
+  </data>
+  <data name="Address_RemoveCoordinates" xml:space="preserve">
+    <value>Koordinaten entfernen</value>
+  </data>
+  <data name="GeolocationUpdate" xml:space="preserve">
+    <value>Geolokalisierung aktualisieren</value>
+  </data>
+  <data name="Admin_Geolocation_Title" xml:space="preserve">
+    <value>Stapel-Geolokalisierung</value>
+  </data>
+  <data name="Admin_Geolocation_Heading" xml:space="preserve">
+    <value>Personenadressen mit Geolokalisierung aktualisieren</value>
+  </data>
+  <data name="Admin_Geolocation_Description" xml:space="preserve">
+    <value>Dieses Tool aktualisiert alle Personenadressen stapelweise mit Geolokalisierungskoordinaten über die Schweizer Geocoding-API.</value>
+  </data>
+  <data name="Admin_Geolocation_BatchSize" xml:space="preserve">
+    <value>Stapelgröße</value>
+  </data>
+  <data name="Admin_Geolocation_UpdateAll" xml:space="preserve">
+    <value>Alle aktualisieren (inkl. vorhandene Koordinaten)</value>
+  </data>
+  <data name="Admin_Geolocation_Progress" xml:space="preserve">
+    <value>Fortschritt</value>
+  </data>
+  <data name="Admin_Geolocation_ProcessedLabel" xml:space="preserve">
+    <value>Verarbeitet</value>
+  </data>
+  <data name="Admin_Geolocation_Updated" xml:space="preserve">
+    <value>Aktualisiert</value>
+  </data>
+  <data name="Admin_Geolocation_Failed" xml:space="preserve">
+    <value>Fehlgeschlagen</value>
+  </data>
+  <data name="Admin_Geolocation_Remaining" xml:space="preserve">
+    <value>Verbleibend</value>
+  </data>
+  <data name="Admin_Geolocation_FailedIds" xml:space="preserve">
+    <value>Fehlgeschlagene Personen-IDs</value>
+  </data>
+  <data name="Admin_Geolocation_Processing" xml:space="preserve">
+    <value>Verarbeite</value>
+  </data>
+  <data name="Admin_Geolocation_StartButton" xml:space="preserve">
+    <value>Stapelaktualisierung starten</value>
+  </data>
+  <data name="Admin_Geolocation_Complete" xml:space="preserve">
+    <value>Stapelaktualisierung erfolgreich abgeschlossen!</value>
+  </data>
+  <data name="Admin_Geolocation_SuccessMessage" xml:space="preserve">
+    <value>Geolokalisierung erfolgreich aktualisiert</value>
+  </data>
+  <data name="Admin_Geolocation_ErrorMessage" xml:space="preserve">
+    <value>Fehler bei der Geolokalisierungsaktualisierung</value>
+  </data>
 </root>

@@ -22,7 +22,7 @@
                 }
                 @if (!string.IsNullOrWhiteSpace(displayPerson.Contact.LastName))
                 {
-                        @(" ")<span data-testid="contact-lastname">@displayPerson.Contact.LastName</span>
+                        <span data-testid="contact-lastname"> @displayPerson.Contact.LastName</span>
                     }
                 </MudText>
             }
@@ -59,11 +59,11 @@
                 }
                 @if (!string.IsNullOrWhiteSpace(displayPerson.Address.PostalCode))
                 {
-                    <span data-testid="address-postalcode">@displayPerson.Address.PostalCode</span>
+                    <span data-testid="address-postalcode">@displayPerson.Address.PostalCode </span>
                 }
                 @if (!string.IsNullOrWhiteSpace(displayPerson.Address.City))
                 {
-                        @(" ")<span data-testid="address-city">@displayPerson.Address.City</span>
+                        <span data-testid="address-city">@displayPerson.Address.City</span>
                     }
                 </MudText>
             }

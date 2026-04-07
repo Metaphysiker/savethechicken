@@ -106,7 +106,7 @@
             if (isTokenValid)
             {
                 // Check if user is admin and redirect accordingly
-                if (AuthResponseSingleton.AuthResponse?.Roles?.Contains("Admin") == true)
+                if (AuthResponseSingleton.IsAdmin)
                 {
                     NavigationManager.NavigateTo("/admin/persons");
                 }

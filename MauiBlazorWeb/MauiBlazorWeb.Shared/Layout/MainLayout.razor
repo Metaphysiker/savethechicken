@@ -3,6 +3,8 @@
 @inherits LayoutComponentBase
 @inject AuthService AuthService
 @inject AuthResponseSingleton authResponseSingleton
+@inject NavigationManager NavigationManager
+@implements IDisposable
 
 
 <MudThemeProvider />
@@ -50,6 +52,27 @@
 @code {
     private bool? isTokenValid = null;
     private bool _drawerOpen = true;
+
+    protected override void OnInitialized()
+    {
+        authResponseSingleton.OnChange += OnAuthStateChanged;
+    }
+
+    private void OnAuthStateChanged()
+    {
+        StateHasChanged();
+
+        // If user just logged out or token became invalid, redirect to home/login
+        if (!authResponseSingleton.IsLoggedIn && NavigationManager.Uri.Contains("/admin"))
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+
+    public void Dispose()
+    {
+        authResponseSingleton.OnChange -= OnAuthStateChanged;
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

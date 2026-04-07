@@ -161,5 +161,94 @@ namespace WebApi.Controllers.ControllersImpl
             var resultDto = _mapper.mapper.Map<PersonDto>(result);
             return Ok(resultDto);
         }
+
+        [HttpPost("batch-update-geolocation")]
+        public async Task<ActionResult<GeolocationBatchUpdateResult>> BatchUpdateGeolocation([FromBody] GeolocationBatchUpdateRequest request)
+        {
+            var batchSize = request.BatchSize > 0 ? request.BatchSize : 10;
+            var skipCount = request.Skip > 0 ? request.Skip : 0;
+
+            var personsQuery = _db.Persons
+                .Include(p => p.Address)
+                .ThenInclude(a => a!.GeoCoordinate)
+                .Where(p => p.Address != null);
+
+            // If update all is false, only update those without coordinates
+            if (!request.UpdateAll)
+            {
+                personsQuery = personsQuery.Where(p => p.Address!.GeoCoordinate == null);
+            }
+
+            var persons = await personsQuery
+                .OrderBy(p => p.Id)
+                .Skip(skipCount)
+                .Take(batchSize)
+                .ToListAsync();
+
+            var totalCount = await personsQuery.CountAsync();
+            var result = new GeolocationBatchUpdateResult
+            {
+                TotalCount = totalCount,
+                ProcessedCount = 0,
+                UpdatedCount = 0,
+                FailedCount = 0,
+                FailedPersons = new List<int>()
+            };
+
+            foreach (var person in persons)
+            {
+                result.ProcessedCount++;
+
+                if (person.Address == null) continue;
+
+                try
+                {
+                    // Leverage existing geocoding logic from GenericModelService
+                    await _service.UpdateCoordinatesAsync(person);
+
+                    // Check if coordinates were successfully set
+                    if (person.Address.GeoCoordinate != null)
+                    {
+                        person.Address.UpdatedAt = DateTime.UtcNow;
+                        result.UpdatedCount++;
+                    }
+                    else
+                    {
+                        // Geocoding failed (no coordinates found)
+                        result.FailedCount++;
+                        result.FailedPersons.Add(person.Id);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to update geolocation for person {PersonId}", person.Id);
+                    result.FailedCount++;
+                    result.FailedPersons.Add(person.Id);
+                }
+            }
+
+            if (result.UpdatedCount > 0)
+            {
+                await _db.SaveChangesAsync();
+            }
+
+            return Ok(result);
+        }
+    }
+
+    public class GeolocationBatchUpdateRequest
+    {
+        public int BatchSize { get; set; } = 10;
+        public int Skip { get; set; } = 0;
+        public bool UpdateAll { get; set; } = false;
+    }
+
+    public class GeolocationBatchUpdateResult
+    {
+        public int TotalCount { get; set; }
+        public int ProcessedCount { get; set; }
+        public int UpdatedCount { get; set; }
+        public int FailedCount { get; set; }
+        public List<int> FailedPersons { get; set; } = new List<int>();
     }
 }

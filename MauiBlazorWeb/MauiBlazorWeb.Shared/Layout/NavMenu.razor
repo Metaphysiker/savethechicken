@@ -5,6 +5,7 @@
 @inject NavigationManager navigationManager
 @inject AuthService authService
 @inject IStringLocalizer<AppResources> L
+@implements IDisposable
 
 <MudNavMenu>
     <MudNavLink Href="@HomeUrl" Class="nav-link-entry" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
@@ -46,6 +47,9 @@
             <MudNavLink Href="/admin/farms/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">@L["NewFarm"]</MudNavLink>
             <MudDivider Class="my-2" />
 
+            <MudNavLink Href="/admin/geolocation-update" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.LocationOn">@L["GeolocationUpdate"]</MudNavLink>
+            <MudDivider Class="my-2" />
+
             <MudButton Class="nav-link-entry ml-4" StartIcon="@Icons.Material.Filled.Logout" Color="Color.Inherit" Variant="Variant.Text" Style="justify-content: flex-start; width: 100%;" OnClick="logout">
                 @L["Logout"]
             </MudButton>
@@ -73,9 +77,19 @@
     [Parameter] public EventCallback OnCloseDrawer { get; set; }
     [Parameter] public EventCallback OnOpenDrawer { get; set; }
 
-    private string HomeUrl => authResponseSingleton.AuthResponse?.Roles?.Contains("Admin") == true
+    private string HomeUrl => authResponseSingleton.IsAdmin
         ? "/admin/persons"
         : "/";
+
+    protected override void OnInitialized()
+    {
+        authResponseSingleton.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        authResponseSingleton.OnChange -= StateHasChanged;
+    }
 
     private async Task HandleCloseDrawer()
     {

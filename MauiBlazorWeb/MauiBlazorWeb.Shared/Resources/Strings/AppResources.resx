@@ -549,4 +549,67 @@
   <data name="CreateFarm" xml:space="preserve">
     <value>Create Farm</value>
   </data>
+  <data name="Address_Latitude" xml:space="preserve">
+    <value>Latitude</value>
+  </data>
+  <data name="Address_Longitude" xml:space="preserve">
+    <value>Longitude</value>
+  </data>
+  <data name="Address_AddCoordinates" xml:space="preserve">
+    <value>Add Coordinates</value>
+  </data>
+  <data name="Address_RemoveCoordinates" xml:space="preserve">
+    <value>Remove Coordinates</value>
+  </data>
+  <data name="GeolocationUpdate" xml:space="preserve">
+    <value>Geolocation Update</value>
+  </data>
+  <data name="Admin_Geolocation_Title" xml:space="preserve">
+    <value>Batch Geolocation Update</value>
+  </data>
+  <data name="Admin_Geolocation_Heading" xml:space="preserve">
+    <value>Update Person Addresses with Geolocation</value>
+  </data>
+  <data name="Admin_Geolocation_Description" xml:space="preserve">
+    <value>This tool will batch update all person addresses with geolocation coordinates using the Swiss geocoding API.</value>
+  </data>
+  <data name="Admin_Geolocation_BatchSize" xml:space="preserve">
+    <value>Batch Size</value>
+  </data>
+  <data name="Admin_Geolocation_UpdateAll" xml:space="preserve">
+    <value>Update All (including existing coordinates)</value>
+  </data>
+  <data name="Admin_Geolocation_Progress" xml:space="preserve">
+    <value>Progress</value>
+  </data>
+  <data name="Admin_Geolocation_ProcessedLabel" xml:space="preserve">
+    <value>Processed</value>
+  </data>
+  <data name="Admin_Geolocation_Updated" xml:space="preserve">
+    <value>Updated</value>
+  </data>
+  <data name="Admin_Geolocation_Failed" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+  <data name="Admin_Geolocation_Remaining" xml:space="preserve">
+    <value>Remaining</value>
+  </data>
+  <data name="Admin_Geolocation_FailedIds" xml:space="preserve">
+    <value>Failed Person IDs</value>
+  </data>
+  <data name="Admin_Geolocation_Processing" xml:space="preserve">
+    <value>Processing</value>
+  </data>
+  <data name="Admin_Geolocation_StartButton" xml:space="preserve">
+    <value>Start Batch Update</value>
+  </data>
+  <data name="Admin_Geolocation_Complete" xml:space="preserve">
+    <value>Batch update completed successfully!</value>
+  </data>
+  <data name="Admin_Geolocation_SuccessMessage" xml:space="preserve">
+    <value>Geolocation update completed</value>
+  </data>
+  <data name="Admin_Geolocation_ErrorMessage" xml:space="preserve">
+    <value>An error occurred during geolocation update</value>
+  </data>
 </root>

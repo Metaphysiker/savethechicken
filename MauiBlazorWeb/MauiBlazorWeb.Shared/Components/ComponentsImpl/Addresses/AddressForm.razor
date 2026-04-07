@@ -1,13 +1,25 @@
 @using MauiBlazorWeb.Shared.Resources.Strings
 @using Microsoft.Extensions.Localization
 @using global::Shared.Dtos.DtosImpl
+@using MauiBlazorWeb.Shared.Singletons.SingletonsImpl
 @inject IStringLocalizer<AppResources> L
+@inject AuthResponseSingleton authResponseSingleton
 
 @code {
     [Parameter, EditorRequired] public AddressDto Address { get; set; }
 
     [Parameter]
     public bool IsReadOnly { get; set; } = false;
+
+    private void AddCoordinates()
+    {
+        Address.GeoCoordinate = new GeoCoordinate();
+    }
+
+    private void RemoveCoordinates()
+    {
+        Address.GeoCoordinate = null;
+    }
 }
 
 <MudPaper Class="pa-4 my-4" Elevation="2">
@@ -31,4 +43,36 @@
         <ValidationMessage For="@(() => Address.Street)" />
     </MudItem>
 </MudGrid>
+
+@if (authResponseSingleton.IsAdmin)
+{
+    @if (Address.GeoCoordinate == null)
+    {
+        @if (!IsReadOnly)
+        {
+            <MudButton OnClick="AddCoordinates" StartIcon="@Icons.Material.Filled.AddLocation" Color="Color.Primary" Variant="Variant.Text" Class="mt-2">
+                @L["Address_AddCoordinates"]
+            </MudButton>
+        }
+    }
+    else
+    {
+        <MudGrid>
+            <MudItem xs="12" sm="6">
+                <MudTextField ReadOnly="@IsReadOnly" @bind-Value="Address.GeoCoordinate.Latitude" Label="@L["Address_Latitude"]" Variant="Variant.Outlined" UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "address-latitude" })" />
+                <ValidationMessage For="@(() => Address.GeoCoordinate.Latitude)" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudTextField ReadOnly="@IsReadOnly" @bind-Value="Address.GeoCoordinate.Longitude" Label="@L["Address_Longitude"]" Variant="Variant.Outlined" UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "address-longitude" })" />
+                <ValidationMessage For="@(() => Address.GeoCoordinate.Longitude)" />
+            </MudItem>
+        </MudGrid>
+        @if (!IsReadOnly)
+        {
+            <MudButton OnClick="RemoveCoordinates" StartIcon="@Icons.Material.Filled.DeleteOutline" Color="Color.Error" Variant="Variant.Text" Class="mt-2">
+                @L["Address_RemoveCoordinates"]
+            </MudButton>
+        }
+    }
+}
 </MudPaper>

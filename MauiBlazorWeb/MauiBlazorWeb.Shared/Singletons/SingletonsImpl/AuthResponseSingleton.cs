@@ -22,6 +22,8 @@ namespace MauiBlazorWeb.Shared.Singletons.SingletonsImpl
             _authResponse is not null &&
             _authResponse.ExpiresAt > DateTime.UtcNow;
 
+        public bool IsAdmin =>
+            _authResponse?.Roles?.Contains("Admin") == true;
 
     }
 }
