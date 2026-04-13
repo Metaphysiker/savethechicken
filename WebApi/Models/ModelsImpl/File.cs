@@ -16,5 +16,8 @@ namespace WebApi.Models.ModelsImpl
 
         public int? SaveChickenRequestId { get; set; }
         public SaveChickenRequest? SaveChickenRequest { get; set; }
+
+        public int? SaveChickenDriveRequestId { get; set; }
+        public SaveChickenDriveRequest? SaveChickenDriveRequest { get; set; }
     }
 }

@@ -127,7 +127,7 @@
     <value>Startseite</value>
   </data>
   <data name="Address" xml:space="preserve">
-    <value>Adresse</value>
+    <value>Address:</value>
   </data>
   <data name="Contact" xml:space="preserve">
     <value>Kontakt</value>
@@ -611,5 +611,32 @@
   </data>
   <data name="Admin_Geolocation_ErrorMessage" xml:space="preserve">
     <value>An error occurred during geolocation update</value>
+  </data>
+  <data name="CreatedAt" xml:space="preserve">
+    <value>Created at:</value>
+  </data>
+  <data name="UpdatedAt" xml:space="preserve">
+    <value>Updated at:</value>
+  </data>
+  <data name="PhoneNumber" xml:space="preserve">
+    <value>Phone Number:</value>
+  </data>
+  <data name="ViewPerson" xml:space="preserve">
+    <value>View Person</value>
+  </data>
+  <data name="ViewAction" xml:space="preserve">
+    <value>View Action</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>Show More</value>
+  </data>
+  <data name="FullText" xml:space="preserve">
+    <value>Full Text</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="RoutePlan" xml:space="preserve">
+    <value>Route Plan</value>
   </data>
 </root>

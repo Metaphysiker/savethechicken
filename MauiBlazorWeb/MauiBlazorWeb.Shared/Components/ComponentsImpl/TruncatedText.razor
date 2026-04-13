@@ -1,0 +1,55 @@
+@using Microsoft.Extensions.Localization
+@using MauiBlazorWeb.Shared.Resources.Strings
+@inject IDialogService DialogService
+@inject IStringLocalizer<AppResources> L
+
+@if (string.IsNullOrWhiteSpace(Text))
+{
+    <span>-</span>
+}
+else if (Text.Length <= MaxLength)
+{
+    <span>@Text</span>
+}
+else
+{
+    <span>
+        @Text.Substring(0, MaxLength)...
+        <MudButton Size="Size.Small"
+                   Variant="Variant.Text"
+                   Color="Color.Primary"
+                   OnClick="ShowFullTextDialog"
+                   Class="ml-1">
+            @L["ShowMore"]
+        </MudButton>
+    </span>
+}
+
+@code {
+    [Parameter]
+    public string? Text { get; set; }
+
+    [Parameter]
+    public int MaxLength { get; set; } = 100;
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    private async Task ShowFullTextDialog()
+    {
+        var parameters = new DialogParameters
+        {
+            { "Content", Text },
+            { "Title", Title ?? L["FullText"] }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true,
+            CloseButton = true
+        };
+
+        await DialogService.ShowAsync<TruncatedTextDialog>("", parameters, options);
+    }
+}

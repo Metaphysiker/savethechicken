@@ -1,5 +1,6 @@
 ﻿@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.StoredFiles
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl
 @using MauiBlazorWeb.Shared.Resources.Strings
 @using Microsoft.Extensions.Localization
 @using MudBlazor
@@ -49,18 +50,10 @@
         NavigationManager.NavigateTo($"/admin/save-chicken-requests/{saveChickenRequestDto.Id}/edit");
 
     }
-
-    private string GetRowClass(SaveChickenRequestDto item, int rowNumber)
-    {
-        // Example: highlight if there are any blacklisted person IDs
-        return item.BlackListedPersonIds != null && item.BlackListedPersonIds.Any()
-            ? "row-blacklisted"
-            : string.Empty;
-    }
 }
 
 <div style="overflow-x: auto; max-width: 100%;">
-    <MudDataGrid Items="@items" Hover="true" Dense="true" Striped="true" Bordered="true" SortMode="SortMode.None" RowClassFunc="GetRowClass">
+    <MudDataGrid Items="@items" Hover="true" Dense="true" Striped="true" Bordered="true" SortMode="SortMode.None">
     <Columns>
         @if (ShowContactAndAddress)
         {
@@ -184,6 +177,30 @@
 
         <TemplateColumn>
             <HeaderTemplate>
+                <MudButton OnClick="@(() => OnHeaderClick("Color"))" Variant="Variant.Text" Style="text-transform: none;">
+                    @L["Color"]
+                    @if (GetSortIcon("Color") != null)
+                    {
+                        <MudIcon Icon="@GetSortIcon("Color")" Size="Size.Small" />
+                    }
+                </MudButton>
+            </HeaderTemplate>
+            <CellTemplate>
+                @if (!string.IsNullOrWhiteSpace(context.Item.Color))
+                {
+                    <span class="mud-chip" style="@($"background-color: {context.Item.Color}; padding: 4px 12px; border-radius: 16px; display: inline-block; font-size: 0.75rem;")">
+                        @context.Item.Color
+                    </span>
+                }
+                else
+                {
+                    <span>-</span>
+                }
+            </CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn>
+            <HeaderTemplate>
                 <MudButton OnClick="@(() => OnHeaderClick("DescriptionOfPlaceForChickens"))" Variant="Variant.Text" Style="text-transform: none;">
                         @L["DescriptionOfPlaceForChickens"]
                     @if (GetSortIcon("DescriptionOfPlaceForChickens") != null)
@@ -192,7 +209,11 @@
                     }
                 </MudButton>
             </HeaderTemplate>
-            <CellTemplate>@context.Item.DescriptionOfPlaceForChickens</CellTemplate>
+            <CellTemplate>
+                <TruncatedText Text="@context.Item.DescriptionOfPlaceForChickens"
+                              MaxLength="50"
+                              Title="@L["DescriptionOfPlaceForChickens"]" />
+            </CellTemplate>
         </TemplateColumn>
 
         <TemplateColumn>
@@ -205,7 +226,11 @@
                     }
                 </MudButton>
             </HeaderTemplate>
-            <CellTemplate>@context.Item.Message</CellTemplate>
+            <CellTemplate>
+                <TruncatedText Text="@context.Item.Message"
+                              MaxLength="50"
+                              Title="@L["Message"]" />
+            </CellTemplate>
         </TemplateColumn>
 
             <TemplateColumn>
@@ -238,19 +263,6 @@
                 }
             </CellTemplate>
         </TemplateColumn>
-
-            <TemplateColumn>
-                <HeaderTemplate>
-                    @L["BlackListedPersonIds"]
-                </HeaderTemplate>
-                <CellTemplate>
-                    @foreach (var id in context.Item.BlackListedPersonIds)
-                    {
-                        <MudChip>@id</MudChip>
-                    }
-
-                </CellTemplate>
-            </TemplateColumn>
 
             <TemplateColumn>
                 <HeaderTemplate>@L["show"]</HeaderTemplate>

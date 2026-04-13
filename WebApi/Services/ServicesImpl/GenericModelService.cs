@@ -192,7 +192,7 @@ namespace WebApi.Services.ServicesImpl
         {
             model.UpdatedAt = DateTime.UtcNow;
 
-            await UpdateCoordinatesAsync(model);
+            // Don't auto-geocode on update - preserve manual coordinates
             await UpdateFiles(model);
 
             _db.Set<TModel>().Update(model);
