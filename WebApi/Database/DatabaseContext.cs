@@ -172,9 +172,16 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
             entity.Property(e => e.AvailableDates)
                 .HasConversion(
                     v => string.Join(";", v.Select(d => d.ToString("yyyy-MM-dd"))),
-                    v => v.Split(';', StringSplitOptions.RemoveEmptyEntries)
-                        .Select(s => DateOnly.Parse(s)).ToList()
+                    v => string.IsNullOrWhiteSpace(v)
+                        ? new List<DateOnly>()
+                        : v.Split(';', StringSplitOptions.RemoveEmptyEntries)
+                            .Select(s => DateOnly.Parse(s)).ToList()
                 );
+
+            entity.HasMany(e => e.Files)
+                .WithOne(f => f.SaveChickenDriveRequest)
+                .HasForeignKey(f => f.SaveChickenDriveRequestId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<SaveChickenAction>(entity =>

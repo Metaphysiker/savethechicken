@@ -701,4 +701,7 @@
   <data name="Close" xml:space="preserve">
     <value>Schließen</value>
   </data>
+  <data name="RoutePlan" xml:space="preserve">
+    <value>Fahrplan</value>
+  </data>
 </root>

@@ -3,6 +3,7 @@
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenDriveRequests
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Persons
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.StoredFiles
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
 @using MauiBlazorWeb.Shared.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
@@ -59,6 +60,19 @@
                 </MudText>
             }
         </MudPaper>
+
+        @if (item.Files != null && item.Files.Any())
+        {
+            <MudPaper Class="pa-4 my-4" Elevation="2">
+                <MudText Typo="Typo.h6" Class="mb-3">@L["Files"]</MudText>
+                <MudStack Row="true" Spacing="2">
+                    @foreach (var file in item.Files)
+                    {
+                        <StoredFileDialog StoredFile="file" />
+                    }
+                </MudStack>
+            </MudPaper>
+        }
 
         <MudPaper Class="pa-4 my-4" Elevation="2">
             <MudText Typo="Typo.h6" Class="mb-3">@L["Actions"]</MudText>
