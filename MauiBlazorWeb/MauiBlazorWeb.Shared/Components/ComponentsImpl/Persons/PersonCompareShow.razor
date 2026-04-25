@@ -1,0 +1,205 @@
+@using global::Shared.Dtos.DtosImpl
+@using Microsoft.Extensions.Localization
+@using MauiBlazorWeb.Shared.Resources.Strings
+@inject IStringLocalizer<AppResources> L
+
+@if (PersonA != null && PersonB != null)
+{
+    <MudPaper Class="pa-3 my-2" Elevation="1">
+        <MudText Typo="Typo.subtitle2" Class="mb-2" Color="Color.Primary">
+            <MudIcon Icon="@Icons.Material.Filled.CompareArrows" Size="Size.Small" /> Comparing Two Persons
+        </MudText>
+
+        <MudGrid Spacing="2">
+            <!-- Name Comparison -->
+            @if (HasDifference(PersonA.Contact?.FirstName + " " + PersonA.Contact?.LastName,
+                              PersonB.Contact?.FirstName + " " + PersonB.Contact?.LastName))
+            {
+                <MudItem xs="12">
+                    <MudText Typo="Typo.caption" Color="Color.Secondary"><strong>Name:</strong></MudText>
+                    <MudStack Row="true" Spacing="2">
+                        <MudChip T="string" Size="Size.Small" Color="Color.Primary" Variant="Variant.Outlined">
+                            @GetFullName(PersonA.Contact)
+                        </MudChip>
+                        <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Size="Size.Small" />
+                        <MudChip T="string" Size="Size.Small" Color="Color.Info">
+                            @GetFullName(PersonB.Contact)
+                        </MudChip>
+                    </MudStack>
+                </MudItem>
+            }
+
+            <!-- Email Comparison -->
+            @if (HasDifference(PersonA.Contact?.Email, PersonB.Contact?.Email))
+            {
+                <MudItem xs="12">
+                    <MudText Typo="Typo.caption" Color="Color.Secondary"><strong>Email:</strong></MudText>
+                    <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                        <MudChip T="string" Size="Size.Small" Color="Color.Primary" Variant="Variant.Outlined">
+                            @(PersonA.Contact?.Email ?? "N/A")
+                        </MudChip>
+                        <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Size="Size.Small" />
+                        <MudChip T="string" Size="Size.Small" Color="Color.Info">
+                            @(PersonB.Contact?.Email ?? "N/A")
+                        </MudChip>
+                    </MudStack>
+                </MudItem>
+            }
+
+            <!-- Phone Comparison -->
+            @if (HasDifference(PersonA.Contact?.PhoneNumber, PersonB.Contact?.PhoneNumber))
+            {
+                <MudItem xs="12">
+                    <MudText Typo="Typo.caption" Color="Color.Secondary"><strong>Phone:</strong></MudText>
+                    <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                        <MudChip T="string" Size="Size.Small" Color="Color.Primary" Variant="Variant.Outlined">
+                            @(PersonA.Contact?.PhoneNumber ?? "N/A")
+                        </MudChip>
+                        <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Size="Size.Small" />
+                        <MudChip T="string" Size="Size.Small" Color="Color.Info">
+                            @(PersonB.Contact?.PhoneNumber ?? "N/A")
+                        </MudChip>
+                    </MudStack>
+                </MudItem>
+            }
+
+            <!-- Address Comparison -->
+            @if (HasDifference(GetFullAddress(PersonA.Address), GetFullAddress(PersonB.Address)))
+            {
+                <MudItem xs="12">
+                    <MudText Typo="Typo.caption" Color="Color.Secondary"><strong>Address:</strong></MudText>
+                    <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                        <MudChip T="string" Size="Size.Small" Color="Color.Primary" Variant="Variant.Outlined">
+                            @GetFullAddress(PersonA.Address)
+                        </MudChip>
+                        <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Size="Size.Small" />
+                        <MudChip T="string" Size="Size.Small" Color="Color.Info">
+                            @GetFullAddress(PersonB.Address)
+                        </MudChip>
+                    </MudStack>
+                </MudItem>
+            }
+
+            <!-- Blacklist Status Comparison -->
+            @if (HasDifference(PersonA.IsBlacklisted, PersonB.IsBlacklisted))
+            {
+                <MudItem xs="12">
+                    <MudText Typo="Typo.caption" Color="Color.Secondary"><strong>Blacklisted:</strong></MudText>
+                    <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                        <MudChip T="string" Size="Size.Small" Color="@(PersonA.IsBlacklisted ? Color.Error : Color.Success)" Variant="Variant.Outlined">
+                            @(PersonA.IsBlacklisted ? "Yes" : "No")
+                        </MudChip>
+                        <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Size="Size.Small" />
+                        <MudChip T="string" Size="Size.Small" Color="@(PersonB.IsBlacklisted ? Color.Error : Color.Success)">
+                            @(PersonB.IsBlacklisted ? "Yes" : "No")
+                        </MudChip>
+                    </MudStack>
+                </MudItem>
+            }
+
+            <!-- Driver Status Comparison -->
+            @if (HasDifference(PersonA.IsDriver, PersonB.IsDriver))
+            {
+                <MudItem xs="12">
+                    <MudText Typo="Typo.caption" Color="Color.Secondary"><strong>Driver:</strong></MudText>
+                    <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                        <MudChip T="string" Size="Size.Small" Color="@(PersonA.IsDriver ? Color.Info : Color.Default)" Variant="Variant.Outlined">
+                            @(PersonA.IsDriver ? "Yes" : "No")
+                        </MudChip>
+                        <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Size="Size.Small" />
+                        <MudChip T="string" Size="Size.Small" Color="@(PersonB.IsDriver ? Color.Info : Color.Default)">
+                            @(PersonB.IsDriver ? "Yes" : "No")
+                        </MudChip>
+                    </MudStack>
+                </MudItem>
+            }
+
+            <!-- Comment Comparison -->
+            @if (HasDifference(PersonA.Comment, PersonB.Comment))
+            {
+                <MudItem xs="12">
+                    <MudText Typo="Typo.caption" Color="Color.Secondary"><strong>Comment:</strong></MudText>
+                    <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Start">
+                        <MudPaper Class="pa-2" Outlined="true" Style="flex: 1; max-width: 45%;">
+                            <MudText Typo="Typo.body2">@(PersonA.Comment ?? "N/A")</MudText>
+                        </MudPaper>
+                        <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Size="Size.Small" Class="mt-2" />
+                        <MudPaper Class="pa-2" Style="flex: 1; max-width: 45%; background-color: rgba(33, 150, 243, 0.1);">
+                            <MudText Typo="Typo.body2">@(PersonB.Comment ?? "N/A")</MudText>
+                        </MudPaper>
+                    </MudStack>
+                </MudItem>
+            }
+        </MudGrid>
+
+        @if (!HasAnyDifference())
+        {
+            <MudAlert Severity="Severity.Success" Dense="true" Class="mt-2">
+                <MudText Typo="Typo.body2">These persons appear to be identical (no differences found).</MudText>
+            </MudAlert>
+        }
+    </MudPaper>
+}
+
+@code {
+    [Parameter]
+    public PersonDto? PersonA { get; set; }
+
+    [Parameter]
+    public PersonDto? PersonB { get; set; }
+
+    private bool HasDifference<T>(T? valueA, T? valueB)
+    {
+        if (valueA == null && valueB == null) return false;
+        if (valueA == null || valueB == null) return true;
+
+        if (typeof(T) == typeof(string))
+        {
+            var strA = valueA as string;
+            var strB = valueB as string;
+            return !string.Equals(strA?.Trim(), strB?.Trim(), StringComparison.OrdinalIgnoreCase);
+        }
+
+        return !EqualityComparer<T>.Default.Equals(valueA, valueB);
+    }
+
+    private string GetFullName(ContactDto? contact)
+    {
+        if (contact == null) return "N/A";
+        var firstName = contact.FirstName?.Trim() ?? "";
+        var lastName = contact.LastName?.Trim() ?? "";
+        var fullName = $"{firstName} {lastName}".Trim();
+        return string.IsNullOrEmpty(fullName) ? "N/A" : fullName;
+    }
+
+    private string GetFullAddress(AddressDto? address)
+    {
+        if (address == null) return "N/A";
+        var street = address.Street?.Trim() ?? "";
+        var postalCode = address.PostalCode?.Trim() ?? "";
+        var city = address.City?.Trim() ?? "";
+
+        var parts = new List<string>();
+        if (!string.IsNullOrEmpty(street)) parts.Add(street);
+        if (!string.IsNullOrEmpty(postalCode) || !string.IsNullOrEmpty(city))
+        {
+            parts.Add($"{postalCode} {city}".Trim());
+        }
+
+        return parts.Any() ? string.Join(", ", parts) : "N/A";
+    }
+
+    private bool HasAnyDifference()
+    {
+        if (PersonA == null || PersonB == null) return false;
+
+        return HasDifference(PersonA.Contact?.FirstName + " " + PersonA.Contact?.LastName,
+                           PersonB.Contact?.FirstName + " " + PersonB.Contact?.LastName)
+            || HasDifference(PersonA.Contact?.Email, PersonB.Contact?.Email)
+            || HasDifference(PersonA.Contact?.PhoneNumber, PersonB.Contact?.PhoneNumber)
+            || HasDifference(GetFullAddress(PersonA.Address), GetFullAddress(PersonB.Address))
+            || HasDifference(PersonA.IsBlacklisted, PersonB.IsBlacklisted)
+            || HasDifference(PersonA.IsDriver, PersonB.IsDriver)
+            || HasDifference(PersonA.Comment, PersonB.Comment);
+    }
+}

@@ -50,6 +50,11 @@ namespace WebApi.Controllers.ControllersImpl
             }
 
             var model = _mapper.mapper.Map<SaveChickenDriveRequest>(dto);
+
+            // Admin-created requests are not from public form and are already handled
+            model.IsSubmittedFromPublicForm = false;
+            model.IsHandled = true;
+
             var result = await _service.Create(model, SaveChickenDriveRequestIncludes.Default);
             var resultDto = _mapper.mapper.Map<SaveChickenDriveRequestDto>(result);
 
@@ -117,6 +122,8 @@ namespace WebApi.Controllers.ControllersImpl
                 CapacityForChickens = publicDto.CapacityForChickens,
                 AvailableDates = publicDto.AvailableDates,
                 SaveChickenActionId = publicDto.SaveChickenActionId,
+                IsSubmittedFromPublicForm = true,
+                IsHandled = false, // Public requests start as unhandled
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -195,6 +202,8 @@ namespace WebApi.Controllers.ControllersImpl
             existing.Message = dto.Message;
             existing.AvailableDates = dto.AvailableDates;
             existing.SaveChickenActionId = dto.SaveChickenActionId;
+            existing.PersonId = dto.PersonId; // Allow reassigning person (for merge)
+            existing.IsHandled = dto.IsHandled; // Allow marking as handled
             existing.UpdatedAt = DateTime.UtcNow;
 
             // Attach and mark as modified

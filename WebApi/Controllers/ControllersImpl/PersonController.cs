@@ -143,7 +143,7 @@ namespace WebApi.Controllers.ControllersImpl
                 existingPerson.Address.Street = dto.Address.Street;
                 existingPerson.Address.City = dto.Address.City;
                 existingPerson.Address.PostalCode = dto.Address.PostalCode;
-                
+
                 // Update GeoCoordinate if provided
                 if (dto.Address.GeoCoordinate != null)
                 {
@@ -159,7 +159,7 @@ namespace WebApi.Controllers.ControllersImpl
                     // If dto has null coordinates, remove them
                     existingPerson.Address.GeoCoordinate = null;
                 }
-                
+
                 existingPerson.Address.UpdatedAt = DateTime.UtcNow;
                 _db.Addresses.Update(existingPerson.Address);
             }
@@ -176,6 +176,73 @@ namespace WebApi.Controllers.ControllersImpl
             // Reload with includes for the response
             var result = await _service.Read(dto.Id, PersonIncludes.Default);
             var resultDto = _mapper.mapper.Map<PersonDto>(result);
+            return Ok(resultDto);
+        }
+
+        [HttpGet("{id}/similar")]
+        public async Task<ActionResult<List<PersonDto>>> GetSimilarPersons(int id)
+        {
+            // Load the person
+            var person = await _service.Read(id, PersonIncludes.Default);
+            if (person == null)
+            {
+                return NotFound();
+            }
+
+            var similarPersons = new List<Person>();
+
+            // Search by name (first name + last name) - only persons with active requests
+            if (person.Contact != null &&
+                (!string.IsNullOrWhiteSpace(person.Contact.FirstName) || !string.IsNullOrWhiteSpace(person.Contact.LastName)))
+            {
+                var nameSearch = $"{person.Contact.FirstName} {person.Contact.LastName}".Trim();
+                if (!string.IsNullOrWhiteSpace(nameSearch))
+                {
+                    var nameResults = await _service.Search(new PersonSearch
+                    {
+                        SearchTerm = nameSearch,
+                        PageSize = 20,
+                        HasUnhandledRequests = true,
+                        HasUnarchivedRequests = true
+                    }, PersonIncludes.Default);
+                    similarPersons.AddRange(nameResults.Data);
+                }
+            }
+
+            // Search by email - only persons with active requests
+            if (person.Contact != null && !string.IsNullOrWhiteSpace(person.Contact.Email))
+            {
+                var emailResults = await _service.Search(new PersonSearch
+                {
+                    SearchTerm = person.Contact.Email,
+                    PageSize = 20,
+                    HasUnhandledRequests = true,
+                    HasUnarchivedRequests = true
+                }, PersonIncludes.Default);
+                similarPersons.AddRange(emailResults.Data);
+            }
+
+            // Search by phone number - only persons with active requests
+            if (person.Contact != null && !string.IsNullOrWhiteSpace(person.Contact.PhoneNumber))
+            {
+                var phoneResults = await _service.Search(new PersonSearch
+                {
+                    SearchTerm = person.Contact.PhoneNumber,
+                    PageSize = 20,
+                    HasUnhandledRequests = true,
+                    HasUnarchivedRequests = true
+                }, PersonIncludes.Default);
+                similarPersons.AddRange(phoneResults.Data);
+            }
+
+            // Remove duplicates and exclude the current person
+            var uniquePersons = similarPersons
+                .GroupBy(p => p.Id)
+                .Select(g => g.First())
+                .Where(p => p.Id != id)
+                .ToList();
+
+            var resultDto = _mapper.mapper.Map<List<PersonDto>>(uniquePersons);
             return Ok(resultDto);
         }
 

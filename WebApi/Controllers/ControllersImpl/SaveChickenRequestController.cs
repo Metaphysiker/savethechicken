@@ -51,6 +51,11 @@ namespace WebApi.Controllers.ControllersImpl
             }
 
             var model = _mapper.mapper.Map<SaveChickenRequest>(dto);
+
+            // Admin-created requests are not from public form and are already handled
+            model.IsSubmittedFromPublicForm = false;
+            model.IsHandled = true;
+
             var result = await _service.Create(model, SaveChickenRequestIncludes.Default);
             var resultDto = _mapper.mapper.Map<SaveChickenRequestDto>(result);
 
@@ -106,23 +111,6 @@ namespace WebApi.Controllers.ControllersImpl
             };
             _db.Addresses.Add(address);
 
-            // Create handover Address if provided
-            Address? handoverAddress = null;
-            if (!string.IsNullOrEmpty(publicDto.HandoverStreet) &&
-                !string.IsNullOrEmpty(publicDto.HandoverCity) &&
-                !string.IsNullOrEmpty(publicDto.HandoverPostalCode))
-            {
-                handoverAddress = new Address
-                {
-                    Street = publicDto.HandoverStreet,
-                    City = publicDto.HandoverCity,
-                    PostalCode = publicDto.HandoverPostalCode,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                };
-                _db.Addresses.Add(handoverAddress);
-            }
-
             // Save Contact and Address first to get their IDs
             await _db.SaveChangesAsync();
 
@@ -149,9 +137,10 @@ namespace WebApi.Controllers.ControllersImpl
                 ConfirmThatIFulfillCriteria = publicDto.ConfirmThatIFulfillCriteria,
                 Message = publicDto.Message,
                 SaveChickenActionId = publicDto.SaveChickenActionId,
-                AddressForHandOverId = handoverAddress?.Id,
                 NumberOfBoxes = publicDto.NumberOfBoxes,
                 Color = publicDto.Color,
+                IsSubmittedFromPublicForm = true,
+                IsHandled = false, // Public requests start as unhandled
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -249,6 +238,8 @@ namespace WebApi.Controllers.ControllersImpl
             existing.Message = dto.Message;
             existing.SaveChickenActionId = dto.SaveChickenActionId;
             existing.Color = dto.Color;
+            existing.PersonId = dto.PersonId; // Allow reassigning person (for merge)
+            existing.IsHandled = dto.IsHandled; // Allow marking as handled
             existing.UpdatedAt = DateTime.UtcNow;
 
             // Attach and mark as modified

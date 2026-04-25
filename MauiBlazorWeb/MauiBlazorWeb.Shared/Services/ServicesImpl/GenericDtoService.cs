@@ -74,5 +74,17 @@ namespace MauiBlazorWeb.Web.Services.ServicesImpl
             if (result == null) throw new InvalidOperationException("Search returned no results");
             return result;
         }
+
+        /// <summary>
+        /// Gets similar entities based on the given id. Only available for Person resources.
+        /// </summary>
+        public async Task<List<TDto>> GetSimilarAsync(int id)
+        {
+            var response = await _httpClient.GetAsync($"{_baseUrl}/{id}/similar");
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadFromJsonAsync<List<TDto>>();
+            if (result == null) return new List<TDto>();
+            return result;
+        }
     }
 }

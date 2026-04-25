@@ -48,12 +48,14 @@
 
     @if (displayPerson.Contact != null)
     {
-        <ContactDetailsCard Contact="displayPerson.Contact" Title="@ContactTitle" />
+        <ContactDetailsCard Contact="displayPerson.Contact"
+                           Title="@ContactTitle" />
     }
 
     @if (displayPerson.Address != null)
     {
-        <AddressDetailsCard Address="displayPerson.Address" Title="@AddressTitle" />
+        <AddressDetailsCard Address="displayPerson.Address"
+                           Title="@AddressTitle" />
     }
 }
 

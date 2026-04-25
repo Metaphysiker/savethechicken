@@ -1,9 +1,13 @@
 ﻿@using MauiBlazorWeb.Shared.Singletons.SingletonsImpl
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Web.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
 @using MauiBlazorWeb.Shared.Resources.Strings
 @using Microsoft.Extensions.Localization
 @inject AuthResponseSingleton authResponseSingleton
 @inject NavigationManager navigationManager
 @inject AuthService authService
+@inject GenericDtoServiceFactory DtoServiceFactory
 @inject IStringLocalizer<AppResources> L
 @implements IDisposable
 
@@ -33,6 +37,19 @@
 
             <MudNavLink Href="/admin/save-chicken-actions" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Dashboard">@L["RescueActions"]</MudNavLink>
             <MudNavLink Href="/admin/save-chicken-actions/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">@L["NewRescueAction"]</MudNavLink>
+            <MudDivider Class="my-2" />
+
+            <MudNavLink Href="/admin/incoming-save-chicken-requests" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Inbox">
+                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Style="width: 100%;">
+                    <span>Incoming Requests</span>
+                    @if (pendingRequestsCount > 0)
+                    {
+                        <MudBadge Content="@pendingRequestsCount" Color="Color.Error" Overlap="true" Style="margin-right: 8px;">
+                            <MudIcon Icon="@Icons.Material.Filled.Notifications" Size="Size.Small" />
+                        </MudBadge>
+                    }
+                </MudStack>
+            </MudNavLink>
             <MudDivider Class="my-2" />
 
             <MudNavLink Href="/admin/save-chicken-requests" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Support">@L["SaveChickenRequests"]</MudNavLink>
@@ -77,6 +94,9 @@
     [Parameter] public EventCallback OnCloseDrawer { get; set; }
     [Parameter] public EventCallback OnOpenDrawer { get; set; }
 
+    private int pendingRequestsCount = 0;
+    private System.Threading.Timer? _timer;
+
     private string HomeUrl => authResponseSingleton.IsAdmin
         ? "/admin/persons"
         : "/";
@@ -84,16 +104,25 @@
     protected override void OnInitialized()
     {
         authResponseSingleton.OnChange += OnAuthStateChanged;
+
+        // Load initial count
+        _ = LoadPendingRequestsCount();
+
+        // Set up timer to refresh count every 30 seconds
+        _timer = new System.Threading.Timer(async _ => await LoadPendingRequestsCount(), null, TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(30));
     }
 
     private void OnAuthStateChanged()
     {
+        // Reload count when auth state changes
+        _ = LoadPendingRequestsCount();
         InvokeAsync(StateHasChanged);
     }
 
     public void Dispose()
     {
         authResponseSingleton.OnChange -= OnAuthStateChanged;
+        _timer?.Dispose();
     }
 
     private async Task HandleCloseDrawer()
@@ -110,5 +139,38 @@
     {
         await authService.LogoutAsync();
         navigationManager.NavigateTo("/");
+    }
+
+    private async Task LoadPendingRequestsCount()
+    {
+        // Only load if user is logged in as admin
+        if (!authResponseSingleton.IsLoggedIn || !authResponseSingleton.IsAdmin)
+        {
+            pendingRequestsCount = 0;
+            return;
+        }
+
+        try
+        {
+            var service = DtoServiceFactory.Create<SaveChickenRequestDto, SaveChickenRequestSearch>();
+            var searchParams = new SaveChickenRequestSearch
+            {
+                IsHandled = false,
+                IsSubmittedFromPublicForm = true,
+                PageSize = 1, // We only need the count
+                Page = 1
+            };
+
+            var result = await service.SearchAsync(searchParams);
+            pendingRequestsCount = result.TotalItems;
+
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception ex)
+        {
+            // Silently fail - don't show errors in nav menu
+            Console.WriteLine($"Error loading pending requests count: {ex.Message}");
+            pendingRequestsCount = 0;
+        }
     }
 }

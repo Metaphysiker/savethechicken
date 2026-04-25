@@ -704,4 +704,64 @@
   <data name="RoutePlan" xml:space="preserve">
     <value>Fahrplan</value>
   </data>
+  <data name="SimilarPersons" xml:space="preserve">
+    <value>Ähnliche Personen</value>
+  </data>
+  <data name="NoSimilarPersonsFound" xml:space="preserve">
+    <value>Keine ähnlichen Personen gefunden</value>
+  </data>
+  <data name="PotentialDuplicatesFound" xml:space="preserve">
+    <value>potenzielle Duplikate gefunden</value>
+  </data>
+  <data name="ClickToCompare" xml:space="preserve">
+    <value>Klicken zum Vergleichen</value>
+  </data>
+  <data name="Comparing" xml:space="preserve">
+    <value>Vergleichen</value>
+  </data>
+  <data name="ComparingPersonDetails" xml:space="preserve">
+    <value>Personendetails werden verglichen</value>
+  </data>
+  <data name="Merge" xml:space="preserve">
+    <value>Zusammenführen</value>
+  </data>
+  <data name="MergePersonData" xml:space="preserve">
+    <value>Personendaten zusammenführen</value>
+  </data>
+  <data name="IncomingRequest" xml:space="preserve">
+    <value>Eingehende Anfrage</value>
+  </data>
+  <data name="ExistingPerson" xml:space="preserve">
+    <value>Bestehende Person</value>
+  </data>
+  <data name="RequestCreated" xml:space="preserve">
+    <value>Anfrage erstellt</value>
+  </data>
+  <data name="PersonCreated" xml:space="preserve">
+    <value>Person erstellt</value>
+  </data>
+  <data name="MergeInstructions" xml:space="preserve">
+    <value>Wählen Sie für jedes Feld die Version aus, die Sie behalten möchten. Die ausgewählten Werte werden in die bestehende Person übernommen.</value>
+  </data>
+  <data name="MergePerson" xml:space="preserve">
+    <value>Person zusammenführen</value>
+  </data>
+  <data name="Merging" xml:space="preserve">
+    <value>Zusammenführen</value>
+  </data>
+  <data name="RequestHasNoPerson" xml:space="preserve">
+    <value>Anfrage hat keine zugeordnete Person</value>
+  </data>
+  <data name="InvalidMergeData" xml:space="preserve">
+    <value>Ungültige Zusammenführungsdaten</value>
+  </data>
+  <data name="MergeSuccessful" xml:space="preserve">
+    <value>Zusammenführung erfolgreich</value>
+  </data>
+  <data name="MergeError" xml:space="preserve">
+    <value>Fehler beim Zusammenführen</value>
+  </data>
+  <data name="MergeWithSelectedPerson" xml:space="preserve">
+    <value>Mit ausgewählter Person zusammenführen</value>
+  </data>
 </root>

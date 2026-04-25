@@ -14,7 +14,7 @@
                 @* Name *@
                 @if (displayPerson.Contact != null && (!string.IsNullOrWhiteSpace(displayPerson.Contact.FirstName) || !string.IsNullOrWhiteSpace(displayPerson.Contact.LastName)))
                 {
-                    <MudText Typo="Typo.subtitle1" Class="mb-1">
+                    <MudText Typo="Typo.subtitle1" Class="mb-1" Style="@GetComparisonStyle(GetFullName(displayPerson.Contact), GetFullName(ComparisonPerson?.Contact))">
                         <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Small" Class="mr-1" />
                         <strong>@L["Name"]</strong><br/>
                         @if (!string.IsNullOrWhiteSpace(displayPerson.Contact.FirstName))
@@ -37,7 +37,7 @@
                 {
                     @if (!string.IsNullOrWhiteSpace(displayPerson.Contact.Email))
                     {
-                        <MudText Typo="Typo.body2" Class="mb-1">
+                        <MudText Typo="Typo.body2" Class="mb-1" Style="@GetComparisonStyle(displayPerson.Contact.Email, ComparisonPerson?.Contact?.Email)">
                             <MudIcon Icon="@Icons.Material.Filled.Email" Size="Size.Small" Class="mr-1" />
                             <strong>@L["Email"]</strong><br/>
                             <span data-testid="contact-email">@displayPerson.Contact.Email</span>
@@ -45,7 +45,7 @@
                     }
                     @if (!string.IsNullOrWhiteSpace(displayPerson.Contact.PhoneNumber))
                     {
-                        <MudText Typo="Typo.body2" Class="mb-1">
+                        <MudText Typo="Typo.body2" Class="mb-1" Style="@GetComparisonStyle(displayPerson.Contact.PhoneNumber, ComparisonPerson?.Contact?.PhoneNumber)">
                             <MudIcon Icon="@Icons.Material.Filled.Phone" Size="Size.Small" Class="mr-1" />
                             <strong>@L["PhoneNumber"]</strong><br/>
                             <span data-testid="contact-phone">@displayPerson.Contact.PhoneNumber</span>
@@ -56,7 +56,7 @@
                 @* Address *@
                 @if (displayPerson.Address != null)
                 {
-                    <MudText Typo="Typo.body2">
+                    <MudText Typo="Typo.body2" Style="@GetComparisonStyle(GetFullAddress(displayPerson.Address), GetFullAddress(ComparisonPerson?.Address))">
                         <MudIcon Icon="@Icons.Material.Filled.LocationOn" Size="Size.Small" Class="mr-1" />
                         <strong>@L["Address"]</strong><br/>
                         @if (!string.IsNullOrWhiteSpace(displayPerson.Address.Street))
@@ -99,6 +99,12 @@
     [Parameter]
     public int? PersonId { get; set; }
 
+    [Parameter]
+    public bool CompareMode { get; set; } = false;
+
+    [Parameter]
+    public PersonDto? ComparisonPerson { get; set; }
+
     private PersonDto? displayPerson;
 
     protected override async Task OnParametersSetAsync()
@@ -121,5 +127,49 @@
         }
 
         StateHasChanged();
+    }
+
+    private string GetComparisonStyle(string? currentValue, string? comparisonValue)
+    {
+        if (!CompareMode || ComparisonPerson == null || comparisonValue == null)
+            return string.Empty;
+
+        bool isDifferent = !string.Equals(currentValue?.Trim(), comparisonValue?.Trim(), StringComparison.OrdinalIgnoreCase);
+
+        if (isDifferent)
+        {
+            // Blue for differences
+            return "background-color: rgba(33, 150, 243, 0.15); border-left: 3px solid #2196F3; padding-left: 8px; border-radius: 4px;";
+        }
+        else
+        {
+            // Green for matches
+            return "background-color: rgba(76, 175, 80, 0.15); border-left: 3px solid #4CAF50; padding-left: 8px; border-radius: 4px;";
+        }
+    }
+
+    private string GetFullName(ContactDto? contact)
+    {
+        if (contact == null) return string.Empty;
+        var firstName = contact.FirstName?.Trim() ?? "";
+        var lastName = contact.LastName?.Trim() ?? "";
+        return $"{firstName} {lastName}".Trim();
+    }
+
+    private string GetFullAddress(AddressDto? address)
+    {
+        if (address == null) return string.Empty;
+        var street = address.Street?.Trim() ?? "";
+        var postalCode = address.PostalCode?.Trim() ?? "";
+        var city = address.City?.Trim() ?? "";
+
+        var parts = new List<string>();
+        if (!string.IsNullOrEmpty(street)) parts.Add(street);
+        if (!string.IsNullOrEmpty(postalCode) || !string.IsNullOrEmpty(city))
+        {
+            parts.Add($"{postalCode} {city}".Trim());
+        }
+
+        return string.Join(", ", parts);
     }
 }

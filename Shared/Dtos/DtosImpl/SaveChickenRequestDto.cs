@@ -35,9 +35,6 @@ namespace Shared.Dtos.DtosImpl
         public SaveChickenActionDto? SaveChickenAction { get; set; }
         public int? SaveChickenActionId { get; set; }
 
-        [ValidateComplexType]
-        public AddressDto? AddressForHandOver { get; set; }
-        public int? AddressForHandOverId { get; set; }
         public int NumberOfBoxes { get; set; } = 0;
 
         public string Color { get; set; } = String.Empty;
@@ -47,6 +44,10 @@ namespace Shared.Dtos.DtosImpl
         public List<int> BlackListedPersonIds { get; set; } = new List<int>();
 
         public PersonDto? Person { get; set; }
+
+        public bool IsSubmittedFromPublicForm { get; set; } = false;
+        public bool IsHandled { get; set; } = false;
+        public bool IsArchived { get; set; } = false;
 
         public string GenericName { get; set; } = string.Empty;
 
