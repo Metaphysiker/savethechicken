@@ -812,4 +812,13 @@
   <data name="ErrorLoadingRequests" xml:space="preserve">
     <value>Fehler beim Laden der Anfragen</value>
   </data>
+  <data name="SearchPerson" xml:space="preserve">
+    <value>Person suchen</value>
+  </data>
+  <data name="AddToList" xml:space="preserve">
+    <value>Zur Liste hinzufügen</value>
+  </data>
+  <data name="ManuallySelected" xml:space="preserve">
+    <value>Manuell ausgewählt</value>
+  </data>
 </root>

@@ -290,48 +290,10 @@
                         <MudStack Spacing="2">
                             @foreach (var person in similarPersons)
                             {
-                                <MudCard Outlined="true" Style="@GetSimilarPersonCardStyle(person)">
-                                    <MudCardContent Class="py-2 px-3" @onclick="() => CompareWithPerson(person)">
-                                        <MudStack Spacing="1">
-                                            <MudText Typo="Typo.body2" Style="font-weight: 500;">
-                                                @person.Contact.FirstName @person.Contact.LastName
-                                            </MudText>
-                                            @if (!string.IsNullOrWhiteSpace(person.Contact.Email))
-                                            {
-                                                <MudText Typo="Typo.caption" Color="Color.Secondary">
-                                                    <MudIcon Icon="@Icons.Material.Filled.Email" Size="Size.Small" /> @person.Contact.Email
-                                                </MudText>
-                                            }
-                                            @if (!string.IsNullOrWhiteSpace(person.Contact.PhoneNumber))
-                                            {
-                                                <MudText Typo="Typo.caption" Color="Color.Secondary">
-                                                    <MudIcon Icon="@Icons.Material.Filled.Phone" Size="Size.Small" /> @person.Contact.PhoneNumber
-                                                </MudText>
-                                            }
-                                            <MudStack Row="true" Spacing="1" Class="mt-1">
-                                                @if (comparisonPerson?.Id == person.Id)
-                                                {
-                                                    <MudChip T="string" Size="Size.Small" Color="Color.Info" Style="height: 20px;">@L["Comparing"]</MudChip>
-                                                }
-                                                else
-                                                {
-                                                    <MudChip T="string" Size="Size.Small" Color="Color.Default" Style="height: 20px;">@L["ClickToCompare"]</MudChip>
-                                                }
-                                            </MudStack>
-                                        </MudStack>
-                                    </MudCardContent>
-                                    <MudCardActions @onclick:stopPropagation="true">
-                                        <MudButton Size="Size.Small"
-                                                   Variant="Variant.Filled"
-                                                   Color="Color.Primary"
-                                                   StartIcon="@Icons.Material.Filled.MergeType"
-                                                   FullWidth="true"
-                                                   data-testid="@($"merge-person-{person.Id}")"
-                                                   OnClick="@(async () => await MergeWithPerson(person.Id))">
-                                            @L["Merge"]
-                                        </MudButton>
-                                    </MudCardActions>
-                                </MudCard>
+                                <PersonCompareCard Person="@person"
+                                                   ComparisonPersonId="@comparisonPerson?.Id"
+                                                   OnCompare="CompareWithPerson"
+                                                   OnMerge="MergeWithPerson" />
                             }
                         </MudStack>
                     }
@@ -348,7 +310,7 @@
                 {
                     <MudDivider Class="my-4" />
 
-                    <MudText Typo="Typo.h6" Class="mb-3">@L["Search"] Person</MudText>
+                    <MudText Typo="Typo.h6" Class="mb-3">@L["SearchPerson"]</MudText>
 
                     <MudTextField T="string"
                                   Label="@L["Search"]"
@@ -398,7 +360,7 @@
                                                    Variant="Variant.Text"
                                                    Color="Color.Primary"
                                                    OnClick="@(() => AddPersonToManualList(person))">
-                                            Add to List
+                                            @L["AddToList"]
                                         </MudButton>
                                     </MudCardActions>
                                 </MudCard>
@@ -408,58 +370,15 @@
 
                     @if (manuallySearchedPersons.Any())
                     {
-                        <MudText Typo="Typo.caption" Class="mt-3 mb-2">Manually Selected:</MudText>
+                        <MudText Typo="Typo.caption" Class="mt-3 mb-2">@L["ManuallySelected"]:</MudText>
                         <MudStack Spacing="2">
                             @foreach (var person in manuallySearchedPersons)
                             {
-                                <MudCard Outlined="true" Style="@GetSimilarPersonCardStyle(person)">
-                                    <MudCardContent Class="py-2 px-3" @onclick="() => CompareWithPerson(person)">
-                                        <MudStack Spacing="1">
-                                            <MudText Typo="Typo.body2" Style="font-weight: 500;">
-                                                @person.Contact.FirstName @person.Contact.LastName
-                                            </MudText>
-                                            @if (!string.IsNullOrWhiteSpace(person.Contact.Email))
-                                            {
-                                                <MudText Typo="Typo.caption" Color="Color.Secondary">
-                                                    <MudIcon Icon="@Icons.Material.Filled.Email" Size="Size.Small" /> @person.Contact.Email
-                                                </MudText>
-                                            }
-                                            @if (!string.IsNullOrWhiteSpace(person.Contact.PhoneNumber))
-                                            {
-                                                <MudText Typo="Typo.caption" Color="Color.Secondary">
-                                                    <MudIcon Icon="@Icons.Material.Filled.Phone" Size="Size.Small" /> @person.Contact.PhoneNumber
-                                                </MudText>
-                                            }
-                                            <MudStack Row="true" Spacing="1" Class="mt-1">
-                                                @if (comparisonPerson?.Id == person.Id)
-                                                {
-                                                    <MudChip T="string" Size="Size.Small" Color="Color.Info" Style="height: 20px;">@L["Comparing"]</MudChip>
-                                                }
-                                                else
-                                                {
-                                                    <MudChip T="string" Size="Size.Small" Color="Color.Default" Style="height: 20px;">@L["ClickToCompare"]</MudChip>
-                                                }
-                                            </MudStack>
-                                        </MudStack>
-                                    </MudCardContent>
-                                    <MudCardActions @onclick:stopPropagation="true">
-                                        <MudStack Row="true" Spacing="1" Style="width: 100%;">
-                                            <MudButton Size="Size.Small"
-                                                       Variant="Variant.Filled"
-                                                       Color="Color.Primary"
-                                                       StartIcon="@Icons.Material.Filled.MergeType"
-                                                       Style="flex: 1;"
-                                                       data-testid="@($"merge-person-{person.Id}")"
-                                                       OnClick="@(async () => await MergeWithPerson(person.Id))">
-                                                @L["Merge"]
-                                            </MudButton>
-                                            <MudIconButton Icon="@Icons.Material.Filled.Close"
-                                                           Size="Size.Small"
-                                                           Color="Color.Default"
-                                                           OnClick="@(() => RemoveManuallySearchedPerson(person.Id))" />
-                                        </MudStack>
-                                    </MudCardActions>
-                                </MudCard>
+                                <PersonCompareCard Person="@person"
+                                                   ComparisonPersonId="@comparisonPerson?.Id"
+                                                   OnCompare="CompareWithPerson"
+                                                   OnMerge="MergeWithPerson"
+                                                   OnRemove="RemoveManuallySearchedPerson" />
                             }
                         </MudStack>
                     }
@@ -524,11 +443,11 @@
     private async Task SelectRequest(SaveChickenRequestDto request)
     {
         selectedRequest = request;
-        comparisonPerson = null; // Clear comparison when selecting new request
-        selectedActionId = null; // Don't pre-select action
-        manuallySearchedPersons = new(); // Clear manually searched persons
-        searchResults = new(); // Clear search results
-        personSearchTerm = ""; // Clear search term
+        comparisonPerson = null;
+        selectedActionId = null;
+        manuallySearchedPersons = new();
+        searchResults = new();
+        personSearchTerm = "";
         await LoadSimilarPersons();
         StateHasChanged();
     }
@@ -537,7 +456,6 @@
     {
         if (comparisonPerson?.Id == person.Id)
         {
-            // Toggle off if clicking the same person
             comparisonPerson = null;
         }
         else
@@ -567,8 +485,6 @@
         try
         {
             var personService = DtoServiceFactory.Create<PersonDto, PersonSearch>();
-
-            // Call the backend API to find similar persons
             similarPersons = await personService.GetSimilarAsync(selectedRequest.PersonId.Value);
         }
         catch (Exception ex)
@@ -596,7 +512,6 @@
 
         try
         {
-            // Use the autocomplete endpoint that does partial matching and filters persons with unhandled requests
             var result = await HttpClient.GetFromJsonAsync<List<PersonDto>>(
                 $"api/person/autocomplete?searchText={Uri.EscapeDataString(personSearchTerm)}&limit=20");
 
@@ -619,14 +534,12 @@
     {
         if (person != null)
         {
-            // Add to manually searched list if not already there
             if (!manuallySearchedPersons.Any(p => p.Id == person.Id) &&
                 !similarPersons.Any(p => p.Id == person.Id))
             {
                 manuallySearchedPersons.Add(person);
             }
 
-            // Clear search results after adding
             searchResults = new();
             personSearchTerm = "";
             StateHasChanged();
@@ -640,7 +553,6 @@
         {
             manuallySearchedPersons.Remove(personToRemove);
 
-            // Clear comparison if this person was being compared
             if (comparisonPerson?.Id == personId)
             {
                 comparisonPerson = null;
@@ -663,7 +575,6 @@
 
             Snackbar.Add("Request marked as handled successfully!", Severity.Success);
 
-            // Remove from unhandled list and reload
             unhandledRequests.Remove(selectedRequest);
             selectedRequest = null;
             selectedActionId = null;
@@ -706,7 +617,6 @@
             return;
         }
 
-        // Save the selected action if changed before navigating
         if (selectedActionId != selectedRequest.SaveChickenActionId)
         {
             try
@@ -724,14 +634,12 @@
                 }
                 Snackbar.Add(errorMessage, Severity.Error);
                 Console.WriteLine($"Full error saving action before merge: {ex}");
-                // Don't continue with merge if save fails
                 return;
             }
             catch (Exception ex)
             {
                 Snackbar.Add($"Fehler beim Speichern der Aktion: {ex.Message}", Severity.Error);
                 Console.WriteLine($"Full error saving action before merge: {ex}");
-                // Don't continue with merge if save fails
                 return;
             }
         }
@@ -749,25 +657,11 @@
         return baseStyle;
     }
 
-    private string GetSimilarPersonCardStyle(PersonDto person)
-    {
-        var baseStyle = "cursor: pointer;";
-        if (comparisonPerson?.Id == person.Id)
-        {
-            return $"{baseStyle} border: 2px solid var(--mud-palette-info); background-color: rgba(33, 150, 243, 0.05);";
-        }
-        return baseStyle;
-    }
-
     private async Task OnSaveChickenActionIdChanged(int? actionId)
     {
         if (selectedRequest == null || _service == null) return;
 
-        selectedActionId = actionId; // Update the bound variable
-
-        // Don't update selectedRequest.SaveChickenActionId here - let MarkAsHandled or MergeWithPerson do it
-        // This way we can detect if the value changed and needs saving
-
+        selectedActionId = actionId;
         StateHasChanged();
     }
 }
