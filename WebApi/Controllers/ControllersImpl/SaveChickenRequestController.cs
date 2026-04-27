@@ -309,6 +309,7 @@ namespace WebApi.Controllers.ControllersImpl
             }
 
             var email = person.Contact?.Email;
+            Console.WriteLine($"Attempting to send confirmation email to requester at {email} for SaveChickenRequest {request.Id}");
             if (string.IsNullOrEmpty(email))
             {
                 _logger.LogWarning("No email address for requester in SaveChickenRequest {Id}", request.Id);
@@ -332,6 +333,11 @@ namespace WebApi.Controllers.ControllersImpl
                         <li><strong>Anzahl Hühner:</strong> {request.NumberOfChickensToBeSaved}</li>
                         <li><strong>Anzahl Hähne:</strong> {request.NumberOfRoostersToBeSaved}</li>
                         <li><strong>Ort:</strong> {person.Address?.PostalCode} {person.Address?.City}</li>
+                        <li><strong>Strasse:</strong> {person.Address?.Street}</li>
+                        <li><strong>E-Mail:</strong> {person.Contact?.Email}</li>
+                        <li><strong>Telefon:</strong> {person.Contact?.PhoneNumber}</li>
+                        <li><strong>Beschreibung des Ortes:</strong> {request.DescriptionOfPlaceForChickens}</li>
+
                     </ul>
 
                     <p>Wir werden Sie kontaktieren, sobald wir passende Hühner für Sie haben.</p>

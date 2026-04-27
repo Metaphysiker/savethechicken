@@ -5,6 +5,7 @@ import { fillSaveChickenRequestForm } from './helpers/save-chicken-request-form.
 import { createSaveChickenAction } from './helpers/save-chicken-action-form.helper';
 import { selectPerson } from './helpers/person-selector.helper';
 import { selectSaveChickenAction } from './helpers/save-chicken-action-selector.helper';
+import { fail } from 'assert';
 
 // Use admin authentication
 test.use({ storageState: 'playwright/.auth/admin.json' });
@@ -1140,6 +1141,124 @@ test.describe('Admin Save Chicken Request Management', () => {
       await expect(page.locator('text=' + publicFirstName).first()).toBeVisible({ timeout: 5000 });
       await expect(page.locator('text=' + publicEmail).first()).toBeVisible({ timeout: 5000 });
       console.log('Verified that merged request appears in action');
+    });
+  });
+
+  test('create-public-save-chicken-request-and-expect-email', async ({ page, context }) => {
+    test.setTimeout(120000); // Increased timeout for complex workflow
+
+    const timestamp = Date.now();
+    const existingFirstName = `ExistingPerson${timestamp}`;
+    const existingLastName = 'OldLastName';
+    const existingEmail = `existing${timestamp}@example.com`;
+    const existingPhone = '+41791111111';
+    const existingCity = 'Zurich';
+    const existingPostalCode = '8000';
+    const existingStreet = 'Old Street 10';
+    const numberOfChickens = '10';
+    const numberOfRoosters = '2';
+
+    let existingPersonId: number;
+    let actionId: number;
+
+    await test.step('Admin creates a SaveChickenAction', async () => {
+      const today = new Date();
+      const dayOfMonth = today.getDate();
+
+      const datesToCreate = [dayOfMonth];
+      if (dayOfMonth + 1 <= 28) datesToCreate.push(dayOfMonth + 1);
+
+      const action = await createSaveChickenAction(page, {
+        title: `Merge New Values Action ${timestamp}`,
+        description: 'Action for merge with new values test',
+        dates: datesToCreate,
+        isActive: true,
+      });
+
+      actionId = action.actionId;
+      expect(actionId).toBeGreaterThan(0);
+    });
+
+    await test.step('Admin creates existing person with old values', async () => {
+      existingPersonId = await createPerson(page, {
+        firstName: existingFirstName,
+        lastName: existingLastName,
+        email: existingEmail,
+        phone: existingPhone,
+        city: existingCity,
+        postalCode: existingPostalCode,
+        street: existingStreet,
+      });
+
+      expect(existingPersonId).toBeGreaterThan(0);
+    });
+
+    await test.step('Log out (clear authentication)', async () => {
+      await context.clearCookies();
+      await context.clearPermissions();
+      await page.evaluate(() => {
+        localStorage.clear();
+        sessionStorage.clear();
+      });
+      await page.goto('/offer-place', { waitUntil: 'networkidle' });
+    });
+
+    await test.step('Public user submits request with new values', async () => {
+      await page.waitForSelector('h3', { state: 'visible', timeout: 10000 });
+
+      await fillSaveChickenRequestForm(page, {
+        contactFirstName: existingFirstName, // Same first name for similarity
+        contactLastName: existingLastName, // NEW last name
+        contactEmail: existingEmail, // NEW email
+        contactPhone: existingPhone, // NEW phone
+        addressCity: existingCity, // NEW city
+        addressPostalCode: existingPostalCode, // NEW postal code
+        addressStreet: existingStreet, // NEW street
+        numberOfChickens: numberOfChickens,
+        numberOfRoosters: numberOfRoosters,
+        description: 'Request with updated information',
+        message: 'I have new contact details',
+        confirmCriteria: true,
+        acceptTerms: true,
+      });
+
+      const submitButton = page.getByRole('button', { name: /absenden|submit/i });
+      await submitButton.waitFor({ state: 'visible', timeout: 5000 });
+      await submitButton.click();
+
+      await page.waitForURL(/\/thank-you/, { timeout: 15000 });
+      await expect(page.getByRole('heading', { name: /vielen dank/i })).toBeVisible({ timeout: 5000 });
+      console.log('Public form submitted with new values');
+    });
+
+    await test.step('check if email is there', async () => {
+      // Wait a moment after sending the request to allow email delivery
+      await new Promise(r => setTimeout(r, 1000));
+
+      // Fetch messages from Mailhog API
+      const res = await fetch('http://localhost:8025/api/v2/messages');
+      const data = await res.json();
+
+      console.log(`Fetched ${data.total} messages from Mailhog`);
+
+      // Check for expected email
+      const confirmationEmail = data.items.find((msg: { Content: { Headers: { Subject: (string | string[])[]; To: (string | any[])[]; }; }; }) =>
+        msg.Content.Headers.To[0].includes(existingEmail)
+      );
+
+      const bodyBase64 = confirmationEmail.Content.Body; // or your variable
+      const body = Buffer.from(bodyBase64, 'base64').toString('utf-8');
+
+      expect(confirmationEmail).toBeTruthy();
+      expect(confirmationEmail.Content.Headers.To[0]).toContain(existingEmail);
+      expect(body).toContain(existingFirstName)
+      expect(body).toContain(existingLastName)
+      expect(body).toContain(existingPhone)
+      expect(body).toContain(existingCity)
+      expect(body).toContain(existingPostalCode)
+      expect(body).toContain(existingStreet)
+      expect(body).toContain(numberOfChickens)
+      expect(body).toContain(numberOfRoosters)
     });
   });
 });
