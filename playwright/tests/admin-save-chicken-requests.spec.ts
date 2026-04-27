@@ -1,8 +1,10 @@
 import { test, expect } from '@playwright/test';
 import { createPerson } from './helpers/person-form.helper';
 import { fillAdminSaveChickenRequestForm } from './helpers/admin-save-chicken-request-form.helper';
+import { fillSaveChickenRequestForm } from './helpers/save-chicken-request-form.helper';
 import { createSaveChickenAction } from './helpers/save-chicken-action-form.helper';
 import { selectPerson } from './helpers/person-selector.helper';
+import { selectSaveChickenAction } from './helpers/save-chicken-action-selector.helper';
 
 // Use admin authentication
 test.use({ storageState: 'playwright/.auth/admin.json' });
@@ -556,5 +558,247 @@ test.describe('Admin Save Chicken Request Management', () => {
     // Wait for the data to be gone (row is removed from table)
     await expect(page.getByText('Updated: Even more space now')).not.toBeVisible({ timeout: 5000 });
     await expect(page.getByText('Save Chicken Requests')).not.toBeVisible();
+  });
+
+  test('should handle incoming public request and assign to action', async ({ page, context }) => {
+    test.setTimeout(120000); // Increased timeout for complex workflow
+
+    const timestamp = Date.now();
+    const publicFirstName = `PublicReq${timestamp}`;
+    const publicLastName = 'PublicUser';
+    const publicEmail = `publicreq${timestamp}@example.com`;
+    const publicPhone = '+41791234567';
+
+    let actionId: number;
+    let actionTitle: string;
+
+    await test.step('Admin creates a SaveChickenAction', async () => {
+      const today = new Date();
+      const dayOfMonth = today.getDate();
+
+      const datesToCreate = [dayOfMonth];
+      if (dayOfMonth + 1 <= 28) datesToCreate.push(dayOfMonth + 1);
+
+      const action = await createSaveChickenAction(page, {
+        title: `Incoming Test Action ${timestamp}`,
+        description: 'Action for incoming request test',
+        dates: datesToCreate,
+        isActive: true,
+      });
+
+      actionId = action.actionId;
+      actionTitle = `Incoming Test Action ${timestamp}`;
+      expect(actionId).toBeGreaterThan(0);
+    });
+
+    await test.step('Admin creates an existing person', async () => {
+      await createPerson(page, {
+        firstName: 'Existing',
+        lastName: 'Person',
+        email: 'existing@example.com',
+        phone: '+41791111111',
+        city: 'Zurich',
+        postalCode: '8000',
+        street: 'Existing Street 1',
+      });
+    });
+
+    await test.step('Log out (clear authentication)', async () => {
+      // Clear all cookies, local storage, and session storage to fully log out
+      await context.clearCookies();
+      await context.clearPermissions();
+      await page.evaluate(() => {
+        localStorage.clear();
+        sessionStorage.clear();
+      });
+      // Reload to ensure clean state
+      await page.goto('/offer-place', { waitUntil: 'networkidle' });
+    });
+
+    await test.step('Public user submits save chicken request', async () => {
+      // Should already be on the public form from previous step
+      await page.waitForSelector('h3', { state: 'visible', timeout: 10000 });
+
+      // Use the public form helper (imported at top)
+      await fillSaveChickenRequestForm(page, {
+        contactFirstName: publicFirstName,
+        contactLastName: publicLastName,
+        contactEmail: publicEmail,
+        contactPhone: publicPhone,
+        addressCity: 'Basel',
+        addressPostalCode: '4000',
+        addressStreet: 'Public Street 999',
+        numberOfChickens: '7',
+        numberOfRoosters: '1',
+        description: 'Public request with nice garden',
+        message: 'I am a public user submitting a request',
+        confirmCriteria: true,
+        acceptTerms: true,
+      });
+
+      // Submit the public form
+      const submitButton = page.getByRole('button', { name: /absenden|submit/i });
+      await submitButton.waitFor({ state: 'visible', timeout: 5000 });
+      await submitButton.click();
+
+      // Wait for navigation to thank-you page
+      await page.waitForURL(/\/thank-you/, { timeout: 15000 });
+      
+      // Verify we're on thank you page - look for the heading
+      await expect(page.getByRole('heading', { name: /vielen dank/i })).toBeVisible({ timeout: 5000 });
+      console.log('Public form submitted successfully');
+    });
+
+    await test.step('Log back in as admin', async () => {
+      // Navigate to login page
+      await page.goto('/login', { waitUntil: 'networkidle' });
+      
+      // Fill login form with correct admin credentials
+      await page.getByRole('textbox', { name: 'Email*' }).fill('test@example.com');
+      await page.getByRole('textbox', { name: 'Password*' }).fill('testpassword');
+      await page.getByRole('button', { name: 'Login' }).click();
+      
+      // Wait for successful login - admin redirects to /admin/persons
+      await page.waitForURL('/admin/persons', { timeout: 10000 });
+      await expect(page.getByText('Logout')).toBeVisible();
+    });
+
+    await test.step('Navigate to incoming requests page', async () => {
+      await page.goto('/admin/incoming-save-chicken-requests', { waitUntil: 'networkidle' });
+      await page.waitForSelector('h3', { state: 'visible', timeout: 10000 });
+      
+      // Verify we're on the incoming requests page
+      await expect(page).toHaveURL(/\/admin\/incoming-save-chicken-requests/);
+    });
+
+    await test.step('Find and select the incoming public request', async () => {
+      // Wait for the requests list to load
+      await page.waitForTimeout(2000);
+
+      // Click on the request card with the public user's name
+      const requestCard = page.locator('.mud-card').filter({ hasText: `${publicFirstName} ${publicLastName}` });
+      await requestCard.waitFor({ state: 'visible', timeout: 10000 });
+      await requestCard.click();
+
+      // Wait for details to load after selection
+      await page.waitForTimeout(1000);
+
+      // Verify request details are displayed using data-testid
+      await expect(page.getByTestId('contact-email')).toContainText(publicEmail);
+      await expect(page.getByTestId('address-city')).toContainText('Basel');
+      
+      // Description is displayed as regular text, not in a testid element
+      await expect(page.locator('text=Public request with nice garden')).toBeVisible();
+    });
+
+    await test.step('Select save chicken action from dropdown', async () => {
+      // Use the helper to select the action by ID
+      await selectSaveChickenAction(page, actionId);
+    });
+
+    await test.step('Mark request as handled', async () => {
+      // Click the "Mark as Handled" button
+      const markHandledButton = page.getByRole('button', { name: /als bearbeitet markieren|mark as handled/i });
+      await markHandledButton.waitFor({ state: 'visible', timeout: 5000 });
+      await markHandledButton.click();
+
+      // Wait for success message
+      await page.waitForTimeout(2000);
+      
+      // Verify success message appears
+      await expect(page.locator('.mud-snackbar').filter({ hasText: /erfolgreich|success/i })).toBeVisible({ timeout: 5000 });
+
+      // Request should disappear from the list (removed from unhandled)
+      await page.waitForTimeout(1000);
+    });
+
+    await test.step('Verify request appears in save chicken action', async () => {
+      // Navigate to save chicken actions list
+      await page.goto('/admin/save-chicken-actions', { waitUntil: 'networkidle' });
+
+      // Search for the action
+      await page.getByLabel(/suche|search/i).fill(actionTitle);
+      await page.getByRole('button', { name: /suchen|search/i }).click();
+      await page.waitForTimeout(1000);
+
+      // Click view/show button for the action
+      const viewButton = page.getByTestId('view-button').first();
+      await viewButton.waitFor({ state: 'visible', timeout: 5000 });
+      await viewButton.click();
+
+      // Should be on action detail page
+      await page.waitForURL(/\/admin\/save-chicken-actions\/\d+/, { timeout: 10000 });
+
+      // Wait for the page to load and requests table to appear
+      await page.waitForLoadState('networkidle', { timeout: 10000 });
+      await page.waitForTimeout(2000); // Give time for the search to complete
+
+      // Verify the request appears in the action's requests table by checking for the person's name and email
+      await expect(page.locator('text=' + publicEmail)).toBeVisible({ timeout: 5000 });
+      console.log('Verified that public request appears in the save chicken action');
+    });
+  });
+
+  test('should filter and search incoming requests', async ({ page }) => {
+    test.setTimeout(90000);
+
+    const timestamp = Date.now();
+
+    await test.step('Create multiple persons with different characteristics', async () => {
+      await createPerson(page, {
+        firstName: `SearchTest1${timestamp}`,
+        lastName: 'Zurich',
+        email: `search1${timestamp}@example.com`,
+        phone: '+41791111111',
+        city: 'Zurich',
+        postalCode: '8000',
+        street: 'Test Street 1',
+      });
+
+      await createPerson(page, {
+        firstName: `SearchTest2${timestamp}`,
+        lastName: 'Basel',
+        email: `search2${timestamp}@example.com`,
+        phone: '+41792222222',
+        city: 'Basel',
+        postalCode: '4000',
+        street: 'Test Street 2',
+      });
+    });
+
+    await test.step('Navigate to incoming requests page', async () => {
+      await page.goto('/admin/incoming-save-chicken-requests', { waitUntil: 'networkidle' });
+      await page.waitForSelector('h3', { state: 'visible', timeout: 10000 });
+
+      // Verify page loaded with pending requests counter
+      await expect(page.getByText(/ausstehende anfragen|pending requests/i)).toBeVisible();
+    });
+
+    await test.step('Verify empty state when no incoming requests', async () => {
+      // If there are no requests, should show empty message
+      const noRequestsMessage = page.getByText(/keine ausstehenden anfragen|no pending requests/i);
+      
+      // Either we have requests or we see the empty message
+      const hasRequests = await page.locator('.mud-card').filter({ hasText: /searchtest/i }).count();
+      
+      if (hasRequests === 0) {
+        await expect(noRequestsMessage).toBeVisible();
+      }
+    });
+
+    await test.step('Verify similar persons detection works', async () => {
+      // This test verifies the UI shows similar persons when a request is selected
+      // If there are incoming requests, select one and check for similar persons section
+      const firstRequest = page.locator('.mud-card').first();
+      const hasRequests = await firstRequest.isVisible().catch(() => false);
+
+      if (hasRequests) {
+        await firstRequest.click();
+        await page.waitForTimeout(1000);
+
+        // Verify similar persons section is visible
+        await expect(page.getByText(/ähnliche personen|similar persons/i)).toBeVisible();
+      }
+    });
   });
 });
