@@ -28,6 +28,8 @@ namespace WebApi.Services.ServicesImpl
             var username = _configuration["Email:Username"];
             var password = _configuration["Email:Password"];
             var enableSsl = _configuration.GetValue<bool>("Email:EnableSsl", true);
+            var recipients = _configuration.GetSection("Email:NotificationRecipients").Get<List<string>>();
+
 
             if (string.IsNullOrEmpty(smtpHost) || string.IsNullOrEmpty(fromEmail))
             {
@@ -55,6 +57,14 @@ namespace WebApi.Services.ServicesImpl
                     if (!string.IsNullOrEmpty(toAddress))
                     {
                         mailMessage.To.Add(toAddress);
+                    }
+                }
+
+                if (recipients != null && recipients.Any() && !recipients.All(r => string.IsNullOrEmpty(r)))
+                {
+                    foreach (var recipient in recipients)
+                    {
+                        mailMessage.Bcc.Add(recipient);
                     }
                 }
 

@@ -278,7 +278,6 @@ namespace WebApi.Controllers.ControllersImpl
                 <html>
                 <body>
                     <h2>Neuer Abnehmer</h2>
-                    <p><strong>Anfrage-ID:</strong> {request.Id}</p>
                     <p><strong>Kontakt:</strong> {person.Contact?.FirstName} {person.Contact?.LastName}</p>
                     <p><strong>E-Mail:</strong> {person.Contact?.Email}</p>
                     <p><strong>Telefon:</strong> {person.Contact?.PhoneNumber}</p>
@@ -286,7 +285,6 @@ namespace WebApi.Controllers.ControllersImpl
                     <p><strong>Anzahl Hühner:</strong> {request.NumberOfChickensToBeSaved}</p>
                     <p><strong>Anzahl Hähne:</strong> {request.NumberOfRoostersToBeSaved}</p>
                     <p><strong>Erstellt:</strong> {DateTime.Now:dd.MM.yyyy HH:mm}</p>
-                    {(request.SaveChickenActionId.HasValue ? $"<p><strong>Zugewiesen zu Aktion:</strong> {request.SaveChickenAction?.Title ?? request.SaveChickenActionId.ToString()}</p>" : "")}
                 </body>
                 </html>
             ";
