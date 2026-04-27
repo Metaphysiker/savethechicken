@@ -25,7 +25,7 @@
         @L["Admin_Persons_CreateButton"]
     </MudButton>
 
-    <GenericSearch TDto="PersonDto" TSearchDto="PersonSearch">
+    <GenericSearch TDto="PersonDto" TSearchDto="PersonSearch" search="@initialSearch">
         <SearchForm Context="search">
             <PersonSearchForm Model="search" />
         </SearchForm>
@@ -34,3 +34,10 @@
         </Table>
     </GenericSearch>
 </MudContainer>
+
+@code {
+    private PersonSearch initialSearch = new PersonSearch 
+    { 
+        HasUnhandledRequests = false 
+    };
+}

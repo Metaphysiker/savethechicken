@@ -81,10 +81,13 @@ namespace WebApi.Controllers.ControllersImpl
             var result = await _db.Persons
                 .Include(p => p.Contact)
                 .Include(p => p.Address)
+                .Include(p => p.SaveChickenRequests)
                 .Where(p =>
-                    EF.Functions.ILike(p.Contact.FirstName, searchPattern) ||
-                    EF.Functions.ILike(p.Contact.LastName, searchPattern) ||
-                    EF.Functions.ILike(p.Contact.Email, searchPattern))
+                    (EF.Functions.ILike(p.Contact.FirstName, searchPattern) ||
+                     EF.Functions.ILike(p.Contact.LastName, searchPattern) ||
+                     EF.Functions.ILike(p.Contact.Email, searchPattern)) &&
+                    // Exclude persons with unhandled requests
+                    !p.SaveChickenRequests.Any(r => !r.IsHandled))
                 .OrderBy(p => p.Contact.LastName)
                 .ThenBy(p => p.Contact.FirstName)
                 .Take(limit)
@@ -202,35 +205,32 @@ namespace WebApi.Controllers.ControllersImpl
                     {
                         SearchTerm = nameSearch,
                         PageSize = 20,
-                        HasUnhandledRequests = true,
-                        HasUnarchivedRequests = true
+                        HasUnhandledRequests = false
                     }, PersonIncludes.Default);
                     similarPersons.AddRange(nameResults.Data);
                 }
             }
 
-            // Search by email - only persons with active requests
+            // Search by email - only persons without unhandled requests
             if (person.Contact != null && !string.IsNullOrWhiteSpace(person.Contact.Email))
             {
                 var emailResults = await _service.Search(new PersonSearch
                 {
                     SearchTerm = person.Contact.Email,
                     PageSize = 20,
-                    HasUnhandledRequests = true,
-                    HasUnarchivedRequests = true
+                    HasUnhandledRequests = false
                 }, PersonIncludes.Default);
                 similarPersons.AddRange(emailResults.Data);
             }
 
-            // Search by phone number - only persons with active requests
+            // Search by phone number - only persons without unhandled requests
             if (person.Contact != null && !string.IsNullOrWhiteSpace(person.Contact.PhoneNumber))
             {
                 var phoneResults = await _service.Search(new PersonSearch
                 {
                     SearchTerm = person.Contact.PhoneNumber,
                     PageSize = 20,
-                    HasUnhandledRequests = true,
-                    HasUnarchivedRequests = true
+                    HasUnhandledRequests = false
                 }, PersonIncludes.Default);
                 similarPersons.AddRange(phoneResults.Data);
             }

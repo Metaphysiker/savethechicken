@@ -71,12 +71,12 @@
             <MudRadioGroup @bind-Value="@selectedFirstName">
                 <MudGrid Class="mb-3">
                     <MudItem xs="12" md="6">
-                        <MudRadio T="string" Value="@INCOMING" Color="Color.Info">
+                        <MudRadio T="string" Value="@INCOMING" Color="Color.Info" data-testid="merge-firstname-incoming">
                             <MudText>@incomingPerson.Contact.FirstName</MudText>
                         </MudRadio>
                     </MudItem>
                     <MudItem xs="12" md="6">
-                        <MudRadio T="string" Value="@TARGET" Color="Color.Success">
+                        <MudRadio T="string" Value="@TARGET" Color="Color.Success" data-testid="merge-firstname-target">
                             <MudText>@targetPerson.Contact.FirstName</MudText>
                         </MudRadio>
                     </MudItem>
@@ -88,12 +88,12 @@
             <MudRadioGroup @bind-Value="@selectedLastName">
                 <MudGrid Class="mb-3">
                     <MudItem xs="12" md="6">
-                        <MudRadio T="string" Value="@INCOMING" Color="Color.Info">
+                        <MudRadio T="string" Value="@INCOMING" Color="Color.Info" data-testid="merge-lastname-incoming">
                             <MudText>@incomingPerson.Contact.LastName</MudText>
                         </MudRadio>
                     </MudItem>
                     <MudItem xs="12" md="6">
-                        <MudRadio T="string" Value="@TARGET" Color="Color.Success">
+                        <MudRadio T="string" Value="@TARGET" Color="Color.Success" data-testid="merge-lastname-target">
                             <MudText>@targetPerson.Contact.LastName</MudText>
                         </MudRadio>
                     </MudItem>
@@ -105,12 +105,12 @@
             <MudRadioGroup @bind-Value="@selectedEmail">
                 <MudGrid Class="mb-3">
                     <MudItem xs="12" md="6">
-                        <MudRadio T="string" Value="@INCOMING" Color="Color.Info">
+                        <MudRadio T="string" Value="@INCOMING" Color="Color.Info" data-testid="merge-email-incoming">
                             <MudText>@incomingPerson.Contact.Email</MudText>
                         </MudRadio>
                     </MudItem>
                     <MudItem xs="12" md="6">
-                        <MudRadio T="string" Value="@TARGET" Color="Color.Success">
+                        <MudRadio T="string" Value="@TARGET" Color="Color.Success" data-testid="merge-email-target">
                             <MudText>@targetPerson.Contact.Email</MudText>
                         </MudRadio>
                     </MudItem>
@@ -122,12 +122,12 @@
             <MudRadioGroup @bind-Value="@selectedPhoneNumber">
                 <MudGrid Class="mb-3">
                     <MudItem xs="12" md="6">
-                        <MudRadio T="string" Value="@INCOMING" Color="Color.Info">
+                        <MudRadio T="string" Value="@INCOMING" Color="Color.Info" data-testid="merge-phone-incoming">
                             <MudText>@incomingPerson.Contact.PhoneNumber</MudText>
                         </MudRadio>
                     </MudItem>
                     <MudItem xs="12" md="6">
-                        <MudRadio T="string" Value="@TARGET" Color="Color.Success">
+                        <MudRadio T="string" Value="@TARGET" Color="Color.Success" data-testid="merge-phone-target">
                             <MudText>@targetPerson.Contact.PhoneNumber</MudText>
                         </MudRadio>
                     </MudItem>
@@ -146,12 +146,12 @@
             <MudRadioGroup @bind-Value="@selectedStreet">
                 <MudGrid Class="mb-3">
                     <MudItem xs="12" md="6">
-                        <MudRadio T="string" Value="@INCOMING" Color="Color.Info">
+                        <MudRadio T="string" Value="@INCOMING" Color="Color.Info" data-testid="merge-street-incoming">
                             <MudText>@incomingPerson.Address.Street</MudText>
                         </MudRadio>
                     </MudItem>
                     <MudItem xs="12" md="6">
-                        <MudRadio T="string" Value="@TARGET" Color="Color.Success">
+                        <MudRadio T="string" Value="@TARGET" Color="Color.Success" data-testid="merge-street-target">
                             <MudText>@targetPerson.Address.Street</MudText>
                         </MudRadio>
                     </MudItem>
@@ -163,12 +163,12 @@
             <MudRadioGroup @bind-Value="@selectedPostalCode">
                 <MudGrid Class="mb-3">
                     <MudItem xs="12" md="6">
-                        <MudRadio T="string" Value="@INCOMING" Color="Color.Info">
+                        <MudRadio T="string" Value="@INCOMING" Color="Color.Info" data-testid="merge-postalcode-incoming">
                             <MudText>@incomingPerson.Address.PostalCode</MudText>
                         </MudRadio>
                     </MudItem>
                     <MudItem xs="12" md="6">
-                        <MudRadio T="string" Value="@TARGET" Color="Color.Success">
+                        <MudRadio T="string" Value="@TARGET" Color="Color.Success" data-testid="merge-postalcode-target">
                             <MudText>@targetPerson.Address.PostalCode</MudText>
                         </MudRadio>
                     </MudItem>
@@ -180,12 +180,12 @@
             <MudRadioGroup @bind-Value="@selectedCity">
                 <MudGrid Class="mb-3">
                     <MudItem xs="12" md="6">
-                        <MudRadio T="string" Value="@INCOMING" Color="Color.Info">
+                        <MudRadio T="string" Value="@INCOMING" Color="Color.Info" data-testid="merge-city-incoming">
                             <MudText>@incomingPerson.Address.City</MudText>
                         </MudRadio>
                     </MudItem>
                     <MudItem xs="12" md="6">
-                        <MudRadio T="string" Value="@TARGET" Color="Color.Success">
+                        <MudRadio T="string" Value="@TARGET" Color="Color.Success" data-testid="merge-city-target">
                             <MudText>@targetPerson.Address.City</MudText>
                         </MudRadio>
                     </MudItem>
