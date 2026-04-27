@@ -25,7 +25,6 @@ namespace WebApi.Models.ModelsImpl
         public SaveChickenAction? SaveChickenAction { get; set; }
         public bool IsSubmittedFromPublicForm { get; set; } = false;
         public bool IsHandled { get; set; } = false;
-        public bool IsArchived { get; set; } = false;
 
         [Column(TypeName = "tsvector")]
         public NpgsqlTsVector SearchVector { get; set; } = null!;

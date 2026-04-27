@@ -55,25 +55,6 @@ namespace Services.ServicesImpl
                 }
             }
 
-            // Filter by HasUnarchivedRequests
-            if (search.HasUnarchivedRequests.HasValue)
-            {
-                if (search.HasUnarchivedRequests.Value)
-                {
-                    // Has at least one unarchived request
-                    query = query.Where(x =>
-                        x.SaveChickenRequests.Any(r => !r.IsArchived) ||
-                        x.SaveChickenDriveRequests.Any(r => !r.IsArchived));
-                }
-                else
-                {
-                    // All requests are archived (or has no requests)
-                    query = query.Where(x =>
-                        !x.SaveChickenRequests.Any(r => !r.IsArchived) &&
-                        !x.SaveChickenDriveRequests.Any(r => !r.IsArchived));
-                }
-            }
-
             // Full-text search
             if (!string.IsNullOrWhiteSpace(search.SearchTerm))
             {

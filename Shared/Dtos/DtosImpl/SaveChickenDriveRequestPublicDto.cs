@@ -50,6 +50,5 @@ namespace Shared.Dtos.DtosImpl
 
         public bool IsSubmittedFromPublicForm { get; set; } = true;
         public bool IsHandled { get; set; } = false;
-        public bool IsArchived { get; set; } = false;
     }
 }

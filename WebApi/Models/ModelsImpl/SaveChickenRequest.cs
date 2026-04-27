@@ -29,8 +29,6 @@ namespace WebApi.Models.ModelsImpl
         public List<int> BlackListedPersonIds { get; set; } = new List<int>();
         public bool IsSubmittedFromPublicForm { get; set; } = false;
         public bool IsHandled { get; set; } = false;
-        public bool IsArchived { get; set; } = false;
-
         [Column(TypeName = "tsvector")]
         public NpgsqlTsVector SearchVector { get; set; } = null!;
 
