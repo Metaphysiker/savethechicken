@@ -764,4 +764,52 @@
   <data name="MergeWithSelectedPerson" xml:space="preserve">
     <value>Mit ausgewählter Person zusammenführen</value>
   </data>
+  <data name="IncomingSaveChickenRequests" xml:space="preserve">
+    <value>Neue Platzangebote</value>
+  </data>
+  <data name="UnhandledRequestsNeedReview" xml:space="preserve">
+    <value>Dies sind Anfragen, die über das öffentliche Formular eingereicht wurden und überprüft und bearbeitet werden müssen</value>
+  </data>
+  <data name="PendingRequests" xml:space="preserve">
+    <value>Ausstehende Anfragen</value>
+  </data>
+  <data name="NoPendingRequests" xml:space="preserve">
+    <value>Keine ausstehenden Anfragen</value>
+  </data>
+  <data name="ComparisonMode" xml:space="preserve">
+    <value>Vergleichsmodus</value>
+  </data>
+  <data name="ClearComparison" xml:space="preserve">
+    <value>Vergleich löschen</value>
+  </data>
+  <data name="AlreadyHandled" xml:space="preserve">
+    <value>Bereits bearbeitet</value>
+  </data>
+  <data name="MarkAsHandled" xml:space="preserve">
+    <value>Als bearbeitet markieren</value>
+  </data>
+  <data name="SelectRequestToViewDetails" xml:space="preserve">
+    <value>Wählen Sie eine Anfrage aus der Liste aus, um Details anzuzeigen</value>
+  </data>
+  <data name="SelectRequestToSeeSimilarEntries" xml:space="preserve">
+    <value>Wählen Sie eine Anfrage aus, um ähnliche Einträge zu sehen</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Unbekannt</value>
+  </data>
+  <data name="NoCity" xml:space="preserve">
+    <value>Keine Stadt</value>
+  </data>
+  <data name="RequestMarkedAsHandledSuccess" xml:space="preserve">
+    <value>Anfrage erfolgreich als bearbeitet markiert!</value>
+  </data>
+  <data name="ErrorMarkingAsHandled" xml:space="preserve">
+    <value>Fehler beim Markieren als bearbeitet</value>
+  </data>
+  <data name="PleaseSelectRequestFirst" xml:space="preserve">
+    <value>Bitte wählen Sie zuerst eine Anfrage aus</value>
+  </data>
+  <data name="ErrorLoadingRequests" xml:space="preserve">
+    <value>Fehler beim Laden der Anfragen</value>
+  </data>
 </root>

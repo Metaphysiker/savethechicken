@@ -39,9 +39,11 @@
             <MudNavLink Href="/admin/save-chicken-actions/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">@L["NewRescueAction"]</MudNavLink>
             <MudDivider Class="my-2" />
 
+            <MudNavLink Href="/admin/save-chicken-requests" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Support">@L["SaveChickenRequests"]</MudNavLink>
+            <MudNavLink Href="/admin/save-chicken-requests/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">@L["NewPlaceOffer"]</MudNavLink>
             <MudNavLink Href="/admin/incoming-save-chicken-requests" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Inbox">
                 <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Style="width: 100%;">
-                    <span>Incoming Requests</span>
+                    <span>@L["IncomingSaveChickenRequests"]</span>
                     @if (pendingRequestsCount > 0)
                     {
                         <MudBadge Content="@pendingRequestsCount" Color="Color.Error" Overlap="true" Style="margin-right: 8px;">
@@ -50,10 +52,6 @@
                     }
                 </MudStack>
             </MudNavLink>
-            <MudDivider Class="my-2" />
-
-            <MudNavLink Href="/admin/save-chicken-requests" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Support">@L["SaveChickenRequests"]</MudNavLink>
-            <MudNavLink Href="/admin/save-chicken-requests/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">@L["NewPlaceOffer"]</MudNavLink>
             <MudDivider Class="my-2" />
 
             <MudNavLink Href="/admin/save-chicken-drive-requests" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.DirectionsCar">@L["SaveChickenDriveRequests"]</MudNavLink>

@@ -1,9 +1,11 @@
 @page "/admin/incoming-save-chicken-requests"
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Persons
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
+@using global::Shared.Dtos
 @using MauiBlazorWeb.Shared.Resources.Strings
 @using Microsoft.Extensions.Localization
 @inject GenericDtoServiceFactory DtoServiceFactory
@@ -43,7 +45,6 @@
                         @foreach (var request in unhandledRequests)
                         {
                             <MudCard Outlined="true"
-                                     Class="@(selectedRequest?.Id == request.Id ? "mud-theme-primary" : "")"
                                      Style="@GetCardStyle(request)"
                                      @onclick="() => SelectRequest(request)">
                                 <MudCardContent Class="py-2 px-3">
@@ -74,6 +75,15 @@
                 @if (selectedRequest != null)
                 {
                     <MudText Typo="Typo.h5" Class="mb-3">@L["SaveChickenRequestDetails"]</MudText>
+
+                    <!-- Save Chicken Action Selector -->
+                    <MudPaper Class="pa-3 mb-3" Outlined="true">
+                        <MudText Typo="Typo.h6" Class="mb-2">
+                            <MudIcon Icon="@Icons.Material.Filled.Dashboard" Size="Size.Small" /> @L["SaveChickenAction"]
+                        </MudText>
+                        <SaveChickenActionSelector SelectedActionId="@selectedActionId"
+                                                   SelectedActionIdChanged="OnSaveChickenActionIdChanged" />
+                    </MudPaper>
 
                     @if (comparisonPerson != null)
                     {
@@ -234,7 +244,7 @@
                                 <MudButton Variant="Variant.Filled"
                                            Color="Color.Primary"
                                            StartIcon="@Icons.Material.Filled.MergeType"
-                                           OnClick="() => MergeWithPerson(comparisonPerson.Id)"
+                                           OnClick="async () => await MergeWithPerson(comparisonPerson.Id)"
                                            FullWidth="true">
                                     @L["MergeWithSelectedPerson"]
                                 </MudButton>
@@ -314,7 +324,7 @@
                                                    Color="Color.Primary"
                                                    StartIcon="@Icons.Material.Filled.MergeType"
                                                    FullWidth="true"
-                                                   OnClick="@(() => MergeWithPerson(person.Id))">
+                                                   OnClick="@(async () => await MergeWithPerson(person.Id))">
                                             @L["Merge"]
                                         </MudButton>
                                     </MudCardActions>
@@ -341,6 +351,7 @@
     private PersonDto? comparisonPerson = null;
     private bool isLoadingRequests = true;
     private bool isLoadingSimilarPersons = false;
+    private int? selectedActionId = null;
 
     private GenericDtoService<SaveChickenRequestDto, SaveChickenRequestSearch>? _service;
 
@@ -385,6 +396,7 @@
     {
         selectedRequest = request;
         comparisonPerson = null; // Clear comparison when selecting new request
+        selectedActionId = null; // Don't pre-select action
         await LoadSimilarPersons();
         StateHasChanged();
     }
@@ -446,6 +458,8 @@
         try
         {
             selectedRequest.IsHandled = true;
+            selectedRequest.SaveChickenActionId = selectedActionId;
+            
             var updated = await _service.UpdateAsync(selectedRequest);
 
             Snackbar.Add("Request marked as handled successfully!", Severity.Success);
@@ -453,14 +467,25 @@
             // Remove from unhandled list and reload
             unhandledRequests.Remove(selectedRequest);
             selectedRequest = null;
+            selectedActionId = null;
             similarPersons = new();
 
             StateHasChanged();
         }
+        catch (HttpRequestException ex)
+        {
+            var errorMessage = $"Error marking as handled: {ex.Message}";
+            if (ex.InnerException != null)
+            {
+                errorMessage += $"\nInner: {ex.InnerException.Message}";
+            }
+            Snackbar.Add(errorMessage, Severity.Error);
+            Console.WriteLine($"Full error: {ex}");
+        }
         catch (Exception ex)
         {
             Snackbar.Add($"Error marking as handled: {ex.Message}", Severity.Error);
-            Console.WriteLine($"Error marking as handled: {ex.Message}");
+            Console.WriteLine($"Full error: {ex}");
         }
     }
 
@@ -474,12 +499,42 @@
         NavigationManager.NavigateTo($"/admin/persons/{personId}");
     }
 
-    private void MergeWithPerson(int targetPersonId)
+    private async Task MergeWithPerson(int targetPersonId)
     {
         if (selectedRequest == null)
         {
             Snackbar.Add("Please select a request first", Severity.Warning);
             return;
+        }
+
+        // Save the selected action if changed before navigating
+        if (selectedActionId != selectedRequest.SaveChickenActionId)
+        {
+            try
+            {
+                selectedRequest.SaveChickenActionId = selectedActionId;
+                await _service!.UpdateAsync(selectedRequest);
+                Snackbar.Add("Rettungs-Aktion gespeichert", Severity.Success);
+            }
+            catch (HttpRequestException ex)
+            {
+                var errorMessage = $"Fehler beim Speichern der Aktion: {ex.Message}";
+                if (ex.InnerException != null)
+                {
+                    errorMessage += $"\nDetails: {ex.InnerException.Message}";
+                }
+                Snackbar.Add(errorMessage, Severity.Error);
+                Console.WriteLine($"Full error saving action before merge: {ex}");
+                // Don't continue with merge if save fails
+                return;
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Fehler beim Speichern der Aktion: {ex.Message}", Severity.Error);
+                Console.WriteLine($"Full error saving action before merge: {ex}");
+                // Don't continue with merge if save fails
+                return;
+            }
         }
 
         NavigationManager.NavigateTo($"/admin/merge-person/{selectedRequest.Id}/{targetPersonId}");
@@ -490,7 +545,7 @@
         var baseStyle = "cursor: pointer;";
         if (selectedRequest?.Id == request.Id)
         {
-            return $"{baseStyle} border: 2px solid var(--mud-palette-primary);";
+            return $"{baseStyle} border: 2px solid #2196F3; background-color: rgba(33, 150, 243, 0.12);";
         }
         return baseStyle;
     }
@@ -503,5 +558,17 @@
             return $"{baseStyle} border: 2px solid var(--mud-palette-info); background-color: rgba(33, 150, 243, 0.05);";
         }
         return baseStyle;
+    }
+
+    private async Task OnSaveChickenActionIdChanged(int? actionId)
+    {
+        if (selectedRequest == null || _service == null) return;
+
+        selectedActionId = actionId; // Update the bound variable
+        
+        // Don't update selectedRequest.SaveChickenActionId here - let MarkAsHandled or MergeWithPerson do it
+        // This way we can detect if the value changed and needs saving
+        
+        StateHasChanged();
     }
 }

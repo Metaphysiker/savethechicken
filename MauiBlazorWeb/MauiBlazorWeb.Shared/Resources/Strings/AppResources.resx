@@ -639,4 +639,73 @@
   <data name="RoutePlan" xml:space="preserve">
     <value>Route Plan</value>
   </data>
+  <data name="IncomingSaveChickenRequests" xml:space="preserve">
+    <value>Incoming Requests</value>
+  </data>
+  <data name="UnhandledRequestsNeedReview" xml:space="preserve">
+    <value>These are requests submitted from the public form that need to be reviewed and handled</value>
+  </data>
+  <data name="PendingRequests" xml:space="preserve">
+    <value>Pending Requests</value>
+  </data>
+  <data name="NoPendingRequests" xml:space="preserve">
+    <value>No pending requests</value>
+  </data>
+  <data name="ComparisonMode" xml:space="preserve">
+    <value>Comparison Mode</value>
+  </data>
+  <data name="ClearComparison" xml:space="preserve">
+    <value>Clear Comparison</value>
+  </data>
+  <data name="AlreadyHandled" xml:space="preserve">
+    <value>Already Handled</value>
+  </data>
+  <data name="MarkAsHandled" xml:space="preserve">
+    <value>Mark as Handled</value>
+  </data>
+  <data name="SelectRequestToViewDetails" xml:space="preserve">
+    <value>Select a request from the list to view details</value>
+  </data>
+  <data name="SelectRequestToSeeSimilarEntries" xml:space="preserve">
+    <value>Select a request to see similar entries</value>
+  </data>
+  <data name="SimilarPersons" xml:space="preserve">
+    <value>Similar Persons</value>
+  </data>
+  <data name="NoSimilarPersonsFound" xml:space="preserve">
+    <value>No similar persons found</value>
+  </data>
+  <data name="PotentialDuplicatesFound" xml:space="preserve">
+    <value>potential duplicates found</value>
+  </data>
+  <data name="ClickToCompare" xml:space="preserve">
+    <value>Click to Compare</value>
+  </data>
+  <data name="Comparing" xml:space="preserve">
+    <value>Comparing</value>
+  </data>
+  <data name="ComparingPersonDetails" xml:space="preserve">
+    <value>Comparing person details</value>
+  </data>
+  <data name="Merge" xml:space="preserve">
+    <value>Merge</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
+  <data name="NoCity" xml:space="preserve">
+    <value>No city</value>
+  </data>
+  <data name="RequestMarkedAsHandledSuccess" xml:space="preserve">
+    <value>Request marked as handled successfully!</value>
+  </data>
+  <data name="ErrorMarkingAsHandled" xml:space="preserve">
+    <value>Error marking as handled</value>
+  </data>
+  <data name="PleaseSelectRequestFirst" xml:space="preserve">
+    <value>Please select a request first</value>
+  </data>
+  <data name="ErrorLoadingRequests" xml:space="preserve">
+    <value>Error loading requests</value>
+  </data>
 </root>
