@@ -1,4 +1,4 @@
-@page "/admin/incoming-save-chicken-requests"
+@page "/admin/incoming-save-chicken-drive-requests"
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Persons
@@ -59,7 +59,7 @@
                                         @(request.Person?.Address?.City ?? "No city")
                                     </MudText>
                                     <MudText Typo="Typo.caption">
-                                        @request.NumberOfChickensToBeSaved 🐔 | @request.CreatedAt.ToString("dd.MM.yyyy")
+                                        @request.CapacityForChickens 🐔 | @request.CreatedAt.ToString("dd.MM.yyyy")
                                     </MudText>
                                     @if (request.IsSubmittedFromPublicForm)
                                     {
@@ -115,87 +115,14 @@
                             <MudIcon Icon="@Icons.Material.Filled.Info" Size="Size.Small" /> @L["SaveChickenRequestInformation"]
                         </MudText>
 
-                        @if (selectedRequest.NumberOfChickensToBeSaved > 0)
-                        {
-                            <MudText Typo="Typo.body2" Class="mb-2">
-                                <strong>@L["NumberOfChickensToBeSaved"]:</strong><br/>
-                                @selectedRequest.NumberOfChickensToBeSaved
-                            </MudText>
-                        }
-
-                        @if (selectedRequest.NumberOfRoostersToBeSaved > 0)
-                        {
-                            <MudText Typo="Typo.body2" Class="mb-2">
-                                <strong>@L["NumberOfRoostersToBeSaved"]:</strong><br/>
-                                @selectedRequest.NumberOfRoostersToBeSaved
-                            </MudText>
-                        }
-
-                        @if (selectedRequest.NumberOfBoxes > 0)
-                        {
-                            <MudText Typo="Typo.body2" Class="mb-2">
-                                <strong>@L["NumberOfBoxes"]:</strong><br/>
-                                @selectedRequest.NumberOfBoxes
-                            </MudText>
-                        }
-
-                        @if (!string.IsNullOrWhiteSpace(selectedRequest.Color))
-                        {
-                            <MudText Typo="Typo.body2" Class="mb-2">
-                                <strong>@L["Color"]:</strong><br/>
-                                <span class="mud-chip" style="@($"background-color: {selectedRequest.Color}; padding: 4px 12px; border-radius: 16px; display: inline-block;")">@selectedRequest.Color</span>
-                            </MudText>
-                        }
-
                         <MudText Typo="Typo.body2" Class="mb-2">
-                            <strong>@L["AcceptTermsAndConditions"]:</strong><br/>
-                            @if (selectedRequest.AcceptTermsAndConditions)
-                            {
-                                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small" />
-                                <span>@L["yes"]</span>
-                            }
-                            else
-                            {
-                                <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small" />
-                                <span>@L["no"]</span>
-                            }
+                            <strong>Kapazität für Hühner:</strong><br/>
+                            @selectedRequest.CapacityForChickens
                         </MudText>
 
-                        <MudText Typo="Typo.body2" Class="mb-2">
-                            <strong>@L["AlreadyReceivedChickenPreviously"]:</strong><br/>
-                            @if (selectedRequest.AlreadyReceivedChickenPreviously)
-                            {
-                                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small" />
-                                <span>@L["yes"]</span>
-                            }
-                            else
-                            {
-                                <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Default" Size="Size.Small" />
-                                <span>@L["no"]</span>
-                            }
-                        </MudText>
+                        <!-- No AcceptTermsAndConditions, AlreadyReceivedChickenPreviously, or ConfirmThatIFulfillCriteria in SaveChickenDriveRequestDto -->
 
-                        <MudText Typo="Typo.body2" Class="mb-2">
-                            <strong>@L["ConfirmThatIFulfillCriteria"]:</strong><br/>
-                            @if (selectedRequest.ConfirmThatIFulfillCriteria)
-                            {
-                                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small" />
-                                <span>@L["yes"]</span>
-                            }
-                            else
-                            {
-                                <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small" />
-                                <span>@L["no"]</span>
-                            }
-                        </MudText>
-
-                        @if (!string.IsNullOrWhiteSpace(selectedRequest.DescriptionOfPlaceForChickens))
-                        {
-                            <MudText Typo="Typo.body2" Class="mt-4">
-                                <strong>@L["DescriptionOfPlaceForChickens"]:</strong><br/>
-                                @selectedRequest.DescriptionOfPlaceForChickens
-                            </MudText>
-                        }
+                        <!-- No DescriptionOfPlaceForChickens in SaveChickenDriveRequestDto -->
 
                         @if (!string.IsNullOrWhiteSpace(selectedRequest.Message))
                         {
@@ -392,11 +319,11 @@
 </MudContainer>
 
 @code {
-    private List<SaveChickenRequestDto> unhandledRequests = new();
+    private List<SaveChickenDriveRequestDto> unhandledRequests = new();
     private List<PersonDto> similarPersons = new();
     private List<PersonDto> manuallySearchedPersons = new();
     private List<PersonDto> searchResults = new();
-    private SaveChickenRequestDto? selectedRequest = null;
+    private SaveChickenDriveRequestDto? selectedRequest = null;
     private PersonDto? comparisonPerson = null;
     private string personSearchTerm = "";
     private bool isLoadingRequests = true;
@@ -404,12 +331,12 @@
     private bool isSearchingPersons = false;
     private int? selectedActionId = null;
 
-    private GenericDtoService<SaveChickenRequestDto, SaveChickenRequestSearch>? _service;
+    private GenericDtoService<SaveChickenDriveRequestDto, SaveChickenDriveRequestSearch>? _service;
     private GenericDtoService<PersonDto, PersonSearch>? _personService;
 
     protected override async Task OnInitializedAsync()
     {
-        _service = DtoServiceFactory.Create<SaveChickenRequestDto, SaveChickenRequestSearch>();
+        _service = DtoServiceFactory.Create<SaveChickenDriveRequestDto, SaveChickenDriveRequestSearch>();
         _personService = DtoServiceFactory.Create<PersonDto, PersonSearch>();
         await LoadUnhandledRequests();
     }
@@ -421,13 +348,14 @@
 
         try
         {
-            var searchParams = new SaveChickenRequestSearch
+            var searchParams = new SaveChickenDriveRequestSearch
             {
                 IsHandled = false,
                 IsSubmittedFromPublicForm = true,
                 PageSize = 100,
                 SortBy = "CreatedAt",
                 SortDescending = true
+
             };
 
             var result = await _service!.SearchAsync(searchParams);
@@ -445,7 +373,7 @@
         }
     }
 
-    private async Task SelectRequest(SaveChickenRequestDto request)
+    private async Task SelectRequest(SaveChickenDriveRequestDto request)
     {
         selectedRequest = request;
         comparisonPerson = null;
@@ -617,7 +545,7 @@
     {
         try
         {
-            SaveChickenRequestDto? request = await _service!.GetByIdAsync(id);
+            SaveChickenDriveRequestDto? request = await _service!.GetByIdAsync(id);
             if (request.PersonId.HasValue && _personService != null)
             {
                 await _personService.DeleteAsync(request.PersonId.Value);
@@ -672,10 +600,11 @@
             }
         }
 
-        NavigationManager.NavigateTo($"/admin/merge-person/save-chicken-request/{selectedRequest.Id}/person/{targetPersonId}");
+        NavigationManager.NavigateTo($"/admin/merge-person/save-chicken-drive-request/{selectedRequest.Id}/person/{targetPersonId}");
+
     }
 
-    private string GetCardStyle(SaveChickenRequestDto request)
+    private string GetCardStyle(SaveChickenDriveRequestDto request)
     {
         var baseStyle = "cursor: pointer;";
         if (selectedRequest?.Id == request.Id)

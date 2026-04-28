@@ -1,4 +1,5 @@
-@page "/admin/merge-person/{RequestId:int}/{TargetPersonId:int}"
+@page "/admin/merge-person/save-chicken-drive-request/{RequestId:int}/person/{TargetPersonId:int}"
+
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
@@ -35,7 +36,7 @@
         </MudAlert>
 
         <MudGrid>
-            <!-- Left: Incoming Request Person -->
+            <!-- Left: Incoming Drive Request Person -->
             <MudItem xs="12" md="6">
                 <MudPaper Class="pa-4" Outlined="true">
                     <MudText Typo="Typo.h5" Class="mb-3" Color="Color.Info">
@@ -234,7 +235,7 @@
     private bool isLoading = true;
     private bool isMerging = false;
 
-    private SaveChickenRequestDto? request;
+    private SaveChickenDriveRequestDto? request;
     private PersonDto? incomingPerson;
     private PersonDto? targetPerson;
 
@@ -259,10 +260,10 @@
 
         try
         {
-            var requestService = DtoServiceFactory.Create<SaveChickenRequestDto, SaveChickenRequestSearch>();
+            var requestService = DtoServiceFactory.Create<SaveChickenDriveRequestDto, SaveChickenDriveRequestSearch>();
             var personService = DtoServiceFactory.Create<PersonDto, PersonSearch>();
 
-            // Load request
+            // Load drive request
             request = await requestService.GetByIdAsync(RequestId);
 
             if (request?.PersonId == null)
@@ -301,7 +302,7 @@
         try
         {
             var personService = DtoServiceFactory.Create<PersonDto, PersonSearch>();
-            var requestService = DtoServiceFactory.Create<SaveChickenRequestDto, SaveChickenRequestSearch>();
+            var requestService = DtoServiceFactory.Create<SaveChickenDriveRequestDto, SaveChickenDriveRequestSearch>();
 
             // Resolve selected values based on radio button selections
             var finalFirstName = selectedFirstName == INCOMING ? incomingPerson.Contact.FirstName : targetPerson.Contact.FirstName;
@@ -323,10 +324,12 @@
 
             await personService.UpdateAsync(targetPerson);
 
-            // Link request to target person and mark as handled
+            // Link drive request to target person and mark as handled
             request.PersonId = targetPerson.Id;
             request.IsHandled = true;
 
+
+            Console.WriteLine($"Merging SaveChickenDriveRequest {request.Id} from Person {incomingPerson.Id} to Person {targetPerson.Id}");
             await requestService.UpdateAsync(request);
 
             // Always delete incoming person after linking (to avoid duplicates)
@@ -352,6 +355,6 @@
 
     private void NavigateBack()
     {
-        NavigationManager.NavigateTo("/admin/incoming-save-chicken-requests");
+        NavigationManager.NavigateTo("/admin/incoming-save-chicken-drive-requests");
     }
 }

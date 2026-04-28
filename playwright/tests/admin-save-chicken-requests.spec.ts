@@ -882,7 +882,7 @@ test.describe('Admin Save Chicken Request Management', () => {
       await mergeButton.click();
 
       // Should navigate to merge page
-      await page.waitForURL(/\/admin\/merge-person\/\d+\/\d+/, { timeout: 10000 });
+      await page.waitForURL(/\/admin\/merge-person\/save-chicken-request\/\d+\/person\/\d+/, { timeout: 10000 });
       console.log('Navigated to merge page');
     });
 
@@ -1064,7 +1064,7 @@ test.describe('Admin Save Chicken Request Management', () => {
       const mergeButton = page.getByTestId(`merge-person-${existingPersonId}`);
       await mergeButton.waitFor({ state: 'visible', timeout: 10000 });
       await mergeButton.click();
-      await page.waitForURL(/\/admin\/merge-person\/\d+\/\d+/, { timeout: 10000 });
+      await page.waitForURL(/\/admin\/merge-person\/save-chicken-request\/\d+\/person\/\d+/, { timeout: 10000 });
       console.log('Navigated to merge page');
     });
 

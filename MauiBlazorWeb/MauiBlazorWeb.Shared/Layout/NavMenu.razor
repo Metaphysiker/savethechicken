@@ -56,6 +56,17 @@
 
             <MudNavLink Href="/admin/save-chicken-drive-requests" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.DirectionsCar">@L["SaveChickenDriveRequests"]</MudNavLink>
             <MudNavLink Href="/admin/save-chicken-drive-requests/new" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">@L["NewDriveOffer"]</MudNavLink>
+            <MudNavLink Href="/admin/incoming-save-chicken-drive-requests" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Inbox">
+                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Style="width: 100%;">
+                    <span>@L["IncomingSaveChickenDriveRequests"]</span>
+                    @if (pendingRequestsCountSaveChickenDriveRequests > 0)
+                    {
+                        <MudBadge Content="@pendingRequestsCountSaveChickenDriveRequests" Color="Color.Error" Overlap="true" Style="margin-right: 8px;">
+                            <MudIcon Icon="@Icons.Material.Filled.Notifications" Size="Size.Small" />
+                        </MudBadge>
+                    }
+                </MudStack>
+            </MudNavLink>
             <MudDivider Class="my-2" />
 
             <MudNavLink Href="/admin/farms" Class="nav-link-entry" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Agriculture">@L["Farms"]</MudNavLink>
@@ -93,6 +104,7 @@
     [Parameter] public EventCallback OnOpenDrawer { get; set; }
 
     private int pendingRequestsCount = 0;
+    private int pendingRequestsCountSaveChickenDriveRequests = 0;
     private System.Threading.Timer? _timer;
 
     private string HomeUrl => authResponseSingleton.IsAdmin
@@ -145,12 +157,14 @@
         if (!authResponseSingleton.IsLoggedIn || !authResponseSingleton.IsAdmin)
         {
             pendingRequestsCount = 0;
+            pendingRequestsCountSaveChickenDriveRequests = 0;
             return;
         }
 
         try
         {
             var service = DtoServiceFactory.Create<SaveChickenRequestDto, SaveChickenRequestSearch>();
+
             var searchParams = new SaveChickenRequestSearch
             {
                 IsHandled = false,
@@ -161,6 +175,19 @@
 
             var result = await service.SearchAsync(searchParams);
             pendingRequestsCount = result.TotalItems;
+
+            GenericDtoService<SaveChickenDriveRequestDto, SaveChickenDriveRequestSearch>? saveChickenDriveRequestService = DtoServiceFactory.Create<SaveChickenDriveRequestDto, SaveChickenDriveRequestSearch>();
+            var searchParamsSaveChickenDriveRequests = new SaveChickenDriveRequestSearch
+            {
+                IsHandled = false,
+                IsSubmittedFromPublicForm = true,
+                PageSize = 1, // We only need the count
+                Page = 1
+            };
+
+            var resultSaveChickenDriveRequests = await saveChickenDriveRequestService.SearchAsync(searchParamsSaveChickenDriveRequests);
+            pendingRequestsCountSaveChickenDriveRequests = resultSaveChickenDriveRequests.TotalItems;
+
 
             await InvokeAsync(StateHasChanged);
         }

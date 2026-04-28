@@ -20,7 +20,7 @@ namespace Services.ServicesImpl
         public async Task<PaginationDto<SaveChickenDriveRequest>> SearchAsync(SaveChickenDriveRequestSearch search, params Expression<Func<SaveChickenDriveRequest, object?>>[] includes)
         {
             var query = _db.Set<SaveChickenDriveRequest>().AsQueryable();
-            
+
             // Use string-based includes for proper navigation property chaining
             // String-based Include properly loads nested entities like Person.Contact
             foreach (var includePath in SaveChickenDriveRequestIncludes.DefaultStrings)
@@ -39,6 +39,10 @@ namespace Services.ServicesImpl
             // Filter by PersonId
             if (search.PersonId.HasValue)
                 query = query.Where(x => x.PersonId == search.PersonId.Value);
+
+            // Filter by IsHandled
+            if (search.IsHandled.HasValue)
+                query = query.Where(x => x.IsHandled == search.IsHandled.Value);
 
             if (!string.IsNullOrWhiteSpace(search.SearchTerm))
             {

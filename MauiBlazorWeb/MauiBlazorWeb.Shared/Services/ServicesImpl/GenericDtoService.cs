@@ -53,14 +53,16 @@ namespace MauiBlazorWeb.Web.Services.ServicesImpl
 
         public async Task<TDto> UpdateAsync(TDto dto)
         {
+            Console.WriteLine($"Updating DTO at {_baseUrl} with data: {System.Text.Json.JsonSerializer.Serialize(dto)}");
+
             var response = await _httpClient.PutAsJsonAsync(_baseUrl, dto);
-            
+
             if (!response.IsSuccessStatusCode)
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
                 throw new HttpRequestException($"Status: {response.StatusCode}, Details: {errorContent}");
             }
-            
+
             var result = await response.Content.ReadFromJsonAsync<TDto>();
             if (result == null) throw new InvalidOperationException("Failed to update DTO");
             return result;
