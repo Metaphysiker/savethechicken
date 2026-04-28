@@ -198,6 +198,9 @@
   <data name="IsDriver" xml:space="preserve">
     <value>Driver</value>
   </data>
+  <data name="IncomingSaveChickenDriveRequests" xml:space="preserve">
+    <value>Incoming Drive Requests</value>
+  </data>
   <data name="IsDriver_Yes" xml:space="preserve">
     <value>This person is a driver</value>
   </data>

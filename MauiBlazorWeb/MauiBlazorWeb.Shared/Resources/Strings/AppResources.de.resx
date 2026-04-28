@@ -198,6 +198,9 @@
   <data name="IsDriver" xml:space="preserve">
     <value>Fahrer</value>
   </data>
+  <data name="IncomingSaveChickenDriveRequests" xml:space="preserve">
+    <value>Neue Fahrangebote</value>
+  </data>
   <data name="IsDriver_Yes" xml:space="preserve">
     <value>Diese Person ist ein Fahrer</value>
   </data>

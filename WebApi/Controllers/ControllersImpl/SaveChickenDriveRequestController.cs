@@ -215,7 +215,6 @@ namespace WebApi.Controllers.ControllersImpl
             existing.SaveChickenActionId = dto.SaveChickenActionId;
             existing.PersonId = dto.PersonId; // Allow reassigning person (for merge)
             existing.IsHandled = dto.IsHandled; // Allow marking as handled
-            _logger.LogInformation("IsHandled incoming: {IsHandled}", dto.IsHandled);
             existing.UpdatedAt = DateTime.UtcNow;
 
             // Attach and mark as modified
