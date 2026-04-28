@@ -2,7 +2,7 @@
   "cookies": [
     {
       "name": ".AspNetCore.Antiforgery.VyLW6ORzMgk",
-      "value": "CfDJ8CS6RZ0NbthIunAlVYiNv3cR87_Q7FSZLQqr_Mk-JfmqBSMkvo28ynTVhDGpsulZMGlXw0eeSBf9rO7A7pF5G6F9rJMsNuB-IUIzwLKlAKWoaQxeuxBSsfjIAxtbAGiYaTX7apgk9TeMa25onTH462g",
+      "value": "CfDJ8Jk5kdFaCetHuwo4eo-rbaA-ped-MMSmVFYdZnZ3bKnSwxFGpwLIj05VDBh9uxRAcsfkibJAedsyWGSEFySWbc9zdGeD9mE2PFrI402lqYNJ9CB-YMxoGf07nVsw0zmvdVUdqa54hjx8WFioYPHCwMM",
       "domain": "localhost",
       "path": "/",
       "expires": -1,
@@ -17,7 +17,7 @@
       "localStorage": [
         {
           "name": "jwt_token",
-          "value": "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJUb2tlbkZvclRoZUFwaVdpdGhBdXRoIiwianRpIjoiYzEwOGFkOGEtZGIwMi00YjE2LTgyZjMtNjIyNjEwZjdhYjRlIiwiaWF0IjoiMTc3NzQwODE4NCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiYzE1YjNkNDItYzI5Yy00NjliLWI4NWUtNjkyYTFjNWQyZGNhIiwiVXNlcklkIjoiYzE1YjNkNDItYzI5Yy00NjliLWI4NWUtNjkyYTFjNWQyZGNhIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6InRlc3RAZXhhbXBsZS5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJ0ZXN0QGV4YW1wbGUuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjpbIkFkbWluIiwiVXNlciJdLCJleHAiOjE4MDg5NDQxODQsImlzcyI6ImFwaVdpdGhBdXRoQmFja2VuZCIsImF1ZCI6ImFwaVdpdGhBdXRoQmFja2VuZCJ9.5vItfPSDAoZtWmiItnUJkZ6HfH_m_OKA6aW17W7BIM0\""
+          "value": "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJUb2tlbkZvclRoZUFwaVdpdGhBdXRoIiwianRpIjoiYWI5NTk3NTItNWEzMi00OGFjLTg1NzctYTUwY2Q3MmUyNmMwIiwiaWF0IjoiMTc3NzQxMDk3MCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiYzE1YjNkNDItYzI5Yy00NjliLWI4NWUtNjkyYTFjNWQyZGNhIiwiVXNlcklkIjoiYzE1YjNkNDItYzI5Yy00NjliLWI4NWUtNjkyYTFjNWQyZGNhIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6InRlc3RAZXhhbXBsZS5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJ0ZXN0QGV4YW1wbGUuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjpbIkFkbWluIiwiVXNlciJdLCJleHAiOjE4MDg5NDY5NzAsImlzcyI6ImFwaVdpdGhBdXRoQmFja2VuZCIsImF1ZCI6ImFwaVdpdGhBdXRoQmFja2VuZCJ9.4Wk5bMUFYRuWxvoJEAahb0Qtp4-UGmcSlL3gx9hgEwM\""
         }
       ]
     }
