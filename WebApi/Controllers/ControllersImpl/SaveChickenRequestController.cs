@@ -88,6 +88,10 @@ namespace WebApi.Controllers.ControllersImpl
         [HttpPost("public")]
         public async Task<ActionResult<SaveChickenRequestDto>> CreatePublic([FromBody] SaveChickenRequestPublicDto publicDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             // Create Contact entity
             var contact = new Contact
             {
@@ -164,17 +168,6 @@ namespace WebApi.Controllers.ControllersImpl
 
             var result = await _service.Create(request, SaveChickenRequestIncludes.Default);
             var resultDto = _mapper.mapper.Map<SaveChickenRequestDto>(result);
-
-            // Send notification email to admins
-            try
-            {
-                await SendNewRequestNotificationEmail(resultDto);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to send notification email for SaveChickenRequest {Id}", resultDto.Id);
-                // Don't fail the request creation if email fails
-            }
 
             // Send confirmation email to requester
             try

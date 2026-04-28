@@ -11,45 +11,53 @@ namespace Shared.Dtos.DtosImpl
     public class SaveChickenRequestPublicDto : IEntityWithFileDtos
     {
         // Contact Information
-        [Required]
+
+        [Required(ErrorMessage = "Vorname ist erforderlich.")]
         public string FirstName { get; set; } = string.Empty;
 
-        [Required]
+
+        [Required(ErrorMessage = "Nachname ist erforderlich.")]
         public string LastName { get; set; } = string.Empty;
 
-        [Required]
+
+        [Required(ErrorMessage = "Telefonnummer ist erforderlich.")]
         [Phone]
         public string PhoneNumber { get; set; } = string.Empty;
 
-        [Required]
+
+        [Required(ErrorMessage = "E-Mail ist erforderlich.")]
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
 
         // Address Information
-        [Required]
+
+        [Required(ErrorMessage = "Strasse und Hausnummer sind erforderlich.")]
         public string Street { get; set; } = string.Empty;
 
-        [Required]
+
+        [Required(ErrorMessage = "Ort ist erforderlich.")]
         public string City { get; set; } = string.Empty;
 
-        [Required]
+
+        [Required(ErrorMessage = "PLZ ist erforderlich.")]
         public string PostalCode { get; set; } = string.Empty;
 
         // SaveChickenRequest Information
         public int NumberOfChickensToBeSaved { get; set; } = 0;
         public int NumberOfRoostersToBeSaved { get; set; } = 0;
 
-        [Required]
+
+        [Required(ErrorMessage = "Beschreibung des Platzes ist erforderlich.")]
         public string DescriptionOfPlaceForChickens { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "You must accept the terms and conditions")]
-        [Range(typeof(bool), "true", "true", ErrorMessage = "You must accept the terms and conditions")]
+        [Required(ErrorMessage = "Sie müssen die Allgemeinen Geschäftsbedingungen akzeptieren.")]
+        [Range(typeof(bool), "true", "true", ErrorMessage = "Sie müssen die Allgemeinen Geschäftsbedingungen akzeptieren.")]
         public bool AcceptTermsAndConditions { get; set; } = false;
 
         public bool AlreadyReceivedChickenPreviously { get; set; } = false;
 
-        [Required(ErrorMessage = "You must accept")]
-        [Range(typeof(bool), "true", "true", ErrorMessage = "You must accept")]
+        [Required(ErrorMessage = "Sie müssen bestätigen, dass Sie die Kriterien erfüllen.")]
+        [Range(typeof(bool), "true", "true", ErrorMessage = "Sie müssen bestätigen, dass Sie die Kriterien erfüllen.")]
         public bool ConfirmThatIFulfillCriteria { get; set; } = false;
 
         public string Message { get; set; } = string.Empty;

@@ -91,7 +91,7 @@
 
 <MudPaper Class="pa-6 my-6" Elevation="6">
 
-    <EditForm Model="EntityWithFiles" OnValidSubmit="HandleValidSubmit">
+    <EditForm Model="EntityWithFiles.Item" OnValidSubmit="HandleValidSubmit">
         <DataAnnotationsValidator />
 
         <!-- Kontakt -->
@@ -176,8 +176,9 @@
                          UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "description" })" />
             <ValidationMessage For="@(() => EntityWithFiles.Item.DescriptionOfPlaceForChickens)" />
         </MudItem>
-        <MudItem Class="mb-3">
-            <FilesUploadForm @bind-Value="EntityWithFiles.Files" Label="Bilder hochladen" Text="Bitte Bilder vom Hühnerzuhause hochladen:" />
+        <MudItem Class="mb-3" Elevation="2">
+             <MudText Class="mb-2">Bitte laden Sie Bilder von Ihrem Hühnerzuhause hoch (Stall, Auslauf, etc.)</MudText>
+             <FilesUploadForm @bind-Value="EntityWithFiles.Files" Label="Bilder hochladen" Text="Bitte Bilder vom Hühnerzuhause hochladen" />
         </MudItem>
         <MudItem Class="mb-3">
             <MudCheckBox @bind-Value="EntityWithFiles.Item.AlreadyReceivedChickenPreviously"
@@ -199,19 +200,22 @@
         <MudDivider Class="mb-3" />
         <MudItem Class="mb-3">
             <MudCheckBox @bind-Value="EntityWithFiles.Item.ConfirmThatIFulfillCriteria"
-                        Label="Ich bestätige, dass ich die Kriterien für die Aufnahme von Hühnern erfülle*"
+                        Label="Ich bestätige, dass ich die Voraussetzungen erfülle und die Hühnerhaltung ohne Einschränkung in mein Leben passt!"
                         UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "confirm-criteria" })" />
             <ValidationMessage For="@(() => EntityWithFiles.Item.ConfirmThatIFulfillCriteria)" />
         </MudItem>
         <MudItem Class="mb-3">
             <MudCheckBox @bind-Value="EntityWithFiles.Item.AcceptTermsAndConditions"
-                        Label="Ich akzeptiere die Allgemeinen Geschäftsbedingungen*"
-                        UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "accept-terms" })" />
+                        UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "accept-terms" })">
+                <ChildContent>
+                    Ich akzeptiere die <a href="https://www.rettetdashuhn.ch/j/privacy" target="_blank" rel="noopener">Datenschutzerklärung</a>
+                </ChildContent>
+            </MudCheckBox>
             <ValidationMessage For="@(() => EntityWithFiles.Item.AcceptTermsAndConditions)" />
         </MudItem>
         <MudDivider Class="my-4" />
         <MudItem Class="mb-3">
-            <MudText Class="mb-2">Was ich noch sagen möchte:</MudText>
+            <MudText Class="mb-2">Was ich noch sagen möchte (Motivation Hühner aufzunehmen, Farbwünsche, Hähne willkommen, etc.):</MudText>
             <MudTextField @bind-Value="EntityWithFiles.Item.Message" Label="Nachricht" Variant="Variant.Outlined" Lines="3"
                          UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "message" })" />
             <ValidationMessage For="@(() => EntityWithFiles.Item.Message)" />

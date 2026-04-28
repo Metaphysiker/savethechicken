@@ -161,8 +161,18 @@
             <input type="hidden" @bind="Model.SaveChickenActionId" />
         }
 
-        <!-- Nachricht -->
+
+        <!-- Bedingungen -->
         <MudDivider Class="my-4" />
+        <MudItem Class="mb-3">
+            <MudCheckBox @bind-Value="Model.AcceptTermsAndConditions"
+                        UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "accept-terms" })">
+                <ChildContent>
+                    Ich akzeptiere die <a href="https://www.rettetdashuhn.ch/j/privacy" target="_blank" rel="noopener">Datenschutzerklärung</a>
+                </ChildContent>
+            </MudCheckBox>
+            <ValidationMessage For="@(() => Model.AcceptTermsAndConditions)" />
+        </MudItem>
         <MudItem Class="mb-3">
             <MudText Class="mb-2">Was ich noch sagen möchte:</MudText>
             <MudTextField @bind-Value="Model.Message" Label="Nachricht" Variant="Variant.Outlined" Lines="3"
