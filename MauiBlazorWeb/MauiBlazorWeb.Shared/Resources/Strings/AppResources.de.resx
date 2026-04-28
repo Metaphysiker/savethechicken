@@ -1,5 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
+    <data name="deleteRequestConfirmation" xml:space="preserve">
+      <value>Möchten Sie diese Anfrage wirklich löschen?</value>
+    </data>
+    <data name="cancel" xml:space="preserve">
+      <value>Abbrechen</value>
+    </data>
+    <data name="confirmDelete" xml:space="preserve">
+      <value>Löschen bestätigen</value>
+    </data>
   <!--
     Microsoft ResX Schema
 

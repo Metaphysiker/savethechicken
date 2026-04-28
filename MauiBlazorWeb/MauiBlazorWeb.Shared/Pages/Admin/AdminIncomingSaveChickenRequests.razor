@@ -1,4 +1,5 @@
 @page "/admin/incoming-save-chicken-requests"
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Persons
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
@@ -14,6 +15,7 @@
 @inject ISnackbar Snackbar
 @inject IStringLocalizer<AppResources> L
 @inject HttpClient HttpClient
+@inject IDialogService _dialogService
 
 <PageTitle>@L["Admin"] - @L["IncomingSaveChickenRequests"]</PageTitle>
 
@@ -226,11 +228,12 @@
                                            Disabled="selectedRequest.IsHandled">
                                     @(selectedRequest.IsHandled ? @L["AlreadyHandled"] : @L["MarkAsHandled"])
                                 </MudButton>
+
                                 <MudButton Variant="Variant.Outlined"
-                                           Color="Color.Primary"
-                                           StartIcon="@Icons.Material.Filled.Edit"
-                                           OnClick="() => EditRequest(selectedRequest.Id)">
-                                    @L["edit"]
+                                        Color="Color.Error"
+                                        StartIcon="@Icons.Material.Filled.Delete"
+                                        OnClick="() => ConfirmDeleteRequest(selectedRequest.Id)">
+                                    @L["delete"]
                                 </MudButton>
                                 @if (selectedRequest.PersonId.HasValue)
                                 {
@@ -402,10 +405,12 @@
     private int? selectedActionId = null;
 
     private GenericDtoService<SaveChickenRequestDto, SaveChickenRequestSearch>? _service;
+    private GenericDtoService<PersonDto, PersonSearch>? _personService;
 
     protected override async Task OnInitializedAsync()
     {
         _service = DtoServiceFactory.Create<SaveChickenRequestDto, SaveChickenRequestSearch>();
+        _personService = DtoServiceFactory.Create<PersonDto, PersonSearch>();
         await LoadUnhandledRequests();
     }
 
@@ -484,8 +489,7 @@
 
         try
         {
-            var personService = DtoServiceFactory.Create<PersonDto, PersonSearch>();
-            similarPersons = await personService.GetSimilarAsync(selectedRequest.PersonId.Value);
+            similarPersons = await _personService!.GetSimilarAsync(selectedRequest.PersonId.Value);
         }
         catch (Exception ex)
         {
@@ -609,6 +613,30 @@
         NavigationManager.NavigateTo($"/admin/persons/{personId}");
     }
 
+    private async Task DeleteRequest(int id)
+    {
+        try
+        {
+            SaveChickenRequestDto? request = await _service!.GetByIdAsync(id);
+            if (request.PersonId.HasValue && _personService != null)
+            {
+                await _personService.DeleteAsync(request.PersonId.Value);
+            }
+
+            await _service!.DeleteAsync(id);
+            Snackbar.Add("Request deleted successfully!", Severity.Success);
+            await LoadUnhandledRequests();
+            selectedRequest = null;
+            similarPersons = new();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error deleting request: {ex.Message}", Severity.Error);
+            Console.WriteLine($"Error deleting request: {ex}");
+        }
+    }
+
     private async Task MergeWithPerson(int targetPersonId)
     {
         if (selectedRequest == null)
@@ -663,5 +691,25 @@
 
         selectedActionId = actionId;
         StateHasChanged();
+    }
+
+    private async Task ConfirmDeleteRequest(int id)
+    {
+        var parameters = new DialogParameters
+        {
+            { "ContentText", L["deleteRequestConfirmation"].Value },
+            { "ConfirmText", L["delete"].Value },
+            { "CancelText", L["cancel"].Value }
+        };
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true };
+        var dialogRef = await _dialogService.ShowAsync<ConfirmationDialog>(L["confirmDelete"], parameters, options);
+        if (dialogRef != null)
+        {
+            var result = await dialogRef.Result;
+            if (result != null && !result.Canceled)
+            {
+                await DeleteRequest(id);
+            }
+        }
     }
 }
