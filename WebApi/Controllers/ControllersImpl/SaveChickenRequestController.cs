@@ -145,6 +145,23 @@ namespace WebApi.Controllers.ControllersImpl
                 UpdatedAt = DateTime.UtcNow
             };
 
+            // Add files if present
+            if (publicDto.Files != null && publicDto.Files.Count > 0)
+            {
+                foreach (var fileDto in publicDto.Files)
+                {
+                    var storedFile = new StoredFile
+                    {
+                        FileName = fileDto.FileName,
+                        ContentType = fileDto.ContentType,
+                        FileKey = fileDto.FileKey,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
+                    };
+                    request.Files.Add(storedFile);
+                }
+            }
+
             var result = await _service.Create(request, SaveChickenRequestIncludes.Default);
             var resultDto = _mapper.mapper.Map<SaveChickenRequestDto>(result);
 

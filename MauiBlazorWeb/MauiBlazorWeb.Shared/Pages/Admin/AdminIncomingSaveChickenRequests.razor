@@ -3,6 +3,7 @@
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Persons
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.StoredFiles
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
@@ -206,6 +207,22 @@
                         }
 
                         <MudDivider Class="my-3" />
+
+                        @if (selectedRequest.Files != null && selectedRequest.Files.Any())
+                        {
+                            <MudText Typo="Typo.body2" Class="mt-3 mb-1">
+                                <strong>@L["Files"]:</strong>
+                            </MudText>
+                            <MudStack Spacing="1">
+                                @foreach (var file in selectedRequest.Files)
+                                {
+                                    <StoredFileViewer storedFileDto="file" />
+                                }
+                            </MudStack>
+                            <MudDivider Class="my-3" />
+                        }
+
+
 
                         <MudText Typo="Typo.caption" Class="mb-2">
                             <strong>@L["CreatedAt"]</strong> @selectedRequest.CreatedAt.ToLocalTime().ToString("g")

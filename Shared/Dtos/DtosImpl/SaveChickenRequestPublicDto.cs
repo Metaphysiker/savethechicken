@@ -8,7 +8,7 @@ namespace Shared.Dtos.DtosImpl
     /// DTO for public users submitting a SaveChickenRequest.
     /// Contains embedded contact and address information since the person doesn't exist yet.
     /// </summary>
-    public class SaveChickenRequestPublicDto
+    public class SaveChickenRequestPublicDto : IEntityWithFileDtos
     {
         // Contact Information
         [Required]
@@ -62,5 +62,11 @@ namespace Shared.Dtos.DtosImpl
 
         public bool IsSubmittedFromPublicForm { get; set; } = true;
         public bool IsHandled { get; set; } = false;
+        public List<StoredFileDto> Files { get; set; }
+
+        public SaveChickenRequestPublicDto()
+        {
+            Files = new List<StoredFileDto>();
+        }
     }
 }

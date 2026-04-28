@@ -1,3 +1,4 @@
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.FileUploads
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
 @using MauiBlazorWeb.Shared.Components.MultiDateSelecters
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
@@ -13,7 +14,7 @@
 
 @code {
     [Parameter, EditorRequired]
-    public SaveChickenRequestPublicDto Model { get; set; } = default!;
+    public ItemWithBrowserFiles<SaveChickenRequestPublicDto> EntityWithFiles { get; set; } = default!;
 
     [Parameter]
     public EventCallback OnSubmitSuccess { get; set; }
@@ -36,6 +37,9 @@
         return Task.CompletedTask;
     }
 
+    [Inject]
+    private AwsFileService AwsFileService { get; set; } = default!;
+
     private async Task HandleValidSubmit()
     {
         if (isSubmitting) return;
@@ -43,11 +47,29 @@
         isSubmitting = true;
         try
         {
-            var response = await HttpClient.PostAsJsonAsync("api/SaveChickenRequest/public", Model);
+            // Upload files first
+            var storedFiles = new List<StoredFileDto>();
+            foreach (var file in EntityWithFiles.Files)
+            {
+                var key = await AwsFileService.UploadFileAsync(file);
+                if (!string.IsNullOrEmpty(key))
+                {
+                    storedFiles.Add(new StoredFileDto
+                    {
+                        FileName = file.Name,
+                        FileKey = key,
+                        ContentType = file.ContentType
+                    });
+                }
+            }
+            if (EntityWithFiles.Item.Files == null)
+                EntityWithFiles.Item.Files = new List<StoredFileDto>();
+            EntityWithFiles.Item.Files.AddRange(storedFiles);
+
+            var response = await HttpClient.PostAsJsonAsync("api/SaveChickenRequest/public", EntityWithFiles.Item);
 
             if (response.IsSuccessStatusCode)
             {
-                Snackbar.Add("Vielen Dank! Ihre Anfrage wurde erfolgreich gesendet.", Severity.Success);
                 await OnSubmitSuccess.InvokeAsync();
             }
             else
@@ -67,150 +89,151 @@
     }
 }
 
-<EditForm Model="Model" OnValidSubmit="HandleValidSubmit">
-    <DataAnnotationsValidator />
+<MudPaper Class="pa-6 my-6" Elevation="6">
 
-    <!-- Contact Information -->
-    <MudPaper Class="pa-4 my-4" Elevation="2">
-        <MudText Typo="Typo.h6" Class="mb-3">Ihre Kontaktdaten</MudText>
+    <EditForm Model="EntityWithFiles" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
 
+        <!-- Kontakt -->
+        <MudText Typo="Typo.h6" Class="mb-2 mt-4">
+            <MudIcon Icon="@Icons.Material.Filled.Person" Class="me-1" /> Kontaktdaten
+        </MudText>
+        <MudDivider Class="mb-3" />
         <MudGrid>
             <MudItem xs="12" sm="6">
-                <MudTextField @bind-Value="Model.FirstName" Label="Vorname*" Variant="Variant.Outlined"
+                <MudTextField @bind-Value="EntityWithFiles.Item.FirstName" Label="Vorname*" Variant="Variant.Outlined"
                               UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "contact-firstname" })" />
-                <ValidationMessage For="@(() => Model.FirstName)" />
+                <ValidationMessage For="@(() => EntityWithFiles.Item.FirstName)" />
             </MudItem>
             <MudItem xs="12" sm="6">
-                <MudTextField @bind-Value="Model.LastName" Label="Nachname*" Variant="Variant.Outlined"
+                <MudTextField @bind-Value="EntityWithFiles.Item.LastName" Label="Nachname*" Variant="Variant.Outlined"
                               UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "contact-lastname" })" />
-                <ValidationMessage For="@(() => Model.LastName)" />
+                <ValidationMessage For="@(() => EntityWithFiles.Item.LastName)" />
             </MudItem>
         </MudGrid>
         <MudGrid>
             <MudItem xs="12" sm="6">
-                <MudTextField @bind-Value="Model.Email" Label="E-Mail*" Variant="Variant.Outlined" InputType="InputType.Email"
+                <MudTextField @bind-Value="EntityWithFiles.Item.Email" Label="E-Mail*" Variant="Variant.Outlined" InputType="InputType.Email"
                               UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "contact-email" })" />
-                <ValidationMessage For="@(() => Model.Email)" />
+                <ValidationMessage For="@(() => EntityWithFiles.Item.Email)" />
             </MudItem>
             <MudItem xs="12" sm="6">
-                <MudTextField @bind-Value="Model.PhoneNumber" Label="Telefonnummer*" Variant="Variant.Outlined"
+                <MudTextField @bind-Value="EntityWithFiles.Item.PhoneNumber" Label="Telefonnummer*" Variant="Variant.Outlined"
                               UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "contact-phone" })" />
-                <ValidationMessage For="@(() => Model.PhoneNumber)" />
+                <ValidationMessage For="@(() => EntityWithFiles.Item.PhoneNumber)" />
             </MudItem>
         </MudGrid>
-    </MudPaper>
 
-    <!-- Address Information -->
-    <MudPaper Class="pa-4 my-4" Elevation="2">
-        <MudText Typo="Typo.h6" Class="mb-3">Ihre Adresse</MudText>
-
+        <!-- Adresse -->
+        <MudText Typo="Typo.h6" Class="mb-2 mt-5">
+            <MudIcon Icon="@Icons.Material.Filled.Home" Class="me-1" /> Adresse
+        </MudText>
+        <MudDivider Class="mb-3" />
         <MudGrid>
             <MudItem xs="12" sm="6">
-                <MudTextField @bind-Value="Model.City" Label="Ort*" Variant="Variant.Outlined"
+                <MudTextField @bind-Value="EntityWithFiles.Item.City" Label="Ort*" Variant="Variant.Outlined"
                               UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "address-city" })" />
-                <ValidationMessage For="@(() => Model.City)" />
+                <ValidationMessage For="@(() => EntityWithFiles.Item.City)" />
             </MudItem>
             <MudItem xs="12" sm="6">
-                <MudTextField @bind-Value="Model.PostalCode" Label="PLZ*" Variant="Variant.Outlined"
+                <MudTextField @bind-Value="EntityWithFiles.Item.PostalCode" Label="PLZ*" Variant="Variant.Outlined"
                               UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "address-postalcode" })" />
-                <ValidationMessage For="@(() => Model.PostalCode)" />
+                <ValidationMessage For="@(() => EntityWithFiles.Item.PostalCode)" />
             </MudItem>
         </MudGrid>
         <MudGrid>
             <MudItem xs="12">
-                <MudTextField @bind-Value="Model.Street" Label="Strasse und Hausnummer*" Variant="Variant.Outlined"
+                <MudTextField @bind-Value="EntityWithFiles.Item.Street" Label="Strasse und Hausnummer*" Variant="Variant.Outlined"
                               UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "address-street" })" />
-                <ValidationMessage For="@(() => Model.Street)" />
+                <ValidationMessage For="@(() => EntityWithFiles.Item.Street)" />
             </MudItem>
         </MudGrid>
-    </MudPaper>
 
-    <!-- SaveChickenRequest Details -->
-    <MudPaper Class="pa-4 my-4" Elevation="2">
-        <MudText Typo="Typo.h6" Class="mb-3">Informationen zu Ihrem Angebot</MudText>
-
+        <!-- Angebot -->
+        <MudText Typo="Typo.h6" Class="mb-2 mt-5">
+            <MudIcon Icon="@Icons.Material.Filled.Egg" Class="me-1" /> Ihr Angebot
+        </MudText>
+        <MudDivider Class="mb-3" />
         <MudItem Class="mb-3">
-            <MudNumericField T="int" @bind-Value="Model.NumberOfChickensToBeSaved" Label="Anzahl Hühner"
+            <MudNumericField T="int" @bind-Value="EntityWithFiles.Item.NumberOfChickensToBeSaved" Label="Anzahl Hühner"
                             Variant="Variant.Outlined" Min="0"
                             UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "chickens-count" })" />
-            <ValidationMessage For="@(() => Model.NumberOfChickensToBeSaved)" />
+            <ValidationMessage For="@(() => EntityWithFiles.Item.NumberOfChickensToBeSaved)" />
         </MudItem>
-
         <MudItem Class="mb-3">
-            <MudNumericField T="int" @bind-Value="Model.NumberOfRoostersToBeSaved" Label="Anzahl Hähne"
+            <MudNumericField T="int" @bind-Value="EntityWithFiles.Item.NumberOfRoostersToBeSaved" Label="Anzahl Hähne"
                             Variant="Variant.Outlined" Min="0"
                             UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "roosters-count" })" />
-            <ValidationMessage For="@(() => Model.NumberOfRoostersToBeSaved)" />
+            <ValidationMessage For="@(() => EntityWithFiles.Item.NumberOfRoostersToBeSaved)" />
         </MudItem>
-
         <MudDivider Class="my-4" />
-
         <MudItem Class="mb-3">
             <MudText Class="mb-2">
                 Bitte beschreiben Sie kurz Ihr Hühnerzuhause (Stall, Auslauf m², Anzahl bestehende Hühner, Erfahrung etc.)*
             </MudText>
-            <MudTextField @bind-Value="Model.DescriptionOfPlaceForChickens" Label="Beschreibung"
+            <MudTextField @bind-Value="EntityWithFiles.Item.DescriptionOfPlaceForChickens" Label="Beschreibung"
                          Variant="Variant.Outlined" Lines="4"
                          UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "description" })" />
-            <ValidationMessage For="@(() => Model.DescriptionOfPlaceForChickens)" />
+            <ValidationMessage For="@(() => EntityWithFiles.Item.DescriptionOfPlaceForChickens)" />
         </MudItem>
-
         <MudItem Class="mb-3">
-            <MudCheckBox @bind-Value="Model.AlreadyReceivedChickenPreviously"
+            <FilesUploadForm @bind-Value="EntityWithFiles.Files" Label="Bilder hochladen" Text="Bitte Bilder vom Hühnerzuhause hochladen:" />
+        </MudItem>
+        <MudItem Class="mb-3">
+            <MudCheckBox @bind-Value="EntityWithFiles.Item.AlreadyReceivedChickenPreviously"
                         Label="Ich habe bereits zuvor Hühner aufgenommen"
                         UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "received-chickens-before" })" />
-            <ValidationMessage For="@(() => Model.AlreadyReceivedChickenPreviously)" />
+            <ValidationMessage For="@(() => EntityWithFiles.Item.AlreadyReceivedChickenPreviously)" />
         </MudItem>
-    </MudPaper>
 
-    <!-- Action Selector (hidden, auto-selected) -->
-    @if (_saveChickenActionDto != null)
-    {
-        <input type="hidden" @bind="Model.SaveChickenActionId" />
-    }
+        <!-- Action Selector (hidden, auto-selected) -->
+        @if (_saveChickenActionDto != null)
+        {
+            <input type="hidden" @bind="EntityWithFiles.Item.SaveChickenActionId" />
+        }
 
-    <!-- Terms and Conditions -->
-    <MudPaper Class="pa-4 my-4" Elevation="2">
+        <!-- Bedingungen -->
+        <MudText Typo="Typo.h6" Class="mb-2 mt-5">
+            <MudIcon Icon="@Icons.Material.Filled.Gavel" Class="me-1" /> Bedingungen
+        </MudText>
+        <MudDivider Class="mb-3" />
         <MudItem Class="mb-3">
-            <MudCheckBox @bind-Value="Model.ConfirmThatIFulfillCriteria"
+            <MudCheckBox @bind-Value="EntityWithFiles.Item.ConfirmThatIFulfillCriteria"
                         Label="Ich bestätige, dass ich die Kriterien für die Aufnahme von Hühnern erfülle*"
                         UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "confirm-criteria" })" />
-            <ValidationMessage For="@(() => Model.ConfirmThatIFulfillCriteria)" />
+            <ValidationMessage For="@(() => EntityWithFiles.Item.ConfirmThatIFulfillCriteria)" />
         </MudItem>
-
         <MudItem Class="mb-3">
-            <MudCheckBox @bind-Value="Model.AcceptTermsAndConditions"
+            <MudCheckBox @bind-Value="EntityWithFiles.Item.AcceptTermsAndConditions"
                         Label="Ich akzeptiere die Allgemeinen Geschäftsbedingungen*"
                         UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "accept-terms" })" />
-            <ValidationMessage For="@(() => Model.AcceptTermsAndConditions)" />
+            <ValidationMessage For="@(() => EntityWithFiles.Item.AcceptTermsAndConditions)" />
         </MudItem>
-
         <MudDivider Class="my-4" />
-
         <MudItem Class="mb-3">
             <MudText Class="mb-2">Was ich noch sagen möchte:</MudText>
-            <MudTextField @bind-Value="Model.Message" Label="Nachricht" Variant="Variant.Outlined" Lines="3"
+            <MudTextField @bind-Value="EntityWithFiles.Item.Message" Label="Nachricht" Variant="Variant.Outlined" Lines="3"
                          UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "message" })" />
-            <ValidationMessage For="@(() => Model.Message)" />
+            <ValidationMessage For="@(() => EntityWithFiles.Item.Message)" />
         </MudItem>
-    </MudPaper>
 
-    <!-- Submit Button -->
-    <MudButton ButtonType="ButtonType.Submit"
-              Variant="Variant.Filled"
-              Color="Color.Primary"
-              Size="Size.Large"
-              Disabled="isSubmitting"
-              FullWidth="true"
-              data-testid="submit-button">
-        @if (isSubmitting)
-        {
-            <MudProgressCircular Size="Size.Small" Indeterminate="true" />
-            <span class="ml-2">Wird gesendet...</span>
-        }
-        else
-        {
-            <span>Anfrage absenden</span>
-        }
-    </MudButton>
-</EditForm>
+        <!-- Submit Button -->
+        <MudButton ButtonType="ButtonType.Submit"
+                  Variant="Variant.Filled"
+                  Color="Color.Primary"
+                  Size="Size.Large"
+                  Disabled="isSubmitting"
+                  FullWidth="true"
+                  data-testid="submit-button">
+            @if (isSubmitting)
+            {
+                <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+                <span class="ml-2">Wird gesendet...</span>
+            }
+            else
+            {
+                <span>Anfrage absenden</span>
+            }
+        </MudButton>
+    </EditForm>
+</MudPaper>

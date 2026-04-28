@@ -1,4 +1,5 @@
 ﻿@page "/thank-you"
+@layout MauiBlazorWeb.Shared.Layouts.MinimalLayout
 
 <MudContainer MaxWidth="MaxWidth.Medium" Class="mt-8">
     <MudPaper Class="pa-8" Elevation="3">
@@ -23,12 +24,43 @@
                 Sie sollten eine Bestätigungs-E-Mail erhalten haben. Bitte überprüfen Sie auch Ihren Spam-Ordner.
             </MudText>
 
-            <MudButton Href="/" Variant="Variant.Filled" Color="Color.Primary" Class="mt-6" Size="Size.Large">
-                Zurück zur Startseite
-            </MudButton>
+            <MudText Typo="Typo.body2" Color="Color.Warning" Class="mt-4">
+                Sie werden in @countdown Sekunden weitergeleitet.
+            </MudText>
+
         </div>
     </MudPaper>
 </MudContainer>
+
+@code {
+    private int countdown = 10;
+    private System.Threading.Timer? timer;
+
+    [Inject]
+    private NavigationManager NavigationManager { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        timer = new System.Threading.Timer(_ =>
+        {
+            if (countdown > 0)
+            {
+                countdown--;
+                InvokeAsync(StateHasChanged);
+            }
+            if (countdown == 0)
+            {
+                timer?.Dispose();
+                InvokeAsync(() => NavigationManager.NavigateTo("https://www.rettetdashuhn.ch/", true));
+            }
+        }, null, 1000, 1000);
+    }
+
+    public void Dispose()
+    {
+        timer?.Dispose();
+    }
+}
 
 @code {
 

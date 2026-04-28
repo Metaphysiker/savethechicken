@@ -1,0 +1,32 @@
+
+@using MudBlazor
+@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="_customTheme" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudMainContent Style="background: #f8fafc; min-height: 100vh; padding: 0; margin: 0;">
+        <main style="min-height: 100vh; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; margin: 0; padding: 0;">
+            @Body
+        </main>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private MudTheme _customTheme = new MudTheme()
+    {
+        PaletteLight = new PaletteLight()
+        {
+            Primary = "#594AE2",
+            PrimaryDarken = "#3E2CA8",
+            PrimaryLighten = "#7B6EEB",
+            PrimaryContrastText = "#FFFFFF",
+            Secondary = "#607D8B",
+            AppbarBackground = "#594AE2",
+            AppbarText = "#FFFFFF"
+        }
+    };
+}
