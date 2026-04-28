@@ -14,8 +14,6 @@ namespace WebApi.Models.ModelsImpl
         public int? PersonId { get; set; }
         public Person? Person { get; set; }
 
-        public Address? AddressForHandOver { get; set; }
-        public int? AddressForHandOverId { get; set; }
         public int NumberOfChickensToBeSaved { get; set; } = 0;
         public int NumberOfRoostersToBeSaved { get; set; } = 0;
         public int NumberOfBoxes { get; set; } = 0;
@@ -29,7 +27,8 @@ namespace WebApi.Models.ModelsImpl
         public string Color { get; set; } = string.Empty;
         public List<StoredFile> Files { get; set; }
         public List<int> BlackListedPersonIds { get; set; } = new List<int>();
-
+        public bool IsSubmittedFromPublicForm { get; set; } = false;
+        public bool IsHandled { get; set; } = false;
         [Column(TypeName = "tsvector")]
         public NpgsqlTsVector SearchVector { get; set; } = null!;
 

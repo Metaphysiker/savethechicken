@@ -4,6 +4,7 @@ import { fillAdminSaveChickenDriveRequestForm } from './helpers/admin-save-chick
 import { fillAdminSaveChickenDriveRequestFormPreselected } from './helpers/admin-save-chicken-drive-request-form-preselected.helper';
 import { createSaveChickenAction } from './helpers/save-chicken-action-form.helper';
 import { selectPerson } from './helpers/person-selector.helper';
+import { selectSaveChickenAction } from './helpers/save-chicken-action-selector.helper';
 
 // Use admin authentication
 test.use({ storageState: 'playwright/.auth/admin.json' });
@@ -603,5 +604,542 @@ test.describe('Admin Save Chicken Drive Request Management', () => {
     // Wait for the data to be gone (row is removed from table)
     await expect(page.getByText('Toyota Prius')).not.toBeVisible({ timeout: 5000 });
     await expect(page.getByText('Drive Requests')).not.toBeVisible();
+  });
+
+  test('should handle incoming public drive request and assign to action', async ({ page, context }) => {
+    test.setTimeout(120000);
+    const timestamp = Date.now();
+    const publicFirstName = `DriveReq${timestamp}`;
+    const publicLastName = 'DriveUser';
+    const publicEmail = `drivereq${timestamp}@example.com`;
+    const publicPhone = '+41791234567';
+
+    let actionId: number;
+    let actionTitle: string;
+
+    await test.step('Admin creates a SaveChickenAction', async () => {
+      const today = new Date();
+      const dayOfMonth = today.getDate();
+      const datesToCreate = [dayOfMonth];
+      if (dayOfMonth + 1 <= 28) datesToCreate.push(dayOfMonth + 1);
+      const action = await createSaveChickenAction(page, {
+        title: `Incoming Drive Action ${timestamp}`,
+        description: 'Action for incoming drive request test',
+        dates: datesToCreate,
+        isActive: true,
+      });
+      actionId = action.actionId;
+      actionTitle = `Incoming Drive Action ${timestamp}`;
+      expect(actionId).toBeGreaterThan(0);
+    });
+
+    await test.step('Admin creates an existing person', async () => {
+      await createPerson(page, {
+        firstName: 'Existing',
+        lastName: 'Person',
+        email: 'existing@example.com',
+        phone: '+41791111111',
+        city: 'Zurich',
+        postalCode: '8000',
+        street: 'Existing Street 1',
+      });
+    });
+
+    await test.step('Log out (clear authentication)', async () => {
+      await context.clearCookies();
+      await context.clearPermissions();
+      await page.evaluate(() => {
+        localStorage.clear();
+        sessionStorage.clear();
+      });
+      await page.goto('/fahrer-werden', { waitUntil: 'networkidle' });
+    });
+
+    await test.step('Public user submits save chicken drive request', async () => {
+      await page.waitForSelector('h3', { state: 'visible', timeout: 10000 });
+      await page.getByTestId('contact-firstname').fill(publicFirstName);
+      await page.getByTestId('contact-lastname').fill(publicLastName);
+      await page.getByTestId('contact-email').fill(publicEmail);
+      await page.getByTestId('contact-phone').fill(publicPhone);
+      await page.getByTestId('address-city').fill('Basel');
+      await page.getByTestId('address-postalcode').fill('4000');
+      await page.getByTestId('address-street').fill('Public Street 999');
+      await page.getByTestId('car-make').fill('VW Bus');
+      await page.getByTestId('capacity-for-chickens').fill('12');
+      await page.getByTestId('message').fill('I am a public user submitting a drive request');
+      const submitButton = page.getByTestId('submit-button');
+      await submitButton.waitFor({ state: 'visible', timeout: 5000 });
+      await submitButton.click();
+
+      await page.waitForURL(/\/thank-you/, { timeout: 15000 });
+      await expect(page.getByRole('heading', { name: /vielen dank/i })).toBeVisible({ timeout: 5000 });
+      console.log('Public drive form submitted successfully');
+    });
+
+    await test.step('Log back in as admin', async () => {
+      await page.goto('/login', { waitUntil: 'networkidle' });
+      await page.getByRole('textbox', { name: 'Email*' }).fill('test@example.com');
+      await page.getByRole('textbox', { name: 'Password*' }).fill('testpassword');
+      await page.getByRole('button', { name: 'Login' }).click();
+      await page.waitForURL('/admin/persons', { timeout: 10000 });
+      await expect(page.getByText('Logout')).toBeVisible();
+    });
+
+    await test.step('Navigate to incoming drive requests page', async () => {
+      await page.goto('/admin/incoming-save-chicken-drive-requests', { waitUntil: 'networkidle' });
+      await page.waitForSelector('h3', { state: 'visible', timeout: 10000 });
+      await expect(page).toHaveURL(/\/admin\/incoming-save-chicken-drive-requests/);
+    });
+
+    await test.step('Find and select the incoming public drive request', async () => {
+      await page.waitForTimeout(2000);
+      const requestCard = page.locator('.mud-card').filter({ hasText: `${publicFirstName} ${publicLastName}` });
+      await requestCard.waitFor({ state: 'visible', timeout: 10000 });
+      await requestCard.click();
+      await page.waitForTimeout(1000);
+      await expect(page.getByTestId('contact-email')).toContainText(publicEmail);
+      await expect(page.getByTestId('address-city')).toContainText('Basel');
+      await expect(page.locator('text=I am a public user submitting a drive request')).toBeVisible();
+    });
+
+    await test.step('Select save chicken action from dropdown', async () => {
+      await selectSaveChickenAction(page, actionId);
+    });
+
+    await test.step('Mark drive request as handled', async () => {
+      const markHandledButton = page.getByRole('button', { name: /als bearbeitet markieren|mark as handled/i });
+      await markHandledButton.waitFor({ state: 'visible', timeout: 5000 });
+      await markHandledButton.click();
+      await page.waitForTimeout(2000);
+      await expect(page.locator('.mud-snackbar').filter({ hasText: /erfolgreich|success/i })).toBeVisible({ timeout: 5000 });
+      await page.waitForTimeout(1000);
+    });
+
+    await test.step('Verify drive request appears in save chicken action', async () => {
+      await page.goto(`/admin/save-chicken-actions/${actionId}`, { waitUntil: 'networkidle' });
+      await page.waitForLoadState('networkidle', { timeout: 10000 });
+      await page.waitForTimeout(2000);
+      await expect(page.locator('text=' + publicFirstName).first()).toBeVisible({ timeout: 5000 });
+      await expect(page.locator('text=' + publicEmail).first()).toBeVisible({ timeout: 5000 });
+      console.log('Verified that public drive request with current timestamp appears in the save chicken action');
+    });
+  });
+
+  test('create-public-save-chicken-drive-request-and-expect-email', async ({ page, context }) => {
+    test.setTimeout(120000); // Increased timeout for complex workflow
+
+    const timestamp = Date.now();
+    const existingFirstName = `ExistingPerson${timestamp}`;
+    const existingLastName = 'OldLastName';
+    const existingEmail = `existing${timestamp}@example.com`;
+    const existingPhone = '+41791111111';
+    const existingCity = 'Zurich';
+    const existingPostalCode = '8000';
+    const existingStreet = 'Old Street 10';
+    const capacityForChickens = '10';
+    const carMake = 'Opel Astra';
+
+    let existingPersonId: number;
+    let actionId: number;
+
+    await test.step('Admin creates a SaveChickenAction', async () => {
+      const today = new Date();
+      const dayOfMonth = today.getDate();
+      const datesToCreate = [dayOfMonth];
+      if (dayOfMonth + 1 <= 28) datesToCreate.push(dayOfMonth + 1);
+      const action = await createSaveChickenAction(page, {
+        title: `Merge New Values Action ${timestamp}`,
+        description: 'Action for merge with new values test',
+        dates: datesToCreate,
+        isActive: true,
+      });
+      actionId = action.actionId;
+      expect(actionId).toBeGreaterThan(0);
+    });
+
+    await test.step('Admin creates existing person with old values', async () => {
+      existingPersonId = await createPerson(page, {
+        firstName: existingFirstName,
+        lastName: existingLastName,
+        email: existingEmail,
+        phone: existingPhone,
+        city: existingCity,
+        postalCode: existingPostalCode,
+        street: existingStreet,
+      });
+      expect(existingPersonId).toBeGreaterThan(0);
+    });
+
+    await test.step('Log out (clear authentication)', async () => {
+      await context.clearCookies();
+      await context.clearPermissions();
+      await page.evaluate(() => {
+        localStorage.clear();
+        sessionStorage.clear();
+      });
+      await page.goto('/fahrer-werden', { waitUntil: 'networkidle' });
+    });
+
+    await test.step('Public user submits drive request with new values', async () => {
+      await page.waitForSelector('h3', { state: 'visible', timeout: 10000 });
+      await page.getByTestId('contact-firstname').fill(existingFirstName);
+      await page.getByTestId('contact-lastname').fill(existingLastName);
+      await page.getByTestId('contact-email').fill(existingEmail);
+      await page.getByTestId('contact-phone').fill(existingPhone);
+      await page.getByTestId('address-city').fill(existingCity);
+      await page.getByTestId('address-postalcode').fill(existingPostalCode);
+      await page.getByTestId('address-street').fill(existingStreet);
+      await page.getByTestId('car-make').fill(carMake);
+      await page.getByTestId('capacity-for-chickens').fill(capacityForChickens);
+      await page.getByTestId('message').fill('I am a public user submitting a drive request');
+      const submitButton = page.getByTestId('submit-button');
+      await submitButton.waitFor({ state: 'visible', timeout: 5000 });
+      await submitButton.click();
+      await page.waitForURL(/\/thank-you/, { timeout: 15000 });
+      await expect(page.getByRole('heading', { name: /vielen dank/i })).toBeVisible({ timeout: 5000 });
+      console.log('Public drive form submitted with new values');
+    });
+
+    await test.step('check if email is there', async () => {
+      // Wait a moment after sending the request to allow email delivery
+      await new Promise(r => setTimeout(r, 1000));
+      // Fetch messages from Mailhog API
+      const res = await fetch('http://localhost:8025/api/v2/messages');
+      const data = await res.json();
+      console.log(`Fetched ${data.total} messages from Mailhog`);
+      // Check for expected email
+      const confirmationEmail = data.items.find((msg: { Content: { Headers: { To: (string | string[])[]; }; }; }) =>
+        msg.Content.Headers.To[0].includes(existingEmail)
+      );
+      const bodyBase64 = confirmationEmail.Content.Body;
+      const body = Buffer.from(bodyBase64, 'base64').toString('utf-8');
+      expect(confirmationEmail).toBeTruthy();
+      expect(confirmationEmail.Content.Headers.To[0]).toContain(existingEmail);
+      expect(body).toContain(existingFirstName);
+      expect(body).toContain(existingLastName);
+      expect(body).toContain(existingPhone);
+      expect(body).toContain(existingCity);
+      expect(body).toContain(existingPostalCode);
+      expect(body).toContain(existingStreet);
+      expect(body).toContain(carMake);
+      expect(body).toContain(capacityForChickens);
+    });
+  });
+
+  test('should merge incoming public drive request with similar person', async ({ page, context }) => {
+    test.setTimeout(120000); // Increased timeout for complex workflow
+
+    const timestamp = Date.now();
+    const publicFirstName = `DriveReq${timestamp}`;
+    const publicLastName = 'DriveUser';
+    const publicEmail = `drivereq${timestamp}@example.com`;
+    const publicPhone = '+41791234567';
+
+    let existingPersonId: number;
+    let actionId: number;
+    let actionTitle: string;
+
+    await test.step('Admin creates a SaveChickenAction', async () => {
+      const today = new Date();
+      const dayOfMonth = today.getDate();
+      const datesToCreate = [dayOfMonth];
+      if (dayOfMonth + 1 <= 28) datesToCreate.push(dayOfMonth + 1);
+      const action = await createSaveChickenAction(page, {
+        title: `Merge Drive Test Action ${timestamp}`,
+        description: 'Action for drive merge test',
+        dates: datesToCreate,
+        isActive: true,
+      });
+      actionId = action.actionId;
+      actionTitle = `Merge Drive Test Action ${timestamp}`;
+      expect(actionId).toBeGreaterThan(0);
+    });
+
+    await test.step('Admin creates a similar person', async () => {
+      existingPersonId = await createPerson(page, {
+        firstName: publicFirstName,
+        lastName: publicLastName,
+        email: publicEmail,
+        phone: publicPhone,
+        city: 'Basel',
+        postalCode: '4000',
+        street: 'Existing Street 10',
+      });
+      expect(existingPersonId).toBeGreaterThan(0);
+    });
+
+    await test.step('Log out (clear authentication)', async () => {
+      await context.clearCookies();
+      await context.clearPermissions();
+      await page.evaluate(() => {
+        localStorage.clear();
+        sessionStorage.clear();
+      });
+      await page.goto('/fahrer-werden', { waitUntil: 'networkidle' });
+    });
+
+    await test.step('Public user submits drive request with similar info', async () => {
+      await page.waitForSelector('h3', { state: 'visible', timeout: 10000 });
+      await page.getByTestId('contact-firstname').fill(publicFirstName);
+      await page.getByTestId('contact-lastname').fill(publicLastName);
+      await page.getByTestId('contact-email').fill(publicEmail);
+      await page.getByTestId('contact-phone').fill(publicPhone);
+      await page.getByTestId('address-city').fill('Basel');
+      await page.getByTestId('address-postalcode').fill('4000');
+      await page.getByTestId('address-street').fill('Public Street 999');
+      await page.getByTestId('car-make').fill('VW Bus');
+      await page.getByTestId('capacity-for-chickens').fill('12');
+      await page.getByTestId('message').fill('I am a public user submitting a drive request');
+      const submitButton = page.getByTestId('submit-button');
+      await submitButton.waitFor({ state: 'visible', timeout: 5000 });
+      await submitButton.click();
+      await page.waitForURL(/\/thank-you/, { timeout: 15000 });
+      await expect(page.getByRole('heading', { name: /vielen dank/i })).toBeVisible({ timeout: 5000 });
+      console.log('Public drive form submitted successfully');
+    });
+
+    await test.step('Log back in as admin', async () => {
+      await page.goto('/login', { waitUntil: 'networkidle' });
+      await page.getByRole('textbox', { name: 'Email*' }).fill('test@example.com');
+      await page.getByRole('textbox', { name: 'Password*' }).fill('testpassword');
+      await page.getByRole('button', { name: 'Login' }).click();
+      await page.waitForURL('/admin/persons', { timeout: 10000 });
+      await expect(page.getByText('Logout')).toBeVisible();
+    });
+
+    await test.step('Navigate to incoming drive requests page', async () => {
+      await page.goto('/admin/incoming-save-chicken-drive-requests', { waitUntil: 'networkidle' });
+      await page.waitForSelector('h3', { state: 'visible', timeout: 10000 });
+      await expect(page).toHaveURL(/\/admin\/incoming-save-chicken-drive-requests/);
+    });
+
+    await test.step('Select incoming drive request and verify similar person appears', async () => {
+      await page.waitForTimeout(2000);
+      const requestCard = page.locator('.mud-card').filter({ hasText: `${publicFirstName} ${publicLastName}` }).first();
+      await requestCard.waitFor({ state: 'visible', timeout: 10000 });
+      await requestCard.click();
+      await page.waitForTimeout(2000);
+      await expect(page.getByTestId('contact-email')).toContainText(publicEmail);
+      await expect(page.getByTestId('address-city')).toContainText('Basel');
+      await expect(page.locator('text=I am a public user submitting a drive request')).toBeVisible();
+      await expect(page.locator('text=/ähnliche personen|similar persons/i')).toBeVisible();
+      await expect(page.locator('text=/potenzielle duplikate|potential duplicates/i')).toBeVisible();
+      const similarPersonCards = page.locator('.mud-card').filter({ hasText: publicEmail });
+      await expect(similarPersonCards.first()).toBeVisible({ timeout: 10000 });
+      console.log(`Found similar person with existingPersonId: ${existingPersonId}`);
+    });
+
+    await test.step('Select save chicken action before merging', async () => {
+      await selectSaveChickenAction(page, actionId);
+    });
+
+    await test.step('Click merge button for similar person', async () => {
+      const mergeButton = page.getByTestId(`merge-person-${existingPersonId}`);
+      console.log(`Clicking merge button for person ID: ${existingPersonId}`);
+      await mergeButton.waitFor({ state: 'visible', timeout: 10000 });
+      await mergeButton.click();
+      await page.waitForURL(/\/admin\/merge-person\/save-chicken-drive-request\/\d+\/person\/\d+/, { timeout: 10000 });
+      console.log('Navigated to merge page');
+    });
+
+    await test.step('Complete merge with default values', async () => {
+      await page.waitForLoadState('networkidle', { timeout: 10000 });
+      await page.waitForTimeout(2000);
+      await expect(page.locator('h5').filter({ hasText: 'Eingehende Anfrage' })).toBeVisible();
+      await expect(page.locator('h5').filter({ hasText: 'Bestehende Person' })).toBeVisible();
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+      await page.waitForTimeout(500);
+      const mergePersonButton = page.getByText('Person zusammenführen', { exact: true });
+      await mergePersonButton.waitFor({ state: 'visible', timeout: 5000 });
+      await mergePersonButton.scrollIntoViewIfNeeded();
+      await expect(mergePersonButton).toBeEnabled();
+      await mergePersonButton.click();
+      await page.waitForURL(/\/admin\/incoming-save-chicken-drive-requests/, { timeout: 10000 });
+      await expect(page.locator('.mud-snackbar').filter({ hasText: /erfolgreich|success/i })).toBeVisible({ timeout: 5000 });
+      console.log('Merge completed successfully');
+    });
+
+    await test.step('Verify merged drive request no longer appears in incoming drive requests', async () => {
+      await page.waitForTimeout(2000);
+      const requestCard = page.locator('.mud-card').filter({ hasText: `${publicFirstName} ${publicLastName}` });
+      await expect(requestCard).not.toBeVisible();
+      console.log('Verified that merged drive request is no longer in pending incoming drive requests');
+    });
+
+    await test.step('Verify merged drive request appears in save chicken action', async () => {
+      await page.goto(`/admin/save-chicken-actions/${actionId}`, { waitUntil: 'networkidle' });
+      await page.waitForLoadState('networkidle', { timeout: 10000 });
+      await page.waitForTimeout(2000);
+      await expect(page.locator('text=' + publicFirstName).first()).toBeVisible({ timeout: 5000 });
+      await expect(page.locator('text=' + publicEmail).first()).toBeVisible({ timeout: 5000 });
+      console.log('Verified that merged drive request with current timestamp appears in the save chicken action');
+    });
+  });
+
+  test('should merge incoming drive request with new values and apply them', async ({ page, context }) => {
+    test.setTimeout(120000); // Increased timeout for complex workflow
+
+    const timestamp = Date.now();
+    const existingFirstName = `ExistingPerson${timestamp}`;
+    const existingLastName = 'OldLastName';
+    const existingEmail = `existing${timestamp}@example.com`;
+    const existingPhone = '+41791111111';
+    const existingCity = 'Zurich';
+    const existingPostalCode = '8000';
+    const existingStreet = 'Old Street 10';
+
+    const publicFirstName = existingFirstName; // Same first name
+    const publicLastName = 'NewLastName'; // Different last name
+    const publicEmail = existingEmail; // SAME email
+    const publicPhone = '+41792222222'; // Different phone
+    const publicCity = 'Basel'; // Different city
+    const publicPostalCode = '4000'; // Different postal code
+    const publicStreet = 'New Street 999'; // Different street
+
+    let existingPersonId: number;
+    let actionId: number;
+
+    await test.step('Admin creates a SaveChickenAction', async () => {
+      const today = new Date();
+      const dayOfMonth = today.getDate();
+      const datesToCreate = [dayOfMonth];
+      if (dayOfMonth + 1 <= 28) datesToCreate.push(dayOfMonth + 1);
+      const action = await createSaveChickenAction(page, {
+        title: `Merge Drive New Values Action ${timestamp}`,
+        description: 'Action for drive merge with new values test',
+        dates: datesToCreate,
+        isActive: true,
+      });
+      actionId = action.actionId;
+      expect(actionId).toBeGreaterThan(0);
+    });
+
+    await test.step('Admin creates existing person with old values', async () => {
+      existingPersonId = await createPerson(page, {
+        firstName: existingFirstName,
+        lastName: existingLastName,
+        email: existingEmail,
+        phone: existingPhone,
+        city: existingCity,
+        postalCode: existingPostalCode,
+        street: existingStreet,
+      });
+      expect(existingPersonId).toBeGreaterThan(0);
+    });
+
+    await test.step('Log out (clear authentication)', async () => {
+      await context.clearCookies();
+      await context.clearPermissions();
+      await page.evaluate(() => {
+        localStorage.clear();
+        sessionStorage.clear();
+      });
+      await page.goto('/fahrer-werden', { waitUntil: 'networkidle' });
+    });
+
+    await test.step('Public user submits drive request with new values', async () => {
+      await page.waitForSelector('h3', { state: 'visible', timeout: 10000 });
+      await page.getByTestId('contact-firstname').fill(publicFirstName);
+      await page.getByTestId('contact-lastname').fill(publicLastName);
+      await page.getByTestId('contact-email').fill(publicEmail);
+      await page.getByTestId('contact-phone').fill(publicPhone);
+      await page.getByTestId('address-city').fill(publicCity);
+      await page.getByTestId('address-postalcode').fill(publicPostalCode);
+      await page.getByTestId('address-street').fill(publicStreet);
+      await page.getByTestId('car-make').fill('Opel Astra');
+      await page.getByTestId('capacity-for-chickens').fill('10');
+      await page.getByTestId('message').fill('I am a public user submitting a drive request with new values');
+      const submitButton = page.getByTestId('submit-button');
+      await submitButton.waitFor({ state: 'visible', timeout: 5000 });
+      await submitButton.click();
+      await page.waitForURL(/\/thank-you/, { timeout: 15000 });
+      await expect(page.getByRole('heading', { name: /vielen dank/i })).toBeVisible({ timeout: 5000 });
+      console.log('Public drive form submitted with new values');
+    });
+
+    await test.step('Log back in as admin', async () => {
+      await page.goto('/login', { waitUntil: 'networkidle' });
+      await page.getByRole('textbox', { name: 'Email*' }).fill('test@example.com');
+      await page.getByRole('textbox', { name: 'Password*' }).fill('testpassword');
+      await page.getByRole('button', { name: 'Login' }).click();
+      await page.waitForURL('/admin/persons', { timeout: 10000 });
+      await expect(page.getByText('Logout')).toBeVisible();
+    });
+
+    await test.step('Navigate to incoming drive requests and select request', async () => {
+      await page.goto('/admin/incoming-save-chicken-drive-requests', { waitUntil: 'networkidle' });
+      await page.waitForTimeout(2000);
+      const requestCard = page.locator('.mud-card').filter({ hasText: `${publicFirstName}` }).first();
+      await requestCard.waitFor({ state: 'visible', timeout: 10000 });
+      await requestCard.click();
+      await page.waitForTimeout(2000);
+      await expect(page.locator('text=/ähnliche personen|similar persons/i')).toBeVisible();
+      console.log('Found similar person for merge');
+    });
+
+    await test.step('Select action and click merge', async () => {
+      await selectSaveChickenAction(page, actionId);
+      const mergeButton = page.getByTestId(`merge-person-${existingPersonId}`);
+      await mergeButton.waitFor({ state: 'visible', timeout: 10000 });
+      await mergeButton.click();
+      await page.waitForURL(/\/admin\/merge-person\/save-chicken-drive-request\/\d+\/person\/\d+/, { timeout: 10000 });
+      console.log('Navigated to merge page');
+    });
+
+    await test.step('Select NEW values on merge page', async () => {
+      await page.waitForLoadState('networkidle', { timeout: 10000 });
+      await page.waitForTimeout(2000);
+      await expect(page.getByText(existingLastName).first()).toBeVisible(); // Old last name
+      await expect(page.getByText(publicLastName).first()).toBeVisible(); // New last name
+      await expect(page.getByText(existingEmail).first()).toBeVisible(); // Email is the same
+      await expect(page.getByText(existingPhone).first()).toBeVisible(); // Old phone
+      await expect(page.getByText(publicPhone).first()).toBeVisible(); // New phone
+      await page.getByTestId('merge-lastname-incoming').check();
+      await page.getByTestId('merge-phone-incoming').check();
+      await page.getByTestId('merge-city-incoming').check();
+      await page.getByTestId('merge-postalcode-incoming').check();
+      await page.getByTestId('merge-street-incoming').check();
+      console.log('Selected all new (incoming) values');
+    });
+
+    await test.step('Complete merge', async () => {
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+      await page.waitForTimeout(500);
+      const mergePersonButton = page.getByText('Person zusammenführen', { exact: true });
+      await mergePersonButton.waitFor({ state: 'visible', timeout: 5000 });
+      await mergePersonButton.scrollIntoViewIfNeeded();
+      await expect(mergePersonButton).toBeEnabled();
+      await mergePersonButton.click();
+      await page.waitForURL(/\/admin\/incoming-save-chicken-drive-requests/, { timeout: 10000 });
+      await expect(page.locator('.mud-snackbar').filter({ hasText: /erfolgreich|success/i })).toBeVisible({ timeout: 5000 });
+      console.log('Merge completed with new values');
+    });
+
+    await test.step('Verify merged person has NEW values', async () => {
+      await page.goto(`/admin/persons/${existingPersonId}`, { waitUntil: 'networkidle' });
+      await page.waitForTimeout(2000);
+      await expect(page.getByTestId('contact-firstname')).toContainText(publicFirstName);
+      await expect(page.getByTestId('contact-lastname')).toContainText(publicLastName);
+      await expect(page.getByTestId('contact-email')).toContainText(publicEmail);
+      await expect(page.getByTestId('contact-phone')).toContainText(publicPhone);
+      await expect(page.getByTestId('address-city')).toContainText(publicCity);
+      await expect(page.getByTestId('address-postalcode')).toContainText(publicPostalCode);
+      await expect(page.getByTestId('address-street')).toContainText(publicStreet);
+      await expect(page.getByTestId('contact-lastname')).not.toContainText(existingLastName);
+      await expect(page.getByTestId('contact-phone')).not.toContainText(existingPhone);
+      await expect(page.getByTestId('address-city')).not.toContainText(existingCity);
+      await expect(page.getByTestId('address-postalcode')).not.toContainText(existingPostalCode);
+      await expect(page.getByTestId('address-street')).not.toContainText(existingStreet);
+      console.log('Verified that merged person has all NEW values applied');
+    });
+
+    await test.step('Verify drive request appears in action with new values', async () => {
+      await page.goto(`/admin/save-chicken-actions/${actionId}`, { waitUntil: 'networkidle' });
+      await page.waitForLoadState('networkidle', { timeout: 10000 });
+      await page.waitForTimeout(2000);
+      await expect(page.locator('text=' + publicFirstName).first()).toBeVisible({ timeout: 5000 });
+      await expect(page.locator('text=' + publicEmail).first()).toBeVisible({ timeout: 5000 });
+      console.log('Verified that merged drive request appears in action');
+    });
   });
 });

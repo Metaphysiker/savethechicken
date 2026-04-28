@@ -51,6 +51,11 @@ namespace WebApi.Controllers.ControllersImpl
             }
 
             var model = _mapper.mapper.Map<SaveChickenRequest>(dto);
+
+            // Admin-created requests are not from public form and are already handled
+            model.IsSubmittedFromPublicForm = false;
+            model.IsHandled = true;
+
             var result = await _service.Create(model, SaveChickenRequestIncludes.Default);
             var resultDto = _mapper.mapper.Map<SaveChickenRequestDto>(result);
 
@@ -106,23 +111,6 @@ namespace WebApi.Controllers.ControllersImpl
             };
             _db.Addresses.Add(address);
 
-            // Create handover Address if provided
-            Address? handoverAddress = null;
-            if (!string.IsNullOrEmpty(publicDto.HandoverStreet) &&
-                !string.IsNullOrEmpty(publicDto.HandoverCity) &&
-                !string.IsNullOrEmpty(publicDto.HandoverPostalCode))
-            {
-                handoverAddress = new Address
-                {
-                    Street = publicDto.HandoverStreet,
-                    City = publicDto.HandoverCity,
-                    PostalCode = publicDto.HandoverPostalCode,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                };
-                _db.Addresses.Add(handoverAddress);
-            }
-
             // Save Contact and Address first to get their IDs
             await _db.SaveChangesAsync();
 
@@ -149,9 +137,10 @@ namespace WebApi.Controllers.ControllersImpl
                 ConfirmThatIFulfillCriteria = publicDto.ConfirmThatIFulfillCriteria,
                 Message = publicDto.Message,
                 SaveChickenActionId = publicDto.SaveChickenActionId,
-                AddressForHandOverId = handoverAddress?.Id,
                 NumberOfBoxes = publicDto.NumberOfBoxes,
                 Color = publicDto.Color,
+                IsSubmittedFromPublicForm = true,
+                IsHandled = false, // Public requests start as unhandled
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -249,6 +238,8 @@ namespace WebApi.Controllers.ControllersImpl
             existing.Message = dto.Message;
             existing.SaveChickenActionId = dto.SaveChickenActionId;
             existing.Color = dto.Color;
+            existing.PersonId = dto.PersonId; // Allow reassigning person (for merge)
+            existing.IsHandled = dto.IsHandled; // Allow marking as handled
             existing.UpdatedAt = DateTime.UtcNow;
 
             // Attach and mark as modified
@@ -287,7 +278,6 @@ namespace WebApi.Controllers.ControllersImpl
                 <html>
                 <body>
                     <h2>Neuer Abnehmer</h2>
-                    <p><strong>Anfrage-ID:</strong> {request.Id}</p>
                     <p><strong>Kontakt:</strong> {person.Contact?.FirstName} {person.Contact?.LastName}</p>
                     <p><strong>E-Mail:</strong> {person.Contact?.Email}</p>
                     <p><strong>Telefon:</strong> {person.Contact?.PhoneNumber}</p>
@@ -295,7 +285,6 @@ namespace WebApi.Controllers.ControllersImpl
                     <p><strong>Anzahl Hühner:</strong> {request.NumberOfChickensToBeSaved}</p>
                     <p><strong>Anzahl Hähne:</strong> {request.NumberOfRoostersToBeSaved}</p>
                     <p><strong>Erstellt:</strong> {DateTime.Now:dd.MM.yyyy HH:mm}</p>
-                    {(request.SaveChickenActionId.HasValue ? $"<p><strong>Zugewiesen zu Aktion:</strong> {request.SaveChickenAction?.Title ?? request.SaveChickenActionId.ToString()}</p>" : "")}
                 </body>
                 </html>
             ";
@@ -318,6 +307,7 @@ namespace WebApi.Controllers.ControllersImpl
             }
 
             var email = person.Contact?.Email;
+            Console.WriteLine($"Attempting to send confirmation email to requester at {email} for SaveChickenRequest {request.Id}");
             if (string.IsNullOrEmpty(email))
             {
                 _logger.LogWarning("No email address for requester in SaveChickenRequest {Id}", request.Id);
@@ -341,6 +331,11 @@ namespace WebApi.Controllers.ControllersImpl
                         <li><strong>Anzahl Hühner:</strong> {request.NumberOfChickensToBeSaved}</li>
                         <li><strong>Anzahl Hähne:</strong> {request.NumberOfRoostersToBeSaved}</li>
                         <li><strong>Ort:</strong> {person.Address?.PostalCode} {person.Address?.City}</li>
+                        <li><strong>Strasse:</strong> {person.Address?.Street}</li>
+                        <li><strong>E-Mail:</strong> {person.Contact?.Email}</li>
+                        <li><strong>Telefon:</strong> {person.Contact?.PhoneNumber}</li>
+                        <li><strong>Beschreibung des Ortes:</strong> {request.DescriptionOfPlaceForChickens}</li>
+
                     </ul>
 
                     <p>Wir werden Sie kontaktieren, sobald wir passende Hühner für Sie haben.</p>

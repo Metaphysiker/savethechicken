@@ -1,0 +1,360 @@
+@page "/admin/merge-person/save-chicken-drive-request/{RequestId:int}/person/{TargetPersonId:int}"
+
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Web.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
+@inject GenericDtoServiceFactory DtoServiceFactory
+@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
+@inject IStringLocalizer<AppResources> L
+
+<PageTitle>@L["MergePersonData"]</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+    <MudText Typo="Typo.h3" Class="mb-4">
+        <MudIcon Icon="@Icons.Material.Filled.MergeType" /> @L["MergePersonData"]
+    </MudText>
+
+    @if (isLoading)
+    {
+        <MudProgressCircular Indeterminate="true" />
+        <MudText>@L["Loading"]...</MudText>
+    }
+    else if (incomingPerson == null || targetPerson == null || request == null)
+    {
+        <MudAlert Severity="Severity.Error">@L["ErrorLoadingData"]</MudAlert>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="NavigateBack">
+            @L["Back"]
+        </MudButton>
+    }
+    else
+    {
+        <MudAlert Severity="Severity.Info" Class="mb-4">
+            @L["MergeInstructions"]
+        </MudAlert>
+
+        <MudGrid>
+            <!-- Left: Incoming Drive Request Person -->
+            <MudItem xs="12" md="6">
+                <MudPaper Class="pa-4" Outlined="true">
+                    <MudText Typo="Typo.h5" Class="mb-3" Color="Color.Info">
+                        <MudIcon Icon="@Icons.Material.Filled.NewLabel" /> @L["IncomingRequest"]
+                    </MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mb-3">
+                        @L["RequestCreated"]: @request.CreatedAt.ToString("g")
+                    </MudText>
+                </MudPaper>
+            </MudItem>
+
+            <!-- Right: Existing Person -->
+            <MudItem xs="12" md="6">
+                <MudPaper Class="pa-4" Outlined="true">
+                    <MudText Typo="Typo.h5" Class="mb-3" Color="Color.Success">
+                        <MudIcon Icon="@Icons.Material.Filled.Person" /> @L["ExistingPerson"]
+                    </MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mb-3">
+                        @L["PersonCreated"]: @targetPerson.CreatedAt.ToString("g")
+                    </MudText>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+
+        <!-- Contact Information -->
+        <MudPaper Class="pa-4 mt-4" Outlined="true">
+            <MudText Typo="Typo.h6" Class="mb-3">
+                <MudIcon Icon="@Icons.Material.Filled.ContactPhone" /> @L["Contact"]
+            </MudText>
+
+            <!-- First Name -->
+            <MudText Typo="Typo.subtitle2" Class="mb-2">@L["FirstName"]</MudText>
+            <MudRadioGroup @bind-Value="@selectedFirstName">
+                <MudGrid Class="mb-3">
+                    <MudItem xs="12" md="6">
+                        <MudRadio T="string" Value="@INCOMING" Color="Color.Info" data-testid="merge-firstname-incoming">
+                            <MudText>@incomingPerson.Contact.FirstName</MudText>
+                        </MudRadio>
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudRadio T="string" Value="@TARGET" Color="Color.Success" data-testid="merge-firstname-target">
+                            <MudText>@targetPerson.Contact.FirstName</MudText>
+                        </MudRadio>
+                    </MudItem>
+                </MudGrid>
+            </MudRadioGroup>
+
+            <!-- Last Name -->
+            <MudText Typo="Typo.subtitle2" Class="mb-2">@L["LastName"]</MudText>
+            <MudRadioGroup @bind-Value="@selectedLastName">
+                <MudGrid Class="mb-3">
+                    <MudItem xs="12" md="6">
+                        <MudRadio T="string" Value="@INCOMING" Color="Color.Info" data-testid="merge-lastname-incoming">
+                            <MudText>@incomingPerson.Contact.LastName</MudText>
+                        </MudRadio>
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudRadio T="string" Value="@TARGET" Color="Color.Success" data-testid="merge-lastname-target">
+                            <MudText>@targetPerson.Contact.LastName</MudText>
+                        </MudRadio>
+                    </MudItem>
+                </MudGrid>
+            </MudRadioGroup>
+
+            <!-- Email -->
+            <MudText Typo="Typo.subtitle2" Class="mb-2">@L["Email"]</MudText>
+            <MudRadioGroup @bind-Value="@selectedEmail">
+                <MudGrid Class="mb-3">
+                    <MudItem xs="12" md="6">
+                        <MudRadio T="string" Value="@INCOMING" Color="Color.Info" data-testid="merge-email-incoming">
+                            <MudText>@incomingPerson.Contact.Email</MudText>
+                        </MudRadio>
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudRadio T="string" Value="@TARGET" Color="Color.Success" data-testid="merge-email-target">
+                            <MudText>@targetPerson.Contact.Email</MudText>
+                        </MudRadio>
+                    </MudItem>
+                </MudGrid>
+            </MudRadioGroup>
+
+            <!-- Phone Number -->
+            <MudText Typo="Typo.subtitle2" Class="mb-2">@L["PhoneNumber"]</MudText>
+            <MudRadioGroup @bind-Value="@selectedPhoneNumber">
+                <MudGrid Class="mb-3">
+                    <MudItem xs="12" md="6">
+                        <MudRadio T="string" Value="@INCOMING" Color="Color.Info" data-testid="merge-phone-incoming">
+                            <MudText>@incomingPerson.Contact.PhoneNumber</MudText>
+                        </MudRadio>
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudRadio T="string" Value="@TARGET" Color="Color.Success" data-testid="merge-phone-target">
+                            <MudText>@targetPerson.Contact.PhoneNumber</MudText>
+                        </MudRadio>
+                    </MudItem>
+                </MudGrid>
+            </MudRadioGroup>
+        </MudPaper>
+
+        <!-- Address Information -->
+        <MudPaper Class="pa-4 mt-4" Outlined="true">
+            <MudText Typo="Typo.h6" Class="mb-3">
+                <MudIcon Icon="@Icons.Material.Filled.Home" /> @L["Address"]
+            </MudText>
+
+            <!-- Street -->
+            <MudText Typo="Typo.subtitle2" Class="mb-2">@L["Street"]</MudText>
+            <MudRadioGroup @bind-Value="@selectedStreet">
+                <MudGrid Class="mb-3">
+                    <MudItem xs="12" md="6">
+                        <MudRadio T="string" Value="@INCOMING" Color="Color.Info" data-testid="merge-street-incoming">
+                            <MudText>@incomingPerson.Address.Street</MudText>
+                        </MudRadio>
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudRadio T="string" Value="@TARGET" Color="Color.Success" data-testid="merge-street-target">
+                            <MudText>@targetPerson.Address.Street</MudText>
+                        </MudRadio>
+                    </MudItem>
+                </MudGrid>
+            </MudRadioGroup>
+
+            <!-- Postal Code -->
+            <MudText Typo="Typo.subtitle2" Class="mb-2">@L["PostalCode"]</MudText>
+            <MudRadioGroup @bind-Value="@selectedPostalCode">
+                <MudGrid Class="mb-3">
+                    <MudItem xs="12" md="6">
+                        <MudRadio T="string" Value="@INCOMING" Color="Color.Info" data-testid="merge-postalcode-incoming">
+                            <MudText>@incomingPerson.Address.PostalCode</MudText>
+                        </MudRadio>
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudRadio T="string" Value="@TARGET" Color="Color.Success" data-testid="merge-postalcode-target">
+                            <MudText>@targetPerson.Address.PostalCode</MudText>
+                        </MudRadio>
+                    </MudItem>
+                </MudGrid>
+            </MudRadioGroup>
+
+            <!-- City -->
+            <MudText Typo="Typo.subtitle2" Class="mb-2">@L["City"]</MudText>
+            <MudRadioGroup @bind-Value="@selectedCity">
+                <MudGrid Class="mb-3">
+                    <MudItem xs="12" md="6">
+                        <MudRadio T="string" Value="@INCOMING" Color="Color.Info" data-testid="merge-city-incoming">
+                            <MudText>@incomingPerson.Address.City</MudText>
+                        </MudRadio>
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudRadio T="string" Value="@TARGET" Color="Color.Success" data-testid="merge-city-target">
+                            <MudText>@targetPerson.Address.City</MudText>
+                        </MudRadio>
+                    </MudItem>
+                </MudGrid>
+            </MudRadioGroup>
+        </MudPaper>
+
+        <!-- Actions -->
+        <MudStack Row="true" Spacing="3" Class="mt-4 mb-4">
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.MergeType"
+                       OnClick="PerformMerge"
+                       Disabled="isMerging">
+                @if (isMerging)
+                {
+                    <MudProgressCircular Indeterminate="true" Size="Size.Small" />
+                    <span class="ml-2">@L["Merging"]...</span>
+                }
+                else
+                {
+                    <span>@L["MergePerson"]</span>
+                }
+            </MudButton>
+            <MudButton Variant="Variant.Outlined"
+                       Color="Color.Default"
+                       StartIcon="@Icons.Material.Filled.Cancel"
+                       OnClick="NavigateBack"
+                       Disabled="isMerging">
+                @L["Cancel"]
+            </MudButton>
+        </MudStack>
+    }
+</MudContainer>
+
+@code {
+    private const string INCOMING = "incoming";
+    private const string TARGET = "target";
+
+    [Parameter]
+    public int RequestId { get; set; }
+
+    [Parameter]
+    public int TargetPersonId { get; set; }
+
+    private bool isLoading = true;
+    private bool isMerging = false;
+
+    private SaveChickenDriveRequestDto? request;
+    private PersonDto? incomingPerson;
+    private PersonDto? targetPerson;
+
+    // Selected values for merge (using identifiers: "incoming" or "target")
+    private string selectedFirstName = TARGET;
+    private string selectedLastName = TARGET;
+    private string selectedEmail = TARGET;
+    private string selectedPhoneNumber = TARGET;
+    private string selectedStreet = TARGET;
+    private string selectedPostalCode = TARGET;
+    private string selectedCity = TARGET;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        isLoading = true;
+        StateHasChanged();
+
+        try
+        {
+            var requestService = DtoServiceFactory.Create<SaveChickenDriveRequestDto, SaveChickenDriveRequestSearch>();
+            var personService = DtoServiceFactory.Create<PersonDto, PersonSearch>();
+
+            // Load drive request
+            request = await requestService.GetByIdAsync(RequestId);
+
+            if (request?.PersonId == null)
+            {
+                Snackbar.Add(L["RequestHasNoPerson"], Severity.Error);
+                return;
+            }
+
+            // Load both persons
+            incomingPerson = await personService.GetByIdAsync(request.PersonId.Value);
+            targetPerson = await personService.GetByIdAsync(TargetPersonId);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading data: {ex.Message}");
+            Snackbar.Add(L["ErrorLoadingData"], Severity.Error);
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task PerformMerge()
+    {
+        if (incomingPerson == null || targetPerson == null || request == null)
+        {
+            Snackbar.Add(L["InvalidMergeData"], Severity.Error);
+            return;
+        }
+
+        isMerging = true;
+        StateHasChanged();
+
+        try
+        {
+            var personService = DtoServiceFactory.Create<PersonDto, PersonSearch>();
+            var requestService = DtoServiceFactory.Create<SaveChickenDriveRequestDto, SaveChickenDriveRequestSearch>();
+
+            // Resolve selected values based on radio button selections
+            var finalFirstName = selectedFirstName == INCOMING ? incomingPerson.Contact.FirstName : targetPerson.Contact.FirstName;
+            var finalLastName = selectedLastName == INCOMING ? incomingPerson.Contact.LastName : targetPerson.Contact.LastName;
+            var finalEmail = selectedEmail == INCOMING ? incomingPerson.Contact.Email : targetPerson.Contact.Email;
+            var finalPhoneNumber = selectedPhoneNumber == INCOMING ? incomingPerson.Contact.PhoneNumber : targetPerson.Contact.PhoneNumber;
+            var finalStreet = selectedStreet == INCOMING ? incomingPerson.Address.Street : targetPerson.Address.Street;
+            var finalPostalCode = selectedPostalCode == INCOMING ? incomingPerson.Address.PostalCode : targetPerson.Address.PostalCode;
+            var finalCity = selectedCity == INCOMING ? incomingPerson.Address.City : targetPerson.Address.City;
+
+            // Update target person with resolved values
+            targetPerson.Contact.FirstName = finalFirstName;
+            targetPerson.Contact.LastName = finalLastName;
+            targetPerson.Contact.Email = finalEmail;
+            targetPerson.Contact.PhoneNumber = finalPhoneNumber;
+            targetPerson.Address.Street = finalStreet;
+            targetPerson.Address.PostalCode = finalPostalCode;
+            targetPerson.Address.City = finalCity;
+
+            await personService.UpdateAsync(targetPerson);
+
+            // Link drive request to target person and mark as handled
+            request.PersonId = targetPerson.Id;
+            request.IsHandled = true;
+
+
+            Console.WriteLine($"Merging SaveChickenDriveRequest {request.Id} from Person {incomingPerson.Id} to Person {targetPerson.Id}");
+            await requestService.UpdateAsync(request);
+
+            // Always delete incoming person after linking (to avoid duplicates)
+            if (incomingPerson.Id != targetPerson.Id)
+            {
+                await personService.DeleteAsync(incomingPerson.Id);
+            }
+
+            Snackbar.Add(L["MergeSuccessful"], Severity.Success);
+            NavigateBack();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error during merge: {ex.Message}");
+            Snackbar.Add(L["MergeError"], Severity.Error);
+        }
+        finally
+        {
+            isMerging = false;
+            StateHasChanged();
+        }
+    }
+
+    private void NavigateBack()
+    {
+        NavigationManager.NavigateTo("/admin/incoming-save-chicken-drive-requests");
+    }
+}

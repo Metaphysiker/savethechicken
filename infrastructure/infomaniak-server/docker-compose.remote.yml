@@ -9,7 +9,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
     volumes:
-      - ./appsettings.Production.json:/app/appsettings.Production.json:ro
+      - ./appsettings.Production.json:/App/appsettings.Production.json:ro
       - webapi-temp:/tmp
     depends_on:
       - postgres

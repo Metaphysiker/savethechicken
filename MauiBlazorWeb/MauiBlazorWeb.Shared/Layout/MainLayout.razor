@@ -7,7 +7,7 @@
 @implements IDisposable
 
 
-<MudThemeProvider />
+<MudThemeProvider Theme="@_customTheme" />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
@@ -52,6 +52,20 @@
 @code {
     private bool? isTokenValid = null;
     private bool _drawerOpen = true;
+
+    private MudTheme _customTheme = new MudTheme()
+    {
+        PaletteLight = new PaletteLight()
+        {
+            Primary = "#594AE2",
+            PrimaryDarken = "#3E2CA8",
+            PrimaryLighten = "#7B6EEB",
+            PrimaryContrastText = "#FFFFFF",
+            Secondary = "#607D8B",
+            AppbarBackground = "#594AE2",
+            AppbarText = "#FFFFFF"
+        }
+    };
 
     protected override void OnInitialized()
     {

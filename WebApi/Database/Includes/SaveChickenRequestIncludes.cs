@@ -11,7 +11,6 @@ namespace WebApi.Database.Includes
             "Person.Contact",
             "Person.Address",
             "Person.Address.GeoCoordinate",
-            "AddressForHandOver",
             "SaveChickenAction",
             "Files"
         };
@@ -23,7 +22,6 @@ namespace WebApi.Database.Includes
             r => r.Person.Contact,
             r => r.Person.Address,
             r => r.Person.Address.GeoCoordinate,
-            r => r.AddressForHandOver,
             r => r.SaveChickenAction,
             r => r.Files
         };

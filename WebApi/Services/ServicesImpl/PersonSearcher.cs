@@ -36,6 +36,25 @@ namespace Services.ServicesImpl
             if (search.IsDriver.HasValue)
                 query = query.Where(x => x.IsDriver == search.IsDriver.Value);
 
+            // Filter by HasUnhandledRequests
+            if (search.HasUnhandledRequests.HasValue)
+            {
+                if (search.HasUnhandledRequests.Value)
+                {
+                    // Has at least one unhandled request
+                    query = query.Where(x =>
+                        x.SaveChickenRequests.Any(r => !r.IsHandled) ||
+                        x.SaveChickenDriveRequests.Any(r => !r.IsHandled));
+                }
+                else
+                {
+                    // All requests are handled (or has no requests)
+                    query = query.Where(x =>
+                        !x.SaveChickenRequests.Any(r => !r.IsHandled) &&
+                        !x.SaveChickenDriveRequests.Any(r => !r.IsHandled));
+                }
+            }
+
             // Full-text search
             if (!string.IsNullOrWhiteSpace(search.SearchTerm))
             {

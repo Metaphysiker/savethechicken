@@ -1,0 +1,79 @@
+@using global::Shared.Dtos.DtosImpl
+@using Microsoft.Extensions.Localization
+@using MauiBlazorWeb.Shared.Resources.Strings
+@inject IStringLocalizer<AppResources> L
+
+<MudCard Outlined="true" Style="@CardStyle">
+    @if (Person.IsBlacklisted)
+    {
+        <MudPaper Elevation="4" Class="d-flex flex-column align-items-center justify-center" Style="background: #ffebee; border: 3px solid #b71c1c; padding: 24px 0 8px 0; margin-bottom: 8px;">
+            <MudIcon Icon="@Icons.Material.Filled.Block" Size="Size.Large" Color="Color.Error" Style="font-size: 64px; margin-bottom: 8px;" />
+            <MudText Typo="Typo.h4" Color="Color.Error" Style="font-weight: bold; letter-spacing: 2px; text-transform: uppercase;">
+                @L["BlackListedPersonIds"]
+            </MudText>
+        </MudPaper>
+    }
+    <MudCardContent Class="py-2 px-3" @onclick="() => OnCompare.InvokeAsync(Person)">
+        <MudStack Spacing="1">
+            <MudText Typo="Typo.body2" Style="font-weight: 500;">
+                @Person.Contact.FirstName @Person.Contact.LastName
+            </MudText>
+            @if (!string.IsNullOrWhiteSpace(Person.Contact.Email))
+            {
+                <MudText Typo="Typo.caption" Color="Color.Secondary">
+                    <MudIcon Icon="@Icons.Material.Filled.Email" Size="Size.Small" /> @Person.Contact.Email
+                </MudText>
+            }
+            @if (!string.IsNullOrWhiteSpace(Person.Contact.PhoneNumber))
+            {
+                <MudText Typo="Typo.caption" Color="Color.Secondary">
+                    <MudIcon Icon="@Icons.Material.Filled.Phone" Size="Size.Small" /> @Person.Contact.PhoneNumber
+                </MudText>
+            }
+            <MudStack Row="true" Spacing="1" Class="mt-1">
+                @if (IsComparing)
+                {
+                    <MudChip T="string" Size="Size.Small" Color="Color.Info" Style="height: 20px;">@L["Comparing"]</MudChip>
+                }
+                else
+                {
+                    <MudChip T="string" Size="Size.Small" Color="Color.Default" Style="height: 20px;">@L["ClickToCompare"]</MudChip>
+                }
+            </MudStack>
+        </MudStack>
+    </MudCardContent>
+    <MudCardActions @onclick:stopPropagation="true">
+        <MudStack Row="true" Spacing="1" Style="width: 100%;">
+            <MudButton Size="Size.Small"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.MergeType"
+                       Style="flex: 1;"
+                       data-testid="@($"merge-person-{Person.Id}")"
+                       OnClick="@(async () => await OnMerge.InvokeAsync(Person.Id))">
+                @L["Merge"]
+            </MudButton>
+            @if (OnRemove.HasDelegate)
+            {
+                <MudIconButton Icon="@Icons.Material.Filled.Close"
+                               Size="Size.Small"
+                               Color="Color.Default"
+                               OnClick="@(() => OnRemove.InvokeAsync(Person.Id))" />
+            }
+        </MudStack>
+    </MudCardActions>
+</MudCard>
+
+@code {
+    [Parameter, EditorRequired] public PersonDto Person { get; set; } = null!;
+    [Parameter, EditorRequired] public EventCallback<PersonDto> OnCompare { get; set; }
+    [Parameter, EditorRequired] public EventCallback<int> OnMerge { get; set; }
+    [Parameter] public EventCallback<int> OnRemove { get; set; }
+    [Parameter] public int? ComparisonPersonId { get; set; }
+
+    private bool IsComparing => ComparisonPersonId.HasValue && ComparisonPersonId == Person.Id;
+
+    private string CardStyle => IsComparing
+        ? "cursor: pointer; border: 2px solid var(--mud-palette-info); background-color: rgba(33, 150, 243, 0.05);"
+        : "cursor: pointer;";
+}

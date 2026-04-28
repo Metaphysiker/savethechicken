@@ -20,7 +20,8 @@ namespace WebApi.Models.ModelsImpl
 
         public int? SaveChickenActionId { get; set; }
         public SaveChickenAction? SaveChickenAction { get; set; }
-
+        public bool IsSubmittedFromPublicForm { get; set; } = false;
+        public bool IsHandled { get; set; } = false;
         public List<StoredFile> Files { get; set; }
 
         [Column(TypeName = "tsvector")]

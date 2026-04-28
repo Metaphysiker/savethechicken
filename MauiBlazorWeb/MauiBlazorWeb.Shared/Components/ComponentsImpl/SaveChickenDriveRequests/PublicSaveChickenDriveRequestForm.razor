@@ -133,9 +133,7 @@
         </MudItem>
 
         <MudItem Class="mb-3">
-            <MudNumericField T="int" @bind-Value="Model.CapacityForChickens" Label="Kapazität für Hühner*"
-                            Variant="Variant.Outlined" Min="1" Max="1000"
-                            UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "capacity" })" />
+            <MudNumericField T="int" @bind-Value="Model.CapacityForChickens" Label="Kapazität für Hühner*" Variant="Variant.Outlined" Min="1" Max="1000" UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "capacity-for-chickens" })" />
             <ValidationMessage For="@(() => Model.CapacityForChickens)" />
             <MudText Typo="Typo.caption" Color="Color.Secondary">
                 Wie viele Hühner können Sie in Ihrem Fahrzeug transportieren?

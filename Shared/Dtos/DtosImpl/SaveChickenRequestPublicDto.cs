@@ -56,13 +56,11 @@ namespace Shared.Dtos.DtosImpl
 
         public int? SaveChickenActionId { get; set; }
 
-        // Handover Address (if different from main address)
-        public string? HandoverStreet { get; set; }
-        public string? HandoverCity { get; set; }
-        public string? HandoverPostalCode { get; set; }
-
         public int NumberOfBoxes { get; set; } = 0;
 
         public string Color { get; set; } = string.Empty;
+
+        public bool IsSubmittedFromPublicForm { get; set; } = true;
+        public bool IsHandled { get; set; } = false;
     }
 }

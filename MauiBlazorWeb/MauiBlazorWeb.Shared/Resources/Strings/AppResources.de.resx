@@ -1,5 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
+    <data name="deleteRequestConfirmation" xml:space="preserve">
+      <value>Möchten Sie diese Anfrage wirklich löschen?</value>
+    </data>
+    <data name="cancel" xml:space="preserve">
+      <value>Abbrechen</value>
+    </data>
+    <data name="confirmDelete" xml:space="preserve">
+      <value>Löschen bestätigen</value>
+    </data>
   <!--
     Microsoft ResX Schema
 
@@ -188,6 +197,9 @@
   </data>
   <data name="IsDriver" xml:space="preserve">
     <value>Fahrer</value>
+  </data>
+  <data name="IncomingSaveChickenDriveRequests" xml:space="preserve">
+    <value>Neue Fahrangebote</value>
   </data>
   <data name="IsDriver_Yes" xml:space="preserve">
     <value>Diese Person ist ein Fahrer</value>
@@ -703,5 +715,122 @@
   </data>
   <data name="RoutePlan" xml:space="preserve">
     <value>Fahrplan</value>
+  </data>
+  <data name="SimilarPersons" xml:space="preserve">
+    <value>Ähnliche Personen</value>
+  </data>
+  <data name="NoSimilarPersonsFound" xml:space="preserve">
+    <value>Keine ähnlichen Personen gefunden</value>
+  </data>
+  <data name="PotentialDuplicatesFound" xml:space="preserve">
+    <value>potenzielle Duplikate gefunden</value>
+  </data>
+  <data name="ClickToCompare" xml:space="preserve">
+    <value>Klicken zum Vergleichen</value>
+  </data>
+  <data name="Comparing" xml:space="preserve">
+    <value>Vergleichen</value>
+  </data>
+  <data name="ComparingPersonDetails" xml:space="preserve">
+    <value>Personendetails werden verglichen</value>
+  </data>
+  <data name="Merge" xml:space="preserve">
+    <value>Zusammenführen</value>
+  </data>
+  <data name="MergePersonData" xml:space="preserve">
+    <value>Personendaten zusammenführen</value>
+  </data>
+  <data name="IncomingRequest" xml:space="preserve">
+    <value>Eingehende Anfrage</value>
+  </data>
+  <data name="ExistingPerson" xml:space="preserve">
+    <value>Bestehende Person</value>
+  </data>
+  <data name="RequestCreated" xml:space="preserve">
+    <value>Anfrage erstellt</value>
+  </data>
+  <data name="PersonCreated" xml:space="preserve">
+    <value>Person erstellt</value>
+  </data>
+  <data name="MergeInstructions" xml:space="preserve">
+    <value>Wählen Sie für jedes Feld die Version aus, die Sie behalten möchten. Die ausgewählten Werte werden in die bestehende Person übernommen.</value>
+  </data>
+  <data name="MergePerson" xml:space="preserve">
+    <value>Person zusammenführen</value>
+  </data>
+  <data name="Merging" xml:space="preserve">
+    <value>Zusammenführen</value>
+  </data>
+  <data name="RequestHasNoPerson" xml:space="preserve">
+    <value>Anfrage hat keine zugeordnete Person</value>
+  </data>
+  <data name="InvalidMergeData" xml:space="preserve">
+    <value>Ungültige Zusammenführungsdaten</value>
+  </data>
+  <data name="MergeSuccessful" xml:space="preserve">
+    <value>Zusammenführung erfolgreich</value>
+  </data>
+  <data name="MergeError" xml:space="preserve">
+    <value>Fehler beim Zusammenführen</value>
+  </data>
+  <data name="MergeWithSelectedPerson" xml:space="preserve">
+    <value>Mit ausgewählter Person zusammenführen</value>
+  </data>
+  <data name="IncomingSaveChickenRequests" xml:space="preserve">
+    <value>Neue Platzangebote</value>
+  </data>
+  <data name="UnhandledRequestsNeedReview" xml:space="preserve">
+    <value>Dies sind Anfragen, die über das öffentliche Formular eingereicht wurden und überprüft und bearbeitet werden müssen</value>
+  </data>
+  <data name="PendingRequests" xml:space="preserve">
+    <value>Ausstehende Anfragen</value>
+  </data>
+  <data name="NoPendingRequests" xml:space="preserve">
+    <value>Keine ausstehenden Anfragen</value>
+  </data>
+  <data name="ComparisonMode" xml:space="preserve">
+    <value>Vergleichsmodus</value>
+  </data>
+  <data name="ClearComparison" xml:space="preserve">
+    <value>Vergleich löschen</value>
+  </data>
+  <data name="AlreadyHandled" xml:space="preserve">
+    <value>Bereits bearbeitet</value>
+  </data>
+  <data name="MarkAsHandled" xml:space="preserve">
+    <value>Als bearbeitet markieren</value>
+  </data>
+  <data name="SelectRequestToViewDetails" xml:space="preserve">
+    <value>Wählen Sie eine Anfrage aus der Liste aus, um Details anzuzeigen</value>
+  </data>
+  <data name="SelectRequestToSeeSimilarEntries" xml:space="preserve">
+    <value>Wählen Sie eine Anfrage aus, um ähnliche Einträge zu sehen</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Unbekannt</value>
+  </data>
+  <data name="NoCity" xml:space="preserve">
+    <value>Keine Stadt</value>
+  </data>
+  <data name="RequestMarkedAsHandledSuccess" xml:space="preserve">
+    <value>Anfrage erfolgreich als bearbeitet markiert!</value>
+  </data>
+  <data name="ErrorMarkingAsHandled" xml:space="preserve">
+    <value>Fehler beim Markieren als bearbeitet</value>
+  </data>
+  <data name="PleaseSelectRequestFirst" xml:space="preserve">
+    <value>Bitte wählen Sie zuerst eine Anfrage aus</value>
+  </data>
+  <data name="ErrorLoadingRequests" xml:space="preserve">
+    <value>Fehler beim Laden der Anfragen</value>
+  </data>
+  <data name="SearchPerson" xml:space="preserve">
+    <value>Person suchen</value>
+  </data>
+  <data name="AddToList" xml:space="preserve">
+    <value>Zur Liste hinzufügen</value>
+  </data>
+  <data name="ManuallySelected" xml:space="preserve">
+    <value>Manuell ausgewählt</value>
   </data>
 </root>

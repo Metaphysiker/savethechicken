@@ -14,20 +14,40 @@
                 @* Name *@
                 @if (displayPerson.Contact != null && (!string.IsNullOrWhiteSpace(displayPerson.Contact.FirstName) || !string.IsNullOrWhiteSpace(displayPerson.Contact.LastName)))
                 {
-                    <MudText Typo="Typo.subtitle1" Class="mb-1">
+                    var currentName = GetFullName(displayPerson.Contact);
+                    var comparisonName = GetFullName(ComparisonPerson?.Contact);
+                    var isDifferent = IsDifferent(currentName, comparisonName);
+
+                    <MudText Typo="Typo.subtitle1" Class="mb-1" Style="@GetComparisonStyle(currentName, comparisonName)">
                         <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Small" Class="mr-1" />
                         <strong>@L["Name"]</strong><br/>
-                        @if (!string.IsNullOrWhiteSpace(displayPerson.Contact.FirstName))
+                        @if (isDifferent && CompareMode && ComparisonPerson != null)
                         {
-                            <span data-testid="contact-firstname">@displayPerson.Contact.FirstName</span>
+                            <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                                <div>
+                                    <MudChip T="string" Size="Size.Small" Color="Color.Info" Style="height: 18px; font-size: 0.7rem; margin-bottom: 4px;">@L["IncomingRequest"]</MudChip>
+                                    <div data-testid="contact-name">@currentName</div>
+                                </div>
+                                <div>
+                                    <MudChip T="string" Size="Size.Small" Color="Color.Default" Style="height: 18px; font-size: 0.7rem; margin-bottom: 4px;">@L["ExistingPerson"]</MudChip>
+                                    <div>@comparisonName</div>
+                                </div>
+                            </div>
                         }
-                        @if (!string.IsNullOrWhiteSpace(displayPerson.Contact.LastName))
+                        else
                         {
                             @if (!string.IsNullOrWhiteSpace(displayPerson.Contact.FirstName))
                             {
-                                @(" ")
+                                <span data-testid="contact-firstname">@displayPerson.Contact.FirstName</span>
                             }
-                            <span data-testid="contact-lastname">@displayPerson.Contact.LastName</span>
+                            @if (!string.IsNullOrWhiteSpace(displayPerson.Contact.LastName))
+                            {
+                                @if (!string.IsNullOrWhiteSpace(displayPerson.Contact.FirstName))
+                                {
+                                    @(" ")
+                                }
+                                <span data-testid="contact-lastname">@displayPerson.Contact.LastName</span>
+                            }
                         }
                     </MudText>
                 }
@@ -37,18 +57,58 @@
                 {
                     @if (!string.IsNullOrWhiteSpace(displayPerson.Contact.Email))
                     {
-                        <MudText Typo="Typo.body2" Class="mb-1">
+                        var currentEmail = displayPerson.Contact.Email;
+                        var comparisonEmail = ComparisonPerson?.Contact?.Email;
+                        var isDifferentEmail = IsDifferent(currentEmail, comparisonEmail);
+
+                        <MudText Typo="Typo.body2" Class="mb-1" Style="@GetComparisonStyle(currentEmail, comparisonEmail)">
                             <MudIcon Icon="@Icons.Material.Filled.Email" Size="Size.Small" Class="mr-1" />
                             <strong>@L["Email"]</strong><br/>
-                            <span data-testid="contact-email">@displayPerson.Contact.Email</span>
+                            @if (isDifferentEmail && CompareMode && ComparisonPerson != null)
+                            {
+                                <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                                    <div>
+                                        <MudChip T="string" Size="Size.Small" Color="Color.Info" Style="height: 18px; font-size: 0.7rem; margin-bottom: 4px;">@L["IncomingRequest"]</MudChip>
+                                        <div data-testid="contact-email">@currentEmail</div>
+                                    </div>
+                                    <div>
+                                        <MudChip T="string" Size="Size.Small" Color="Color.Default" Style="height: 18px; font-size: 0.7rem; margin-bottom: 4px;">@L["ExistingPerson"]</MudChip>
+                                        <div>@comparisonEmail</div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <span data-testid="contact-email">@displayPerson.Contact.Email</span>
+                            }
                         </MudText>
                     }
                     @if (!string.IsNullOrWhiteSpace(displayPerson.Contact.PhoneNumber))
                     {
-                        <MudText Typo="Typo.body2" Class="mb-1">
+                        var currentPhone = displayPerson.Contact.PhoneNumber;
+                        var comparisonPhone = ComparisonPerson?.Contact?.PhoneNumber;
+                        var isDifferentPhone = IsDifferent(currentPhone, comparisonPhone);
+
+                        <MudText Typo="Typo.body2" Class="mb-1" Style="@GetComparisonStyle(currentPhone, comparisonPhone)">
                             <MudIcon Icon="@Icons.Material.Filled.Phone" Size="Size.Small" Class="mr-1" />
                             <strong>@L["PhoneNumber"]</strong><br/>
-                            <span data-testid="contact-phone">@displayPerson.Contact.PhoneNumber</span>
+                            @if (isDifferentPhone && CompareMode && ComparisonPerson != null)
+                            {
+                                <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                                    <div>
+                                        <MudChip T="string" Size="Size.Small" Color="Color.Info" Style="height: 18px; font-size: 0.7rem; margin-bottom: 4px;">@L["IncomingRequest"]</MudChip>
+                                        <div data-testid="contact-phone">@currentPhone</div>
+                                    </div>
+                                    <div>
+                                        <MudChip T="string" Size="Size.Small" Color="Color.Default" Style="height: 18px; font-size: 0.7rem; margin-bottom: 4px;">@L["ExistingPerson"]</MudChip>
+                                        <div>@comparisonPhone</div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <span data-testid="contact-phone">@displayPerson.Contact.PhoneNumber</span>
+                            }
                         </MudText>
                     }
                 }
@@ -56,24 +116,44 @@
                 @* Address *@
                 @if (displayPerson.Address != null)
                 {
-                    <MudText Typo="Typo.body2">
+                    var currentAddress = GetFullAddress(displayPerson.Address);
+                    var comparisonAddress = GetFullAddress(ComparisonPerson?.Address);
+                    var isDifferentAddress = IsDifferent(currentAddress, comparisonAddress);
+
+                    <MudText Typo="Typo.body2" Style="@GetComparisonStyle(currentAddress, comparisonAddress)">
                         <MudIcon Icon="@Icons.Material.Filled.LocationOn" Size="Size.Small" Class="mr-1" />
                         <strong>@L["Address"]</strong><br/>
-                        @if (!string.IsNullOrWhiteSpace(displayPerson.Address.Street))
+                        @if (isDifferentAddress && CompareMode && ComparisonPerson != null)
                         {
-                            <span data-testid="address-street">@displayPerson.Address.Street</span><span>, </span>
+                            <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                                <div>
+                                    <MudChip T="string" Size="Size.Small" Color="Color.Info" Style="height: 18px; font-size: 0.7rem; margin-bottom: 4px;">@L["IncomingRequest"]</MudChip>
+                                    <div>@currentAddress</div>
+                                </div>
+                                <div>
+                                    <MudChip T="string" Size="Size.Small" Color="Color.Default" Style="height: 18px; font-size: 0.7rem; margin-bottom: 4px;">@L["ExistingPerson"]</MudChip>
+                                    <div>@comparisonAddress</div>
+                                </div>
+                            </div>
                         }
-                        @if (!string.IsNullOrWhiteSpace(displayPerson.Address.PostalCode))
+                        else
                         {
-                            <span data-testid="address-postalcode">@displayPerson.Address.PostalCode</span>
-                        }
-                        @if (!string.IsNullOrWhiteSpace(displayPerson.Address.City))
-                        {
+                            @if (!string.IsNullOrWhiteSpace(displayPerson.Address.Street))
+                            {
+                                <span data-testid="address-street">@displayPerson.Address.Street</span><span>, </span>
+                            }
                             @if (!string.IsNullOrWhiteSpace(displayPerson.Address.PostalCode))
                             {
-                                @(" ")
+                                <span data-testid="address-postalcode">@displayPerson.Address.PostalCode</span>
                             }
-                            <span data-testid="address-city">@displayPerson.Address.City</span>
+                            @if (!string.IsNullOrWhiteSpace(displayPerson.Address.City))
+                            {
+                                @if (!string.IsNullOrWhiteSpace(displayPerson.Address.PostalCode))
+                                {
+                                    @(" ")
+                                }
+                                <span data-testid="address-city">@displayPerson.Address.City</span>
+                            }
                         }
                     </MudText>
                 }
@@ -99,6 +179,12 @@
     [Parameter]
     public int? PersonId { get; set; }
 
+    [Parameter]
+    public bool CompareMode { get; set; } = false;
+
+    [Parameter]
+    public PersonDto? ComparisonPerson { get; set; }
+
     private PersonDto? displayPerson;
 
     protected override async Task OnParametersSetAsync()
@@ -121,5 +207,57 @@
         }
 
         StateHasChanged();
+    }
+
+    private bool IsDifferent(string? currentValue, string? comparisonValue)
+    {
+        if (!CompareMode || ComparisonPerson == null || comparisonValue == null)
+            return false;
+
+        return !string.Equals(currentValue?.Trim(), comparisonValue?.Trim(), StringComparison.OrdinalIgnoreCase);
+    }
+
+    private string GetComparisonStyle(string? currentValue, string? comparisonValue)
+    {
+        if (!CompareMode || ComparisonPerson == null || comparisonValue == null)
+            return string.Empty;
+
+        bool isDifferent = IsDifferent(currentValue, comparisonValue);
+
+        if (isDifferent)
+        {
+            // Blue for differences
+            return "background-color: rgba(33, 150, 243, 0.15); border-left: 3px solid #2196F3; padding-left: 8px; border-radius: 4px;";
+        }
+        else
+        {
+            // Green for matches
+            return "background-color: rgba(76, 175, 80, 0.15); border-left: 3px solid #4CAF50; padding-left: 8px; border-radius: 4px;";
+        }
+    }
+
+    private string GetFullName(ContactDto? contact)
+    {
+        if (contact == null) return string.Empty;
+        var firstName = contact.FirstName?.Trim() ?? "";
+        var lastName = contact.LastName?.Trim() ?? "";
+        return $"{firstName} {lastName}".Trim();
+    }
+
+    private string GetFullAddress(AddressDto? address)
+    {
+        if (address == null) return string.Empty;
+        var street = address.Street?.Trim() ?? "";
+        var postalCode = address.PostalCode?.Trim() ?? "";
+        var city = address.City?.Trim() ?? "";
+
+        var parts = new List<string>();
+        if (!string.IsNullOrEmpty(street)) parts.Add(street);
+        if (!string.IsNullOrEmpty(postalCode) || !string.IsNullOrEmpty(city))
+        {
+            parts.Add($"{postalCode} {city}".Trim());
+        }
+
+        return string.Join(", ", parts);
     }
 }

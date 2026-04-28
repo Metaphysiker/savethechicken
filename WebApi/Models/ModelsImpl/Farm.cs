@@ -23,6 +23,8 @@ namespace WebApi.Models.ModelsImpl
         public List<StoredFile> Files { get; set; }
         public int? SaveChickenActionId { get; set; }
         public SaveChickenAction? SaveChickenAction { get; set; }
+        public bool IsSubmittedFromPublicForm { get; set; } = false;
+        public bool IsHandled { get; set; } = false;
 
         [Column(TypeName = "tsvector")]
         public NpgsqlTsVector SearchVector { get; set; } = null!;

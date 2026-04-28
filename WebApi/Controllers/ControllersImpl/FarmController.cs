@@ -119,6 +119,11 @@ namespace WebApi.Controllers.ControllersImpl
             }
 
             var model = _mapper.mapper.Map<Farm>(dto);
+
+            // Admin-created farms are not from public form and are already handled
+            model.IsSubmittedFromPublicForm = false;
+            model.IsHandled = true;
+
             var result = await _service.Create(model, FarmIncludes.Default);
             var resultDto = _mapper.mapper.Map<FarmDto>(result);
 
@@ -178,6 +183,8 @@ namespace WebApi.Controllers.ControllersImpl
                 Color = publicDto.Color,
                 GeneralInformation = publicDto.GeneralInformation,
                 SaveChickenActionId = publicDto.SaveChickenActionId,
+                IsSubmittedFromPublicForm = true,
+                IsHandled = false, // Public farms start as unhandled
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };

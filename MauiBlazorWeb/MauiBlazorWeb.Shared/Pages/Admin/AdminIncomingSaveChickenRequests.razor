@@ -1,0 +1,715 @@
+@page "/admin/incoming-save-chicken-requests"
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Persons
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Web.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+@using global::Shared.Dtos
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
+@using System.Net.Http.Json
+@inject GenericDtoServiceFactory DtoServiceFactory
+@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
+@inject IStringLocalizer<AppResources> L
+@inject HttpClient HttpClient
+@inject IDialogService _dialogService
+
+<PageTitle>@L["Admin"] - @L["IncomingSaveChickenRequests"]</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge" Class="mt-4">
+    <MudText Typo="Typo.h3" Class="mb-4">@L["IncomingSaveChickenRequests"]</MudText>
+
+    <MudAlert Severity="Severity.Info" Dense="true" Class="my-4">
+        <strong>@L["Info"]:</strong> @L["UnhandledRequestsNeedReview"]
+    </MudAlert>
+
+    <MudGrid>
+        <!-- Left Column: List of Unhandled Public Requests -->
+        <MudItem xs="12" md="4" lg="3">
+            <MudPaper Class="pa-4" Style="height: calc(100vh - 250px); overflow-y: auto;">
+                <MudText Typo="Typo.h6" Class="mb-3">@L["PendingRequests"] (@unhandledRequests.Count)</MudText>
+
+                @if (isLoadingRequests)
+                {
+                    <MudProgressCircular Indeterminate="true" Size="Size.Small" />
+                    <MudText Class="mt-2">@L["Loading"]...</MudText>
+                }
+                else if (!unhandledRequests.Any())
+                {
+                    <MudAlert Severity="Severity.Success" Dense="true">
+                        @L["NoPendingRequests"] 🎉
+                    </MudAlert>
+                }
+                else
+                {
+                    <MudStack Spacing="2">
+                        @foreach (var request in unhandledRequests)
+                        {
+                            <MudCard Outlined="true"
+                                     Style="@GetCardStyle(request)"
+                                     @onclick="() => SelectRequest(request)">
+                                <MudCardContent Class="py-2 px-3">
+                                    <MudText Typo="Typo.body2" Style="font-weight: 600;">
+                                        @(request.Person?.Contact?.FirstName ?? "") @(request.Person?.Contact?.LastName ?? "Unknown")
+                                    </MudText>
+                                    <MudText Typo="Typo.caption" Color="Color.Secondary">
+                                        @(request.Person?.Address?.City ?? "No city")
+                                    </MudText>
+                                    <MudText Typo="Typo.caption">
+                                        @request.NumberOfChickensToBeSaved 🐔 | @request.CreatedAt.ToString("dd.MM.yyyy")
+                                    </MudText>
+                                    @if (request.IsSubmittedFromPublicForm)
+                                    {
+                                        <MudChip T="string" Size="Size.Small" Color="Color.Info" Class="mt-1" Style="height: 20px;">@L["Public"]</MudChip>
+                                    }
+                                </MudCardContent>
+                            </MudCard>
+                        }
+                    </MudStack>
+                }
+            </MudPaper>
+        </MudItem>
+
+        <!-- Center Column: Selected Request Details -->
+        <MudItem xs="12" md="5" lg="6">
+            <MudPaper Class="pa-4" Style="height: calc(100vh - 250px); overflow-y: auto;">
+                @if (selectedRequest != null)
+                {
+                    <MudText Typo="Typo.h5" Class="mb-3">@L["SaveChickenRequestDetails"]</MudText>
+
+                    <!-- Save Chicken Action Selector -->
+                    <MudPaper Class="pa-3 mb-3" Outlined="true">
+                        <MudText Typo="Typo.h6" Class="mb-2">
+                            <MudIcon Icon="@Icons.Material.Filled.Dashboard" Size="Size.Small" /> @L["SaveChickenAction"]
+                        </MudText>
+                        <SaveChickenActionSelector SelectedActionId="@selectedActionId"
+                                                   SelectedActionIdChanged="OnSaveChickenActionIdChanged" />
+                    </MudPaper>
+
+                    @if (comparisonPerson != null)
+                    {
+                        <MudAlert Severity="Severity.Info" Dense="true" Class="mb-3">
+                            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                                <MudText Typo="Typo.body2">
+                                    <strong>@L["ComparisonMode"]:</strong> @L["ComparingPersonDetails"]
+                                </MudText>
+                                <MudButton Size="Size.Small" Variant="Variant.Text" Color="Color.Default" OnClick="ClearComparison">
+                                    @L["ClearComparison"]
+                                </MudButton>
+                            </MudStack>
+                        </MudAlert>
+                    }
+
+                    <!-- Person Information -->
+                    <CompactPersonDetailsCard Person="@selectedRequest.Person"
+                                             PersonId="@selectedRequest.PersonId"
+                                             CompareMode="@(comparisonPerson != null)"
+                                             ComparisonPerson="@comparisonPerson" />
+
+                    <!-- Request Information -->
+                    <MudPaper Class="pa-3 mb-3" Outlined="true">
+                        <MudText Typo="Typo.h6" Class="mb-2">
+                            <MudIcon Icon="@Icons.Material.Filled.Info" Size="Size.Small" /> @L["SaveChickenRequestInformation"]
+                        </MudText>
+
+                        @if (selectedRequest.NumberOfChickensToBeSaved > 0)
+                        {
+                            <MudText Typo="Typo.body2" Class="mb-2">
+                                <strong>@L["NumberOfChickensToBeSaved"]:</strong><br/>
+                                @selectedRequest.NumberOfChickensToBeSaved
+                            </MudText>
+                        }
+
+                        @if (selectedRequest.NumberOfRoostersToBeSaved > 0)
+                        {
+                            <MudText Typo="Typo.body2" Class="mb-2">
+                                <strong>@L["NumberOfRoostersToBeSaved"]:</strong><br/>
+                                @selectedRequest.NumberOfRoostersToBeSaved
+                            </MudText>
+                        }
+
+                        @if (selectedRequest.NumberOfBoxes > 0)
+                        {
+                            <MudText Typo="Typo.body2" Class="mb-2">
+                                <strong>@L["NumberOfBoxes"]:</strong><br/>
+                                @selectedRequest.NumberOfBoxes
+                            </MudText>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(selectedRequest.Color))
+                        {
+                            <MudText Typo="Typo.body2" Class="mb-2">
+                                <strong>@L["Color"]:</strong><br/>
+                                <span class="mud-chip" style="@($"background-color: {selectedRequest.Color}; padding: 4px 12px; border-radius: 16px; display: inline-block;")">@selectedRequest.Color</span>
+                            </MudText>
+                        }
+
+                        <MudText Typo="Typo.body2" Class="mb-2">
+                            <strong>@L["AcceptTermsAndConditions"]:</strong><br/>
+                            @if (selectedRequest.AcceptTermsAndConditions)
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small" />
+                                <span>@L["yes"]</span>
+                            }
+                            else
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small" />
+                                <span>@L["no"]</span>
+                            }
+                        </MudText>
+
+                        <MudText Typo="Typo.body2" Class="mb-2">
+                            <strong>@L["AlreadyReceivedChickenPreviously"]:</strong><br/>
+                            @if (selectedRequest.AlreadyReceivedChickenPreviously)
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small" />
+                                <span>@L["yes"]</span>
+                            }
+                            else
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Default" Size="Size.Small" />
+                                <span>@L["no"]</span>
+                            }
+                        </MudText>
+
+                        <MudText Typo="Typo.body2" Class="mb-2">
+                            <strong>@L["ConfirmThatIFulfillCriteria"]:</strong><br/>
+                            @if (selectedRequest.ConfirmThatIFulfillCriteria)
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small" />
+                                <span>@L["yes"]</span>
+                            }
+                            else
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small" />
+                                <span>@L["no"]</span>
+                            }
+                        </MudText>
+
+                        @if (!string.IsNullOrWhiteSpace(selectedRequest.DescriptionOfPlaceForChickens))
+                        {
+                            <MudText Typo="Typo.body2" Class="mt-4">
+                                <strong>@L["DescriptionOfPlaceForChickens"]:</strong><br/>
+                                @selectedRequest.DescriptionOfPlaceForChickens
+                            </MudText>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(selectedRequest.Message))
+                        {
+                            <MudText Typo="Typo.body2" Class="mt-3">
+                                <strong>@L["Message"]:</strong><br/>
+                                @selectedRequest.Message
+                            </MudText>
+                        }
+
+                        <MudDivider Class="my-3" />
+
+                        <MudText Typo="Typo.caption" Class="mb-2">
+                            <strong>@L["CreatedAt"]</strong> @selectedRequest.CreatedAt.ToLocalTime().ToString("g")
+                        </MudText>
+
+                        <MudText Typo="Typo.caption">
+                            <strong>@L["UpdatedAt"]</strong> @selectedRequest.UpdatedAt.ToLocalTime().ToString("g")
+                        </MudText>
+                    </MudPaper>
+
+                    <!-- Actions -->
+                    <MudPaper Class="pa-3 mb-3" Outlined="true">
+                        <MudText Typo="Typo.h6" Class="mb-2">@L["Actions"]</MudText>
+                        <MudStack Spacing="2">
+                            <MudStack Row="true" Spacing="2">
+                                <MudButton Variant="Variant.Filled"
+                                           Color="Color.Success"
+                                           StartIcon="@Icons.Material.Filled.Check"
+                                           OnClick="MarkAsHandled"
+                                           Disabled="selectedRequest.IsHandled">
+                                    @(selectedRequest.IsHandled ? @L["AlreadyHandled"] : @L["MarkAsHandled"])
+                                </MudButton>
+
+                                <MudButton Variant="Variant.Outlined"
+                                        Color="Color.Error"
+                                        StartIcon="@Icons.Material.Filled.Delete"
+                                        OnClick="() => ConfirmDeleteRequest(selectedRequest.Id)">
+                                    @L["delete"]
+                                </MudButton>
+                                @if (selectedRequest.PersonId.HasValue)
+                                {
+                                    <MudButton Variant="Variant.Outlined"
+                                               StartIcon="@Icons.Material.Filled.Person"
+                                               OnClick="() => ViewPerson(selectedRequest.PersonId.Value)">
+                                        @L["ViewPerson"]
+                                    </MudButton>
+                                }
+                            </MudStack>
+                            @if (comparisonPerson != null && selectedRequest.PersonId.HasValue)
+                            {
+                                <MudButton Variant="Variant.Filled"
+                                           Color="Color.Primary"
+                                           StartIcon="@Icons.Material.Filled.MergeType"
+                                           OnClick="async () => await MergeWithPerson(comparisonPerson.Id)"
+                                           FullWidth="true">
+                                    @L["MergeWithSelectedPerson"]
+                                </MudButton>
+                            }
+                        </MudStack>
+                    </MudPaper>
+                }
+                else
+                {
+                    <MudText Typo="Typo.body1" Color="Color.Secondary" Class="text-center mt-8">
+                        @L["SelectRequestToViewDetails"]
+                    </MudText>
+                }
+            </MudPaper>
+        </MudItem>
+
+        <!-- Right Column: Similar Persons -->
+        <MudItem xs="12" md="3" lg="3">
+            <MudPaper Class="pa-4" Style="height: calc(100vh - 250px); overflow-y: auto;">
+                <MudText Typo="Typo.h6" Class="mb-3">@L["SimilarPersons"]</MudText>
+
+                @if (selectedRequest != null && selectedRequest.PersonId.HasValue)
+                {
+                    @if (isLoadingSimilarPersons)
+                    {
+                        <MudProgressCircular Indeterminate="true" Size="Size.Small" />
+                        <MudText Class="mt-2">@L["Loading"]...</MudText>
+                    }
+                    else if (!similarPersons.Any())
+                    {
+                        <MudText Typo="Typo.body2" Color="Color.Success">
+                            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Size="Size.Small" /> @L["NoSimilarPersonsFound"]
+                        </MudText>
+                    }
+                    else
+                    {
+                        <MudText Typo="Typo.caption" Color="Color.Warning" Class="mb-3">
+                            <MudIcon Icon="@Icons.Material.Filled.Warning" Size="Size.Small" />
+                            @similarPersons.Count @L["PotentialDuplicatesFound"]
+                        </MudText>
+                        <MudStack Spacing="2">
+                            @foreach (var person in similarPersons)
+                            {
+                                <PersonCompareCard Person="@person"
+                                                   ComparisonPersonId="@comparisonPerson?.Id"
+                                                   OnCompare="CompareWithPerson"
+                                                   OnMerge="MergeWithPerson" />
+                            }
+                        </MudStack>
+                    }
+                }
+                else
+                {
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">
+                        @L["SelectRequestToSeeSimilarEntries"]
+                    </MudText>
+                }
+
+                <!-- Manual Person Search -->
+                @if (selectedRequest != null)
+                {
+                    <MudDivider Class="my-4" />
+
+                    <MudText Typo="Typo.h6" Class="mb-3">@L["SearchPerson"]</MudText>
+
+                    <MudTextField T="string"
+                                  Label="@L["Search"]"
+                                  @bind-Value="personSearchTerm"
+                                  Variant="Variant.Outlined"
+                                  Adornment="Adornment.End"
+                                  AdornmentIcon="@Icons.Material.Filled.Search"
+                                  OnAdornmentClick="SearchPersonsManually"
+                                  Clearable="true"
+                                  Dense="true"
+                                  Margin="Margin.Dense"
+                                  OnKeyUp="@(async (e) => { if (e.Key == "Enter") await SearchPersonsManually(); })" />
+
+                    @if (isSearchingPersons)
+                    {
+                        <MudProgressCircular Indeterminate="true" Size="Size.Small" Class="mt-2" />
+                        <MudText Class="mt-2">@L["Loading"]...</MudText>
+                    }
+                    else if (searchResults.Any())
+                    {
+                        <MudText Typo="Typo.caption" Class="mt-3 mb-2">@L["Search"] Results (@searchResults.Count):</MudText>
+                        <MudStack Spacing="2">
+                            @foreach (var person in searchResults)
+                            {
+                                <MudCard Outlined="true">
+                                    <MudCardContent Class="py-2 px-3">
+                                        <MudStack Spacing="1">
+                                            <MudText Typo="Typo.body2" Style="font-weight: 500;">
+                                                @person.Contact.FirstName @person.Contact.LastName
+                                            </MudText>
+                                            @if (!string.IsNullOrWhiteSpace(person.Contact.Email))
+                                            {
+                                                <MudText Typo="Typo.caption" Color="Color.Secondary">
+                                                    <MudIcon Icon="@Icons.Material.Filled.Email" Size="Size.Small" /> @person.Contact.Email
+                                                </MudText>
+                                            }
+                                            @if (!string.IsNullOrWhiteSpace(person.Contact.PhoneNumber))
+                                            {
+                                                <MudText Typo="Typo.caption" Color="Color.Secondary">
+                                                    <MudIcon Icon="@Icons.Material.Filled.Phone" Size="Size.Small" /> @person.Contact.PhoneNumber
+                                                </MudText>
+                                            }
+                                        </MudStack>
+                                    </MudCardContent>
+                                    <MudCardActions>
+                                        <MudButton Size="Size.Small"
+                                                   Variant="Variant.Text"
+                                                   Color="Color.Primary"
+                                                   OnClick="@(() => AddPersonToManualList(person))">
+                                            @L["AddToList"]
+                                        </MudButton>
+                                    </MudCardActions>
+                                </MudCard>
+                            }
+                        </MudStack>
+                    }
+
+                    @if (manuallySearchedPersons.Any())
+                    {
+                        <MudText Typo="Typo.caption" Class="mt-3 mb-2">@L["ManuallySelected"]:</MudText>
+                        <MudStack Spacing="2">
+                            @foreach (var person in manuallySearchedPersons)
+                            {
+                                <PersonCompareCard Person="@person"
+                                                   ComparisonPersonId="@comparisonPerson?.Id"
+                                                   OnCompare="CompareWithPerson"
+                                                   OnMerge="MergeWithPerson"
+                                                   OnRemove="RemoveManuallySearchedPerson" />
+                            }
+                        </MudStack>
+                    }
+                }
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    private List<SaveChickenRequestDto> unhandledRequests = new();
+    private List<PersonDto> similarPersons = new();
+    private List<PersonDto> manuallySearchedPersons = new();
+    private List<PersonDto> searchResults = new();
+    private SaveChickenRequestDto? selectedRequest = null;
+    private PersonDto? comparisonPerson = null;
+    private string personSearchTerm = "";
+    private bool isLoadingRequests = true;
+    private bool isLoadingSimilarPersons = false;
+    private bool isSearchingPersons = false;
+    private int? selectedActionId = null;
+
+    private GenericDtoService<SaveChickenRequestDto, SaveChickenRequestSearch>? _service;
+    private GenericDtoService<PersonDto, PersonSearch>? _personService;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _service = DtoServiceFactory.Create<SaveChickenRequestDto, SaveChickenRequestSearch>();
+        _personService = DtoServiceFactory.Create<PersonDto, PersonSearch>();
+        await LoadUnhandledRequests();
+    }
+
+    private async Task LoadUnhandledRequests()
+    {
+        isLoadingRequests = true;
+        StateHasChanged();
+
+        try
+        {
+            var searchParams = new SaveChickenRequestSearch
+            {
+                IsHandled = false,
+                IsSubmittedFromPublicForm = true,
+                PageSize = 100,
+                SortBy = "CreatedAt",
+                SortDescending = true
+            };
+
+            var result = await _service!.SearchAsync(searchParams);
+            unhandledRequests = result.Data;
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error loading requests: {ex.Message}", Severity.Error);
+            Console.WriteLine($"Error loading requests: {ex.Message}");
+        }
+        finally
+        {
+            isLoadingRequests = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task SelectRequest(SaveChickenRequestDto request)
+    {
+        selectedRequest = request;
+        comparisonPerson = null;
+        selectedActionId = null;
+        manuallySearchedPersons = new();
+        searchResults = new();
+        personSearchTerm = "";
+        await LoadSimilarPersons();
+        StateHasChanged();
+    }
+
+    private void CompareWithPerson(PersonDto person)
+    {
+        if (comparisonPerson?.Id == person.Id)
+        {
+            comparisonPerson = null;
+        }
+        else
+        {
+            comparisonPerson = person;
+        }
+        StateHasChanged();
+    }
+
+    private void ClearComparison()
+    {
+        comparisonPerson = null;
+        StateHasChanged();
+    }
+
+    private async Task LoadSimilarPersons()
+    {
+        if (selectedRequest == null || !selectedRequest.PersonId.HasValue)
+        {
+            similarPersons = new();
+            return;
+        }
+
+        isLoadingSimilarPersons = true;
+        StateHasChanged();
+
+        try
+        {
+            similarPersons = await _personService!.GetSimilarAsync(selectedRequest.PersonId.Value);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading similar persons: {ex.Message}");
+            similarPersons = new();
+        }
+        finally
+        {
+            isLoadingSimilarPersons = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task SearchPersonsManually()
+    {
+        if (string.IsNullOrWhiteSpace(personSearchTerm) || personSearchTerm.Length < 2)
+        {
+            searchResults = new();
+            return;
+        }
+
+        isSearchingPersons = true;
+        StateHasChanged();
+
+        try
+        {
+            var result = await HttpClient.GetFromJsonAsync<List<PersonDto>>(
+                $"api/person/autocomplete?searchText={Uri.EscapeDataString(personSearchTerm)}&limit=20");
+
+            searchResults = result ?? new();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error searching persons: {ex.Message}");
+            searchResults = new();
+            Snackbar.Add($"Error searching persons: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            isSearchingPersons = false;
+            StateHasChanged();
+        }
+    }
+
+    private void AddPersonToManualList(PersonDto person)
+    {
+        if (person != null)
+        {
+            if (!manuallySearchedPersons.Any(p => p.Id == person.Id) &&
+                !similarPersons.Any(p => p.Id == person.Id))
+            {
+                manuallySearchedPersons.Add(person);
+            }
+
+            searchResults = new();
+            personSearchTerm = "";
+            StateHasChanged();
+        }
+    }
+
+    private void RemoveManuallySearchedPerson(int personId)
+    {
+        var personToRemove = manuallySearchedPersons.FirstOrDefault(p => p.Id == personId);
+        if (personToRemove != null)
+        {
+            manuallySearchedPersons.Remove(personToRemove);
+
+            if (comparisonPerson?.Id == personId)
+            {
+                comparisonPerson = null;
+            }
+
+            StateHasChanged();
+        }
+    }
+
+    private async Task MarkAsHandled()
+    {
+        if (selectedRequest == null || _service == null) return;
+
+        try
+        {
+            selectedRequest.IsHandled = true;
+            selectedRequest.SaveChickenActionId = selectedActionId;
+
+            var updated = await _service.UpdateAsync(selectedRequest);
+
+            Snackbar.Add("Request marked as handled successfully!", Severity.Success);
+
+            unhandledRequests.Remove(selectedRequest);
+            selectedRequest = null;
+            selectedActionId = null;
+            similarPersons = new();
+
+            StateHasChanged();
+        }
+        catch (HttpRequestException ex)
+        {
+            var errorMessage = $"Error marking as handled: {ex.Message}";
+            if (ex.InnerException != null)
+            {
+                errorMessage += $"\nInner: {ex.InnerException.Message}";
+            }
+            Snackbar.Add(errorMessage, Severity.Error);
+            Console.WriteLine($"Full error: {ex}");
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error marking as handled: {ex.Message}", Severity.Error);
+            Console.WriteLine($"Full error: {ex}");
+        }
+    }
+
+    private void EditRequest(int id)
+    {
+        NavigationManager.NavigateTo($"/admin/save-chicken-requests/{id}/edit");
+    }
+
+    private void ViewPerson(int personId)
+    {
+        NavigationManager.NavigateTo($"/admin/persons/{personId}");
+    }
+
+    private async Task DeleteRequest(int id)
+    {
+        try
+        {
+            SaveChickenRequestDto? request = await _service!.GetByIdAsync(id);
+            if (request.PersonId.HasValue && _personService != null)
+            {
+                await _personService.DeleteAsync(request.PersonId.Value);
+            }
+
+            await _service!.DeleteAsync(id);
+            Snackbar.Add("Request deleted successfully!", Severity.Success);
+            await LoadUnhandledRequests();
+            selectedRequest = null;
+            similarPersons = new();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error deleting request: {ex.Message}", Severity.Error);
+            Console.WriteLine($"Error deleting request: {ex}");
+        }
+    }
+
+    private async Task MergeWithPerson(int targetPersonId)
+    {
+        if (selectedRequest == null)
+        {
+            Snackbar.Add("Please select a request first", Severity.Warning);
+            return;
+        }
+
+        if (selectedActionId != selectedRequest.SaveChickenActionId)
+        {
+            try
+            {
+                selectedRequest.SaveChickenActionId = selectedActionId;
+                await _service!.UpdateAsync(selectedRequest);
+                Snackbar.Add("Rettungs-Aktion gespeichert", Severity.Success);
+            }
+            catch (HttpRequestException ex)
+            {
+                var errorMessage = $"Fehler beim Speichern der Aktion: {ex.Message}";
+                if (ex.InnerException != null)
+                {
+                    errorMessage += $"\nDetails: {ex.InnerException.Message}";
+                }
+                Snackbar.Add(errorMessage, Severity.Error);
+                Console.WriteLine($"Full error saving action before merge: {ex}");
+                return;
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Fehler beim Speichern der Aktion: {ex.Message}", Severity.Error);
+                Console.WriteLine($"Full error saving action before merge: {ex}");
+                return;
+            }
+        }
+
+        NavigationManager.NavigateTo($"/admin/merge-person/save-chicken-request/{selectedRequest.Id}/person/{targetPersonId}");
+    }
+
+    private string GetCardStyle(SaveChickenRequestDto request)
+    {
+        var baseStyle = "cursor: pointer;";
+        if (selectedRequest?.Id == request.Id)
+        {
+            return $"{baseStyle} border: 2px solid #2196F3; background-color: rgba(33, 150, 243, 0.12);";
+        }
+        return baseStyle;
+    }
+
+    private async Task OnSaveChickenActionIdChanged(int? actionId)
+    {
+        if (selectedRequest == null || _service == null) return;
+
+        selectedActionId = actionId;
+        StateHasChanged();
+    }
+
+    private async Task ConfirmDeleteRequest(int id)
+    {
+        var parameters = new DialogParameters
+        {
+            { "ContentText", L["deleteRequestConfirmation"].Value },
+            { "ConfirmText", L["delete"].Value },
+            { "CancelText", L["cancel"].Value }
+        };
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large, FullWidth = true };
+        var dialogRef = await _dialogService.ShowAsync<ConfirmationDialog>(L["confirmDelete"], parameters, options);
+        if (dialogRef != null)
+        {
+            var result = await dialogRef.Result;
+            if (result != null && !result.Canceled)
+            {
+                await DeleteRequest(id);
+            }
+        }
+    }
+}

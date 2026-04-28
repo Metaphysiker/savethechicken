@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
@@ -11,9 +12,11 @@ using NpgsqlTypes;
 namespace WebApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20260425151148_AddIsHandledFlag")]
+    partial class AddIsHandledFlag
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -546,6 +549,9 @@ namespace WebApi.Migrations
                     b.Property<bool>("AcceptTermsAndConditions")
                         .HasColumnType("boolean");
 
+                    b.Property<int?>("AddressForHandOverId")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("AlreadyReceivedChickenPreviously")
                         .HasColumnType("boolean");
 
@@ -602,6 +608,8 @@ namespace WebApi.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AddressForHandOverId");
 
                     b.HasIndex("PersonId");
 
@@ -799,6 +807,10 @@ namespace WebApi.Migrations
 
             modelBuilder.Entity("WebApi.Models.ModelsImpl.SaveChickenRequest", b =>
                 {
+                    b.HasOne("WebApi.Models.ModelsImpl.Address", "AddressForHandOver")
+                        .WithMany()
+                        .HasForeignKey("AddressForHandOverId");
+
                     b.HasOne("WebApi.Models.ModelsImpl.Person", "Person")
                         .WithMany("SaveChickenRequests")
                         .HasForeignKey("PersonId")
@@ -807,6 +819,8 @@ namespace WebApi.Migrations
                     b.HasOne("WebApi.Models.ModelsImpl.SaveChickenAction", "SaveChickenAction")
                         .WithMany("SaveChickenRequests")
                         .HasForeignKey("SaveChickenActionId");
+
+                    b.Navigation("AddressForHandOver");
 
                     b.Navigation("Person");
 

@@ -27,6 +27,9 @@ namespace Shared.Dtos.DtosImpl
 
         public int? SaveChickenActionId { get; set; }
 
+        public bool IsSubmittedFromPublicForm { get; set; } = true;
+        public bool IsHandled { get; set; } = false;
+
         // Contact Information
         [Required]
         public string FirstName { get; set; } = string.Empty;

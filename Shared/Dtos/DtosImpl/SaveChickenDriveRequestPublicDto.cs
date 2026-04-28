@@ -47,5 +47,8 @@ namespace Shared.Dtos.DtosImpl
         public List<DateOnly> AvailableDates { get; set; } = new List<DateOnly>();
 
         public int? SaveChickenActionId { get; set; }
+
+        public bool IsSubmittedFromPublicForm { get; set; } = true;
+        public bool IsHandled { get; set; } = false;
     }
 }

@@ -6,5 +6,10 @@ namespace Shared.Dtos.DtosImpl
     {
         public bool? IsBlacklisted { get; set; }
         public bool? IsDriver { get; set; }
+
+        /// <summary>
+        /// Filter persons who have at least one unhandled request (IsHandled = false)
+        /// </summary>
+        public bool? HasUnhandledRequests { get; set; }
     }
 }
