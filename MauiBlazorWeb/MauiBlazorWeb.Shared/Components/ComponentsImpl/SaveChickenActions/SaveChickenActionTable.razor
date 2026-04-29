@@ -21,6 +21,7 @@
 
     private string? currentColumnName = null;
     private bool? currentSortDescending = null;
+    private bool showIsArchivedColumn = false;
 
     private void OnHeaderClick(string columnName)
     {
@@ -76,16 +77,52 @@
             <CellTemplate>@context.Item.Description</CellTemplate>
         </TemplateColumn>
 
+        @if (showIsArchivedColumn)
+        {
             <TemplateColumn>
-                <HeaderTemplate>@L["show"]</HeaderTemplate>
-                <CellTemplate>
-                    <MudButton Variant="Variant.Filled"
-                               OnClick="@(() => ShowItem(context.Item.Id))"
-                               data-testid="view-button">
-                        <MudIcon Icon="@Icons.Material.Filled.Visibility" />
+                <HeaderTemplate>
+                    <MudButton OnClick="@(() => OnHeaderClick("IsArchived"))" Variant="Variant.Text" Style="text-transform: none;">
+                        @L["IsArchived"]
+                        @if (GetSortIcon("IsArchived") != null)
+                        {
+                            <MudIcon Icon="@GetSortIcon("IsArchived")" Size="Size.Small" />
+                        }
                     </MudButton>
+                </HeaderTemplate>
+                <CellTemplate>
+                    @context.Item.IsArchived
                 </CellTemplate>
             </TemplateColumn>
+        }
+
+            <TemplateColumn>
+                <HeaderTemplate>
+                    <MudButton OnClick="@(() => OnHeaderClick("Dates"))" Variant="Variant.Text" Style="text-transform: none;">
+                        @L["Dates"]
+                        @if (GetSortIcon("Dates") != null)
+                        {
+                            <MudIcon Icon="@GetSortIcon("Dates")" Size="Size.Small" />
+                        }
+                    </MudButton>
+                </HeaderTemplate>
+                <CellTemplate>
+                    @foreach (var date in context.Item.Dates.OrderBy(d => d))
+                    {
+                        <MudChip T="string" Size="Size.Small" Class="mr-1">@date.ToString("dd.MM.yyyy")</MudChip>
+                    }
+                </CellTemplate>
+            </TemplateColumn>
+
+        <TemplateColumn>
+            <HeaderTemplate>@L["show"]</HeaderTemplate>
+            <CellTemplate>
+                <MudButton Variant="Variant.Filled"
+                           OnClick="@(() => ShowItem(context.Item.Id))"
+                           data-testid="view-button">
+                    <MudIcon Icon="@Icons.Material.Filled.Visibility" />
+                </MudButton>
+            </CellTemplate>
+        </TemplateColumn>
 
         <TemplateColumn>
             <HeaderTemplate>@L["edit"]</HeaderTemplate>
@@ -103,14 +140,14 @@
             </CellTemplate>
         </TemplateColumn>
 
-            <TemplateColumn>
-                <HeaderTemplate>@L["delete"]</HeaderTemplate>
-                <CellTemplate>
-                    <GenericDeleteDialog TDto="SaveChickenActionDto"
+        <TemplateColumn>
+            <HeaderTemplate>@L["delete"]</HeaderTemplate>
+            <CellTemplate>
+                <GenericDeleteDialog TDto="SaveChickenActionDto"
                                          Model="context.Item"
                                          OnDeleted="@(() => OnItemsChanged.InvokeAsync())" />
-                </CellTemplate>
-            </TemplateColumn>
+            </CellTemplate>
+        </TemplateColumn>
     </Columns>
 </MudDataGrid>
 </div>

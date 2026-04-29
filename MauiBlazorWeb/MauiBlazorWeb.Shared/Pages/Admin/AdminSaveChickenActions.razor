@@ -16,7 +16,7 @@
         <strong>@L["Admin_Persons_AlertTitle"]</strong> @L["Admin_SaveChickenActions_AlertText"]
     </MudAlert>
 
-    <GenericSearch TDto="SaveChickenActionDto" TSearchDto="SaveChickenActionSearch">
+    <GenericSearch TDto="SaveChickenActionDto" TSearchDto="SaveChickenActionSearch" search="@initialSearch">
         <SearchForm Context="search">
             <SaveChickenActionSearchForm Model="search" />
         </SearchForm>
@@ -25,3 +25,13 @@
         </Table>
     </GenericSearch>
 </MudContainer>
+
+
+@code {
+    private SaveChickenActionSearch initialSearch = new SaveChickenActionSearch
+    {
+        IsArchived = false,
+        SortBy = "Dates",
+        SortDescending = false
+    };
+}

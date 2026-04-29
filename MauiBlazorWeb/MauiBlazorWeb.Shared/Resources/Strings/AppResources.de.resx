@@ -9,6 +9,12 @@
     <data name="confirmDelete" xml:space="preserve">
       <value>Löschen bestätigen</value>
     </data>
+    <data name="SearchPlaceholder" xml:space="preserve">
+      <value>Nach Titel suchen...</value>
+    </data>
+    <data name="Dates" xml:space="preserve">
+      <value>Daten</value>
+    </data>
   <!--
     Microsoft ResX Schema
 
@@ -322,6 +328,18 @@
   </data>
   <data name="NotDrivers" xml:space="preserve">
     <value>Keine Fahrer</value>
+  </data>
+    <data name="IsArchived" xml:space="preserve">
+      <value>Archiviert</value>
+    </data>
+  <data name="ArchivedFilter" xml:space="preserve">
+    <value>Archiv-Filter</value>
+  </data>
+  <data name="ArchivedOnly" xml:space="preserve">
+    <value>Nur Archivierte</value>
+  </data>
+  <data name="NotArchived" xml:space="preserve">
+    <value>Nicht archiviert</value>
   </data>
   <data name="All" xml:space="preserve">
     <value>Alle</value>

@@ -9,5 +9,7 @@ namespace Shared.Dtos.DtosImpl
     public class SaveChickenActionSearch : ISearchDto
     {
         public string? Title { get; set; }
+
+        public bool? IsArchived { get; set; }
     }
 }
