@@ -182,7 +182,7 @@
         </MudItem>
         <MudItem Class="mb-3">
             <MudCheckBox @bind-Value="EntityWithFiles.Item.AlreadyReceivedChickenPreviously"
-                        Label="Ich habe bereits zuvor Hühner aufgenommen"
+                        Label="Hühner von Rettet das Huhn aufgenommen"
                         UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "received-chickens-before" })" />
             <ValidationMessage For="@(() => EntityWithFiles.Item.AlreadyReceivedChickenPreviously)" />
         </MudItem>
