@@ -39,8 +39,12 @@ namespace MauiBlazorWeb.Shared.Factories.FactoriesImpl
             {
                 resource = "Person";
             }
+            else if (typeof(TDto).Name.EndsWith("StoredFileDto"))
+            {
+                resource = "File";
+            }
 
-                return new GenericDtoService<TDto, TSearchDto>(_httpClient, resource);
+            return new GenericDtoService<TDto, TSearchDto>(_httpClient, resource);
         }
     }
 }

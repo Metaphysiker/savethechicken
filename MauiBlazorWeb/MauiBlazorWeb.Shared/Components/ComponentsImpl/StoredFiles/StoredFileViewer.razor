@@ -1,4 +1,6 @@
 ﻿@using MauiBlazorWeb.Shared.Services.ServicesImpl
+@using Microsoft.Extensions.Logging
+@using global::Shared.Dtos.DtosImpl
 @inject AwsFileService AwsFileService
 
     <MudPaper Class="pa-4 my-4" Elevation="2">
@@ -18,9 +20,12 @@
         <iframe src="@fileUrl" style="width: 100%; height: 500px;" frameborder="0"></iframe>
     }
 
-    <div style="margin-top: 1rem;">
+    <div style="margin-top: 1rem; display: flex; gap: 1rem;">
         <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="@fileUrl" Target="_blank">
             Datei öffnen
+        </MudButton>
+        <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="DeleteFileAsync">
+            Datei löschen
         </MudButton>
     </div>
 }
@@ -40,6 +45,9 @@ else
 
 @code {
     [Parameter, EditorRequired] public StoredFileDto storedFileDto { get; set; }
+    [Parameter] public EventCallback<StoredFileDto> OnDelete { get; set; }
+    [Inject] private ILogger<StoredFileViewer> Logger { get; set; } = default!;
+    [Inject] private MauiBlazorWeb.Shared.Factories.FactoriesImpl.GenericDtoServiceFactory DtoServiceFactory { get; set; } = default!;
     private string fileUrl = string.Empty;
     private string errorMessage = string.Empty;
     private bool loading = false;
@@ -58,5 +66,27 @@ else
         StateHasChanged();
     }
 
+    private async Task DeleteFileAsync()
+    {
+        Logger.LogWarning("DeleteFileAsync called for file: {FileName}, Id: {Id}", storedFileDto.FileName, storedFileDto.Id);
+        try
+        {
+            // Create the file service for API call
+            var fileService = DtoServiceFactory.Create<StoredFileDto, ISearchDto>();
+            await fileService.DeleteAsync(storedFileDto.Id);
+            Logger.LogWarning("File deleted successfully via API: {FileName}, Id: {Id}", storedFileDto.FileName, storedFileDto.Id);
+            if (OnDelete.HasDelegate)
+            {
+                Logger.LogWarning("OnDelete event callback is set. Invoking for file: {FileName}, Id: {Id}", storedFileDto.FileName, storedFileDto.Id);
+                await OnDelete.InvokeAsync(storedFileDto);
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error deleting file via API: {FileName}, Id: {Id}", storedFileDto.FileName, storedFileDto.Id);
+            errorMessage = $"Fehler beim Löschen der Datei: {ex.Message}";
+            StateHasChanged();
+        }
+    }
 }
 
