@@ -8,6 +8,8 @@ App uses global @rendermode="InteractiveServer" in App.razor.
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @using MudBlazor
 @inject AwsFileService AwsFileService
+@inject MauiBlazorWeb.Shared.Helpers.StoredFileHelper storedFileHelper
+
 @inject AuthService AuthService
 @using Microsoft.Extensions.Localization
 @using global::Shared.Dtos.DtosImpl
@@ -50,10 +52,11 @@ App uses global @rendermode="InteractiveServer" in App.razor.
     [Parameter, EditorRequired] public RenderFragment<ItemWithBrowserFiles<TDto>> ChildContent { get; set; } = default!;
 
     [Parameter] public string? ResourceName { get; set; }
-    
+
     [Parameter] public EventCallback OnCreated { get; set; }
 
     private GenericDtoService<TDto, ISearchDto>? _service;
+    private GenericDtoService<StoredFileDto, ISearchDto>? _fileService;
     private string? errorMessage;
     private bool isSubmitting = false;
 
@@ -66,6 +69,7 @@ App uses global @rendermode="InteractiveServer" in App.razor.
         {
             model = Activator.CreateInstance<ItemWithBrowserFiles<TDto>>();
         }
+        _fileService = DtoServiceFactory.Create<StoredFileDto, ISearchDto>();
         StateHasChanged();
     }
 
@@ -79,9 +83,6 @@ App uses global @rendermode="InteractiveServer" in App.razor.
 
             try
             {
-                var storedFiles = await UploadFilesAsync(model);
-                model.Item.Files.AddRange(storedFiles);
-
                 // Check if user is logged in
                 bool isLoggedIn = await AuthService.CheckIfLoggedInAsync();
 
@@ -95,6 +96,10 @@ App uses global @rendermode="InteractiveServer" in App.razor.
                     // Use public endpoint for non-authenticated users
                     createdItem = await _service.CreatePublicAsync(model.Item);
                 }
+
+                    if (createdItem != null){
+                        List<StoredFileDto>? storedFiles = await storedFileHelper.UploadFilesAsync(model.Files, createdItem, AwsFileService, _fileService);
+                    }
 
                 // Navigate based on user role and configuration
                 if (OnCreated.HasDelegate)
@@ -132,10 +137,10 @@ App uses global @rendermode="InteractiveServer" in App.razor.
         }
     }
 
-    private async Task<List<StoredFileDto>> UploadFilesAsync(ItemWithBrowserFiles<TDto> itemWithFiles)
+    private async Task<List<StoredFileDto>> UploadFilesAsync(List<IBrowserFile> files, IEntityWithFileDtos model)
     {
         List<StoredFileDto> storedFiles = new List<StoredFileDto>();
-        foreach (var file in itemWithFiles.Files)
+        foreach (var file in files)
         {
             var key = await AwsFileService.UploadFileAsync(file);
             if(!string.IsNullOrEmpty(key))
@@ -147,7 +152,9 @@ App uses global @rendermode="InteractiveServer" in App.razor.
                     ContentType = file.ContentType,
                 };
 
-                storedFiles.Add(storedFile);
+                storedFileHelper.AssignModelIdToStoredFile(model, storedFile);
+                _fileService?.CreateAsync(storedFile); // Save file metadata to database
+
             }
         }
         return storedFiles;

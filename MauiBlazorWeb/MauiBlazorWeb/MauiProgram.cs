@@ -25,6 +25,7 @@ public static class MauiProgram
 
         // Add device-specific services used by the MauiBlazorWeb.Shared project
         builder.Services.AddSingleton<IFormFactor, FormFactor>();
+        builder.Services.AddScoped<StoredFileHelper>();
 
         builder.Services.AddMauiBlazorWebView();
 

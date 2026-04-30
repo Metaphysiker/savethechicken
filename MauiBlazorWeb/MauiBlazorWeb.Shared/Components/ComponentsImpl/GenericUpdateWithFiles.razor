@@ -1,8 +1,10 @@
+@inject StoredFileHelper storedFileHelper
 @*
 Requires interactive rendering mode for OnValidSubmit to work.
 App uses global @rendermode="InteractiveServer" in App.razor.
 *@
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Shared.Helpers
 @using MauiBlazorWeb.Shared.Resources.Strings
 @using MauiBlazorWeb.Shared.Services.ServicesImpl
 @using MauiBlazorWeb.Web.Services.ServicesImpl
@@ -46,40 +48,25 @@ App uses global @rendermode="InteractiveServer" in App.razor.
     {
         if (_service != null && model != null)
         {
-            var storedFiles = await UploadFilesAsync(model);
-            model.Item.Files.AddRange(storedFiles);
 
+            TDto updatedItem;
             if (IsCreate)
             {
-                await _service.CreateAsync(model.Item);
+               updatedItem = await _service.CreateAsync(model.Item);
             }
             else
             {
-                await _service.UpdateAsync(model.Item);
+                updatedItem = await _service.UpdateAsync(model.Item);
             }
-            
+
+            if (updatedItem != null)
+            {
+                List<StoredFileDto>? storedFiles = await storedFileHelper.UploadFilesAsync(model.Files, updatedItem, AwsFileService, DtoServiceFactory.Create<StoredFileDto, ISearchDto>());
+            }
+
+
+
             await OnEdited.InvokeAsync();
         }
-    }
-
-    private async Task<List<StoredFileDto>> UploadFilesAsync(ItemWithBrowserFiles<TDto> itemWithFiles)
-    {
-        List<StoredFileDto> storedFiles = new List<StoredFileDto>();
-        foreach (var file in itemWithFiles.Files)
-        {
-            var key = await AwsFileService.UploadFileAsync(file);
-            if(!string.IsNullOrEmpty(key))
-            {
-                StoredFileDto storedFile = new StoredFileDto
-                {
-                    FileName = file.Name,
-                    FileKey = key,
-                    ContentType = file.ContentType,
-                };
-
-                storedFiles.Add(storedFile);
-            }
-        }
-        return storedFiles;
     }
 }

@@ -17,6 +17,7 @@ builder.Services.AddScoped<AuthenticationHandler>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<AwsFileService>();
 builder.Services.AddScoped<SaveChickenActionService>();
+builder.Services.AddScoped<StoredFileHelper>();
 
 builder.Services.AddSingleton<AuthResponseSingleton>();
 
