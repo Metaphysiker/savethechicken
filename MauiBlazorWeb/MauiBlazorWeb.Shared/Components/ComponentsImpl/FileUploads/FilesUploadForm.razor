@@ -1,3 +1,6 @@
+@using Microsoft.Extensions.Localization
+@using MauiBlazorWeb.Shared.Resources.Strings
+@inject IStringLocalizer<AppResources> L
 @inject IJSRuntime JS
 
 <MudPaper Class="pa-4 my-4">
@@ -16,17 +19,24 @@
     </ActivatorContent>
 </MudFileUpload>
 
+        @if (!string.IsNullOrEmpty(_fileSizeWarning))
+        {
+            <MudAlert Severity="Severity.Warning" Dense="true">@_fileSizeWarning</MudAlert>
+        }
         @if (Value != null)
         {
             <MudList T="string">
-                @foreach (var file in Value)
+                @foreach (var file in Value.ToList())
                 {
-            <MudListItem Icon="@Icons.Material.Filled.AttachFile">
-                @file.Name <code>@($"{file.Size / (1024.0 * 1024.0):0.##} MB")</code>
-            </MudListItem>
+                    <MudListItem Icon="@Icons.Material.Filled.AttachFile">
+                        @file.Name <code>@($"{file.Size / (1024.0 * 1024.0):0.##} MB")</code>
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" Style="margin-left:8px;"
+                                       OnClick="@(() => RemoveFile(file))" />
+                    </MudListItem>
                 }
             </MudList>
         }
+
 
 </MudPaper>
 @code {
@@ -40,15 +50,24 @@
         Value ??= new List<IBrowserFile>();
     }
 
+    private string _fileSizeWarning = string.Empty;
+
     private async void FileChanged(IReadOnlyList<IBrowserFile> files)
     {
-
-        Value.Clear();
+        _fileSizeWarning = string.Empty;
         await JS.InvokeVoidAsync("console.log", "Files changed:");
 
         foreach (var file in files)
         {
-            Value.Add(file);
+            if (file.Size > 10 * 1024 * 1024)
+            {
+                _fileSizeWarning = string.Format(L["FileTooLargeWarning"], file.Name);
+                continue;
+            }
+            if (!Value.Contains(file))
+            {
+                Value.Add(file);
+            }
         }
         if (ValueChanged.HasDelegate)
         {
@@ -56,5 +75,16 @@
         }
 
         await JS.InvokeVoidAsync("console.log", Value);
+        StateHasChanged();
+    }
+
+    private async Task RemoveFile(IBrowserFile file)
+    {
+        Value.Remove(file);
+        if (ValueChanged.HasDelegate)
+        {
+            await ValueChanged.InvokeAsync(Value);
+        }
+        await JS.InvokeVoidAsync("console.log", $"Removed file: {file.Name}");
     }
 }

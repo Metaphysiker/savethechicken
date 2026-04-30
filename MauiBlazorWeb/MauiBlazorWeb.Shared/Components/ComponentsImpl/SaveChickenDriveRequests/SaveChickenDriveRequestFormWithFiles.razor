@@ -97,10 +97,6 @@
                       MinDate="@minDate"
                       MaxDate="@maxDate" />
 
-
-
-<StoredFilesEdit @bind-Files="EntityWithFiles.Item.Files" />
-
 <FilesUploadForm @bind-Value="EntityWithFiles.Files" Label="Upload Files" Text="@L["RoutePlan"]" />
 
 
@@ -123,7 +119,7 @@
 
     private GenericDtoService<SaveChickenActionDto, SaveChickenActionSearch>? _saveChickenActionService;
     private SaveChickenActionDto? _saveChickenActionDto;
-    
+
     private DateOnly? minDate =>
         _saveChickenActionDto != null && _saveChickenActionDto.Dates != null && _saveChickenActionDto.Dates.Count > 0
             ? _saveChickenActionDto.Dates.Min()

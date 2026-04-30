@@ -1,3 +1,4 @@
+@using MudBlazor
 @inject StoredFileHelper storedFileHelper
 @*
 Requires interactive rendering mode for OnValidSubmit to work.
@@ -27,8 +28,9 @@ App uses global @rendermode="InteractiveServer" in App.razor.
             @ChildContent(model)
 
             <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
-                @(IsCreate ? L["Create"] : L["update"])
+                @(IsCreate ? L["Create"] : L["Update"])
             </MudButton>
+
         </EditForm>
     </div>
 }
@@ -48,33 +50,23 @@ App uses global @rendermode="InteractiveServer" in App.razor.
 
     private async Task HandleValidSubmit()
     {
-        Logger.LogInformation("HandleValidSubmit called. IsCreate={IsCreate}, model null={ModelNull}, _service null={ServiceNull}", IsCreate, model == null, _service == null);
         if (_service != null && model != null)
         {
             try
             {
-                Logger.LogInformation("Starting {Mode} for model with Id={Id}", IsCreate ? "Create" : "Update", model.Item?.Id);
                 TDto updatedItem;
                 if (IsCreate)
                 {
                     updatedItem = await _service.CreateAsync(model.Item);
-                    Logger.LogInformation("CreateAsync returned: {UpdatedItem}", updatedItem);
                 }
                 else
                 {
                     updatedItem = await _service.UpdateAsync(model.Item);
-                    Logger.LogInformation("UpdateAsync returned: {UpdatedItem}", updatedItem);
                 }
 
                 if (updatedItem != null)
                 {
-                    Logger.LogInformation("Uploading files. Files count: {Count}", model.Files?.Count ?? 0);
                     List<StoredFileDto>? storedFiles = await storedFileHelper.UploadFilesAsync(model.Files, updatedItem, AwsFileService, DtoServiceFactory.Create<StoredFileDto, ISearchDto>());
-                    Logger.LogInformation("UploadFilesAsync returned {Count} files", storedFiles?.Count ?? 0);
-                }
-                else
-                {
-                    Logger.LogWarning("updatedItem is null after {Mode}", IsCreate ? "Create" : "Update");
                 }
 
                 await OnEdited.InvokeAsync();

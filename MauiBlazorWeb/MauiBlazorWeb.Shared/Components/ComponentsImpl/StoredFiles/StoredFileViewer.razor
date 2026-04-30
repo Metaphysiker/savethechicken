@@ -1,46 +1,54 @@
 ﻿@using MauiBlazorWeb.Shared.Services.ServicesImpl
 @using Microsoft.Extensions.Logging
 @using global::Shared.Dtos.DtosImpl
+@using Microsoft.Extensions.Localization
 @inject AwsFileService AwsFileService
+@inject IStringLocalizer<MauiBlazorWeb.Shared.Resources.Strings.AppResources> L
 
-    <MudPaper Class="pa-4 my-4" Elevation="2">
-    <MudText Style="font-weight: bold;">
-        @storedFileDto.FileName
-    </MudText>
-
-@if (!loading && fileUrl != null)
-{
-    @if (storedFileDto.ContentType.StartsWith("image/"))
+<MudPaper Class="pa-4 my-4" Elevation="2">
+    @if (fileDeleted)
     {
-         <img src="@fileUrl" alt="Vorschau Bild" style="max-width: 100%; height: auto;" />
+        <MudText Color="Color.Success">@L["FileDeletedMessage"]</MudText>
     }
-
-    @if (storedFileDto.ContentType == "application/pdf")
+    else
     {
-        <iframe src="@fileUrl" style="width: 100%; height: 500px;" frameborder="0"></iframe>
-    }
-
-    <div style="margin-top: 1rem; display: flex; gap: 1rem;">
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="@fileUrl" Target="_blank">
-            Datei öffnen
-        </MudButton>
-        <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="DeleteFileAsync">
-            Datei löschen
-        </MudButton>
-    </div>
-}
-else
-{
-    <MudText>Die Datei wird geladen...</MudText>
-}
-
-    @if(errorMessage != null)
-    {
-        <MudText>
-            @errorMessage
+        <MudText Style="font-weight: bold;">
+            @storedFileDto.FileName
         </MudText>
-    }
 
+        @if (!loading && fileUrl != null)
+        {
+            @if (storedFileDto.ContentType.StartsWith("image/"))
+            {
+                <img src="@fileUrl" alt="@L["ImagePreviewAlt"]" style="max-width: 100%; height: auto;" />
+            }
+
+            @if (storedFileDto.ContentType == "application/pdf")
+            {
+                <iframe src="@fileUrl" style="width: 100%; height: 500px;" frameborder="0"></iframe>
+            }
+
+            <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="@fileUrl" Target="_blank">
+                    @L["OpenFile"]
+                </MudButton>
+                <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="DeleteFileAsync">
+                    @L["DeleteFile"]
+                </MudButton>
+            </div>
+        }
+        else
+        {
+            <MudText>@L["FileLoading"]</MudText>
+        }
+
+        @if(errorMessage != null)
+        {
+            <MudText>
+                @errorMessage
+            </MudText>
+        }
+    }
 </MudPaper>
 
 @code {
@@ -51,6 +59,7 @@ else
     private string fileUrl = string.Empty;
     private string errorMessage = string.Empty;
     private bool loading = false;
+    private bool fileDeleted = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -75,6 +84,7 @@ else
             var fileService = DtoServiceFactory.Create<StoredFileDto, ISearchDto>();
             await fileService.DeleteAsync(storedFileDto.Id);
             Logger.LogWarning("File deleted successfully via API: {FileName}, Id: {Id}", storedFileDto.FileName, storedFileDto.Id);
+            fileDeleted = true;
             if (OnDelete.HasDelegate)
             {
                 Logger.LogWarning("OnDelete event callback is set. Invoking for file: {FileName}, Id: {Id}", storedFileDto.FileName, storedFileDto.Id);
