@@ -8,6 +8,7 @@ using WebApi.Database.Includes;
 using WebApi.Factories;
 using WebApi.Factories.FactoriesImpl;
 using WebApi.Models.ModelsImpl;
+using WebApi.Helpers;
 using WebApi.Services;
 using WebApi.Services.ServicesImpl;
 
@@ -185,7 +186,6 @@ namespace WebApi.Controllers.ControllersImpl
         [HttpGet("{id}/similar")]
         public async Task<ActionResult<List<PersonDto>>> GetSimilarPersons(int id)
         {
-            // Load the person
             var person = await _service.Read(id, PersonIncludes.Default);
             if (person == null)
             {
@@ -194,52 +194,79 @@ namespace WebApi.Controllers.ControllersImpl
 
             var similarPersons = new List<Person>();
 
-            // Search by name (first name + last name) - only persons with active requests
-            if (person.Contact != null &&
-                (!string.IsNullOrWhiteSpace(person.Contact.FirstName) || !string.IsNullOrWhiteSpace(person.Contact.LastName)))
-            {
-                var nameSearch = $"{person.Contact.FirstName} {person.Contact.LastName}".Trim();
-                if (!string.IsNullOrWhiteSpace(nameSearch))
-                {
-                    var nameResults = await _service.Search(new PersonSearch
-                    {
-                        SearchTerm = nameSearch,
-                        PageSize = 20,
-                        HasUnhandledRequests = false
-                    }, PersonIncludes.Default);
-                    similarPersons.AddRange(nameResults.Data);
-                }
-            }
+            // Get all persons without unhandled requests (excluding the current person)
+            var candidates = await _db.Persons
+                .Include(p => p.Contact)
+                .Include(p => p.Address)
+                .Include(p => p.SaveChickenRequests)
+                .Include(p => p.SaveChickenDriveRequests)
+                .Where(p => p.Id != id
+                    && !p.SaveChickenRequests.Any(r => !r.IsHandled)
+                    && !p.SaveChickenDriveRequests.Any(r => !r.IsHandled))
+                .AsNoTracking()
+                .ToListAsync();
 
-            // Search by email - only persons without unhandled requests
+            // Add persons with similar email
             if (person.Contact != null && !string.IsNullOrWhiteSpace(person.Contact.Email))
             {
-                var emailResults = await _service.Search(new PersonSearch
-                {
-                    SearchTerm = person.Contact.Email,
-                    PageSize = 20,
-                    HasUnhandledRequests = false
-                }, PersonIncludes.Default);
-                similarPersons.AddRange(emailResults.Data);
+                var emailMatches = candidates.Where(c =>
+                    c.Contact != null &&
+                    !string.IsNullOrWhiteSpace(c.Contact.Email) &&
+                    TextSimilarityHelper.Similarity(person.Contact.Email, c.Contact.Email) >= 0.9).ToList();
+                similarPersons.AddRange(emailMatches);
             }
 
-            // Search by phone number - only persons without unhandled requests
+            // Add persons with similar phone number
             if (person.Contact != null && !string.IsNullOrWhiteSpace(person.Contact.PhoneNumber))
             {
-                var phoneResults = await _service.Search(new PersonSearch
-                {
-                    SearchTerm = person.Contact.PhoneNumber,
-                    PageSize = 20,
-                    HasUnhandledRequests = false
-                }, PersonIncludes.Default);
-                similarPersons.AddRange(phoneResults.Data);
+                var phoneMatches = candidates.Where(c =>
+                    c.Contact != null &&
+                    !string.IsNullOrWhiteSpace(c.Contact.PhoneNumber) &&
+                    TextSimilarityHelper.Similarity(person.Contact.PhoneNumber, c.Contact.PhoneNumber) >= 0.9).ToList();
+                similarPersons.AddRange(phoneMatches);
             }
 
-            // Remove duplicates and exclude the current person
+            // Add persons with similar address or full name
+            var sourceFullName = person.Contact != null
+                ? $"{person.Contact.FirstName} {person.Contact.LastName}".Trim()
+                : string.Empty;
+            var sourceAddress = person.Address != null
+                ? $"{person.Address.Street} {person.Address.City} {person.Address.PostalCode}".Trim()
+                : string.Empty;
+
+            var addressOrNameMatches = candidates.Where(c =>
+            {
+                // Check name similarity
+                if (c.Contact != null && !string.IsNullOrWhiteSpace(sourceFullName))
+                {
+                    var candidateFullName = $"{c.Contact.FirstName} {c.Contact.LastName}".Trim();
+                    if (!string.IsNullOrWhiteSpace(candidateFullName) &&
+                        TextSimilarityHelper.Similarity(sourceFullName, candidateFullName) >= 0.8)
+                    {
+                        return true;
+                    }
+                }
+
+                // Check address similarity
+                if (c.Address != null && !string.IsNullOrWhiteSpace(sourceAddress))
+                {
+                    var candidateAddress = $"{c.Address.Street} {c.Address.City} {c.Address.PostalCode}".Trim();
+                    if (!string.IsNullOrWhiteSpace(candidateAddress) &&
+                        TextSimilarityHelper.Similarity(sourceAddress, candidateAddress) >= 0.8)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }).ToList();
+
+            similarPersons.AddRange(addressOrNameMatches);
+
+            // Remove duplicates and return
             var uniquePersons = similarPersons
                 .GroupBy(p => p.Id)
                 .Select(g => g.First())
-                .Where(p => p.Id != id)
                 .ToList();
 
             var resultDto = _mapper.mapper.Map<List<PersonDto>>(uniquePersons);
