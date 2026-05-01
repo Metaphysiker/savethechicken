@@ -4,12 +4,11 @@
 
 @page "/platz-anbieten"
 @page "/offer-place"
+@layout MauiBlazorWeb.Shared.Layouts.MinimalLayout
 
 <PageTitle>Hühner retten - Platz anbieten</PageTitle>
 
-<MudContainer MaxWidth="MaxWidth.Large">
-
-    <MudPaper Class="pa-6 my-4" Elevation="2">
+<MudContainer MaxWidth="MaxWidth.Large"  Class=mt-3>
         <MudText Typo="Typo.h3" Class="mb-4">Ich biete Hühnern einen Lebensplatz an</MudText>
 
         <MudAlert Severity="Severity.Success" Dense="false" Class="my-4">
@@ -21,20 +20,22 @@
             </MudText>
         </MudAlert>
 
-        @if (publicDto != null)
+        @if (EntityWithFiles != null)
         {
-            <PublicSaveChickenRequestForm Model="publicDto" OnSubmitSuccess="HandleSuccess" />
+            <PublicSaveChickenRequestForm EntityWithFiles="EntityWithFiles" OnSubmitSuccess="HandleSuccess" />
         }
-    </MudPaper>
-
 </MudContainer>
 
 @code {
-    private SaveChickenRequestPublicDto? publicDto;
+    private ItemWithBrowserFiles<SaveChickenRequestPublicDto> EntityWithFiles { get; set; } = default!;
+
 
     protected override void OnInitialized()
     {
-        publicDto = new SaveChickenRequestPublicDto();
+        EntityWithFiles = new ItemWithBrowserFiles<SaveChickenRequestPublicDto>
+        {
+            Item = new SaveChickenRequestPublicDto()
+        };
     }
 
     private void HandleSuccess()

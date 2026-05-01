@@ -88,6 +88,10 @@ namespace WebApi.Controllers.ControllersImpl
         [HttpPost("public")]
         public async Task<ActionResult<SaveChickenRequestDto>> CreatePublic([FromBody] SaveChickenRequestPublicDto publicDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             // Create Contact entity
             var contact = new Contact
             {
@@ -145,19 +149,25 @@ namespace WebApi.Controllers.ControllersImpl
                 UpdatedAt = DateTime.UtcNow
             };
 
+            // Add files if present
+            if (publicDto.Files != null && publicDto.Files.Count > 0)
+            {
+                foreach (var fileDto in publicDto.Files)
+                {
+                    var storedFile = new StoredFile
+                    {
+                        FileName = fileDto.FileName,
+                        ContentType = fileDto.ContentType,
+                        FileKey = fileDto.FileKey,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
+                    };
+                    request.Files.Add(storedFile);
+                }
+            }
+
             var result = await _service.Create(request, SaveChickenRequestIncludes.Default);
             var resultDto = _mapper.mapper.Map<SaveChickenRequestDto>(result);
-
-            // Send notification email to admins
-            try
-            {
-                await SendNewRequestNotificationEmail(resultDto);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to send notification email for SaveChickenRequest {Id}", resultDto.Id);
-                // Don't fail the request creation if email fails
-            }
 
             // Send confirmation email to requester
             try

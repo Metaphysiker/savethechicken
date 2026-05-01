@@ -1,5 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
+  <data name="FileDeletedMessage" xml:space="preserve">
+    <value>Die Datei wurde gelöscht.</value>
+  </data>
     <data name="deleteRequestConfirmation" xml:space="preserve">
       <value>Möchten Sie diese Anfrage wirklich löschen?</value>
     </data>
@@ -8,6 +11,12 @@
     </data>
     <data name="confirmDelete" xml:space="preserve">
       <value>Löschen bestätigen</value>
+    </data>
+    <data name="SearchPlaceholder" xml:space="preserve">
+      <value>Nach Titel suchen...</value>
+    </data>
+    <data name="Dates" xml:space="preserve">
+      <value>Daten</value>
     </data>
   <!--
     Microsoft ResX Schema
@@ -201,6 +210,9 @@
   <data name="IncomingSaveChickenDriveRequests" xml:space="preserve">
     <value>Neue Fahrangebote</value>
   </data>
+  <data name="FileTooLargeWarning" xml:space="preserve">
+    <value>{0} ist zu groß (&gt;10 MB) und wurde nicht hinzugefügt.</value>
+  </data>
   <data name="IsDriver_Yes" xml:space="preserve">
     <value>Diese Person ist ein Fahrer</value>
   </data>
@@ -212,9 +224,6 @@
   </data>
   <data name="Create" xml:space="preserve">
     <value>Erstellen</value>
-  </data>
-  <data name="search" xml:space="preserve">
-    <value>suchen</value>
   </data>
   <data name="update" xml:space="preserve">
     <value>aktualisieren</value>
@@ -293,18 +302,6 @@
   <data name="copy" xml:space="preserve">
     <value>kopieren</value>
   </data>
-  <data name="Status" xml:space="preserve">
-    <value>Status</value>
-  </data>
-  <data name="Blacklisted_Yes" xml:space="preserve">
-    <value>Auf der schwarzen Liste</value>
-  </data>
-  <data name="Blacklisted_No" xml:space="preserve">
-    <value>Nicht auf der schwarzen Liste</value>
-  </data>
-  <data name="Blacklisted_Warning" xml:space="preserve">
-    <value>Diese Person steht auf der schwarzen Liste und sollte keine Hühner erhalten oder an Fahrten teilnehmen.</value>
-  </data>
   <data name="BlacklistFilter" xml:space="preserve">
     <value>Schwarze Liste Filter</value>
   </data>
@@ -322,6 +319,18 @@
   </data>
   <data name="NotDrivers" xml:space="preserve">
     <value>Keine Fahrer</value>
+  </data>
+    <data name="IsArchived" xml:space="preserve">
+      <value>Archiviert</value>
+    </data>
+  <data name="ArchivedFilter" xml:space="preserve">
+    <value>Archiv-Filter</value>
+  </data>
+  <data name="ArchivedOnly" xml:space="preserve">
+    <value>Nur Archivierte</value>
+  </data>
+  <data name="NotArchived" xml:space="preserve">
+    <value>Nicht archiviert</value>
   </data>
   <data name="All" xml:space="preserve">
     <value>Alle</value>
@@ -389,9 +398,6 @@
   <data name="UploadFiles" xml:space="preserve">
     <value>Dateien hochladen</value>
   </data>
-  <data name="RoutePlan" xml:space="preserve">
-    <value>Routenplan</value>
-  </data>
   <data name="SaveChickenRequestDetails" xml:space="preserve">
     <value>Platzangebot Details</value>
   </data>
@@ -427,9 +433,6 @@
   </data>
   <data name="Updated" xml:space="preserve">
     <value>Aktualisiert</value>
-  </data>
-  <data name="ViewPerson" xml:space="preserve">
-    <value>Person anzeigen</value>
   </data>
   <data name="Admin_Persons_Title" xml:space="preserve">
     <value>Admin - Personenverwaltung</value>
@@ -710,9 +713,6 @@
   <data name="FullText" xml:space="preserve">
     <value>Vollständiger Text</value>
   </data>
-  <data name="Close" xml:space="preserve">
-    <value>Schließen</value>
-  </data>
   <data name="RoutePlan" xml:space="preserve">
     <value>Fahrplan</value>
   </data>
@@ -832,5 +832,17 @@
   </data>
   <data name="ManuallySelected" xml:space="preserve">
     <value>Manuell ausgewählt</value>
+  </data>
+  <data name="OpenFile" xml:space="preserve">
+    <value>Datei öffnen</value>
+  </data>
+  <data name="DeleteFile" xml:space="preserve">
+    <value>Datei löschen</value>
+  </data>
+  <data name="FileLoading" xml:space="preserve">
+    <value>Die Datei wird geladen...</value>
+  </data>
+  <data name="ImagePreviewAlt" xml:space="preserve">
+    <value>Vorschau Bild</value>
   </data>
 </root>

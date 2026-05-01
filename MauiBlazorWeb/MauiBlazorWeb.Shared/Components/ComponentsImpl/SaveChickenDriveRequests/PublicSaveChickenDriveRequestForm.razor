@@ -64,13 +64,16 @@
     }
 }
 
-<EditForm Model="Model" OnValidSubmit="HandleValidSubmit">
-    <DataAnnotationsValidator />
+<MudPaper Class="pa-6 my-6" Elevation="6">
 
-    <!-- Contact Information -->
-    <MudPaper Class="pa-4 my-4" Elevation="2">
-        <MudText Typo="Typo.h6" Class="mb-3">Ihre Kontaktdaten</MudText>
+    <EditForm Model="Model" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
 
+        <!-- Kontakt -->
+        <MudText Typo="Typo.h6" Class="mb-2 mt-4">
+            <MudIcon Icon="@Icons.Material.Filled.Person" Class="me-1" /> Kontaktdaten
+        </MudText>
+        <MudDivider Class="mb-3" />
         <MudGrid>
             <MudItem xs="12" sm="6">
                 <MudTextField @bind-Value="Model.FirstName" Label="Vorname*" Variant="Variant.Outlined"
@@ -95,12 +98,12 @@
                 <ValidationMessage For="@(() => Model.PhoneNumber)" />
             </MudItem>
         </MudGrid>
-    </MudPaper>
 
-    <!-- Address Information -->
-    <MudPaper Class="pa-4 my-4" Elevation="2">
-        <MudText Typo="Typo.h6" Class="mb-3">Ihre Adresse</MudText>
-
+        <!-- Adresse -->
+        <MudText Typo="Typo.h6" Class="mb-2 mt-5">
+            <MudIcon Icon="@Icons.Material.Filled.Home" Class="me-1" /> Adresse
+        </MudText>
+        <MudDivider Class="mb-3" />
         <MudGrid>
             <MudItem xs="12" sm="6">
                 <MudTextField @bind-Value="Model.City" Label="Ort*" Variant="Variant.Outlined"
@@ -120,69 +123,72 @@
                 <ValidationMessage For="@(() => Model.Street)" />
             </MudItem>
         </MudGrid>
-    </MudPaper>
 
-    <!-- Drive Information -->
-    <MudPaper Class="pa-4 my-4" Elevation="2">
-        <MudText Typo="Typo.h6" Class="mb-3">Informationen zu Ihrem Fahrzeug</MudText>
-
+        <!-- Fahrzeug -->
+        <MudText Typo="Typo.h6" Class="mb-2 mt-5">
+            <MudIcon Icon="@Icons.Material.Filled.LocalShipping" Class="me-1" /> Fahrzeug
+        </MudText>
+        <MudDivider Class="mb-3" />
         <MudItem Class="mb-3">
             <MudTextField @bind-Value="Model.CarMake" Label="Fahrzeugmarke und Modell*" Variant="Variant.Outlined"
                          UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "car-make" })" />
             <ValidationMessage For="@(() => Model.CarMake)" />
         </MudItem>
 
-        <MudItem Class="mb-3">
-            <MudNumericField T="int" @bind-Value="Model.CapacityForChickens" Label="Kapazität für Hühner*" Variant="Variant.Outlined" Min="1" Max="1000" UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "capacity-for-chickens" })" />
-            <ValidationMessage For="@(() => Model.CapacityForChickens)" />
-            <MudText Typo="Typo.caption" Color="Color.Secondary">
-                Wie viele Hühner können Sie in Ihrem Fahrzeug transportieren?
+        <!-- Verfügbare Termine -->
+        @if (_saveChickenActionDto != null)
+        {
+            <MudText Typo="Typo.h6" Class="mb-2 mt-5">
+                <MudIcon Icon="@Icons.Material.Filled.EventAvailable" Class="me-1" /> Verfügbare Termine
             </MudText>
-        </MudItem>
-
-        <MudDivider Class="my-4" />
-
-        <MudItem Class="mb-3">
-            <MudText Class="mb-2">Was ich noch sagen möchte:</MudText>
-            <MudTextField @bind-Value="Model.Message" Label="Nachricht"
-                         Variant="Variant.Outlined" Lines="3"
-                         UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "message" })" />
-        </MudItem>
-    </MudPaper>
-
-    <!-- Available Dates -->
-    @if (_saveChickenActionDto != null)
-    {
-        <MudPaper Class="pa-4 my-4" Elevation="2">
+            <MudDivider Class="mb-3" />
             <MultiDateOnlySelector @bind-SelectedDates="Model.AvailableDates"
                                   Text="Ich bin an diesen Tagen verfügbar:"
                                   MinDate="@minDate"
                                   MaxDate="@maxDate" />
-        </MudPaper>
-    }
-
-    <!-- Action Selector (hidden, auto-selected) -->
-    @if (_saveChickenActionDto != null)
-    {
-        <input type="hidden" @bind="Model.SaveChickenActionId" />
-    }
-
-    <!-- Submit Button -->
-    <MudButton ButtonType="ButtonType.Submit"
-              Variant="Variant.Filled"
-              Color="Color.Primary"
-              Size="Size.Large"
-              Disabled="isSubmitting"
-              FullWidth="true"
-              data-testid="submit-button">
-        @if (isSubmitting)
-        {
-            <MudProgressCircular Size="Size.Small" Indeterminate="true" />
-            <span class="ml-2">Wird gesendet...</span>
         }
-        else
+
+        <!-- Action Selector (hidden, auto-selected) -->
+        @if (_saveChickenActionDto != null)
         {
-            <span>Als Fahrer anmelden</span>
+            <input type="hidden" @bind="Model.SaveChickenActionId" />
         }
-    </MudButton>
-</EditForm>
+
+
+        <!-- Bedingungen -->
+        <MudDivider Class="my-4" />
+        <MudItem Class="mb-3">
+            <MudCheckBox @bind-Value="Model.AcceptTermsAndConditions"
+                        UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "accept-terms" })">
+                <ChildContent>
+                    Ich akzeptiere die <a href="https://www.rettetdashuhn.ch/j/privacy" target="_blank" rel="noopener">Datenschutzerklärung</a>
+                </ChildContent>
+            </MudCheckBox>
+            <ValidationMessage For="@(() => Model.AcceptTermsAndConditions)" />
+        </MudItem>
+        <MudItem Class="mb-3">
+            <MudText Class="mb-2">Was ich noch sagen möchte:</MudText>
+            <MudTextField @bind-Value="Model.Message" Label="Nachricht" Variant="Variant.Outlined" Lines="3"
+                         UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "message" })" />
+        </MudItem>
+
+        <!-- Submit Button -->
+        <MudButton ButtonType="ButtonType.Submit"
+                  Variant="Variant.Filled"
+                  Color="Color.Primary"
+                  Size="Size.Large"
+                  Disabled="isSubmitting"
+                  FullWidth="true"
+                  data-testid="submit-button">
+            @if (isSubmitting)
+            {
+                <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+                <span class="ml-2">Wird gesendet...</span>
+            }
+            else
+            {
+                <span>Als Fahrer anmelden</span>
+            }
+        </MudButton>
+    </EditForm>
+</MudPaper>

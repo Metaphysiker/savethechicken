@@ -68,8 +68,8 @@ test.describe('Admin - Create Save Chicken Action', () => {
       // Wait for the page to load
       await page.waitForSelector('h3', { state: 'visible', timeout: 10000 });
 
-      // Search for the created action by title using placeholder
-      const searchBox = page.getByPlaceholder('Nach Titel suchen...');
+      // Search for the created action by title using test id
+      const searchBox = page.getByTestId('search-box');
       await searchBox.fill(testTitle);
 
       // Click the search button

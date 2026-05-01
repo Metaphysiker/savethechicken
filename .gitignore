@@ -1,3 +1,5 @@
+# Playwright authentication state
+playwright/.auth/admin.json
 # Ignore Visual Studio folder and index files
 .vs/
 *.vsidx

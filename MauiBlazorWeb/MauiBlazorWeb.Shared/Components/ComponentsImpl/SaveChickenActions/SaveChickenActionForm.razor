@@ -26,6 +26,12 @@
                   TextFieldStyle="MudBlazor.TextFieldStyle.TextArea"
                   data-testid="action-description" />
     <ValidationMessage For="@(() => Model.Description)" />
+
+    <MudSwitch T="bool" @bind-Value="Model.IsArchived"
+        Label="@L["IsArchived"]"
+        Disabled="@IsReadOnly"
+        Color="Color.Primary"
+        Class="mt-4" />
     </MudPaper>
 
 <MauiBlazorWeb.Shared.Components.MultiDateSelecters.MultiDateOnlySelector Text="@L["TransferDates"]" @bind-SelectedDates="Model.Dates" />

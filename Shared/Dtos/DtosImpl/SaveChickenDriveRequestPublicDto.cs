@@ -11,32 +11,40 @@ namespace Shared.Dtos.DtosImpl
     public class SaveChickenDriveRequestPublicDto
     {
         // Contact Information
-        [Required]
+
+        [Required(ErrorMessage = "Vorname ist erforderlich.")]
         public string FirstName { get; set; } = string.Empty;
 
-        [Required]
+
+        [Required(ErrorMessage = "Nachname ist erforderlich.")]
         public string LastName { get; set; } = string.Empty;
 
-        [Required]
+
+        [Required(ErrorMessage = "Telefonnummer ist erforderlich.")]
         [Phone]
         public string PhoneNumber { get; set; } = string.Empty;
 
-        [Required]
+
+        [Required(ErrorMessage = "E-Mail ist erforderlich.")]
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
 
         // Address Information
-        [Required]
+
+        [Required(ErrorMessage = "Strasse und Hausnummer sind erforderlich.")]
         public string Street { get; set; } = string.Empty;
 
-        [Required]
+
+        [Required(ErrorMessage = "Ort ist erforderlich.")]
         public string City { get; set; } = string.Empty;
 
-        [Required]
+
+        [Required(ErrorMessage = "PLZ ist erforderlich.")]
         public string PostalCode { get; set; } = string.Empty;
 
         // Drive Request Information
-        [Required]
+
+        [Required(ErrorMessage = "Fahrzeugmarke und Modell sind erforderlich.")]
         public string CarMake { get; set; } = string.Empty;
 
         public string Message { get; set; } = string.Empty;
@@ -50,5 +58,8 @@ namespace Shared.Dtos.DtosImpl
 
         public bool IsSubmittedFromPublicForm { get; set; } = true;
         public bool IsHandled { get; set; } = false;
+
+        [Required(ErrorMessage = "Sie müssen die Allgemeinen Geschäftsbedingungen akzeptieren.")]
+        public bool AcceptTermsAndConditions { get; set; } = false;
     }
 }

@@ -3,13 +3,12 @@
 
 @page "/fahrer-werden"
 @page "/become-driver"
+@layout MauiBlazorWeb.Shared.Layouts.MinimalLayout
 
 <PageTitle>Fahrer werden</PageTitle>
 
-<MudContainer MaxWidth="MaxWidth.Large">
-
-    <MudPaper Class="pa-6 my-4" Elevation="2">
-        <MudText Typo="Typo.h3" Class="mb-4">Als Fahrer unterstützen</MudText>
+<MudContainer MaxWidth="MaxWidth.Large" Class=mt-3>
+            <MudText Typo="Typo.h3" Class="mb-4">Ich biete mich als Fahrer:in an</MudText>
 
         <MudAlert Severity="Severity.Success" Dense="false" Class="my-4">
             <MudText Typo="Typo.body1">
@@ -24,7 +23,6 @@
         {
             <PublicSaveChickenDriveRequestForm Model="publicDto" OnSubmitSuccess="HandleSuccess" />
         }
-    </MudPaper>
 
 </MudContainer>
 

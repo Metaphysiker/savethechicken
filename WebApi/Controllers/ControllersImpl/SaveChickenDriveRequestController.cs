@@ -131,17 +131,6 @@ namespace WebApi.Controllers.ControllersImpl
             var result = await _service.Create(request, SaveChickenDriveRequestIncludes.Default);
             var resultDto = _mapper.mapper.Map<SaveChickenDriveRequestDto>(result);
 
-            // Send notification email to admins
-            try
-            {
-                await SendNewRequestNotificationEmail(resultDto);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to send notification email for SaveChickenRequest {Id}", resultDto.Id);
-                // Don't fail the request creation if email fails
-            }
-
             // Send confirmation email to requester
             try
             {

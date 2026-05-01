@@ -1,12 +1,17 @@
+@using MudBlazor
+@inject StoredFileHelper storedFileHelper
 @*
 Requires interactive rendering mode for OnValidSubmit to work.
 App uses global @rendermode="InteractiveServer" in App.razor.
 *@
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Shared.Helpers
 @using MauiBlazorWeb.Shared.Resources.Strings
 @using MauiBlazorWeb.Shared.Services.ServicesImpl
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @inject AwsFileService AwsFileService
+@using Microsoft.Extensions.Logging
+@inject Microsoft.Extensions.Logging.ILogger<GenericUpdateWithFiles<TDto>> Logger
 @using Microsoft.Extensions.Localization
 @using global::Shared.Dtos
 @using global::Shared.Dtos.DtosImpl
@@ -23,8 +28,9 @@ App uses global @rendermode="InteractiveServer" in App.razor.
             @ChildContent(model)
 
             <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
-                @(IsCreate ? L["Create"] : L["update"])
+                @(IsCreate ? L["Create"] : L["Update"])
             </MudButton>
+
         </EditForm>
     </div>
 }
@@ -46,40 +52,34 @@ App uses global @rendermode="InteractiveServer" in App.razor.
     {
         if (_service != null && model != null)
         {
-            var storedFiles = await UploadFilesAsync(model);
-            model.Item.Files.AddRange(storedFiles);
-
-            if (IsCreate)
+            try
             {
-                await _service.CreateAsync(model.Item);
-            }
-            else
-            {
-                await _service.UpdateAsync(model.Item);
-            }
-            
-            await OnEdited.InvokeAsync();
-        }
-    }
-
-    private async Task<List<StoredFileDto>> UploadFilesAsync(ItemWithBrowserFiles<TDto> itemWithFiles)
-    {
-        List<StoredFileDto> storedFiles = new List<StoredFileDto>();
-        foreach (var file in itemWithFiles.Files)
-        {
-            var key = await AwsFileService.UploadFileAsync(file);
-            if(!string.IsNullOrEmpty(key))
-            {
-                StoredFileDto storedFile = new StoredFileDto
+                TDto updatedItem;
+                if (IsCreate)
                 {
-                    FileName = file.Name,
-                    FileKey = key,
-                    ContentType = file.ContentType,
-                };
+                    updatedItem = await _service.CreateAsync(model.Item);
+                }
+                else
+                {
+                    updatedItem = await _service.UpdateAsync(model.Item);
+                }
 
-                storedFiles.Add(storedFile);
+                if (updatedItem != null)
+                {
+                    List<StoredFileDto>? storedFiles = await storedFileHelper.UploadFilesAsync(model.Files, updatedItem, AwsFileService, DtoServiceFactory.Create<StoredFileDto, ISearchDto>());
+                }
+
+                await OnEdited.InvokeAsync();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Exception in HandleValidSubmit");
+                throw;
             }
         }
-        return storedFiles;
+        else
+        {
+            Logger.LogWarning("_service or model is null in HandleValidSubmit");
+        }
     }
 }

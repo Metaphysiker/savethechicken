@@ -26,8 +26,32 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
             .ConfigureWarnings(warnings => warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
     }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // =========================
+            // FILE RELATIONSHIPS (CASCADE DELETE)
+            // =========================
+            modelBuilder.Entity<StoredFile>(entity =>
+            {
+                // SaveChickenDriveRequest
+                entity.HasOne(f => f.SaveChickenDriveRequest)
+                    .WithMany(e => e.Files)
+                    .HasForeignKey(f => f.SaveChickenDriveRequestId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                // SaveChickenRequest
+                entity.HasOne(f => f.SaveChickenRequest)
+                    .WithMany(e => e.Files)
+                    .HasForeignKey(f => f.SaveChickenRequestId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                // Farm
+                entity.HasOne(f => f.Farm)
+                    .WithMany(e => e.Files)
+                    .HasForeignKey(f => f.FarmId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
 
         modelBuilder.Entity<Farm>(entity =>
         {

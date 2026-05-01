@@ -15,6 +15,8 @@ namespace WebApi.Models.ModelsImpl
         [Required]
         public string Description { get; set; } = string.Empty;
 
+        public bool IsArchived { get; set; } = false;
+
         /// <summary>
         /// JSON serialized drive plans from the route planner
         /// </summary>

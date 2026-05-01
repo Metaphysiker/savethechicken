@@ -17,7 +17,7 @@
     <MudPaper Class="pa-4">
         <MudText Typo="Typo.h6">Rettungs-Aktionen</MudText>
 
-        <GenericSearch TDto="SaveChickenActionDto" TSearchDto="SaveChickenActionSearch">
+        <GenericSearch TDto="SaveChickenActionDto" TSearchDto="SaveChickenActionSearch" search="saveChickenActionSearch">
             <SearchForm Context="search">
                 <SaveChickenActionSearchForm Model="search" />
             </SearchForm>
@@ -32,6 +32,7 @@
 @code {
     private SaveChickenActionDto? selectedAction;
     private int? selectedActionId;
+    private SaveChickenActionSearch saveChickenActionSearch = new SaveChickenActionSearch { IsArchived = false };
     private SaveChickenRequestSearch saveChickenRequestSearch = new SaveChickenRequestSearch();
     private SaveChickenDriveRequestSearch saveChickenDriveRequestSearch = new SaveChickenDriveRequestSearch();
     private FarmSearch farmSearch = new FarmSearch();
