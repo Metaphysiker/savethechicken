@@ -52,29 +52,47 @@
 
     private string _fileSizeWarning = string.Empty;
 
-    private async void FileChanged(IReadOnlyList<IBrowserFile> files)
+    private async Task FileChanged(IReadOnlyList<IBrowserFile> files)
     {
         _fileSizeWarning = string.Empty;
-        await JS.InvokeVoidAsync("console.log", "Files changed:");
 
         foreach (var file in files)
         {
-            if (file.Size > 10 * 1024 * 1024)
+            IBrowserFile fileToProcess = file;
+
+            // Check if the file is an image
+            if (file.ContentType.StartsWith("image/"))
             {
-                _fileSizeWarning = string.Format(L["FileTooLargeWarning"], file.Name);
+                try
+                {
+                    // Resize to max 1920px width/height while maintaining aspect ratio
+                    // This significantly reduces file size and memory footprint
+                    fileToProcess = await file.RequestImageFileAsync(file.ContentType, 1920, 1920);
+                }
+                catch (Exception ex)
+                {
+                    await JS.InvokeVoidAsync("console.error", $"Compression failed: {ex.Message}");
+                }
+            }
+
+            // Check size after potential compression (10MB limit example)
+            if (fileToProcess.Size > 10 * 1024 * 1024)
+            {
+                _fileSizeWarning = string.Format(L["FileTooLargeWarning"], fileToProcess.Name);
                 continue;
             }
-            if (!Value.Contains(file))
+
+            if (!Value.Any(f => f.Name == fileToProcess.Name && f.Size == fileToProcess.Size))
             {
-                Value.Add(file);
+                Value.Add(fileToProcess);
             }
         }
+
         if (ValueChanged.HasDelegate)
         {
             await ValueChanged.InvokeAsync(Value);
         }
 
-        await JS.InvokeVoidAsync("console.log", Value);
         StateHasChanged();
     }
 
