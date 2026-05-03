@@ -331,7 +331,7 @@ namespace WebApi.Controllers.ControllersImpl
                     <h2>Vielen Dank für Ihre Anfrage!</h2>
                     <p>Liebe/r {person.Contact?.FirstName} {person.Contact?.LastName},</p>
 
-                    <p>Vielen Dank, dass Sie Hühnern ein neues Zuhause geben möchten!</p>
+                    <p>Vielen Dank, dass Sie Hühnern in Not ein neues Zuhause geben möchten!</p>
 
                     <p>Wir haben Ihre Anfrage erhalten und werden uns in Kürze bei Ihnen melden.</p>
 
@@ -345,10 +345,10 @@ namespace WebApi.Controllers.ControllersImpl
                         <li><strong>E-Mail:</strong> {person.Contact?.Email}</li>
                         <li><strong>Telefon:</strong> {person.Contact?.PhoneNumber}</li>
                         <li><strong>Beschreibung des Ortes:</strong> {request.DescriptionOfPlaceForChickens}</li>
-
+                        <li><strong>Ich bestätige, dass ich die Voraussetzungen erfülle und die Hühnerhaltung ohne Einschränkung in mein Leben passt:</strong> {(request.ConfirmThatIFulfillCriteria ? "Ja" : "Nein")}</li>
                     </ul>
 
-                    <p>Wir werden Sie kontaktieren, sobald wir passende Hühner für Sie haben.</p>
+                    <p>Wir werden Sie kontaktieren, sobald wir Hühner aus der nächsten Rettung für Sie haben.</p>
 
                     <p>Mit freundlichen Grüßen<br/>
                     Ihr Team von Rettet das Huhn</p>
