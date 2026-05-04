@@ -137,7 +137,6 @@ namespace WebApi.Controllers.ControllersImpl
                 NumberOfRoostersToBeSaved = publicDto.NumberOfRoostersToBeSaved,
                 DescriptionOfPlaceForChickens = publicDto.DescriptionOfPlaceForChickens,
                 AcceptTermsAndConditions = publicDto.AcceptTermsAndConditions,
-                AlreadyReceivedChickenPreviously = publicDto.AlreadyReceivedChickenPreviously,
                 ConfirmThatIFulfillCriteria = publicDto.ConfirmThatIFulfillCriteria,
                 Message = publicDto.Message,
                 SaveChickenActionId = publicDto.SaveChickenActionId,
@@ -243,7 +242,6 @@ namespace WebApi.Controllers.ControllersImpl
             existing.NumberOfBoxes = dto.NumberOfBoxes;
             existing.DescriptionOfPlaceForChickens = dto.DescriptionOfPlaceForChickens;
             existing.AcceptTermsAndConditions = dto.AcceptTermsAndConditions;
-            existing.AlreadyReceivedChickenPreviously = dto.AlreadyReceivedChickenPreviously;
             existing.ConfirmThatIFulfillCriteria = dto.ConfirmThatIFulfillCriteria;
             existing.Message = dto.Message;
             existing.SaveChickenActionId = dto.SaveChickenActionId;

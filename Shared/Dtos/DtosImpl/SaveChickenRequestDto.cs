@@ -25,8 +25,6 @@ namespace Shared.Dtos.DtosImpl
         [Range(typeof(bool), "true", "true", ErrorMessage = "You must accept the terms and conditions")]
         public bool AcceptTermsAndConditions { get; set; } = false;
 
-        public bool AlreadyReceivedChickenPreviously { get; set; } = false;
-
         [Required(ErrorMessage = "You must accept")]
         [Range(typeof(bool), "true", "true", ErrorMessage = "You must accept")]
         public bool ConfirmThatIFulfillCriteria { get; set; } = false;

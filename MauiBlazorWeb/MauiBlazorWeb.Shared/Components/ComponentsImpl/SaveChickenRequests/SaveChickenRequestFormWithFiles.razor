@@ -115,11 +115,6 @@
         <ValidationMessage For="@(() => EntityWithFiles.Item.DescriptionOfPlaceForChickens)" />
     </MudItem>
 
-    <MudItem>
-        <MudCheckBox ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.AlreadyReceivedChickenPreviously" Label="@L["AlreadyReceivedChickenPreviously"]" UserAttributes="@(new Dictionary<string, object> { { "data-testid", "received-chickens-before" } })"></MudCheckBox>
-        <ValidationMessage For="@(() => EntityWithFiles.Item.AlreadyReceivedChickenPreviously)" />
-    </MudItem>
-
     <MudDivider Class="my-2"></MudDivider>
 
     <MudItem Class="my-2">
