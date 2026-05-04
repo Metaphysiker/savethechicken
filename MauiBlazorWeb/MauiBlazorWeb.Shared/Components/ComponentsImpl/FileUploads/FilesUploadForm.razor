@@ -60,14 +60,19 @@
         {
             IBrowserFile fileToProcess = file;
 
-            // Check if the file is an image
-            if (file.ContentType.StartsWith("image/"))
+            // Check if the file is an image that the browser can process (HEIC/HEIF not supported by canvas API)
+            if (file.ContentType.StartsWith("image/") && !IsHeicFile(file))
             {
                 try
                 {
-                    // Resize to max 1920px width/height while maintaining aspect ratio
-                    // This significantly reduces file size and memory footprint
-                    fileToProcess = await file.RequestImageFileAsync(file.ContentType, 1920, 1920);
+                    // 5s timeout: canvas hangs indefinitely on images the browser can't decode
+                    var resizeTask = file.RequestImageFileAsync(file.ContentType, 1920, 1920).AsTask();
+                    if (await Task.WhenAny(resizeTask, Task.Delay(5000)) == resizeTask)
+                    {
+                        fileToProcess = await resizeTask;
+                        if (fileToProcess.Size == 0)
+                            fileToProcess = file;
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -95,6 +100,11 @@
 
         StateHasChanged();
     }
+
+    private static bool IsHeicFile(IBrowserFile file) =>
+        file.ContentType is "image/heic" or "image/heif"
+        || file.Name.EndsWith(".heic", StringComparison.OrdinalIgnoreCase)
+        || file.Name.EndsWith(".heif", StringComparison.OrdinalIgnoreCase);
 
     private async Task RemoveFile(IBrowserFile file)
     {

@@ -17,16 +17,16 @@ namespace MauiBlazorWeb.Shared.Services.ServicesImpl
         {
             try
             {
+                // Buffer into MemoryStream first so the upload doesn't depend on the browser's
+                // live file handle — prevents iOS Safari from dropping the stream mid-upload.
+                using var memoryStream = new MemoryStream();
+                await file.OpenReadStream(maxAllowedSize: 100 * 1024 * 1024).CopyToAsync(memoryStream);
+                memoryStream.Position = 0;
+
                 using var content = new MultipartFormDataContent();
-
-                // Open the stream with your high limit
-                // Note: RequestImageFileAsync in the UI already shrunk the file,
-                // so this stream is now much smaller and safer.
-                var fileStream = file.OpenReadStream(maxAllowedSize: 100 * 1024 * 1024);
-
-                var streamContent = new StreamContent(fileStream);
-                streamContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
-
+                var streamContent = new StreamContent(memoryStream);
+                var contentType = string.IsNullOrEmpty(file.ContentType) ? "application/octet-stream" : file.ContentType;
+                streamContent.Headers.ContentType = new MediaTypeHeaderValue(contentType);
                 content.Add(streamContent, "file", file.Name);
 
                 var response = await _httpClient.PostAsync("api/aws-files/upload", content);
@@ -36,7 +36,6 @@ namespace MauiBlazorWeb.Shared.Services.ServicesImpl
                     return await response.Content.ReadAsStringAsync();
                 }
 
-                // Log non-success status codes here
                 var error = await response.Content.ReadAsStringAsync();
                 Console.Error.WriteLine($"Upload failed with status code {response.StatusCode}: {error}");
             }

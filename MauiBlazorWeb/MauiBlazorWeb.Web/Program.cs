@@ -19,6 +19,16 @@ builder.Services.AddScoped<MauiBlazorWeb.Shared.Helpers.StoredFileHelper>();
 builder.Services.AddSingleton<AuthResponseSingleton>();
 
 
+// Increase SignalR limits so large files (e.g. HEIC from iPhones) can transfer
+// over the circuit without hitting the default 30s timeout or 32KB message cap.
+builder.Services.AddSignalR(options =>
+{
+    options.MaximumReceiveMessageSize = 100 * 1024 * 1024; // 100 MB
+    options.ClientTimeoutInterval = TimeSpan.FromMinutes(5);
+    options.HandshakeTimeout = TimeSpan.FromSeconds(30);
+    options.KeepAliveInterval = TimeSpan.FromSeconds(15);
+});
+
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();

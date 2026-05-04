@@ -5,6 +5,7 @@ import { fillSaveChickenRequestForm } from './helpers/save-chicken-request-form.
 import { createSaveChickenAction } from './helpers/save-chicken-action-form.helper';
 import { selectPerson } from './helpers/person-selector.helper';
 import { selectSaveChickenAction } from './helpers/save-chicken-action-selector.helper';
+import { generateRealImageFiles } from './helpers/test-image-fixtures';
 import { fail } from 'assert';
 
 // Use admin authentication
@@ -1259,6 +1260,118 @@ test.describe('Admin Save Chicken Request Management', () => {
       expect(body).toContain(existingStreet)
       expect(body).toContain(numberOfChickens)
       expect(body).toContain(numberOfRoosters)
+    });
+  });
+
+  test('should handle incoming public request with images including heic from iphone', async ({ page, context }) => {
+    test.setTimeout(180000);
+
+    const timestamp = Date.now();
+    const publicFirstName = `PublicImg${timestamp}`;
+    const publicLastName = 'ImgUser';
+    const publicEmail = `publicimg${timestamp}@example.com`;
+    const publicPhone = '+41791234567';
+
+    let actionId: number;
+    let imageFiles: Awaited<ReturnType<typeof generateRealImageFiles>>;
+
+    await test.step('Generate real JPEG and PNG via browser canvas (+ synthetic HEIC)', async () => {
+      imageFiles = await generateRealImageFiles(page);
+    });
+
+    await test.step('Admin creates a SaveChickenAction', async () => {
+      const today = new Date();
+      const dayOfMonth = today.getDate();
+
+      const datesToCreate = [dayOfMonth];
+      if (dayOfMonth + 1 <= 28) datesToCreate.push(dayOfMonth + 1);
+
+      const action = await createSaveChickenAction(page, {
+        title: `Image Upload Test Action ${timestamp}`,
+        description: 'Action for image upload test',
+        dates: datesToCreate,
+        isActive: true,
+      });
+
+      actionId = action.actionId;
+      expect(actionId).toBeGreaterThan(0);
+    });
+
+    await test.step('Log out (clear authentication)', async () => {
+      await context.clearCookies();
+      await context.clearPermissions();
+      await page.evaluate(() => {
+        localStorage.clear();
+        sessionStorage.clear();
+      });
+      await page.goto('/offer-place', { waitUntil: 'networkidle' });
+    });
+
+    await test.step('Public user fills form, verifies all file types appear in upload list, then submits', async () => {
+      await page.waitForSelector('h3', { state: 'visible', timeout: 10000 });
+
+      await fillSaveChickenRequestForm(page, {
+        contactFirstName: publicFirstName,
+        contactLastName: publicLastName,
+        contactEmail: publicEmail,
+        contactPhone: publicPhone,
+        addressCity: 'Bern',
+        addressPostalCode: '3000',
+        addressStreet: 'Bildstrasse 42',
+        numberOfChickens: '4',
+        numberOfRoosters: '0',
+        description: 'Garden with photos attached',
+        message: 'Uploading JPEG, PNG and HEIC to verify mobile uploads work',
+        files: imageFiles,
+        confirmCriteria: true,
+        acceptTerms: true,
+      });
+
+      // All three file types must be visible in the upload list before submitting.
+      // This is the core assertion: HEIC must not be silently dropped (the bug we fixed),
+      // and JPEG/PNG must survive the resize fallback path.
+      for (const file of imageFiles) {
+        await expect(page.getByText(file.name)).toBeVisible({ timeout: 5000 });
+      }
+
+      const submitButton = page.getByRole('button', { name: /absenden|submit/i });
+      await submitButton.waitFor({ state: 'visible', timeout: 5000 });
+      await submitButton.click();
+
+      await page.waitForURL(/\/thank-you/, { timeout: 30000 });
+      await expect(page.getByRole('heading', { name: /vielen dank/i })).toBeVisible({ timeout: 5000 });
+    });
+
+    await test.step('Log back in as admin', async () => {
+      await page.goto('/login', { waitUntil: 'networkidle' });
+      await page.getByRole('textbox', { name: 'Email*' }).fill('test@example.com');
+      await page.getByRole('textbox', { name: 'Password*' }).fill('testpassword');
+      await page.getByRole('button', { name: 'Login' }).click();
+      await page.waitForURL('/admin/persons', { timeout: 10000 });
+    });
+
+    await test.step('Find and verify the incoming request exists in admin view', async () => {
+      await page.goto('/admin/incoming-save-chicken-requests', { waitUntil: 'networkidle' });
+      await page.waitForTimeout(2000);
+
+      const requestCard = page.locator('.mud-card').filter({ hasText: `${publicFirstName} ${publicLastName}` });
+      await requestCard.waitFor({ state: 'visible', timeout: 10000 });
+      await requestCard.click();
+      await page.waitForTimeout(1000);
+
+      await expect(page.getByTestId('contact-email')).toContainText(publicEmail);
+    });
+
+    await test.step('Select save chicken action from dropdown', async () => {
+      await selectSaveChickenAction(page, actionId);
+    });
+
+    await test.step('Mark request as handled', async () => {
+      const markHandledButton = page.getByRole('button', { name: /als bearbeitet markieren|mark as handled/i });
+      await markHandledButton.waitFor({ state: 'visible', timeout: 5000 });
+      await markHandledButton.click();
+      await page.waitForTimeout(2000);
+      await expect(page.locator('.mud-snackbar').filter({ hasText: /erfolgreich|success/i })).toBeVisible({ timeout: 5000 });
     });
   });
 });
