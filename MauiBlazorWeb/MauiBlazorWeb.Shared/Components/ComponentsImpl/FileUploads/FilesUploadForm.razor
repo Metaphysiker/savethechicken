@@ -9,7 +9,8 @@
     @Text
 </MudText>
 
-<MudFileUpload T="IReadOnlyList<IBrowserFile>" FilesChanged="FileChanged">
+<MudFileUpload T="IReadOnlyList<IBrowserFile>" FilesChanged="FileChanged"
+               Accept="image/jpeg,image/png,image/gif,image/webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.oasis.opendocument.text,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.oasis.opendocument.spreadsheet,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.oasis.opendocument.presentation">
     <ActivatorContent>
         <MudButton Variant="Variant.Filled"
                 Color="Color.Primary"
