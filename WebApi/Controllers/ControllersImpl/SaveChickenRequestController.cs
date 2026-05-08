@@ -59,28 +59,6 @@ namespace WebApi.Controllers.ControllersImpl
             var result = await _service.Create(model, SaveChickenRequestIncludes.Default);
             var resultDto = _mapper.mapper.Map<SaveChickenRequestDto>(result);
 
-            // Send notification email to admins
-            try
-            {
-                await SendNewRequestNotificationEmail(resultDto);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to send notification email for SaveChickenRequest {Id}", resultDto.Id);
-                // Don't fail the request creation if email fails
-            }
-
-            // Send confirmation email to requester
-            try
-            {
-                await SendConfirmationEmailToRequester(resultDto);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to send confirmation email to requester for SaveChickenRequest {Id}", resultDto.Id);
-                // Don't fail the request creation if email fails
-            }
-
             return CreatedAtAction(nameof(Read), new { id = resultDto.Id }, resultDto);
         }
 
@@ -260,46 +238,6 @@ namespace WebApi.Controllers.ControllersImpl
             return Ok(resultDto);
         }
 
-        private async Task SendNewRequestNotificationEmail(SaveChickenRequestDto request)
-        {
-            var recipients = _configuration.GetSection("Email:NotificationRecipients").Get<List<string>>();
-            if (recipients == null || !recipients.Any())
-            {
-                _logger.LogWarning("No notification recipients configured");
-                return;
-            }
-
-            // Load Person with includes
-            var person = await _db.Persons
-                .Include(p => p.Contact)
-                .Include(p => p.Address)
-                .FirstOrDefaultAsync(p => p.Id == request.PersonId);
-
-            if (person == null)
-            {
-                _logger.LogWarning("Person not found for SaveChickenRequest {Id}", request.Id);
-                return;
-            }
-
-            var subject = $"Neuer Abnehmer: {person.Contact?.FirstName} {person.Contact?.LastName}";
-            var body = $@"
-                <html>
-                <body>
-                    <h2>Neuer Abnehmer</h2>
-                    <p><strong>Kontakt:</strong> {person.Contact?.FirstName} {person.Contact?.LastName}</p>
-                    <p><strong>E-Mail:</strong> {person.Contact?.Email}</p>
-                    <p><strong>Telefon:</strong> {person.Contact?.PhoneNumber}</p>
-                    <p><strong>Adresse:</strong> {person.Address?.Street}, {person.Address?.PostalCode} {person.Address?.City}</p>
-                    <p><strong>Anzahl Hühner:</strong> {request.NumberOfChickensToBeSaved}</p>
-                    <p><strong>Anzahl Hähne:</strong> {request.NumberOfRoostersToBeSaved}</p>
-                    <p><strong>Erstellt:</strong> {DateTime.Now:dd.MM.yyyy HH:mm}</p>
-                </body>
-                </html>
-            ";
-
-            await _emailService.SendEmailAsync(recipients, subject, body, isHtml: true);
-        }
-
         private async Task SendConfirmationEmailToRequester(SaveChickenRequestDto request)
         {
             // Load Person with includes
@@ -343,6 +281,7 @@ namespace WebApi.Controllers.ControllersImpl
                         <li><strong>E-Mail:</strong> {person.Contact?.Email}</li>
                         <li><strong>Telefon:</strong> {person.Contact?.PhoneNumber}</li>
                         <li><strong>Beschreibung des Ortes:</strong> {request.DescriptionOfPlaceForChickens}</li>
+                        <li><strong>Nachricht:</strong> {request.Message}</li>
                         <li><strong>Ich bestätige, dass ich die Voraussetzungen erfülle und die Hühnerhaltung ohne Einschränkung in mein Leben passt:</strong> {(request.ConfirmThatIFulfillCriteria ? "Ja" : "Nein")}</li>
                     </ul>
 

@@ -1,5 +1,7 @@
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenDriveRequests
 @using global::Shared.Dtos.DtosImpl
+@using MauiBlazorWeb.Shared.Singletons.SingletonsImpl
+@inject AuthResponseSingleton AuthResponseSingleton
 
 @page "/fahrer-werden"
 @page "/become-driver"
@@ -18,6 +20,13 @@
                 Bitte füllen Sie das untenstehende Formular aus. Wir werden uns in Kürze bei Ihnen melden.
             </MudText>
         </MudAlert>
+
+        @if (AuthResponseSingleton.IsLoggedIn)
+        {
+            <MudAlert Severity="Severity.Warning" Dense="false" Class="my-4">
+                <strong>Achtung!</strong> Dies ist ein öffentliches Formular. Nach dem Absenden wird eine Bestätigungs-E-Mail an die eingegebene E-Mail-Adresse gesendet.
+            </MudAlert>
+        }
 
         @if (publicDto != null)
         {

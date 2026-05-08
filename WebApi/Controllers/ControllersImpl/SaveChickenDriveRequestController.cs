@@ -58,17 +58,6 @@ namespace WebApi.Controllers.ControllersImpl
             var result = await _service.Create(model, SaveChickenDriveRequestIncludes.Default);
             var resultDto = _mapper.mapper.Map<SaveChickenDriveRequestDto>(result);
 
-            // Send notification email
-            try
-            {
-                await SendNewDriverNotificationEmail(resultDto);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to send notification email for SaveChickenDriveRequest {Id}", resultDto.Id);
-                // Don't fail the request creation if email fails
-            }
-
             return CreatedAtAction(nameof(Read), new { id = resultDto.Id }, resultDto);
         }
 
@@ -216,90 +205,6 @@ namespace WebApi.Controllers.ControllersImpl
             return Ok(resultDto);
         }
 
-        private async Task SendNewDriverNotificationEmail(SaveChickenDriveRequestDto request)
-        {
-            var recipients = _configuration.GetSection("Email:NotificationRecipients").Get<List<string>>();
-            if (recipients == null || !recipients.Any())
-            {
-                _logger.LogWarning("No notification recipients configured");
-                return;
-            }
-
-            // Load Person with includes
-            var person = await _db.Persons
-                .Include(p => p.Contact)
-                .Include(p => p.Address)
-                .FirstOrDefaultAsync(p => p.Id == request.PersonId);
-
-            if (person == null)
-            {
-                _logger.LogWarning("Person not found for SaveChickenDriveRequest {Id}", request.Id);
-                return;
-            }
-
-            var subject = $"Neuer Fahrer: {person.Contact?.FirstName} {person.Contact?.LastName}";
-            var body = $@"
-                <html>
-                <body>
-                    <h2>Neuer Fahrer</h2>
-                    <p><strong>Anfrage-ID:</strong> {request.Id}</p>
-                    <p><strong>Kontakt:</strong> {person.Contact?.FirstName} {person.Contact?.LastName}</p>
-                    <p><strong>E-Mail:</strong> {person.Contact?.Email}</p>
-                    <p><strong>Telefon:</strong> {person.Contact?.PhoneNumber}</p>
-                    <p><strong>Adresse:</strong> {person.Address?.Street}, {person.Address?.PostalCode} {person.Address?.City}</p>
-                    <p><strong>Auto:</strong> {request.CarMake}</p>
-                    <p><strong>Kapazität:</strong> {request.CapacityForChickens} Hühner</p>
-                    <p><strong>Erstellt:</strong> {DateTime.Now:dd.MM.yyyy HH:mm}</p>
-                    {(request.SaveChickenActionId.HasValue ? $"<p><strong>Zugewiesen zu Aktion:</strong> {request.SaveChickenAction?.Title ?? request.SaveChickenActionId.ToString()}</p>" : "")}
-                </body>
-                </html>
-            ";
-
-            await _emailService.SendEmailAsync(recipients, subject, body, isHtml: true);
-        }
-
-        private async Task SendNewRequestNotificationEmail(SaveChickenDriveRequestDto request)
-        {
-            var recipients = _configuration.GetSection("Email:NotificationRecipients").Get<List<string>>();
-            if (recipients == null || !recipients.Any())
-            {
-                _logger.LogWarning("No notification recipients configured");
-                return;
-            }
-
-            // Load Person with includes
-            var person = await _db.Persons
-                .Include(p => p.Contact)
-                .Include(p => p.Address)
-                .FirstOrDefaultAsync(p => p.Id == request.PersonId);
-
-            if (person == null)
-            {
-                _logger.LogWarning("Person not found for SaveChickenDriveRequest {Id}", request.Id);
-                return;
-            }
-
-            var subject = $"Neuer Fahrer: {person.Contact?.FirstName} {person.Contact?.LastName}";
-            var body = $@"
-                <html>
-                <body>
-                    <h2>Neuer Fahrer</h2>
-                    <p><strong>Anfrage-ID:</strong> {request.Id}</p>
-                    <p><strong>Kontakt:</strong> {person.Contact?.FirstName} {person.Contact?.LastName}</p>
-                    <p><strong>E-Mail:</strong> {person.Contact?.Email}</p>
-                    <p><strong>Telefon:</strong> {person.Contact?.PhoneNumber}</p>
-                    <p><strong>Adresse:</strong> {person.Address?.Street}, {person.Address?.PostalCode} {person.Address?.City}</p>
-                    <p><strong>Auto:</strong> {request.CarMake}</p>
-                    <p><strong>Kapazität:</strong> {request.CapacityForChickens} Hühner</p>
-                    <p><strong>Erstellt:</strong> {DateTime.Now:dd.MM.yyyy HH:mm}</p>
-                    {(request.SaveChickenActionId.HasValue ? $"<p><strong>Zugewiesen zu Aktion:</strong> {request.SaveChickenAction?.Title ?? request.SaveChickenActionId.ToString()}</p>" : "")}
-                </body>
-                </html>
-            ";
-
-            await _emailService.SendEmailAsync(recipients, subject, body, isHtml: true);
-        }
-
         private async Task SendConfirmationEmailToRequester(SaveChickenDriveRequestDto request)
         {
             // Load Person with includes
@@ -321,14 +226,14 @@ namespace WebApi.Controllers.ControllersImpl
                 return;
             }
 
-            var subject = "Vielen Dank für Ihre Anfrage als Fahrer - Rettet das Huhn";
+            var subject = "Vielen Dank für Ihre Anfrage als Fahrer:in - Rettet das Huhn";
             var body = $@"
                 <html>
                 <body>
-                    <h2>Vielen Dank für Ihre Anfrage als Fahrer!</h2>
+                    <h2>Vielen Dank für Ihre Anfrage als Fahrer:in!</h2>
                     <p>Liebe/r {person.Contact?.FirstName} {person.Contact?.LastName},</p>
 
-                    <p>Vielen Dank, dass Sie sich als Fahrer für die Rettung der Hühner gemeldet haben!</p>
+                    <p>Vielen Dank, dass Sie sich als Fahrer:in für die Rettung der Hühner gemeldet haben!</p>
 
                     <p>Wir haben Ihre Anfrage erhalten und werden uns in Kürze bei Ihnen melden.</p>
 

@@ -1158,6 +1158,8 @@ test.describe('Admin Save Chicken Request Management', () => {
     const existingStreet = 'Old Street 10';
     const numberOfChickens = '10';
     const numberOfRoosters = '2';
+    const description = 'Request with updated information';
+    const message = 'I have new contact details';
 
     let existingPersonId: number;
     let actionId: number;
@@ -1217,8 +1219,8 @@ test.describe('Admin Save Chicken Request Management', () => {
         addressStreet: existingStreet, // NEW street
         numberOfChickens: numberOfChickens,
         numberOfRoosters: numberOfRoosters,
-        description: 'Request with updated information',
-        message: 'I have new contact details',
+        description: description,
+        message: message,
         confirmCriteria: true,
         acceptTerms: true,
       });
@@ -1260,6 +1262,8 @@ test.describe('Admin Save Chicken Request Management', () => {
       expect(body).toContain(existingStreet)
       expect(body).toContain(numberOfChickens)
       expect(body).toContain(numberOfRoosters)
+      expect(body).toContain(description)
+      expect(body).toContain(message)
     });
   });
 
