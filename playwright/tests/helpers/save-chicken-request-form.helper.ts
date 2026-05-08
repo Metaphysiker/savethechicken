@@ -21,6 +21,9 @@ export interface SaveChickenRequestFormData {
   // Additional info
   message?: string;
 
+  // Files to upload (optional)
+  files?: Array<{ name: string; mimeType: string; buffer: Buffer }>;
+
   // Confirmations (default to true for valid submissions)
   confirmCriteria?: boolean;
   acceptTerms?: boolean;
@@ -51,6 +54,20 @@ export async function fillSaveChickenRequestForm(page: Page, data: SaveChickenRe
   // Fill message if provided
   if (data.message) {
     await page.getByTestId('message').fill(data.message);
+  }
+
+  // Upload files if provided — use the filechooser event so Blazor's change handler fires
+  if (data.files && data.files.length > 0) {
+    const [fileChooser] = await Promise.all([
+      page.waitForEvent('filechooser'),
+      page.getByRole('button', { name: /bilder hochladen/i }).click(),
+    ]);
+    await fileChooser.setFiles(data.files);
+    // All files are added in one Blazor render after FileChanged completes.
+    // FileChanged can take up to 5s per non-HEIC file (resize timeout) so wait generously.
+    for (const file of data.files) {
+      await page.getByText(file.name).waitFor({ state: 'visible', timeout: 30000 });
+    }
   }
 
   // Check confirmations (default to true if not specified)

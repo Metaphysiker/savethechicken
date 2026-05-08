@@ -56,18 +56,28 @@
     [Parameter] public EventCallback<StoredFileDto> OnDelete { get; set; }
     [Inject] private ILogger<StoredFileViewer> Logger { get; set; } = default!;
     [Inject] private MauiBlazorWeb.Shared.Factories.FactoriesImpl.GenericDtoServiceFactory DtoServiceFactory { get; set; } = default!;
-    private string fileUrl = string.Empty;
+    private string? fileUrl = null;
     private string errorMessage = string.Empty;
-    private bool loading = false;
+    private bool loading = true;
     private bool fileDeleted = false;
+    private int _loadedFileId = -1;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
+        if (_loadedFileId == storedFileDto.Id)
+            return;
+
+        _loadedFileId = storedFileDto.Id;
+        fileUrl = null;
+        errorMessage = string.Empty;
+        loading = true;
+
         var fileUrlFromApi = await AwsFileService.GetPresignedUrlByKeyAsync(storedFileDto.FileKey);
         if (fileUrlFromApi != null)
         {
             fileUrl = fileUrlFromApi;
-        } else
+        }
+        else
         {
             errorMessage = "Datei konnte nicht geladen werden.";
         }

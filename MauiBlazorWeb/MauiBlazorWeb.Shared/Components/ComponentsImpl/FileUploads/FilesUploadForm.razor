@@ -9,7 +9,8 @@
     @Text
 </MudText>
 
-<MudFileUpload T="IReadOnlyList<IBrowserFile>" FilesChanged="FileChanged">
+<MudFileUpload T="IReadOnlyList<IBrowserFile>" FilesChanged="FileChanged"
+               Accept="image/jpeg,image/png,image/gif,image/webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.oasis.opendocument.text,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.oasis.opendocument.spreadsheet,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.oasis.opendocument.presentation">
     <ActivatorContent>
         <MudButton Variant="Variant.Filled"
                 Color="Color.Primary"
@@ -52,31 +53,59 @@
 
     private string _fileSizeWarning = string.Empty;
 
-    private async void FileChanged(IReadOnlyList<IBrowserFile> files)
+    private async Task FileChanged(IReadOnlyList<IBrowserFile> files)
     {
         _fileSizeWarning = string.Empty;
-        await JS.InvokeVoidAsync("console.log", "Files changed:");
 
         foreach (var file in files)
         {
-            if (file.Size > 10 * 1024 * 1024)
+            IBrowserFile fileToProcess = file;
+
+            // Check if the file is an image that the browser can process (HEIC/HEIF not supported by canvas API)
+            if (file.ContentType.StartsWith("image/") && !IsHeicFile(file))
             {
-                _fileSizeWarning = string.Format(L["FileTooLargeWarning"], file.Name);
+                try
+                {
+                    // 5s timeout: canvas hangs indefinitely on images the browser can't decode
+                    var resizeTask = file.RequestImageFileAsync(file.ContentType, 1920, 1920).AsTask();
+                    if (await Task.WhenAny(resizeTask, Task.Delay(5000)) == resizeTask)
+                    {
+                        fileToProcess = await resizeTask;
+                        if (fileToProcess.Size == 0)
+                            fileToProcess = file;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await JS.InvokeVoidAsync("console.error", $"Compression failed: {ex.Message}");
+                }
+            }
+
+            // Check size after potential compression (10MB limit example)
+            if (fileToProcess.Size > 10 * 1024 * 1024)
+            {
+                _fileSizeWarning = string.Format(L["FileTooLargeWarning"], fileToProcess.Name);
                 continue;
             }
-            if (!Value.Contains(file))
+
+            if (!Value.Any(f => f.Name == fileToProcess.Name && f.Size == fileToProcess.Size))
             {
-                Value.Add(file);
+                Value.Add(fileToProcess);
             }
         }
+
         if (ValueChanged.HasDelegate)
         {
             await ValueChanged.InvokeAsync(Value);
         }
 
-        await JS.InvokeVoidAsync("console.log", Value);
         StateHasChanged();
     }
+
+    private static bool IsHeicFile(IBrowserFile file) =>
+        file.ContentType is "image/heic" or "image/heif"
+        || file.Name.EndsWith(".heic", StringComparison.OrdinalIgnoreCase)
+        || file.Name.EndsWith(".heif", StringComparison.OrdinalIgnoreCase);
 
     private async Task RemoveFile(IBrowserFile file)
     {

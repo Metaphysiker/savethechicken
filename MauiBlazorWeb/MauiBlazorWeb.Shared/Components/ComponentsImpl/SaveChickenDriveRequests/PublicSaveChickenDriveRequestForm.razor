@@ -1,4 +1,3 @@
-@using MauiBlazorWeb.Shared.Components.MultiDateSelecters
 @using MauiBlazorWeb.Shared.Resources.Strings
 @using MauiBlazorWeb.Shared.Services.ServicesImpl
 @using Microsoft.Extensions.Localization
@@ -6,7 +5,6 @@
 @inject IStringLocalizer<AppResources> L
 @inject HttpClient HttpClient
 @inject ISnackbar Snackbar
-@inject SaveChickenActionService SaveChickenActionService
 
 @code {
     [Parameter, EditorRequired]
@@ -16,22 +14,6 @@
     public EventCallback OnSubmitSuccess { get; set; }
 
     private bool isSubmitting = false;
-    private SaveChickenActionDto? _saveChickenActionDto;
-
-    private DateOnly? minDate =>
-        _saveChickenActionDto != null && _saveChickenActionDto.Dates != null && _saveChickenActionDto.Dates.Count > 0
-            ? _saveChickenActionDto.Dates.Min()
-            : null;
-
-    private DateOnly? maxDate =>
-        _saveChickenActionDto != null && _saveChickenActionDto.Dates != null && _saveChickenActionDto.Dates.Count > 0
-            ? _saveChickenActionDto.Dates.Max()
-            : null;
-
-    protected override Task OnInitializedAsync()
-    {
-        return Task.CompletedTask;
-    }
 
     private async Task HandleValidSubmit()
     {
@@ -134,26 +116,6 @@
                          UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "car-make" })" />
             <ValidationMessage For="@(() => Model.CarMake)" />
         </MudItem>
-
-        <!-- Verfügbare Termine -->
-        @if (_saveChickenActionDto != null)
-        {
-            <MudText Typo="Typo.h6" Class="mb-2 mt-5">
-                <MudIcon Icon="@Icons.Material.Filled.EventAvailable" Class="me-1" /> Verfügbare Termine
-            </MudText>
-            <MudDivider Class="mb-3" />
-            <MultiDateOnlySelector @bind-SelectedDates="Model.AvailableDates"
-                                  Text="Ich bin an diesen Tagen verfügbar:"
-                                  MinDate="@minDate"
-                                  MaxDate="@maxDate" />
-        }
-
-        <!-- Action Selector (hidden, auto-selected) -->
-        @if (_saveChickenActionDto != null)
-        {
-            <input type="hidden" @bind="Model.SaveChickenActionId" />
-        }
-
 
         <!-- Bedingungen -->
         <MudDivider Class="my-4" />

@@ -79,20 +79,6 @@
             </MudText>
 
             <MudText Typo="Typo.body2" Class="mb-2">
-                <strong>@L["AlreadyReceivedChickenPreviously"]:</strong><br/>
-                @if (item.AlreadyReceivedChickenPreviously)
-                {
-                    <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small" />
-                    <span>@L["yes"]</span>
-                }
-                else
-                {
-                    <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Default" Size="Size.Small" />
-                    <span>@L["no"]</span>
-                }
-            </MudText>
-
-            <MudText Typo="Typo.body2" Class="mb-2">
                 <strong>@L["ConfirmThatIFulfillCriteria"]:</strong><br/>
                 @if (item.ConfirmThatIFulfillCriteria)
                 {

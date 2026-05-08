@@ -736,6 +736,7 @@ test.describe('Admin Save Chicken Drive Request Management', () => {
     const existingPostalCode = '8000';
     const existingStreet = 'Old Street 10';
     const carMake = 'Opel Astra';
+    const message = 'I am a public user submitting a drive request';
 
     let existingPersonId: number;
     let actionId: number;
@@ -788,7 +789,7 @@ test.describe('Admin Save Chicken Drive Request Management', () => {
       await page.getByTestId('address-postalcode').fill(existingPostalCode);
       await page.getByTestId('address-street').fill(existingStreet);
       await page.getByTestId('car-make').fill(carMake);
-      await page.getByTestId('message').fill('I am a public user submitting a drive request');
+      await page.getByTestId('message').fill(message);
       const submitButton = page.getByTestId('submit-button');
       await submitButton.waitFor({ state: 'visible', timeout: 5000 });
       await submitButton.click();
@@ -819,6 +820,7 @@ test.describe('Admin Save Chicken Drive Request Management', () => {
       expect(body).toContain(existingPostalCode);
       expect(body).toContain(existingStreet);
       expect(body).toContain(carMake);
+      expect(body).toContain(message);
     });
   });
 

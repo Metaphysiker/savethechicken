@@ -127,17 +127,6 @@ namespace WebApi.Controllers.ControllersImpl
             var result = await _service.Create(model, FarmIncludes.Default);
             var resultDto = _mapper.mapper.Map<FarmDto>(result);
 
-            // Send notification email
-            try
-            {
-                await SendNewFarmNotificationEmail(resultDto);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to send notification email for Farm {Id}", resultDto.Id);
-                // Don't fail the request creation if email fails
-            }
-
             return CreatedAtAction(nameof(Read), new { id = resultDto.Id }, resultDto);
         }
 
@@ -191,17 +180,6 @@ namespace WebApi.Controllers.ControllersImpl
 
             var result = await _service.Create(farm, FarmIncludes.Default);
             var resultDto = _mapper.mapper.Map<FarmDto>(result);
-
-            // Send notification email
-            try
-            {
-                await SendNewFarmNotificationEmail(resultDto);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to send notification email for Farm {Id}", resultDto.Id);
-                // Don't fail the request creation if email fails
-            }
 
             return CreatedAtAction(nameof(Read), new { id = resultDto.Id }, resultDto);
         }
@@ -257,36 +235,6 @@ namespace WebApi.Controllers.ControllersImpl
             var result = await _service.Update(model, FarmIncludes.Default);
             var resultDto = _mapper.mapper.Map<FarmDto>(result);
             return Ok(resultDto);
-        }
-
-        private async Task SendNewFarmNotificationEmail(FarmDto farm)
-        {
-            var recipients = _configuration.GetSection("Email:NotificationRecipients").Get<List<string>>();
-            if (recipients == null || !recipients.Any())
-            {
-                _logger.LogWarning("No notification recipients configured");
-                return;
-            }
-
-            var subject = $"Neuer Betrieb #{farm.Id}";
-            var body = $@"
-                <html>
-                <body>
-                    <h2>Neuer Betrieb registriert</h2>
-                    <p><strong>Betriebs-ID:</strong> {farm.Id}</p>
-                    <p><strong>Name:</strong> {farm.Contact?.FirstName} {farm.Contact?.LastName}</p>
-                    <p><strong>E-Mail:</strong> {farm.Contact?.Email}</p>
-                    <p><strong>Telefon:</strong> {farm.Contact?.PhoneNumber}</p>
-                    <p><strong>Adresse:</strong> {farm.Address?.Street}, {farm.Address?.PostalCode} {farm.Address?.City}</p>
-                    <p><strong>Anzahl Hühner:</strong> {farm.NumberOfChickens}</p>
-                    <p><strong>Anzahl Hähne:</strong> {farm.NumberOfRoosters}</p>
-                    <p><strong>Erstellt:</strong> {DateTime.Now:dd.MM.yyyy HH:mm}</p>
-                    {(farm.SaveChickenActionId.HasValue ? $"<p><strong>Zugewiesen zu Aktion:</strong> {farm.SaveChickenAction?.Title ?? farm.SaveChickenActionId.ToString()}</p>" : "")}
-                </body>
-                </html>
-            ";
-
-            await _emailService.SendEmailAsync(recipients, subject, body, isHtml: true);
         }
 
     }
