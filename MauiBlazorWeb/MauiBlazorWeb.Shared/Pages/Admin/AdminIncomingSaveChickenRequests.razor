@@ -8,6 +8,7 @@
 @using MauiBlazorWeb.Web.Services.ServicesImpl
 @using global::Shared.Dtos.DtosImpl
 @using global::Shared.Dtos
+@using global::Shared.Extensions
 @using MauiBlazorWeb.Shared.Resources.Strings
 @using Microsoft.Extensions.Localization
 @using System.Net.Http.Json
@@ -653,7 +654,7 @@
             try
             {
                 selectedRequest.SaveChickenActionId = selectedActionId;
-                await _service!.UpdateAsync(selectedRequest);
+                await _service!.UpdateAsync(selectedRequest.ToUpdatePayload());
                 Snackbar.Add("Rettungs-Aktion gespeichert", Severity.Success);
             }
             catch (HttpRequestException ex)

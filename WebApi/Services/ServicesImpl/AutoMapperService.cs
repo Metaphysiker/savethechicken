@@ -68,10 +68,10 @@ public class AutoMapperService
 
             // StoredFile
             cfg.CreateMap<StoredFile, StoredFileDto>()
-                .ForMember(
-                    dest => dest.GenericName,
-                    opt => opt.MapFrom(src => src.FileName)
-                );
+                .ForMember(dest => dest.GenericName, opt => opt.MapFrom(src => src.FileName))
+                .ForMember(dest => dest.SaveChickenRequest, opt => opt.Ignore())
+                .ForMember(dest => dest.SaveChickenDriveRequest, opt => opt.Ignore())
+                .ForMember(dest => dest.Farm, opt => opt.Ignore());
 
             cfg.CreateMap<StoredFileDto, StoredFile>();
 
