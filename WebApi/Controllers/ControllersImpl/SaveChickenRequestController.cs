@@ -19,6 +19,8 @@ namespace WebApi.Controllers.ControllersImpl
     public class SaveChickenRequestController : ControllerBase, IModelController<SaveChickenRequestDto, SaveChickenRequestSearch>
     {
         private readonly GenericModelService<SaveChickenRequest, SaveChickenRequestSearch> _service;
+        private readonly GenericModelService<SaveChickenAction, SaveChickenActionSearch> _saveChickenActionService;
+
         private readonly AutoMapperService _mapper;
         private readonly IEmailService _emailService;
         private readonly IConfiguration _configuration;
@@ -34,6 +36,7 @@ namespace WebApi.Controllers.ControllersImpl
             DatabaseContext db)
         {
             _service = genericModelServiceFactory.Create<SaveChickenRequest, SaveChickenRequestSearch>();
+            _saveChickenActionService = genericModelServiceFactory.Create<SaveChickenAction, SaveChickenActionSearch>();
             _mapper = mapper;
             _emailService = emailService;
             _configuration = configuration;
@@ -303,6 +306,19 @@ namespace WebApi.Controllers.ControllersImpl
             var result = await _service.Read(id, SaveChickenRequestIncludes.Default);
             if (result == null) return NotFound();
 
+            var dateForSaveChickenAgreement = DateTime.Today;
+
+            if (result.SaveChickenActionId.HasValue)
+            {
+                var saveChickenAction = await _saveChickenActionService.Read(result.SaveChickenActionId.Value);
+
+                if (saveChickenAction != null)
+                {
+                    dateForSaveChickenAgreement =
+                        SaveChickenAgreementHelper.GetAgreementDate(saveChickenAction.Dates);
+                }
+            }
+
             ChickenHandoverModel chickenHandoverModel = new ChickenHandoverModel
             {
                 ChickenCount = result.NumberOfChickensToBeSaved,
@@ -311,7 +327,8 @@ namespace WebApi.Controllers.ControllersImpl
                     string.Join(" ",
                         new[] { result.Person?.Contact?.FirstName, result.Person?.Contact?.LastName }
                             .Where(s => !string.IsNullOrWhiteSpace(s))
-                    )
+                    ),
+                Date = dateForSaveChickenAgreement
             };
 
             var pdf = new ChickenHandoverDocument(chickenHandoverModel).GeneratePdf();

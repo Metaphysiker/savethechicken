@@ -91,7 +91,11 @@ namespace WebApi.Controllers.ControllersImpl
         [HttpGet("{id}/chicken-agreements")]
         public async Task<IActionResult> ChickenAgreement(int id)
         {
-            if (await _service.Read(id) == null) return NotFound();
+            var saveChickenAction = await _service.Read(id);
+            if (saveChickenAction == null) return NotFound();
+
+            var dateForSaveChickenAgreement =
+                SaveChickenAgreementHelper.GetAgreementDate(saveChickenAction.Dates);
 
             var search = new SaveChickenRequestSearch
             {
@@ -120,7 +124,8 @@ namespace WebApi.Controllers.ControllersImpl
                     {
                         ChickenCount = request.NumberOfChickensToBeSaved,
                         RoosterCount = request.NumberOfRoostersToBeSaved,
-                        OvernehmerName = string.IsNullOrWhiteSpace(overnemerName) ? "Unbekannt" : overnemerName
+                        OvernehmerName = string.IsNullOrWhiteSpace(overnemerName) ? "Unbekannt" : overnemerName,
+                        Date = dateForSaveChickenAgreement
 
                     };
 
