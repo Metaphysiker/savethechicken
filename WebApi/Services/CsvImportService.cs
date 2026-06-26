@@ -161,7 +161,8 @@ public class CsvImportService
                 Street = r.Street ?? string.Empty,
                 PostalCode = r.PostalCode ?? string.Empty,
                 City = r.City ?? string.Empty
-            }
+            },
+            Comment = r.Comment ?? string.Empty
         }).ToList();
 
         dbContext.Persons.AddRange(persons);
@@ -332,6 +333,7 @@ public class PersonCsvRecord
     public string? Street { get; set; }
     public string? PostalCode { get; set; }
     public string? City { get; set; }
+    public string? Comment {get; set; }
 }
 
 public class SaveChickenRequestCsvRecord
