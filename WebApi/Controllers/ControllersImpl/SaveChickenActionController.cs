@@ -124,7 +124,7 @@ namespace WebApi.Controllers.ControllersImpl
                     {
                         ChickenCount = request.NumberOfChickensToBeSaved,
                         RoosterCount = request.NumberOfRoostersToBeSaved,
-                        OvernehmerName = string.IsNullOrWhiteSpace(overnemerName) ? "Unbekannt" : overnemerName,
+                        OvernehmerName = SaveChickenAgreementHelper.GetOvernehmerName(request),
                         Date = dateForSaveChickenAgreement
 
                     };

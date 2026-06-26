@@ -323,11 +323,7 @@ namespace WebApi.Controllers.ControllersImpl
             {
                 ChickenCount = result.NumberOfChickensToBeSaved,
                 RoosterCount = result.NumberOfRoostersToBeSaved,
-                OvernehmerName =
-                    string.Join(" ",
-                        new[] { result.Person?.Contact?.FirstName, result.Person?.Contact?.LastName }
-                            .Where(s => !string.IsNullOrWhiteSpace(s))
-                    ),
+                OvernehmerName = SaveChickenAgreementHelper.GetOvernehmerName(result),
                 Date = dateForSaveChickenAgreement
             };
 
