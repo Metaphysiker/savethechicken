@@ -6,7 +6,8 @@ using WebApi.Factories;
 using WebApi.Factories.FactoriesImpl;
 using WebApi.Models.ModelsImpl;
 using WebApi.Services.ServicesImpl;
-
+using System.IO.Compression;
+using QuestPDF.Fluent;
 namespace WebApi.Controllers.ControllersImpl
 {
     [ApiController]
@@ -14,11 +15,14 @@ namespace WebApi.Controllers.ControllersImpl
     public class SaveChickenActionController : ControllerBase, IModelController<SaveChickenActionDto, SaveChickenActionSearch>
     {
         private readonly GenericModelService<SaveChickenAction, SaveChickenActionSearch> _service;
+        private readonly GenericModelService<SaveChickenRequest, SaveChickenRequestSearch> _saveChickenRequestService;
+
         private readonly AutoMapperService _mapper;
 
         public SaveChickenActionController(GenericModelServiceFactory genericModelServiceFactory, AutoMapperService mapper)
         {
             _service = genericModelServiceFactory.Create<SaveChickenAction, SaveChickenActionSearch>();
+            _saveChickenRequestService = genericModelServiceFactory.Create<SaveChickenRequest, SaveChickenRequestSearch>();
             _mapper = mapper;
         }
 
@@ -82,6 +86,62 @@ namespace WebApi.Controllers.ControllersImpl
             var result = await _service.Update(model);
             var resultDto = _mapper.mapper.Map<SaveChickenActionDto>(result);
             return Ok(resultDto);
+        }
+
+        [HttpGet("{id}/chicken-agreements")]
+        public async Task<IActionResult> ChickenAgreement(int id)
+        {
+            if (await _service.Read(id) == null) return NotFound();
+
+            var search = new SaveChickenRequestSearch
+            {
+                SaveChickenActionIds = [id],
+                PageSize = 2000
+
+            };
+            var saveChickenRequests = await _saveChickenRequestService.Search(search, SaveChickenRequestIncludes.Default);
+
+            if (!saveChickenRequests.Data.Any())
+                return NotFound("No requests found for this action.");
+
+            using var memoryStream = new MemoryStream();
+
+            using (var zip = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+            {
+                foreach (var request in saveChickenRequests.Data)
+                {
+
+                    var firstName = request.Person?.Contact?.FirstName?.Trim();
+                    var lastName = request.Person?.Contact?.LastName?.Trim();
+                    var overnemerName = string.Join("_", new[] { firstName, lastName }
+                        .Where(s => !string.IsNullOrWhiteSpace(s)));
+
+                    var model = new ChickenHandoverModel
+                    {
+                        ChickenCount = request.NumberOfChickensToBeSaved,
+                        RoosterCount = request.NumberOfRoostersToBeSaved,
+                        OvernehmerName = string.IsNullOrWhiteSpace(overnemerName) ? "Unbekannt" : overnemerName
+
+                    };
+
+                    // 1. Generate PDF bytes (YOU replace this)
+                    byte[] pdfBytes = new ChickenHandoverDocument(model).GeneratePdf();
+
+                    // 2. Create ZIP entry
+                    var fileName = $"{model.OvernehmerName}_{request.Id}.pdf";
+
+                    var entry = zip.CreateEntry(fileName, CompressionLevel.Optimal);
+
+                    using var entryStream = entry.Open();
+                    using var pdfStream = new MemoryStream(pdfBytes);
+
+                    await pdfStream.CopyToAsync(entryStream);
+                }
+            }
+
+            memoryStream.Position = 0;
+            var bytes = memoryStream.ToArray();
+            return File(bytes, "application/zip", "Abgabevereinbarungen.zip");
         }
     }
 }

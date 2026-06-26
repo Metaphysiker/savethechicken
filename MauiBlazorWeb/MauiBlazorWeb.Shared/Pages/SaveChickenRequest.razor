@@ -236,11 +236,12 @@
     {
         if (!Id.HasValue || !_jsReady)
             return;
-        var url = $"{Id.Value}/chicken-agreement";
+
         var service = DtoServiceFactory.Create<SaveChickenRequestDto, SaveChickenRequestSearch>();
         var bytes = await service.GetFileAsync($"api/SaveChickenRequest/{Id.Value}/chicken-agreement");
         if (bytes == null || bytes.Length == 0)
             return;
+
         var firstName = item?.Person?.Contact?.FirstName?.Trim();
         var lastName = item?.Person?.Contact?.LastName?.Trim();
 

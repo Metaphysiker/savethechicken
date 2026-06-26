@@ -303,15 +303,16 @@ namespace WebApi.Controllers.ControllersImpl
             var result = await _service.Read(id, SaveChickenRequestIncludes.Default);
             if (result == null) return NotFound();
 
-            ChickenHandoverModel chickenHandoverModel = new ChickenHandoverModel();
-
-            chickenHandoverModel.ChickenCount = result.NumberOfChickensToBeSaved;
-            chickenHandoverModel.RoosterCount = result.NumberOfRoostersToBeSaved;
-            chickenHandoverModel.OvernehmerName =
-                string.Join(" ",
-                    new[] { result.Person?.Contact?.FirstName, result.Person?.Contact?.LastName }
-                        .Where(s => !string.IsNullOrWhiteSpace(s))
-                );
+            ChickenHandoverModel chickenHandoverModel = new ChickenHandoverModel
+            {
+                ChickenCount = result.NumberOfChickensToBeSaved,
+                RoosterCount = result.NumberOfRoostersToBeSaved,
+                OvernehmerName =
+                    string.Join(" ",
+                        new[] { result.Person?.Contact?.FirstName, result.Person?.Contact?.LastName }
+                            .Where(s => !string.IsNullOrWhiteSpace(s))
+                    )
+            };
 
             var pdf = new ChickenHandoverDocument(chickenHandoverModel).GeneratePdf();
 
