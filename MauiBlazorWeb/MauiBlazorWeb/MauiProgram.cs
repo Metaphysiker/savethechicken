@@ -1,4 +1,4 @@
-﻿using Blazored.LocalStorage;
+using Blazored.LocalStorage;
 using MauiBlazorWeb.Services;
 using MauiBlazorWeb.Shared.Factories.FactoriesImpl;
 using MauiBlazorWeb.Shared.Services;

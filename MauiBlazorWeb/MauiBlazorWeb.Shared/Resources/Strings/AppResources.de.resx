@@ -845,4 +845,7 @@
   <data name="ImagePreviewAlt" xml:space="preserve">
     <value>Vorschau Bild</value>
   </data>
+  <data name="DownloadSaveChickenAgreement" xml:space="preserve">
+    <value>Abgabevereinbarung herunterladen</value>
+  </data>
 </root>

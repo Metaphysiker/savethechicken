@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Fluent;
 using Shared.Dtos.DtosImpl;
 using System.Linq.Expressions;
 using WebApi.Database;
@@ -294,6 +295,27 @@ namespace WebApi.Controllers.ControllersImpl
             ";
 
             await _emailService.SendEmailAsync(new List<string> { email }, subject, body, isHtml: true);
+        }
+
+        [HttpGet("{id}/chicken-agreement")]
+        public async Task<IActionResult> ChickenAgreement(int id)
+        {
+            var result = await _service.Read(id, SaveChickenRequestIncludes.Default);
+            if (result == null) return NotFound();
+
+            ChickenHandoverModel chickenHandoverModel = new ChickenHandoverModel();
+
+            chickenHandoverModel.ChickenCount = result.NumberOfChickensToBeSaved;
+            chickenHandoverModel.RoosterCount = result.NumberOfRoostersToBeSaved;
+            chickenHandoverModel.OvernehmerName =
+                string.Join(" ",
+                    new[] { result.Person?.Contact?.FirstName, result.Person?.Contact?.LastName }
+                        .Where(s => !string.IsNullOrWhiteSpace(s))
+                );
+
+            var pdf = new ChickenHandoverDocument(chickenHandoverModel).GeneratePdf();
+
+            return File(pdf, "application/pdf", "Abgabevereinbarung.pdf");
         }
 
     }

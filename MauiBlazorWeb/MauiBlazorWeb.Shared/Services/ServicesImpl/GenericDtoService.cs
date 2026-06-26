@@ -94,5 +94,16 @@ namespace MauiBlazorWeb.Web.Services.ServicesImpl
             if (result == null) return new List<TDto>();
             return result;
         }
+
+        public async Task<byte[]> GetFileAsync(string url)
+        {
+            Console.WriteLine($"[GetFileAsync] BaseAddress: {_httpClient.BaseAddress}, url: {url}, full: {new Uri(_httpClient.BaseAddress, url)}");
+
+            var response = await _httpClient.GetAsync(url);
+
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadAsByteArrayAsync();
+        }
     }
 }
