@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Shared.Dtos.DtosImpl
 {
@@ -9,6 +10,8 @@ namespace Shared.Dtos.DtosImpl
         public DateTime UpdatedAt { get; set; }
 
         public int? PersonId { get; set; }
+
+        [ValidateNever]
         public PersonDto? Person { get; set; }
 
         [Required]

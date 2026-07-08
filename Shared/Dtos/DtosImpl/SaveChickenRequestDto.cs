@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Shared.Dtos.DtosImpl
 {
@@ -41,6 +42,7 @@ namespace Shared.Dtos.DtosImpl
 
         public List<int> BlackListedPersonIds { get; set; } = new List<int>();
 
+        [ValidateNever]
         public PersonDto? Person { get; set; }
 
         public bool IsSubmittedFromPublicForm { get; set; } = false;
