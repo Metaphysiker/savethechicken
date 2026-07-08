@@ -241,7 +241,6 @@ namespace WebApi.Controllers.ControllersImpl
                     <ul>
                         <li><strong>Anfrage-Nr.:</strong> {request.Id}</li>
                         <li><strong>Auto:</strong> {request.CarMake}</li>
-                        <li><strong>Kapazität für Hühner:</strong> {request.CapacityForChickens}</li>
                         <li><strong>Ort:</strong> {person.Address?.PostalCode} {person.Address?.City}</li>
                         <li><strong>Strasse:</strong> {person.Address?.Street}</li>
                         <li><strong>E-Mail:</strong> {person.Contact?.Email}</li>
