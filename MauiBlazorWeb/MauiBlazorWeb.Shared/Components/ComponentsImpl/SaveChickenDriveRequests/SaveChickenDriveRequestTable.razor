@@ -27,14 +27,7 @@
 
     protected override void OnParametersSet()
     {
-        // Debug: Log Person data status
-        foreach (var item in items)
-        {
-            Console.WriteLine($"DriveRequest ID={item.Id}, PersonId={item.PersonId}, " +
-                            $"Person={item.Person != null}, " +
-                            $"Contact={item.Person?.Contact != null}, " +
-                            $"FirstName={item.Person?.Contact?.FirstName ?? "null"}");
-        }
+
     }
 
     private void OnHeaderClick(string columnName)

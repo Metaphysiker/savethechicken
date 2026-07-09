@@ -1,0 +1,385 @@
+﻿@using MauiBlazorWeb.Shared.Classes
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Shared.Helpers
+@using MauiBlazorWeb.Web.Services.ServicesImpl
+@using global::Shared.Dtos.DtosImpl
+@using Microsoft.JSInterop
+@using System.Text.Json
+@implements IAsyncDisposable
+@inject GenericDtoServiceFactory DtoServiceFactory
+@inject IJSRuntime JS
+@inject ISnackbar Snackbar
+
+<MudPaper Class="pa-4 my-4" Elevation="2">
+    <MudText Typo="Typo.h3" Class="mb-4">Routen-Planer V2</MudText>
+
+    @* Action buttons *@
+    <MudPaper Class="mb-4 pa-3" Elevation="1">
+        <MudButton Variant="Variant.Outlined" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Refresh"
+                   OnClick="ResetAssignments" Class="mr-2">
+            Reset
+        </MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" StartIcon="@Icons.Material.Filled.Save"
+                   OnClick="SaveAssignments" Disabled="_isSaving" Class="mr-2">
+            @if (_isSaving)
+            {
+                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                <MudText Class="ms-2">Speichern...</MudText>
+            }
+            else
+            {
+                <MudText>Speichern</MudText>
+            }
+        </MudButton>
+    </MudPaper>
+
+    <MudDropContainer T="DropItem" @ref="_dropContainer" Items="_requestItems"
+                      ItemsSelector="@((item, dropzone) => item.Selector == dropzone)" ItemDropped="RequestItemDropped">
+        <ChildContent>
+            <MudGrid>
+                @* Column 1: Drivers (click to select, not a dropzone) *@
+                <MudItem xs="12" md="4">
+                    <MudPaper Class="pa-2" Elevation="2" Style="height: 400px; overflow-y: auto;">
+                        <MudText Typo="Typo.h6" Class="mb-2 px-2">Fahrer</MudText>
+                        <MudList T="SaveChickenDriveRequestDto" SelectedValue="_selectedDriver"
+                                 SelectedValueChanged="SelectDriver">
+                            @foreach (var driver in Drivers)
+                            {
+                                <MudListItem T="SaveChickenDriveRequestDto" Value="@driver">
+                                    <MudText>@driver.Person?.Contact?.FirstName @driver.Person?.Contact?.LastName</MudText>
+                                    <MudText Typo="Typo.caption">@GetAssignedCount(driver) Anfragen</MudText>
+                                </MudListItem>
+                            }
+                        </MudList>
+                    </MudPaper>
+                </MudItem>
+
+                @* Column 2: Drop zone for the selected driver *@
+                <MudItem xs="12" md="4">
+                    <MudPaper Class="pa-2" Elevation="2" Style="height: 400px; overflow-y: auto;">
+                        <MudText Typo="Typo.h6" Class="mb-2 px-2">
+                            @(_selectedDriver == null ? "Anfragen" : $"Anfragen:                  {_selectedDriver.Person?.Contact?.FirstName} {_selectedDriver.Person?.Contact?.LastName}")
+                        </MudText>
+                        @if (_selectedDriver == null)
+                        {
+                            <MudText Class="px-2" Typo="Typo.body2" Color="Color.Secondary">Wähle einen Fahrer aus.
+                            </MudText>
+                        }
+                        else
+                        {
+                            <MudDropZone T="DropItem" Identifier="@_selectedDriver.Id.ToString()" Class="pa-2"
+                                         AllowReorder="true" Style="min-height: 100px;" />
+                        }
+                    </MudPaper>
+                </MudItem>
+
+                @* Column 3: Unassigned *@
+                <MudItem xs="12" md="4">
+                    <MudPaper Class="pa-2" Elevation="2" Style="height: 400px; overflow-y: auto;">
+                        <MudText Typo="Typo.h6" Class="mb-2 px-2">Nicht zugeordnet</MudText>
+                        <MudDropZone T="DropItem" Identifier="unassigned" Class="pa-2" AllowReorder="true"
+                                     Style="min-height: 100px;" />
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+        </ChildContent>
+
+        <ItemRenderer>
+            <MudPaper Class="pa-2 ma-1" Elevation="1">
+                <MudText>@context.Name</MudText>
+                <MudText Typo="Typo.caption">
+                    @context.saveChickenRequest.Person?.Address?.PostalCode
+                    @context.saveChickenRequest.Person?.Address?.City
+                </MudText>
+            </MudPaper>
+        </ItemRenderer>
+    </MudDropContainer>
+</MudPaper>
+
+@code {
+    private bool _isLoading = false;
+    private bool _isSaving = false;
+    private int _lastLoadedActionId = 0;
+    private bool _isDisposed = false;
+    private CancellationTokenSource? _cancellationTokenSource;
+
+    [Parameter, EditorRequired]
+    public SaveChickenActionDto saveChickenActionDto { get; set; } = default!;
+
+    public List<SaveChickenDriveRequestDto> Drivers { get; set; } = new();
+    public List<SaveChickenRequestDto> SaveChickenRequests { get; set; } = new();
+
+    private GenericDtoService<SaveChickenActionDto, SaveChickenActionSearch>? _saveChickenActionService;
+    private GenericDtoService<SaveChickenRequestDto, SaveChickenRequestSearch>? _saveChickenRequestService;
+    private GenericDtoService<SaveChickenDriveRequestDto, SaveChickenDriveRequestSearch>? _driverService;
+
+    private MudDropContainer<DropItem>? _dropContainer;
+    private List<DropItem> _requestItems = new();
+    private SaveChickenDriveRequestDto? _selectedDriver;
+    private Dictionary<int, int?> _requestDriverAssignments = new(); // requestId -> driverId, null = unassigned
+    private bool _needsDropRefresh = false;
+
+    protected override void OnInitialized()
+    {
+        _saveChickenActionService = DtoServiceFactory.Create<SaveChickenActionDto, SaveChickenActionSearch>();
+        _driverService = DtoServiceFactory.Create<SaveChickenDriveRequestDto, SaveChickenDriveRequestSearch>();
+        _saveChickenRequestService = DtoServiceFactory.Create<SaveChickenRequestDto, SaveChickenRequestSearch>();
+        _cancellationTokenSource = new CancellationTokenSource();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (_isDisposed) return;
+
+        if (_isLoading)
+            return;
+
+        var currentActionId = saveChickenActionDto?.Id ?? 0;
+        var isNewAction = _lastLoadedActionId != currentActionId;
+
+        _isLoading = true;
+        try
+        {
+            await LoadData();
+            _lastLoadedActionId = currentActionId;
+
+            if (isNewAction)
+            {
+                Snackbar.Add("Route-Planer geladen", Severity.Info);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Fehler beim Laden: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (_needsDropRefresh && _dropContainer != null)
+        {
+            _needsDropRefresh = false;
+            _dropContainer.Refresh();
+            StateHasChanged();
+        }
+    }
+
+    /// <summary>
+    /// Loads drivers and requests, restores saved assignments (or starts empty), and builds the drag-and-drop items.
+    /// </summary>
+    private async Task LoadData()
+    {
+        if (_isDisposed) return;
+
+        Drivers.Clear();
+        SaveChickenRequests.Clear();
+        _requestItems = new List<DropItem>();
+        _requestDriverAssignments.Clear();
+        _selectedDriver = null;
+
+        await GetAndSetDriversAndRequests();
+
+        LoadSavedAssignments();
+
+        BuildRequestItems();
+        _needsDropRefresh = true;
+    }
+
+    private async Task GetAndSetDriversAndRequests()
+    {
+        if (_driverService == null || _saveChickenRequestService == null || _isDisposed)
+        {
+            return;
+        }
+
+        var pageSize = 2000;
+
+        var driverSearch = new SaveChickenDriveRequestSearch
+        {
+            SaveChickenActionIds = new List<int> { saveChickenActionDto.Id },
+            PageSize = pageSize
+        };
+        var driverResults = await _driverService.SearchAsync(driverSearch);
+        Drivers = driverResults.Data;
+
+        var saveChickenRequestSearch = new SaveChickenRequestSearch
+        {
+            SaveChickenActionIds = new List<int> { saveChickenActionDto.Id },
+            PageSize = pageSize
+        };
+        var saveChickenRequestResults = await _saveChickenRequestService.SearchAsync(saveChickenRequestSearch);
+        SaveChickenRequests = saveChickenRequestResults.Data;
+    }
+
+    private void SelectDriver(SaveChickenDriveRequestDto? driver)
+    {
+        _selectedDriver = driver;
+    }
+
+    private void BuildRequestItems()
+    {
+        _requestItems = SaveChickenRequests.Select(r => new DropItem
+        {
+            Name = $"{r.Person?.Contact?.FirstName} {r.Person?.Contact?.LastName}",
+            Selector = _requestDriverAssignments.TryGetValue(r.Id, out var driverId) && driverId.HasValue
+                ? driverId.Value.ToString()
+                : "unassigned",
+            saveChickenRequest = r
+        }).ToList();
+    }
+
+    private int GetAssignedCount(SaveChickenDriveRequestDto driver)
+    {
+        return _requestItems.Count(i => i.Selector == driver.Id.ToString());
+    }
+
+    /// <summary>
+    /// Handles drag-and-drop events, including reordering within a zone and moving between zones.
+    /// </summary>
+    private void RequestItemDropped(MudItemDropInfo<DropItem> dropItem)
+    {
+        if (dropItem.Item?.saveChickenRequest == null)
+            return;
+
+        var item = dropItem.Item;
+
+        // Remove from its current position in the flat list
+        _requestItems.Remove(item);
+
+        // Update zone + assignment
+        item.Selector = dropItem.DropzoneIdentifier;
+        if (dropItem.DropzoneIdentifier == "unassigned")
+        {
+            _requestDriverAssignments[item.saveChickenRequest.Id] = null;
+        }
+        else if (int.TryParse(dropItem.DropzoneIdentifier, out var driverId))
+        {
+            _requestDriverAssignments[item.saveChickenRequest.Id] = driverId;
+        }
+
+        // Figure out where in the flat list this corresponds to, based on
+        // the other items currently in the same zone
+        var itemsInZone = _requestItems.Where(i => i.Selector == dropItem.DropzoneIdentifier).ToList();
+
+        int insertIndex;
+        if (dropItem.IndexInZone >= itemsInZone.Count)
+        {
+            var lastInZone = itemsInZone.LastOrDefault();
+            insertIndex = lastInZone == null ? _requestItems.Count : _requestItems.IndexOf(lastInZone) + 1;
+        }
+        else
+        {
+            var targetItem = itemsInZone[dropItem.IndexInZone];
+            insertIndex = _requestItems.IndexOf(targetItem);
+        }
+
+        _requestItems.Insert(insertIndex, item);
+
+        _requestItems = new List<DropItem>(_requestItems);
+        _dropContainer?.Refresh();
+        StateHasChanged();
+    }
+
+    private void ResetAssignments()
+    {
+        if (_isDisposed) return;
+
+        _requestDriverAssignments.Clear();
+        _selectedDriver = null;
+        BuildRequestItems();
+        _dropContainer?.Refresh();
+
+        StateHasChanged();
+    }
+
+    private async Task SaveAssignments()
+    {
+        if (_isDisposed || _saveChickenActionService == null)
+            return;
+
+        _isSaving = true;
+        StateHasChanged();
+
+        try
+        {
+            var savedData = new SavedRequestAssignmentsData
+            {
+                Version = 1,
+                Assignments = _requestDriverAssignments
+                    .Where(kvp => kvp.Value.HasValue)
+                    .Select(kvp => new RequestAssignmentJson { RequestId = kvp.Key, DriverId = kvp.Value!.Value })
+                    .ToList()
+            };
+
+            var json = JsonSerializer.Serialize(savedData);
+            saveChickenActionDto.RoutePlansJson = json;
+            await _saveChickenActionService.UpdateAsync(saveChickenActionDto);
+
+            Snackbar.Add("Zuordnungen erfolgreich gespeichert!", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Fehler beim Speichern: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isSaving = false;
+            StateHasChanged();
+        }
+    }
+
+    /// <summary>
+    /// Loads saved request-to-driver assignments, if any exist for this action.
+    /// </summary>
+    private void LoadSavedAssignments()
+    {
+        if (string.IsNullOrWhiteSpace(saveChickenActionDto.RoutePlansJson))
+            return;
+
+        try
+        {
+            var savedData = JsonSerializer.Deserialize<SavedRequestAssignmentsData>(saveChickenActionDto.RoutePlansJson);
+            if (savedData?.Assignments == null)
+                return;
+
+            foreach (var assignment in savedData.Assignments)
+            {
+                _requestDriverAssignments[assignment.RequestId] = assignment.DriverId;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading saved assignments: {ex.Message}");
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        _isDisposed = true;
+
+        if (_cancellationTokenSource != null)
+        {
+            _cancellationTokenSource.Cancel();
+            _cancellationTokenSource.Dispose();
+            _cancellationTokenSource = null;
+        }
+
+        await Task.CompletedTask;
+    }
+
+    public class SavedRequestAssignmentsData
+    {
+        public int Version { get; set; }
+        public List<RequestAssignmentJson> Assignments { get; set; } = new();
+    }
+
+    public class RequestAssignmentJson
+    {
+        public int RequestId { get; set; }
+        public int DriverId { get; set; }
+    }
+}

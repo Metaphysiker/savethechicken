@@ -123,13 +123,6 @@
 
     private List<DropItem> _items = new();
 
-    public class DropItem
-    {
-        public string Name { get; init; } = string.Empty;
-        public string Selector { get; set; } = string.Empty;
-        public SaveChickenRequestDto saveChickenRequest { get; set; } = default!;
-    }
-
     protected override void OnInitialized()
     {
         _saveChickenActionService = DtoServiceFactory.Create<SaveChickenActionDto, SaveChickenActionSearch>();
