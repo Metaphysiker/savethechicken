@@ -91,7 +91,8 @@
     @if (_selectedDriver != null)
     {
         <DriverRouteMapCard Driver="_selectedDriver" Markers="_selectedDriverMarkers" Arrows="_selectedDriverArrows"
-                            TotalDistanceKm="_selectedDriverDistanceKm" TotalNumberOfChickens="@GetTotalNumberOfChickens(_selectedDriver)" TotalNumberOfRoosters="@GetTotalNumberOfRoosters(_selectedDriver)" />
+                            TotalDistanceKm="_selectedDriverDistanceKm" TotalNumberOfChickens="@GetTotalNumberOfChickens(_selectedDriver)"
+                            TotalNumberOfRoosters="@GetTotalNumberOfRoosters(_selectedDriver)" />
     }
 </MudPaper>
 
@@ -115,9 +116,8 @@
     private MudDropContainer<DropItem>? _dropContainer;
     private List<DropItem> _requestItems = new();
     private SaveChickenDriveRequestDto? _selectedDriver;
-    private Dictionary<int, int?> _requestDriverAssignments = new(); // requestId -> driverId, null = unassigned
-    private bool _needsDropRefresh = false;
-
+    private Dictionary<int, (int DriverId, int Order)?> _requestDriverAssignments = new(); private bool _needsDropRefresh =
+false;
     private List<MapMarker> _selectedDriverMarkers = new();
     private List<MapArrow> _selectedDriverArrows = new();
     private double _selectedDriverDistanceKm;
@@ -226,15 +226,24 @@
 
     private void BuildRequestItems()
     {
-        _requestItems = SaveChickenRequests.Select(r => new DropItem
+        _requestItems = SaveChickenRequests.Select(r =>
         {
-            Name = $"{r.Person?.Contact?.FirstName} {r.Person?.Contact?.LastName}",
-            Selector = _requestDriverAssignments.TryGetValue(r.Id, out var driverId) && driverId.HasValue
-                ? driverId.Value.ToString()
-                : "unassigned",
-            saveChickenRequest = r
+            var hasAssignment = _requestDriverAssignments.TryGetValue(r.Id, out var assignment) && assignment.HasValue;
+            return new DropItem
+            {
+                Name = $"{r.Person?.Contact?.FirstName} {r.Person?.Contact?.LastName}",
+                Selector = hasAssignment ? assignment!.Value.DriverId.ToString() : "unassigned",
+                saveChickenRequest = r
+            };
         })
-        .OrderBy(i => i.Selector == "unassigned" ? i.saveChickenRequest.Person?.Address?.PostalCode : null)
+        // 1. Put assigned items first (1), and unassigned items last (2)
+        .OrderBy(i => i.Selector == "unassigned" ? 2 : 1)
+        // 2. Sort assigned items by their saved Order index, and unassigned by Postal Code
+        .ThenBy(i => i.Selector == "unassigned"
+            ? i.saveChickenRequest.Person?.Address?.PostalCode
+            : _requestDriverAssignments.TryGetValue(i.saveChickenRequest.Id, out var assignment) && assignment.HasValue
+                ? assignment.Value.Order.ToString("D6") // Format padding to string to keep types compatible
+                : "999999")
         .ToList();
     }
 
@@ -256,7 +265,7 @@
         // Remove from its current position in the flat list
         _requestItems.Remove(item);
 
-        // Update zone + assignment
+        // Update zone + assignment tracking memory
         item.Selector = dropItem.DropzoneIdentifier;
         if (dropItem.DropzoneIdentifier == "unassigned")
         {
@@ -264,7 +273,8 @@
         }
         else if (int.TryParse(dropItem.DropzoneIdentifier, out var driverId))
         {
-            _requestDriverAssignments[item.saveChickenRequest.Id] = driverId;
+            // Set it to its target index in the zone temporarily so it maintains sequence sanity before saving
+            _requestDriverAssignments[item.saveChickenRequest.Id] = (driverId, dropItem.IndexInZone);
         }
 
         // Figure out where in the flat list this corresponds to, based on
@@ -284,6 +294,17 @@
         }
 
         _requestItems.Insert(insertIndex, item);
+
+        // Crucial fix: Fix the order indices of ALL items inside this modified zone
+        // to prevent order overlaps if BuildRequestItems runs again before saving.
+        if (dropItem.DropzoneIdentifier != "unassigned" && int.TryParse(dropItem.DropzoneIdentifier, out var currentDriverId))
+        {
+            var updatedZoneItems = _requestItems.Where(i => i.Selector == dropItem.DropzoneIdentifier).ToList();
+            for (int i = 0; i < updatedZoneItems.Count; i++)
+            {
+                _requestDriverAssignments[updatedZoneItems[i].saveChickenRequest.Id] = (currentDriverId, i);
+            }
+        }
 
         _requestItems = new List<DropItem>(_requestItems);
         BuildMapForSelectedDriver();
@@ -315,20 +336,39 @@
 
         try
         {
+            // Track the current sequence index for each driver dynamically
+            var driverCounters = new Dictionary<string, int>();
+            var assignmentsList = new List<RequestAssignmentJson>();
+
+            foreach (var item in _requestItems)
+            {
+                if (item.Selector != "unassigned" && int.TryParse(item.Selector, out var driverId))
+                {
+                    if (!driverCounters.ContainsKey(item.Selector))
+                    {
+                        driverCounters[item.Selector] = 0;
+                    }
+
+                    assignmentsList.Add(new RequestAssignmentJson
+                    {
+                        RequestId = item.saveChickenRequest.Id,
+                        DriverId = driverId,
+                        Order = driverCounters[item.Selector]++ // Increments order value (0, 1, 2...) per driver
+                    });
+                }
+            }
+
             var savedData = new SavedRequestAssignmentsData
             {
-                Version = 1,
-                Assignments = _requestDriverAssignments
-                    .Where(kvp => kvp.Value.HasValue)
-                    .Select(kvp => new RequestAssignmentJson { RequestId = kvp.Key, DriverId = kvp.Value!.Value })
-                    .ToList()
+                Version = 2, // Upgraded version tracking
+                Assignments = assignmentsList
             };
 
             var json = JsonSerializer.Serialize(savedData);
             saveChickenActionDto.DriverRoutePlansJson = json;
             await _saveChickenActionService.UpdateAsync(saveChickenActionDto);
 
-            Snackbar.Add("Zuordnungen erfolgreich gespeichert!", Severity.Success);
+            Snackbar.Add("Zuordnungen und Reihenfolge erfolgreich gespeichert!", Severity.Success);
         }
         catch (Exception ex)
         {
@@ -357,7 +397,8 @@
 
             foreach (var assignment in savedData.Assignments)
             {
-                _requestDriverAssignments[assignment.RequestId] = assignment.DriverId;
+                // Store both Driver ID and saved sequence rank
+                _requestDriverAssignments[assignment.RequestId] = (assignment.DriverId, assignment.Order);
             }
         }
         catch (Exception ex)
@@ -390,6 +431,7 @@
     {
         public int RequestId { get; set; }
         public int DriverId { get; set; }
+        public int Order { get; set; }
     }
 
     private int GetTotalSelectedAnimals(SaveChickenDriveRequestDto driver)
@@ -480,4 +522,5 @@
     {
         return degrees * Math.PI / 180;
     }
+
 }
