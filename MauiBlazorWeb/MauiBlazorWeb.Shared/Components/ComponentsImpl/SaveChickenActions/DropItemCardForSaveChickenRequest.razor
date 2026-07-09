@@ -1,0 +1,61 @@
+@using MauiBlazorWeb.Shared.Classes
+
+<MudPaper Class="pa-2 ma-1" Elevation="1">
+    <MudText>
+        @Item.Name
+    </MudText>
+
+    <MudText Typo="Typo.caption" Class="d-block">
+        @Item.saveChickenRequest.Person?.Address?.PostalCode
+        @Item.saveChickenRequest.Person?.Address?.City
+        @Item.saveChickenRequest.Person?.Address?.Street
+    </MudText>
+
+    @if (Item.saveChickenRequest.NumberOfChickensToBeSaved > 0)
+    {
+        <MudText Typo="Typo.caption" Class="d-block">
+            Hühner: @Item.saveChickenRequest.NumberOfChickensToBeSaved
+        </MudText>
+    }
+
+    @if (Item.saveChickenRequest.NumberOfRoostersToBeSaved > 0)
+    {
+        <MudText Typo="Typo.caption" Class="d-block">
+            Hähne: @Item.saveChickenRequest.NumberOfRoostersToBeSaved
+        </MudText>
+    }
+
+        @if (!string.IsNullOrWhiteSpace(Item.saveChickenRequest.Message))
+    {
+        var isLong = Item.saveChickenRequest.Message.Length > MessagePreviewLength;
+
+        <MudText Typo="Typo.caption" Class="d-block" Style="white-space: pre-wrap;">
+            @(_isExpanded || !isLong
+                ? Item.saveChickenRequest.Message
+                : Item.saveChickenRequest.Message.Substring(0, MessagePreviewLength))
+        </MudText>
+
+        @if (isLong)
+        {
+            <MudLink Typo="Typo.caption"
+                 OnClick="@ToggleExpanded"
+                 OnClick:stopPropagation="true"
+                 Style="cursor: pointer;">
+            @(_isExpanded ? "Nachricht ausblenden" : "Nachricht anzeigen")
+        </MudLink>
+        }
+    }
+</MudPaper>
+
+@code {
+    [Parameter, EditorRequired]
+    public DropItem Item { get; set; } = default!;
+
+    private const int MessagePreviewLength = 0;
+    private bool _isExpanded = false;
+
+    private void ToggleExpanded()
+    {
+        _isExpanded = !_isExpanded;
+    }
+}

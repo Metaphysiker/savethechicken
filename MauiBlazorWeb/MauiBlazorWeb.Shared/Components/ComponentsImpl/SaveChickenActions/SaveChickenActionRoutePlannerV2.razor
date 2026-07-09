@@ -47,7 +47,7 @@
                             {
                                 <MudListItem T="SaveChickenDriveRequestDto" Value="@driver">
                                     <MudText>@driver.Person?.Contact?.FirstName @driver.Person?.Contact?.LastName</MudText>
-                                    <MudText Typo="Typo.caption">@GetAssignedCount(driver) Anfragen</MudText>
+                                    <MudText Typo="Typo.caption">@GetAssignedCount(driver) Angebote</MudText>
                                 </MudListItem>
                             }
                         </MudList>
@@ -58,7 +58,7 @@
                 <MudItem xs="12" md="4">
                     <MudPaper Class="pa-2" Elevation="2" Style="height: 400px; overflow-y: auto;">
                         <MudText Typo="Typo.h6" Class="mb-2 px-2">
-                            @(_selectedDriver == null ? "Anfragen" : $"Anfragen:                  {_selectedDriver.Person?.Contact?.FirstName} {_selectedDriver.Person?.Contact?.LastName}")
+                            @(_selectedDriver == null ? "Angebote" : $"Angebote:                            {_selectedDriver.Person?.Contact?.FirstName} {_selectedDriver.Person?.Contact?.LastName}")
                         </MudText>
                         @if (_selectedDriver == null)
                         {
@@ -85,22 +85,13 @@
         </ChildContent>
 
         <ItemRenderer>
-            <MudPaper Class="pa-2 ma-1" Elevation="1">
-                <MudText>@context.Name</MudText>
-                <MudText Typo="Typo.caption">
-                    @context.saveChickenRequest.Person?.Address?.PostalCode
-                    @context.saveChickenRequest.Person?.Address?.City
-                </MudText>
-            </MudPaper>
+            <DropItemCardForSaveChickenRequest Item="context" />
         </ItemRenderer>
     </MudDropContainer>
     @if (_selectedDriver != null)
     {
-        <DriverRouteMapCard Driver="_selectedDriver"
-                             Markers="_selectedDriverMarkers"
-                             Arrows="_selectedDriverArrows"
-                             TotalDistanceKm="_selectedDriverDistanceKm"
-                             TotalSelectedAnimals="@GetTotalSelectedAnimals(_selectedDriver)" />
+        <DriverRouteMapCard Driver="_selectedDriver" Markers="_selectedDriverMarkers" Arrows="_selectedDriverArrows"
+                            TotalDistanceKm="_selectedDriverDistanceKm" TotalNumberOfChickens="@GetTotalNumberOfChickens(_selectedDriver)" TotalNumberOfRoosters="@GetTotalNumberOfRoosters(_selectedDriver)" />
     }
 </MudPaper>
 
@@ -242,7 +233,9 @@
                 ? driverId.Value.ToString()
                 : "unassigned",
             saveChickenRequest = r
-        }).ToList();
+        })
+        .OrderBy(i => i.Selector == "unassigned" ? i.saveChickenRequest.Person?.Address?.PostalCode : null)
+        .ToList();
     }
 
     private int GetAssignedCount(SaveChickenDriveRequestDto driver)
@@ -293,8 +286,9 @@
         _requestItems.Insert(insertIndex, item);
 
         _requestItems = new List<DropItem>(_requestItems);
-        _dropContainer?.Refresh();
         BuildMapForSelectedDriver();
+
+        _needsDropRefresh = true;
         StateHasChanged();
     }
 
@@ -305,8 +299,9 @@
         _requestDriverAssignments.Clear();
         _selectedDriver = null;
         BuildRequestItems();
-        _dropContainer?.Refresh();
+        BuildMapForSelectedDriver();
 
+        _needsDropRefresh = true;
         StateHasChanged();
     }
 
@@ -330,7 +325,7 @@
             };
 
             var json = JsonSerializer.Serialize(savedData);
-            saveChickenActionDto.RoutePlansJson = json;
+            saveChickenActionDto.DriverRoutePlansJson = json;
             await _saveChickenActionService.UpdateAsync(saveChickenActionDto);
 
             Snackbar.Add("Zuordnungen erfolgreich gespeichert!", Severity.Success);
@@ -351,12 +346,12 @@
     /// </summary>
     private void LoadSavedAssignments()
     {
-        if (string.IsNullOrWhiteSpace(saveChickenActionDto.RoutePlansJson))
+        if (string.IsNullOrWhiteSpace(saveChickenActionDto.DriverRoutePlansJson))
             return;
 
         try
         {
-            var savedData = JsonSerializer.Deserialize<SavedRequestAssignmentsData>(saveChickenActionDto.RoutePlansJson);
+            var savedData = JsonSerializer.Deserialize<SavedRequestAssignmentsData>(saveChickenActionDto.DriverRoutePlansJson);
             if (savedData?.Assignments == null)
                 return;
 
@@ -397,11 +392,25 @@
         public int DriverId { get; set; }
     }
 
-        private int GetTotalSelectedAnimals(SaveChickenDriveRequestDto driver)
+    private int GetTotalSelectedAnimals(SaveChickenDriveRequestDto driver)
     {
         return _requestItems
             .Where(i => i.Selector == driver.Id.ToString())
             .Sum(i => i.saveChickenRequest.NumberOfChickensToBeSaved + i.saveChickenRequest.NumberOfRoostersToBeSaved);
+    }
+
+    private int GetTotalNumberOfChickens(SaveChickenDriveRequestDto driver)
+    {
+        return _requestItems
+            .Where(i => i.Selector == driver.Id.ToString())
+            .Sum(i => i.saveChickenRequest.NumberOfChickensToBeSaved);
+    }
+
+    private int GetTotalNumberOfRoosters(SaveChickenDriveRequestDto driver)
+    {
+        return _requestItems
+            .Where(i => i.Selector == driver.Id.ToString())
+            .Sum(i => i.saveChickenRequest.NumberOfRoostersToBeSaved);
     }
 
     /// <summary>

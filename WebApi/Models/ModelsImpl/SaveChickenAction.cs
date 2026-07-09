@@ -22,6 +22,8 @@ namespace WebApi.Models.ModelsImpl
         /// </summary>
         public string? RoutePlansJson { get; set; }
 
+        public string? DriverRoutePlansJson { get; set; }
+
         public List<SaveChickenRequest> SaveChickenRequests { get; set; }
         public List<Farm> Farms { get; set; }
         public List<SaveChickenDriveRequest> SaveChickenDriveRequests { get; set; }

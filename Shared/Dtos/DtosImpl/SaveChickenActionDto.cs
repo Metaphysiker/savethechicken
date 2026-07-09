@@ -29,5 +29,6 @@ namespace Shared.Dtos.DtosImpl
         /// </summary>
         public string? RoutePlansJson { get; set; }
 
+        public string? DriverRoutePlansJson { get; set; }
     }
 }
