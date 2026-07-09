@@ -94,6 +94,14 @@
             </MudPaper>
         </ItemRenderer>
     </MudDropContainer>
+    @if (_selectedDriver != null)
+    {
+        <DriverRouteMapCard Driver="_selectedDriver"
+                             Markers="_selectedDriverMarkers"
+                             Arrows="_selectedDriverArrows"
+                             TotalDistanceKm="_selectedDriverDistanceKm"
+                             TotalSelectedAnimals="@GetTotalSelectedAnimals(_selectedDriver)" />
+    }
 </MudPaper>
 
 @code {
@@ -118,6 +126,10 @@
     private SaveChickenDriveRequestDto? _selectedDriver;
     private Dictionary<int, int?> _requestDriverAssignments = new(); // requestId -> driverId, null = unassigned
     private bool _needsDropRefresh = false;
+
+    private List<MapMarker> _selectedDriverMarkers = new();
+    private List<MapArrow> _selectedDriverArrows = new();
+    private double _selectedDriverDistanceKm;
 
     protected override void OnInitialized()
     {
@@ -218,6 +230,7 @@
     private void SelectDriver(SaveChickenDriveRequestDto? driver)
     {
         _selectedDriver = driver;
+        BuildMapForSelectedDriver();
     }
 
     private void BuildRequestItems()
@@ -281,6 +294,7 @@
 
         _requestItems = new List<DropItem>(_requestItems);
         _dropContainer?.Refresh();
+        BuildMapForSelectedDriver();
         StateHasChanged();
     }
 
@@ -381,5 +395,80 @@
     {
         public int RequestId { get; set; }
         public int DriverId { get; set; }
+    }
+
+        private int GetTotalSelectedAnimals(SaveChickenDriveRequestDto driver)
+    {
+        return _requestItems
+            .Where(i => i.Selector == driver.Id.ToString())
+            .Sum(i => i.saveChickenRequest.NumberOfChickensToBeSaved + i.saveChickenRequest.NumberOfRoostersToBeSaved);
+    }
+
+    /// <summary>
+    /// Builds map markers/arrows for the currently selected driver's assigned requests,
+    /// in the same order they appear in that driver's column.
+    /// </summary>
+    private void BuildMapForSelectedDriver()
+    {
+        _selectedDriverMarkers = new List<MapMarker>();
+        _selectedDriverArrows = new List<MapArrow>();
+        _selectedDriverDistanceKm = 0;
+
+        if (_selectedDriver == null)
+            return;
+
+        var assignedRequests = _requestItems
+            .Where(i => i.Selector == _selectedDriver.Id.ToString())
+            .Select(i => i.saveChickenRequest)
+            .Where(r => r.Person?.Address?.GeoCoordinate != null)
+            .ToList();
+
+        foreach (var request in assignedRequests)
+        {
+            _selectedDriverMarkers.Add(new MapMarker
+            {
+                Latitude = request.Person!.Address!.GeoCoordinate!.Latitude,
+                Longitude = request.Person.Address.GeoCoordinate.Longitude,
+                Info = $"{request.Person.Contact?.FirstName} {request.Person.Contact?.LastName}, {request.Person.Address.Street}, {request.Person.Address.PostalCode} {request.Person.Address.City}, {request.NumberOfChickensToBeSaved} Hühner, {request.NumberOfRoostersToBeSaved} Hähne"
+            });
+        }
+
+        for (int i = 0; i < _selectedDriverMarkers.Count - 1; i++)
+        {
+            var from = _selectedDriverMarkers[i];
+            var to = _selectedDriverMarkers[i + 1];
+
+            _selectedDriverArrows.Add(new MapArrow
+            {
+                LatitudeFrom = from.Latitude,
+                LongitudeFrom = from.Longitude,
+                LatitudeTo = to.Latitude,
+                LongitudeTo = to.Longitude
+            });
+
+            _selectedDriverDistanceKm += CalculateDistance(from.Latitude, from.Longitude, to.Latitude, to.Longitude);
+        }
+    }
+
+    /// <summary>
+    /// Calculate distance between two coordinates using Haversine formula
+    /// </summary>
+    private double CalculateDistance(double lat1, double lon1, double lat2, double lon2)
+    {
+        const double R = 6371; // Earth's radius in km
+        var dLat = ToRadians(lat2 - lat1);
+        var dLon = ToRadians(lon2 - lon1);
+
+        var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
+                Math.Cos(ToRadians(lat1)) * Math.Cos(ToRadians(lat2)) *
+                Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
+
+        var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+        return R * c;
+    }
+
+    private double ToRadians(double degrees)
+    {
+        return degrees * Math.PI / 180;
     }
 }
