@@ -54,20 +54,40 @@
                     </MudPaper>
                 </MudItem>
 
-                @* Column 2: Drop zone for the selected driver *@
+                @* Column 2: Date picker + drop zone for the selected driver's current drive *@
                 <MudItem xs="12" md="4">
                     <MudPaper Class="pa-2" Elevation="2" Style="height: 400px; overflow-y: auto;">
                         <MudText Typo="Typo.h6" Class="mb-2 px-2">
-                            @(_selectedDriver == null ? "Angebote" : $"Angebote:                            {_selectedDriver.Person?.Contact?.FirstName} {_selectedDriver.Person?.Contact?.LastName}")
+                            @(_selectedDriver == null
+                                ? "Angebote"
+                                : $"Angebote: {_selectedDriver.Person?.Contact?.FirstName}   {_selectedDriver.Person?.Contact?.LastName}")
                         </MudText>
                         @if (_selectedDriver == null)
                         {
                             <MudText Class="px-2" Typo="Typo.body2" Color="Color.Secondary">Wähle einen Fahrer aus.
                             </MudText>
                         }
+                        else if (saveChickenActionDto.Dates == null || saveChickenActionDto.Dates.Count == 0)
+                        {
+                            <MudText Class="px-2" Typo="Typo.body2" Color="Color.Error">
+                                Für diese Aktion sind keine Termine definiert.
+                            </MudText>
+                        }
                         else
                         {
-                            <MudDropZone T="DropItem" Identifier="@_selectedDriver.Id.ToString()" Class="pa-2"
+                            <MudSelect T="DateOnly" Value="@(_selectedDriveDate ?? saveChickenActionDto.Dates[0])"
+                                       ValueChanged="@(async (DateOnly d) => SelectDriveDate(d))" Label="Fahrt-Termin" Dense="true"
+                                       Margin="Margin.Dense" Class="px-2 mb-2">
+                                @foreach (var date in saveChickenActionDto.Dates)
+                                {
+                                    <MudSelectItem T="DateOnly" Value="@date">
+                                        @date.ToString("dd.MM.yyyy") (@GetAssignedCountForDrive(_selectedDriver.Id, date)
+                                        Angebote)
+                                    </MudSelectItem>
+                                }
+                            </MudSelect>
+
+                            <MudDropZone T="DropItem" Identifier="@(CurrentDriveSelector ?? "unassigned")" Class="pa-2"
                                          AllowReorder="true" Style="min-height: 100px;" />
                         }
                     </MudPaper>
@@ -88,9 +108,9 @@
             <DropItemCardForSaveChickenRequest Item="context" />
         </ItemRenderer>
     </MudDropContainer>
-    @if (_selectedDriver != null)
+@if (_selectedDriver != null && _selectedDriveDate.HasValue)
     {
-        <DriverRouteMapCard Driver="_selectedDriver" Markers="_selectedDriverMarkers" Arrows="_selectedDriverArrows"
+        <DriverRouteMapCard Driver="_selectedDriver" Date="_selectedDriveDate" Markers="_selectedDriverMarkers" Arrows="_selectedDriverArrows"
                             TotalDistanceKm="_selectedDriverDistanceKm" TotalNumberOfChickens="@GetTotalNumberOfChickens(_selectedDriver)"
                             TotalNumberOfRoosters="@GetTotalNumberOfRoosters(_selectedDriver)" />
     }
@@ -116,11 +136,56 @@
     private MudDropContainer<DropItem>? _dropContainer;
     private List<DropItem> _requestItems = new();
     private SaveChickenDriveRequestDto? _selectedDriver;
-    private Dictionary<int, (int DriverId, int Order)?> _requestDriverAssignments = new(); private bool _needsDropRefresh =
-false;
+    private DateOnly? _selectedDriveDate;
+
+    // Key: RequestId. Value: (DriverId, Date, Order) identifying which "drive" (driver + date) the request is assigned to.
+    private Dictionary<int, (int DriverId, DateOnly Date, int Order)?> _requestDriverAssignments = new();
+    private bool _needsDropRefresh = false;
     private List<MapMarker> _selectedDriverMarkers = new();
     private List<MapArrow> _selectedDriverArrows = new();
     private double _selectedDriverDistanceKm;
+
+    private const string DriveSelectorSeparator = "_";
+
+    /// <summary>
+    /// Builds the composite drop-zone identifier for a given driver + date "drive".
+    /// </summary>
+    private static string BuildDriveSelector(int driverId, DateOnly date)
+    {
+        return $"{driverId}{DriveSelectorSeparator}{date:yyyyMMdd}";
+    }
+
+    /// <summary>
+    /// Parses a composite drop-zone identifier back into driver id + date. Returns false for "unassigned" or invalid
+    ///values.
+    /// </summary>
+    private static bool TryParseDriveSelector(string? selector, out int driverId, out DateOnly date)
+    {
+        driverId = 0;
+        date = default;
+
+        if (string.IsNullOrEmpty(selector) || selector == "unassigned")
+            return false;
+
+        var parts = selector.Split(DriveSelectorSeparator);
+        if (parts.Length != 2)
+            return false;
+
+        if (!int.TryParse(parts[0], out driverId))
+            return false;
+
+        if (!DateOnly.TryParseExact(parts[1], "yyyyMMdd", out date))
+            return false;
+
+        return true;
+    }
+
+    /// <summary>
+    /// The drop-zone identifier for the drive currently being viewed (selected driver + selected date), if any.
+    /// </summary>
+    private string? CurrentDriveSelector => _selectedDriver != null && _selectedDriveDate.HasValue
+        ? BuildDriveSelector(_selectedDriver.Id, _selectedDriveDate.Value)
+        : null;
 
     protected override void OnInitialized()
     {
@@ -183,6 +248,7 @@ false;
         _requestItems = new List<DropItem>();
         _requestDriverAssignments.Clear();
         _selectedDriver = null;
+        _selectedDriveDate = null;
 
         await GetAndSetDriversAndRequests();
 
@@ -218,10 +284,36 @@ false;
         SaveChickenRequests = saveChickenRequestResults.Data;
     }
 
+    /// <summary>
+    /// Selects a driver and defaults the viewed drive to the action's first date.
+    /// </summary>
     private void SelectDriver(SaveChickenDriveRequestDto? driver)
     {
         _selectedDriver = driver;
-        BuildMapForSelectedDriver();
+        _selectedDriveDate = GetDefaultDriveDate(driver);
+        BuildMapForSelectedDrive();
+    }
+
+    /// <summary>
+    /// Default date shown when a driver is selected: the first date of the action.
+    /// </summary>
+    private DateOnly? GetDefaultDriveDate(SaveChickenDriveRequestDto? driver)
+    {
+        if (driver == null)
+            return null;
+
+        return saveChickenActionDto.Dates is { Count: > 0 } ? saveChickenActionDto.Dates[0] : null;
+    }
+
+    /// <summary>
+    /// Switches which date's drive is being viewed/edited for the currently selected driver.
+    /// </summary>
+    private void SelectDriveDate(DateOnly date)
+    {
+        _selectedDriveDate = date;
+        BuildMapForSelectedDrive();
+        _needsDropRefresh = true;
+        StateHasChanged();
     }
 
     private void BuildRequestItems()
@@ -232,7 +324,9 @@ false;
             return new DropItem
             {
                 Name = $"{r.Person?.Contact?.FirstName} {r.Person?.Contact?.LastName}",
-                Selector = hasAssignment ? assignment!.Value.DriverId.ToString() : "unassigned",
+                Selector = hasAssignment
+                    ? BuildDriveSelector(assignment!.Value.DriverId, assignment.Value.Date)
+                    : "unassigned",
                 saveChickenRequest = r
             };
         })
@@ -247,9 +341,21 @@ false;
         .ToList();
     }
 
+    /// <summary>
+    /// Total requests assigned to this driver across ALL of their drives (all dates).
+    /// </summary>
     private int GetAssignedCount(SaveChickenDriveRequestDto driver)
     {
-        return _requestItems.Count(i => i.Selector == driver.Id.ToString());
+        return _requestItems.Count(i => TryParseDriveSelector(i.Selector, out var driverId, out _) && driverId == driver.Id);
+    }
+
+    /// <summary>
+    /// Requests assigned to a specific driver + date drive. Used to annotate the date selector.
+    /// </summary>
+    private int GetAssignedCountForDrive(int driverId, DateOnly date)
+    {
+        var selector = BuildDriveSelector(driverId, date);
+        return _requestItems.Count(i => i.Selector == selector);
     }
 
     /// <summary>
@@ -271,10 +377,10 @@ false;
         {
             _requestDriverAssignments[item.saveChickenRequest.Id] = null;
         }
-        else if (int.TryParse(dropItem.DropzoneIdentifier, out var driverId))
+        else if (TryParseDriveSelector(dropItem.DropzoneIdentifier, out var driverId, out var date))
         {
             // Set it to its target index in the zone temporarily so it maintains sequence sanity before saving
-            _requestDriverAssignments[item.saveChickenRequest.Id] = (driverId, dropItem.IndexInZone);
+            _requestDriverAssignments[item.saveChickenRequest.Id] = (driverId, date, dropItem.IndexInZone);
         }
 
         // Figure out where in the flat list this corresponds to, based on
@@ -297,17 +403,18 @@ false;
 
         // Crucial fix: Fix the order indices of ALL items inside this modified zone
         // to prevent order overlaps if BuildRequestItems runs again before saving.
-        if (dropItem.DropzoneIdentifier != "unassigned" && int.TryParse(dropItem.DropzoneIdentifier, out var currentDriverId))
+        if (dropItem.DropzoneIdentifier != "unassigned" && TryParseDriveSelector(dropItem.DropzoneIdentifier, out var
+zoneDriverId, out var zoneDate))
         {
             var updatedZoneItems = _requestItems.Where(i => i.Selector == dropItem.DropzoneIdentifier).ToList();
             for (int i = 0; i < updatedZoneItems.Count; i++)
             {
-                _requestDriverAssignments[updatedZoneItems[i].saveChickenRequest.Id] = (currentDriverId, i);
+                _requestDriverAssignments[updatedZoneItems[i].saveChickenRequest.Id] = (zoneDriverId, zoneDate, i);
             }
         }
 
         _requestItems = new List<DropItem>(_requestItems);
-        BuildMapForSelectedDriver();
+        BuildMapForSelectedDrive();
 
         _needsDropRefresh = true;
         StateHasChanged();
@@ -319,8 +426,9 @@ false;
 
         _requestDriverAssignments.Clear();
         _selectedDriver = null;
+        _selectedDriveDate = null;
         BuildRequestItems();
-        BuildMapForSelectedDriver();
+        BuildMapForSelectedDrive();
 
         _needsDropRefresh = true;
         StateHasChanged();
@@ -336,31 +444,32 @@ false;
 
         try
         {
-            // Track the current sequence index for each driver dynamically
-            var driverCounters = new Dictionary<string, int>();
+            // Track the current sequence index per drive (driver + date), not just per driver
+            var driveCounters = new Dictionary<string, int>();
             var assignmentsList = new List<RequestAssignmentJson>();
 
             foreach (var item in _requestItems)
             {
-                if (item.Selector != "unassigned" && int.TryParse(item.Selector, out var driverId))
+                if (TryParseDriveSelector(item.Selector, out var driverId, out var date))
                 {
-                    if (!driverCounters.ContainsKey(item.Selector))
+                    if (!driveCounters.ContainsKey(item.Selector))
                     {
-                        driverCounters[item.Selector] = 0;
+                        driveCounters[item.Selector] = 0;
                     }
 
                     assignmentsList.Add(new RequestAssignmentJson
                     {
                         RequestId = item.saveChickenRequest.Id,
                         DriverId = driverId,
-                        Order = driverCounters[item.Selector]++ // Increments order value (0, 1, 2...) per driver
+                        Date = date,
+                        Order = driveCounters[item.Selector]++ // Increments order value (0, 1, 2...) per drive
                     });
                 }
             }
 
             var savedData = new SavedRequestAssignmentsData
             {
-                Version = 2, // Upgraded version tracking
+                Version = 3, // Upgraded version tracking: now includes per-drive Date
                 Assignments = assignmentsList
             };
 
@@ -382,7 +491,7 @@ false;
     }
 
     /// <summary>
-    /// Loads saved request-to-driver assignments, if any exist for this action.
+    /// Loads saved request-to-drive assignments, if any exist for this action.
     /// </summary>
     private void LoadSavedAssignments()
     {
@@ -397,8 +506,8 @@ false;
 
             foreach (var assignment in savedData.Assignments)
             {
-                // Store both Driver ID and saved sequence rank
-                _requestDriverAssignments[assignment.RequestId] = (assignment.DriverId, assignment.Order);
+                // Store Driver ID, Date and saved sequence rank
+                _requestDriverAssignments[assignment.RequestId] = (assignment.DriverId, assignment.Date, assignment.Order);
             }
         }
         catch (Exception ex)
@@ -431,45 +540,59 @@ false;
     {
         public int RequestId { get; set; }
         public int DriverId { get; set; }
+        public DateOnly Date { get; set; }
         public int Order { get; set; }
     }
 
+    /// <summary>
+    /// Total animals for the currently viewed drive (selected driver + selected date), not the driver's other dates.
+    /// </summary>
     private int GetTotalSelectedAnimals(SaveChickenDriveRequestDto driver)
     {
+        var selector = CurrentDriveSelector;
+        if (selector == null) return 0;
+
         return _requestItems
-            .Where(i => i.Selector == driver.Id.ToString())
+            .Where(i => i.Selector == selector)
             .Sum(i => i.saveChickenRequest.NumberOfChickensToBeSaved + i.saveChickenRequest.NumberOfRoostersToBeSaved);
     }
 
     private int GetTotalNumberOfChickens(SaveChickenDriveRequestDto driver)
     {
+        var selector = CurrentDriveSelector;
+        if (selector == null) return 0;
+
         return _requestItems
-            .Where(i => i.Selector == driver.Id.ToString())
+            .Where(i => i.Selector == selector)
             .Sum(i => i.saveChickenRequest.NumberOfChickensToBeSaved);
     }
 
     private int GetTotalNumberOfRoosters(SaveChickenDriveRequestDto driver)
     {
+        var selector = CurrentDriveSelector;
+        if (selector == null) return 0;
+
         return _requestItems
-            .Where(i => i.Selector == driver.Id.ToString())
+            .Where(i => i.Selector == selector)
             .Sum(i => i.saveChickenRequest.NumberOfRoostersToBeSaved);
     }
 
     /// <summary>
-    /// Builds map markers/arrows for the currently selected driver's assigned requests,
-    /// in the same order they appear in that driver's column.
+    /// Builds map markers/arrows for the currently viewed drive (selected driver + selected date),
+    /// in the same order they appear in that drive's column.
     /// </summary>
-    private void BuildMapForSelectedDriver()
+    private void BuildMapForSelectedDrive()
     {
         _selectedDriverMarkers = new List<MapMarker>();
         _selectedDriverArrows = new List<MapArrow>();
         _selectedDriverDistanceKm = 0;
 
-        if (_selectedDriver == null)
+        var selector = CurrentDriveSelector;
+        if (selector == null)
             return;
 
         var assignedRequests = _requestItems
-            .Where(i => i.Selector == _selectedDriver.Id.ToString())
+            .Where(i => i.Selector == selector)
             .Select(i => i.saveChickenRequest)
             .Where(r => r.Person?.Address?.GeoCoordinate != null)
             .ToList();
@@ -522,5 +645,4 @@ false;
     {
         return degrees * Math.PI / 180;
     }
-
 }
