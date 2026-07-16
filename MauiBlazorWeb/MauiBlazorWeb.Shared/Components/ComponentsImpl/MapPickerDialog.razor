@@ -1,0 +1,79 @@
+@using MauiBlazorWeb.Shared.Classes
+@using global::Shared.Dtos.DtosImpl
+
+<MudDialog>
+    <DialogContent>
+        <MudText Typo="Typo.body2" Class="mb-2" Color="Color.Secondary">
+            Klicke auf die Karte, um einen Standort auszuwählen.
+        </MudText>
+
+        <OpenStreetMapPicker Markers="_markers"
+                              SelectedCoordinate="_selectedCoordinate"
+                              SelectedCoordinateChanged="OnSelectedCoordinateChanged" />
+
+        @if (_selectedCoordinate != null)
+        {
+            <MudText Typo="Typo.body2" Class="mt-2">
+                @_selectedCoordinate.Latitude.ToString("F6"), @_selectedCoordinate.Longitude.ToString("F6")
+            </MudText>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Abbrechen</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled"
+                   Disabled="_selectedCoordinate == null" OnClick="Confirm">
+            Übernehmen
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter]
+    public GeoCoordinate? Coordinate { get; set; }
+
+    [Parameter]
+    public EventCallback<GeoCoordinate> OnConfirmed { get; set; }
+
+    private GeoCoordinate? _selectedCoordinate;
+    private List<MapMarker> _markers = new();
+
+    protected override void OnInitialized()
+    {
+        _selectedCoordinate = Coordinate;
+
+        if (_selectedCoordinate != null)
+        {
+            _markers = new List<MapMarker>
+            {
+                new MapMarker
+                {
+                    Latitude = _selectedCoordinate.Latitude,
+                    Longitude = _selectedCoordinate.Longitude,
+                    Info = "Aktueller Standort"
+                }
+            };
+        }
+    }
+
+    private void OnSelectedCoordinateChanged(GeoCoordinate? coordinate)
+    {
+        _selectedCoordinate = coordinate;
+    }
+
+    private async Task Confirm()
+    {
+        if (_selectedCoordinate == null)
+            return;
+
+        await OnConfirmed.InvokeAsync(_selectedCoordinate);
+        MudDialog.Close(DialogResult.Ok(_selectedCoordinate));
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+}

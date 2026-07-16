@@ -1,0 +1,33 @@
+@using MauiBlazorWeb.Shared.Classes
+@using global::Shared.Dtos.DtosImpl
+@inject IDialogService DialogService
+
+<MudIconButton Icon="@Icons.Material.Filled.Map" Color="Color.Primary" Size="Size.Small" OnClick="OpenDialog" />
+
+@code {
+    private IDialogReference? _dialogReference;
+
+    [Parameter]
+    public GeoCoordinate? Coordinate { get; set; }
+
+    [Parameter]
+    public EventCallback<GeoCoordinate?> CoordinateChanged { get; set; }
+
+    private async Task OpenDialog()
+    {
+        var parameters = new DialogParameters
+        {
+            { "Coordinate", Coordinate },
+            { "OnConfirmed", EventCallback.Factory.Create<GeoCoordinate>(this, HandleConfirmed) }
+        };
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true };
+        _dialogReference = await DialogService.ShowAsync<MapPickerDialog>("Standort wählen", parameters, options);
+    }
+
+    private async Task HandleConfirmed(GeoCoordinate coordinate)
+    {
+        _dialogReference?.Close();
+        Coordinate = coordinate;
+        await CoordinateChanged.InvokeAsync(coordinate);
+    }
+}
