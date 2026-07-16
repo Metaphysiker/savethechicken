@@ -114,6 +114,19 @@
                                 }
                             </MudSelect>
 
+                            <MudStack Row="true" Class="px-2 mb-2" AlignItems="AlignItems.Center">
+                                <MudNumericField T="double?" Label="Breitengrad"
+                                                 Value="_selectedLocation.GeoCoordinate?.Latitude"
+                                                 ValueChanged="OnLocationLatitudeChanged" Margin="Margin.Dense" Dense="true" Format="F6"
+                                                 Style="max-width: 140px;" />
+                                <MudNumericField T="double?" Label="Längengrad"
+                                                 Value="_selectedLocation.GeoCoordinate?.Longitude"
+                                                 ValueChanged="OnLocationLongitudeChanged" Margin="Margin.Dense" Dense="true" Format="F6"
+                                                 Style="max-width: 140px;" />
+                                <MapPickerLauncher Coordinate="_selectedLocation.GeoCoordinate"
+                                                   CoordinateChanged="OnLocationGeoCoordinateChanged" />
+                            </MudStack>
+
                             <MudDropZone T="DropItem" Identifier="@_selectedLocation.Id" Class="pa-2" AllowReorder="true"
                                          Style="min-height: 100px;" />
                         }
@@ -587,6 +600,7 @@
         public string Name { get; set; } = "";
         public DateTime DateTime { get; set; } = DateTime.Today;
         public List<int> DriverIds { get; set; } = new();
+        public GeoCoordinate? GeoCoordinate { get; set; } // Optional: can be used for map marker placement
     }
 
     public class SavedRequestAssignmentsData
@@ -683,5 +697,31 @@
     private double ToRadians(double degrees)
     {
         return degrees * Math.PI / 180;
+    }
+
+    private void OnLocationLatitudeChanged(double? latitude)
+    {
+        _selectedLocation!.GeoCoordinate ??= new GeoCoordinate();
+        _selectedLocation.GeoCoordinate.Latitude = latitude ?? 0;
+        // call your existing persistence/update trigger here, same as OnLocationNameChanged does
+    }
+
+    private void OnLocationLongitudeChanged(double? longitude)
+    {
+        _selectedLocation!.GeoCoordinate ??= new GeoCoordinate();
+        _selectedLocation.GeoCoordinate.Longitude = longitude ?? 0;
+        // call your existing persistence/update trigger here
+    }
+
+    private void OnLocationCoordinateChanged(GeoCoordinate? coordinate)
+    {
+        _selectedLocation!.GeoCoordinate = coordinate;
+        // call your existing persistence/update trigger here
+    }
+
+    private void OnLocationGeoCoordinateChanged(GeoCoordinate? coordinate)
+    {
+        _selectedLocation!.GeoCoordinate = coordinate;
+        // call your existing persistence/update trigger here, same as OnLocationNameChanged does
     }
 }
