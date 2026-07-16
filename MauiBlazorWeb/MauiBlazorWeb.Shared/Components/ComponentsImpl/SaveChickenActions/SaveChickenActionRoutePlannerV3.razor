@@ -150,15 +150,16 @@
     </MudDropContainer>
     @if (_selectedLocation != null && GetFirstAssignedDriver(_selectedLocation) != null)
     {
-        @* TODO: DriverRouteMapCard currently takes a single Driver and requires a non-null one, so it's
-           skipped entirely until a driver is assigned to the location. Locations can have several
-           drivers assigned, so this passes the first one as a best-effort placeholder.
-           Consider changing DriverRouteMapCard to accept a list of drivers, or just the location name. *@
-
+        <MudPaper Class="mt-4 pa-2" Elevation="2">
+            <MudText Typo="Typo.h6" Class="mb-2 px-2">Kartenübersicht</MudText>
+            <OpenStreetMap Markers="_overviewMarkers" Arrows="_overviewArrows" />
+        </MudPaper>
     }
 </MudPaper>
 
 @code {
+    private List<MapMarker> _overviewMarkers = new();
+    private List<MapArrow> _overviewArrows = new();
     private bool _isLoading = false;
     private bool _isSaving = false;
     private int _lastLoadedActionId = 0;
@@ -198,9 +199,7 @@
     protected override async Task OnParametersSetAsync()
     {
         if (_isDisposed) return;
-
-        if (_isLoading)
-            return;
+        if (_isLoading) return;
 
         var currentActionId = saveChickenActionDto?.Id ?? 0;
         var isNewAction = _lastLoadedActionId != currentActionId;
@@ -237,9 +236,15 @@
     }
 
     /// <summary>
-    /// Loads drivers and requests, restores saved meeting locations + assignments (or starts empty),
-    /// and builds the drag-and-drop items.
+    /// Helper to rebuild all map layers whenever coordinates, paths, or assignments change.
     /// </summary>
+    private void RefreshMaps()
+    {
+        Console.WriteLine("Refreshing maps...");
+        BuildMapForSelectedLocation();
+        BuildOverviewMap();
+    }
+
     private async Task LoadData()
     {
         if (_isDisposed) return;
@@ -252,10 +257,10 @@
         _selectedLocation = null;
 
         await GetAndSetDriversAndRequests();
-
         LoadSavedAssignments();
-
         BuildRequestItems();
+
+        RefreshMaps(); // Rebuild both maps with initial loaded coordinates
         _needsDropRefresh = true;
     }
 
@@ -285,19 +290,13 @@
         SaveChickenRequests = saveChickenRequestResults.Data;
     }
 
-    /// <summary>
-    /// Selects a meeting location for viewing/editing.
-    /// </summary>
     private void SelectLocation(MeetingLocation? location)
     {
         _selectedLocation = location;
-        BuildMapForSelectedLocation();
+        RefreshMaps();
         _needsDropRefresh = true;
     }
 
-    /// <summary>
-    /// Creates a new meeting location, defaulting to the action's first date, and selects it.
-    /// </summary>
     private void AddMeetingLocation()
     {
         var defaultDate = saveChickenActionDto.Dates is { Count: > 0 }
@@ -314,9 +313,6 @@
         SelectLocation(newLocation);
     }
 
-    /// <summary>
-    /// Removes a meeting location, un-assigning any requests currently attached to it back to "unassigned".
-    /// </summary>
     private void RemoveMeetingLocation(MeetingLocation location)
     {
         foreach (var item in _requestItems.Where(i => i.Selector == location.Id))
@@ -333,7 +329,7 @@
         }
 
         _requestItems = new List<DropItem>(_requestItems);
-        BuildMapForSelectedLocation();
+        RefreshMaps();
         _needsDropRefresh = true;
         StateHasChanged();
     }
@@ -342,7 +338,7 @@
     {
         if (_selectedLocation == null) return;
         _selectedLocation.Name = name;
-        _needsDropRefresh = true; // list item label needs refresh too
+        _needsDropRefresh = true;
         StateHasChanged();
     }
 
@@ -350,6 +346,7 @@
     {
         if (_selectedLocation == null || date == null) return;
         _selectedLocation.DateTime = date.Value.Date + _selectedLocation.DateTime.TimeOfDay;
+        RefreshMaps();
         StateHasChanged();
     }
 
@@ -357,6 +354,7 @@
     {
         if (_selectedLocation == null || time == null) return;
         _selectedLocation.DateTime = _selectedLocation.DateTime.Date + time.Value;
+        RefreshMaps();
         StateHasChanged();
     }
 
@@ -364,6 +362,7 @@
     {
         if (_selectedLocation == null) return;
         _selectedLocation.DriverIds = driverIds?.ToList() ?? new List<int>();
+        RefreshMaps();
         StateHasChanged();
     }
 
@@ -391,40 +390,28 @@
                 saveChickenRequest = r
             };
         })
-        // 1. Put assigned items first (1), and unassigned items last (2)
         .OrderBy(i => i.Selector == "unassigned" ? 2 : 1)
-        // 2. Sort assigned items by their saved Order index, and unassigned by Postal Code
         .ThenBy(i => i.Selector == "unassigned"
             ? i.saveChickenRequest.Person?.Address?.PostalCode
             : _requestLocationAssignments.TryGetValue(i.saveChickenRequest.Id, out var assignment) && assignment.HasValue
-                ? assignment.Value.Order.ToString("D6") // Format padding to string to keep types compatible
+                ? assignment.Value.Order.ToString("D6")
                 : "999999")
         .ToList();
     }
 
-    /// <summary>
-    /// Requests currently assigned to a specific meeting location.
-    /// </summary>
     private int GetAssignedCountForLocation(MeetingLocation location)
     {
         return _requestItems.Count(i => i.Selector == location.Id);
     }
 
-    /// <summary>
-    /// Handles drag-and-drop events, including reordering within a zone and moving between zones.
-    /// Zones are now identified directly by MeetingLocation.Id (or "unassigned") - no composite key parsing needed.
-    /// </summary>
     private void RequestItemDropped(MudItemDropInfo<DropItem> dropItem)
     {
         if (dropItem.Item?.saveChickenRequest == null)
             return;
 
         var item = dropItem.Item;
-
-        // Remove from its current position in the flat list
         _requestItems.Remove(item);
 
-        // Update zone + assignment tracking memory
         item.Selector = dropItem.DropzoneIdentifier;
         if (dropItem.DropzoneIdentifier == "unassigned")
         {
@@ -432,12 +419,9 @@
         }
         else
         {
-            // Set it to its target index in the zone temporarily so it maintains sequence sanity before saving
             _requestLocationAssignments[item.saveChickenRequest.Id] = (dropItem.DropzoneIdentifier, dropItem.IndexInZone);
         }
 
-        // Figure out where in the flat list this corresponds to, based on
-        // the other items currently in the same zone
         var itemsInZone = _requestItems.Where(i => i.Selector == dropItem.DropzoneIdentifier).ToList();
 
         int insertIndex;
@@ -454,8 +438,6 @@
 
         _requestItems.Insert(insertIndex, item);
 
-        // Crucial fix: Fix the order indices of ALL items inside this modified zone
-        // to prevent order overlaps if BuildRequestItems runs again before saving.
         if (dropItem.DropzoneIdentifier != "unassigned")
         {
             var updatedZoneItems = _requestItems.Where(i => i.Selector == dropItem.DropzoneIdentifier).ToList();
@@ -466,7 +448,7 @@
         }
 
         _requestItems = new List<DropItem>(_requestItems);
-        BuildMapForSelectedLocation();
+        RefreshMaps();
 
         _needsDropRefresh = true;
         StateHasChanged();
@@ -480,7 +462,7 @@
         _meetingLocations.Clear();
         _selectedLocation = null;
         BuildRequestItems();
-        BuildMapForSelectedLocation();
+        RefreshMaps();
 
         _needsDropRefresh = true;
         StateHasChanged();
@@ -496,7 +478,6 @@
 
         try
         {
-            // Track the current sequence index per meeting location
             var locationCounters = new Dictionary<string, int>();
             var assignmentsList = new List<RequestAssignmentJson>();
 
@@ -513,14 +494,14 @@
                     {
                         RequestId = item.saveChickenRequest.Id,
                         MeetingLocationId = item.Selector,
-                        Order = locationCounters[item.Selector]++ // Increments order value (0, 1, 2...) per location
+                        Order = locationCounters[item.Selector]++
                     });
                 }
             }
 
             var savedData = new SavedRequestAssignmentsData
             {
-                Version = 4, // Upgraded version tracking: now uses the Meeting Location model
+                Version = 4,
                 MeetingLocations = _meetingLocations,
                 Assignments = assignmentsList
             };
@@ -542,11 +523,6 @@
         }
     }
 
-    /// <summary>
-    /// Loads saved meeting locations + request assignments, if any exist for this action.
-    /// Data saved by the previous (driver+date) model is version &lt; 4 and is not convertible,
-    /// so it is skipped rather than causing an error.
-    /// </summary>
     private void LoadSavedAssignments()
     {
         if (string.IsNullOrWhiteSpace(saveChickenActionDto.DriverRoutePlansJson))
@@ -600,7 +576,7 @@
         public string Name { get; set; } = "";
         public DateTime DateTime { get; set; } = DateTime.Today;
         public List<int> DriverIds { get; set; } = new();
-        public GeoCoordinate? GeoCoordinate { get; set; } // Optional: can be used for map marker placement
+        public GeoCoordinate? GeoCoordinate { get; set; }
     }
 
     public class SavedRequestAssignmentsData
@@ -631,10 +607,6 @@
             .Sum(i => i.saveChickenRequest.NumberOfRoostersToBeSaved);
     }
 
-    /// <summary>
-    /// Builds map markers/arrows for the currently selected meeting location,
-    /// in the same order they appear in that location's column.
-    /// </summary>
     private void BuildMapForSelectedLocation()
     {
         _selectedDriverMarkers = new List<MapMarker>();
@@ -677,12 +649,9 @@
         }
     }
 
-    /// <summary>
-    /// Calculate distance between two coordinates using Haversine formula
-    /// </summary>
     private double CalculateDistance(double lat1, double lon1, double lat2, double lon2)
     {
-        const double R = 6371; // Earth's radius in km
+        const double R = 6371;
         var dLat = ToRadians(lat2 - lat1);
         var dLon = ToRadians(lon2 - lon1);
 
@@ -701,27 +670,84 @@
 
     private void OnLocationLatitudeChanged(double? latitude)
     {
-        _selectedLocation!.GeoCoordinate ??= new GeoCoordinate();
+        if (_selectedLocation == null) return;
+        _selectedLocation.GeoCoordinate ??= new GeoCoordinate();
         _selectedLocation.GeoCoordinate.Latitude = latitude ?? 0;
-        // call your existing persistence/update trigger here, same as OnLocationNameChanged does
+        RefreshMaps();
+        StateHasChanged();
     }
 
     private void OnLocationLongitudeChanged(double? longitude)
     {
-        _selectedLocation!.GeoCoordinate ??= new GeoCoordinate();
+        if (_selectedLocation == null) return;
+        _selectedLocation.GeoCoordinate ??= new GeoCoordinate();
         _selectedLocation.GeoCoordinate.Longitude = longitude ?? 0;
-        // call your existing persistence/update trigger here
+        RefreshMaps();
+        StateHasChanged();
     }
 
     private void OnLocationCoordinateChanged(GeoCoordinate? coordinate)
     {
-        _selectedLocation!.GeoCoordinate = coordinate;
-        // call your existing persistence/update trigger here
+        if (_selectedLocation == null) return;
+        _selectedLocation.GeoCoordinate = coordinate;
+        RefreshMaps();
+        StateHasChanged();
     }
 
     private void OnLocationGeoCoordinateChanged(GeoCoordinate? coordinate)
     {
-        _selectedLocation!.GeoCoordinate = coordinate;
-        // call your existing persistence/update trigger here, same as OnLocationNameChanged does
+        if (_selectedLocation == null) return;
+        _selectedLocation.GeoCoordinate = coordinate;
+        RefreshMaps();
+        StateHasChanged();
+    }
+
+    private void BuildOverviewMap()
+    {
+        _overviewMarkers = new List<MapMarker>();
+        _overviewArrows = new List<MapArrow>();
+
+        foreach (var location in _meetingLocations)
+        {
+            if (location.GeoCoordinate == null)
+                continue;
+
+            _overviewMarkers.Add(new MapMarker
+            {
+                Latitude = location.GeoCoordinate.Latitude,
+                Longitude = location.GeoCoordinate.Longitude,
+                Color = "orange",
+                Info = $"{location.Name} ({location.DateTime:dd.MM.yyyy HH:mm})"
+            });
+
+            foreach (var driverId in location.DriverIds)
+            {
+                var driverCoordinate = Drivers.FirstOrDefault(d => d.Id == driverId)?.Person?.Address?.GeoCoordinate;
+                if (driverCoordinate == null)
+                    continue;
+
+                _overviewArrows.Add(new MapArrow
+                {
+                    LatitudeFrom = driverCoordinate.Latitude,
+                    LongitudeFrom = driverCoordinate.Longitude,
+                    LatitudeTo = location.GeoCoordinate.Latitude,
+                    LongitudeTo = location.GeoCoordinate.Longitude
+                });
+            }
+        }
+
+        foreach (var driver in Drivers)
+        {
+            var driverCoordinate = driver.Person?.Address?.GeoCoordinate;
+            if (driverCoordinate == null)
+                continue;
+
+            _overviewMarkers.Add(new MapMarker
+            {
+                Latitude = driverCoordinate.Latitude,
+                Longitude = driverCoordinate.Longitude,
+                Info = $"{GetDriverName(driver.Id)} (Fahrer)"
+            });
+        }
     }
 }
