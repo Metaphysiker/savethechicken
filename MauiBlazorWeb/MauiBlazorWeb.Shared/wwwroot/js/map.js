@@ -2,13 +2,15 @@
 const maps = new WeakMap();
 const markerLayers = new WeakMap();
 const arrowLayers = new WeakMap();
+const selectionLayers = new WeakMap();
+const dotNetRefs = new WeakMap();
 
 /**
  * Initializes the map if it does not exist yet
  */
 function initMap(element, initialMarkers) {
     if (!maps.has(element)) {
-        const map = L.map(element).setView([0, 0], 2);
+        const map = L.map(element).setView([46.8182, 8.2275], 8); // Default: Switzerland
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'
@@ -17,6 +19,7 @@ function initMap(element, initialMarkers) {
         maps.set(element, map);
         markerLayers.set(element, L.layerGroup().addTo(map));
         arrowLayers.set(element, L.layerGroup().addTo(map));
+        selectionLayers.set(element, L.layerGroup().addTo(map));
     }
 
     updateMarkers(element, initialMarkers);
@@ -90,6 +93,70 @@ function drawArrow(element, from, to, options = {}) {
             ...options
         }
     ).addTo(arrowLayer);
+}
+
+/**
+ * Enables click-to-select on the map. Replaces the previous selection marker on each click.
+ * Call this once (e.g. on first render) to avoid stacking duplicate click handlers.
+ */
+function enableClickSelection(element, dotNetRef) {
+    const map = maps.get(element);
+    if (!map) return;
+
+    if (!selectionLayers.has(element)) {
+        selectionLayers.set(element, L.layerGroup().addTo(map));
+    }
+
+    dotNetRefs.set(element, dotNetRef);
+
+    map.on('click', (e) => {
+        const { lat, lng } = e.latlng;
+        setSelectedMarker(element, { latitude: lat, longitude: lng });
+
+        const ref = dotNetRefs.get(element);
+        if (ref) {
+            ref.invokeMethodAsync('OnMapClicked', lat, lng);
+        }
+    });
+}
+
+/**
+ * Sets (and replaces) the single selection marker
+ */
+function setSelectedMarker(element, coordinate) {
+    const map = maps.get(element);
+    let selectionLayer = selectionLayers.get(element);
+
+    if (!map) return;
+    if (!selectionLayer) {
+        selectionLayer = L.layerGroup().addTo(map);
+        selectionLayers.set(element, selectionLayer);
+    }
+
+    // Clear the old one before adding the new one - keeps it single
+    selectionLayer.clearLayers();
+
+    const icon = L.icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
+
+    L.marker([coordinate.latitude, coordinate.longitude], { icon: icon })
+        .addTo(selectionLayer);
+}
+
+/**
+ * Clears the selection marker, if any
+ */
+function clearSelectedMarker(element) {
+    const selectionLayer = selectionLayers.get(element);
+    if (selectionLayer) {
+        selectionLayer.clearLayers();
+    }
 }
 
 /**
