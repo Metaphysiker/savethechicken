@@ -25,6 +25,10 @@ function initMap(element, initialMarkers) {
     updateMarkers(element, initialMarkers);
 }
 
+function setMarkerClickHandler(element, dotNetRef) {
+    dotNetRefs.set(element, dotNetRef);
+}
+
 /**
  * Updates markers and adjusts the viewport
  */
@@ -51,9 +55,24 @@ function updateMarkers(element, markers) {
             shadowSize: [41, 41]
         });
 
-        L.marker([m.latitude, m.longitude], { icon: icon })
-            .bindPopup(m.info)
-            .addTo(markerLayer);
+        const marker = L.marker([m.latitude, m.longitude], { icon: icon }).addTo(markerLayer);
+        marker.bindPopup(m.popupHtml || m.info);
+
+        if (m.id) {
+            marker.on('popupopen', (e) => {
+                const container = e.popup.getElement();
+                const select = container?.querySelector('select');
+                if (!select) return;
+
+                select.addEventListener('change', (ev) => {
+                    const ref = dotNetRefs.get(element);
+                    if (ref) {
+                        ref.invokeMethodAsync('OnMarkerAssigned', m.id, ev.target.value);
+                    }
+                    marker.closePopup();
+                });
+            });
+        }
     });
 
     // Fit bounds
@@ -190,22 +209,22 @@ async function getRouteInfo(from, to) {
 
             const data = await response.json();
 
-        if (data.code === 'Ok' && data.routes && data.routes.length > 0) {
-            const route = data.routes[0];
+            if (data.code === 'Ok' && data.routes && data.routes.length > 0) {
+                const route = data.routes[0];
 
-            return {
-                distance: route.distance,      // Distance in meters
-                duration: route.duration,      // Duration in seconds
-                success: true
-            };
-        } else {
-            console.error('OSRM returned no valid route:', data.code);
-            return {
-                distance: 0,
-                duration: 0,
-                success: false
-            };
-        }
+                return {
+                    distance: route.distance,      // Distance in meters
+                    duration: route.duration,      // Duration in seconds
+                    success: true
+                };
+            } else {
+                console.error('OSRM returned no valid route:', data.code);
+                return {
+                    distance: 0,
+                    duration: 0,
+                    success: false
+                };
+            }
         } catch (fetchError) {
             clearTimeout(timeoutId);
             if (fetchError.name === 'AbortError') {
@@ -284,33 +303,33 @@ async function drawRouteWithOSRM(element, from, to, options = {}) {
                         clearTimeout(timeoutId);
                         const data = await response.json();
 
-                    if (data.code === 'Ok' && data.routes && data.routes.length > 0) {
-                        const route = data.routes[0];
+                        if (data.code === 'Ok' && data.routes && data.routes.length > 0) {
+                            const route = data.routes[0];
 
-                        // Convert GeoJSON coordinates to Leaflet format [lat, lng]
-                        const coordinates = route.geometry.coordinates.map(coord => [coord[1], coord[0]]);
+                            // Convert GeoJSON coordinates to Leaflet format [lat, lng]
+                            const coordinates = route.geometry.coordinates.map(coord => [coord[1], coord[0]]);
 
-                        // Draw the route on the map
-                        L.polyline(coordinates, {
-                            color: options.color || 'blue',
-                            weight: options.weight || 4,
-                            opacity: options.opacity || 0.7,
-                            ...options
-                        }).addTo(arrowLayer);
+                            // Draw the route on the map
+                            L.polyline(coordinates, {
+                                color: options.color || 'blue',
+                                weight: options.weight || 4,
+                                opacity: options.opacity || 0.7,
+                                ...options
+                            }).addTo(arrowLayer);
 
-                        const result = {
-                            distance: route.distance,
-                            duration: route.duration,
-                            success: true
-                        };
-                        resolve(result);
-                        return result;
-                    } else {
-                        console.error('OSRM returned no valid route');
-                        const result = { success: false, distance: 0, duration: 0 };
-                        resolve(result);
-                        return result;
-                    }
+                            const result = {
+                                distance: route.distance,
+                                duration: route.duration,
+                                success: true
+                            };
+                            resolve(result);
+                            return result;
+                        } else {
+                            console.error('OSRM returned no valid route');
+                            const result = { success: false, distance: 0, duration: 0 };
+                            resolve(result);
+                            return result;
+                        }
                     } catch (fetchError) {
                         clearTimeout(timeoutId);
                         throw fetchError;

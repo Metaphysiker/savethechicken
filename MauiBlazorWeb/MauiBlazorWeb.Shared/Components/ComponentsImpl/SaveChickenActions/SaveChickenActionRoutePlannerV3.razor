@@ -148,13 +148,10 @@
             <DropItemCardForSaveChickenRequest Item="context" />
         </ItemRenderer>
     </MudDropContainer>
-    @if (_selectedLocation != null && GetFirstAssignedDriver(_selectedLocation) != null)
-    {
-        <MudPaper Class="mt-4 pa-2" Elevation="2">
-            <MudText Typo="Typo.h6" Class="mb-2 px-2">Kartenübersicht</MudText>
-            <OpenStreetMap Markers="_overviewMarkers" Arrows="_overviewArrows" />
-        </MudPaper>
-    }
+    <MudPaper Class="mt-4 pa-2" Elevation="2">
+        <MudText Typo="Typo.h6" Class="mb-2 px-2">Kartenübersicht</MudText>
+        <OpenStreetMap Markers="_overviewMarkers" Arrows="_overviewArrows" MarkerAssigned="HandleMarkerAssigned" />
+    </MudPaper>
 </MudPaper>
 
 @code {
@@ -720,34 +717,114 @@
                 Info = $"{location.Name} ({location.DateTime:dd.MM.yyyy HH:mm})"
             });
 
-            foreach (var driverId in location.DriverIds)
-            {
-                var driverCoordinate = Drivers.FirstOrDefault(d => d.Id == driverId)?.Person?.Address?.GeoCoordinate;
-                if (driverCoordinate == null)
-                    continue;
+            /*
+                        foreach (var driverId in location.DriverIds)
+                        {
+                            var driverCoordinate = Drivers.FirstOrDefault(d => d.Id == driverId)?.Person?.Address?.GeoCoordinate;
+                            if (driverCoordinate == null)
+                                continue;
 
-                _overviewArrows.Add(new MapArrow
-                {
-                    LatitudeFrom = driverCoordinate.Latitude,
-                    LongitudeFrom = driverCoordinate.Longitude,
-                    LatitudeTo = location.GeoCoordinate.Latitude,
-                    LongitudeTo = location.GeoCoordinate.Longitude
-                });
-            }
+                            _overviewArrows.Add(new MapArrow
+                            {
+                                LatitudeFrom = driverCoordinate.Latitude,
+                                LongitudeFrom = driverCoordinate.Longitude,
+                                LatitudeTo = location.GeoCoordinate.Latitude,
+                                LongitudeTo = location.GeoCoordinate.Longitude
+                            });
+                        }
+                        */
         }
 
-        foreach (var driver in Drivers)
+        /*
+                foreach (var driver in Drivers)
+                {
+                    var driverCoordinate = driver.Person?.Address?.GeoCoordinate;
+                    if (driverCoordinate == null)
+                        continue;
+
+                    _overviewMarkers.Add(new MapMarker
+                    {
+                        Latitude = driverCoordinate.Latitude,
+                        Longitude = driverCoordinate.Longitude,
+                        Info = $"{GetDriverName(driver.Id)} (Fahrer)"
+                    });
+                }
+        */
+        foreach (var item in _requestItems)
         {
-            var driverCoordinate = driver.Person?.Address?.GeoCoordinate;
-            if (driverCoordinate == null)
+            var requestCoordinate = item.saveChickenRequest.Person?.Address?.GeoCoordinate;
+            if (requestCoordinate == null)
                 continue;
+
+            var currentLocationId = item.Selector == "unassigned" ? null : item.Selector;
+            var optionsHtml = string.Join("", _meetingLocations
+                .OrderBy(l => l.DateTime)
+                .Select(l =>
+                {
+                    var selected = l.Id == currentLocationId ? "selected" : "";
+                    var label = System.Net.WebUtility.HtmlEncode($"{l.Name} ({l.DateTime:dd.MM.yyyy HH:mm})");
+                    return $"<option value=\"{l.Id}\" {selected}>{label}</option>";
+                }));
+
+            var name = System.Net.WebUtility.HtmlEncode($"{item.saveChickenRequest.Person?.Contact?.FirstName} {item.saveChickenRequest.Person?.Contact?.LastName}");
+            var noneSelected = currentLocationId == null ? "selected" : "";
+
+            var popupHtml =
+                $"<div style=\"min-width:160px;\">" +
+                $"<div style=\"font-weight:600;margin-bottom:4px;\">{name}</div>" +
+                $"<select style=\"width:100%;\">" +
+                $"<option value=\"\" {noneSelected}>Nicht zugeordnet</option>" +
+                optionsHtml +
+                $"</select></div>";
 
             _overviewMarkers.Add(new MapMarker
             {
-                Latitude = driverCoordinate.Latitude,
-                Longitude = driverCoordinate.Longitude,
-                Info = $"{GetDriverName(driver.Id)} (Fahrer)"
+                Latitude = requestCoordinate.Latitude,
+                Longitude = requestCoordinate.Longitude,
+                Color = "grey",
+                Id = item.saveChickenRequest.Id.ToString(),
+                PopupHtml = popupHtml
+            });
+
+            if (currentLocationId == null)
+                continue;
+
+            var assignedLocation = _meetingLocations.FirstOrDefault(l => l.Id == currentLocationId);
+            if (assignedLocation?.GeoCoordinate == null)
+                continue;
+
+            _overviewArrows.Add(new MapArrow
+            {
+                LatitudeFrom = requestCoordinate.Latitude,
+                LongitudeFrom = requestCoordinate.Longitude,
+                LatitudeTo = assignedLocation.GeoCoordinate.Latitude,
+                LongitudeTo = assignedLocation.GeoCoordinate.Longitude
             });
         }
+    }
+
+    private void HandleMarkerAssigned((string MarkerId, string? LocationId) assignment)
+    {
+        if (!int.TryParse(assignment.MarkerId, out var requestId))
+            return;
+
+        var item = _requestItems.FirstOrDefault(i => i.saveChickenRequest.Id == requestId);
+        if (item == null)
+            return;
+
+        _requestItems.Remove(item);
+        var targetSelector = assignment.LocationId ?? "unassigned";
+        item.Selector = targetSelector;
+
+        _requestLocationAssignments[item.saveChickenRequest.Id] = targetSelector == "unassigned"
+            ? null
+            : (targetSelector, _requestItems.Count(i => i.Selector == targetSelector));
+
+        _requestItems.Add(item);
+        _requestItems = new List<DropItem>(_requestItems);
+
+        RefreshMaps();
+        _needsDropRefresh = true;
+        StateHasChanged();
     }
 }

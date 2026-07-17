@@ -1,9 +1,15 @@
 ﻿@using MauiBlazorWeb.Shared.Classes
 @inject IJSRuntime JS
+@implements IAsyncDisposable
 
 <div @ref="mapDiv" style="height: 500px;"></div>
 
 @code {
+
+    [Parameter]
+    public EventCallback<(string MarkerId, string? LocationId)> MarkerAssigned { get; set; }
+
+
     [Parameter, EditorRequired]
     public List<MapMarker> Markers { get; set; } = default!;
 
@@ -12,18 +18,20 @@
 
     private ElementReference mapDiv;
     private bool _mapInitialized;
+    private DotNetObjectReference<OpenStreetMap>? _selfRef;
+
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
+            _selfRef = DotNetObjectReference.Create(this);
             await JS.InvokeVoidAsync("initMap", mapDiv, Markers);
+            await JS.InvokeVoidAsync("setMarkerClickHandler", mapDiv, _selfRef);
             _mapInitialized = true;
         }
 
-        if (!_mapInitialized)
-            return;
-
+        if (!_mapInitialized) return;
         await UpdateMapAsync();
     }
 
@@ -44,5 +52,17 @@
                 new { latitude = arrow.LatitudeTo, longitude = arrow.LongitudeTo }
             );
         }
+    }
+
+    [JSInvokable]
+    public async Task OnMarkerAssigned(string markerId, string locationId)
+    {
+        await MarkerAssigned.InvokeAsync((markerId, string.IsNullOrEmpty(locationId) ? null : locationId));
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        _selfRef?.Dispose();
+        return ValueTask.CompletedTask;
     }
 }
