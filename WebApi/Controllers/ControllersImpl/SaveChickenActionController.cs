@@ -8,6 +8,8 @@ using WebApi.Models.ModelsImpl;
 using WebApi.Services.ServicesImpl;
 using System.IO.Compression;
 using QuestPDF.Fluent;
+using Shared.Classes;
+using System.Text.Json;
 namespace WebApi.Controllers.ControllersImpl
 {
     [ApiController]
@@ -147,6 +149,103 @@ namespace WebApi.Controllers.ControllersImpl
             memoryStream.Position = 0;
             var bytes = memoryStream.ToArray();
             return File(bytes, "application/zip", "Abgabevereinbarungen.zip");
+        }
+
+
+        [HttpGet("{id}/meeting-locations-pdf")]
+        public async Task<IActionResult> MeetingLocationsPdf(int id)
+        {
+            var saveChickenAction = await _service.Read(id);
+            if (saveChickenAction == null) return NotFound();
+
+            if (string.IsNullOrWhiteSpace(saveChickenAction.DriverRoutePlansJson))
+                return NotFound("No saved route plans data found.");
+
+            SavedRequestAssignmentsData? savedData;
+            try
+            {
+                savedData = JsonSerializer.Deserialize<SavedRequestAssignmentsData>(saveChickenAction.DriverRoutePlansJson);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading saved assignments: {ex.Message}");
+                return BadRequest("Could not parse saved route plan data.");
+            }
+
+            if (savedData == null || savedData.MeetingLocations == null || savedData.Assignments == null)
+                return NotFound("No saved assignments data found.");
+
+            var meetingLocations = savedData.MeetingLocations;
+            var assignments = savedData.Assignments;
+
+            var search = new SaveChickenRequestSearch
+            {
+                SaveChickenActionIds = [id],
+                PageSize = 2000
+            };
+            var saveChickenRequests = await _saveChickenRequestService.Search(search, SaveChickenRequestIncludes.Default);
+
+            if (!saveChickenRequests.Data.Any())
+                return NotFound("No requests found for this action.");
+
+            var requestNamesById = saveChickenRequests.Data.ToDictionary(
+                r => r.Id,
+                r => $"{r.Person?.Contact?.FirstName} {r.Person?.Contact?.LastName}".Trim());
+
+            // requestId -> (locationId, order), mirrors the Blazor component's assignment lookup
+            var assignmentsByRequestId = assignments
+                .GroupBy(a => a.RequestId)
+                .ToDictionary(g => g.Key, g => g.First());
+
+            var model = new MeetingLocationScheduleModel();
+
+            var dayGroups = meetingLocations
+                .GroupBy(l => l.DateTime.Date)
+                .OrderBy(g => g.Key);
+
+            var saveChickenRequestsById = saveChickenRequests.Data.ToDictionary(r => r.Id);
+
+
+            foreach (var dayGroup in dayGroups)
+            {
+                var dayEntry = new MeetingLocationScheduleDayGroup { Date = dayGroup.Key };
+                var orderedLocations = dayGroup.OrderBy(l => l.DateTime).ToList();
+
+                for (int i = 0; i < orderedLocations.Count; i++)
+                {
+                    var location = orderedLocations[i];
+
+                    var assignedRequests = assignmentsByRequestId.Values
+                        .Where(a => a.MeetingLocationId == location.Id)
+                        .OrderBy(a => a.Order)
+                        .Select(a =>
+                        {
+                            saveChickenRequestsById.TryGetValue(a.RequestId, out var request);
+                            return new AssignedRequestEntry
+                            {
+                                ChickenCount = request?.NumberOfChickensToBeSaved ?? 0,
+                                RoosterCount = request?.NumberOfRoostersToBeSaved ?? 0,
+                                Name = $"{request?.Person?.Contact?.FirstName} {request?.Person?.Contact?.LastName}".Trim(),
+                                Phone = request?.Person?.Contact?.PhoneNumber ?? ""
+                            };
+                        })
+                        .ToList();
+
+                    dayEntry.Locations.Add(new MeetingLocationScheduleEntry
+                    {
+                        SequenceInDay = i + 1,
+                        Name = location.Name,
+                        DateTime = location.DateTime,
+                        AssignedRequests = assignedRequests
+                    });
+                }
+
+                model.Days.Add(dayEntry);
+            }
+
+            byte[] pdfBytes = new MeetingLocationScheduleDocument(model).GeneratePdf();
+
+            return File(pdfBytes, "application/pdf", "Treffpunkte.pdf");
         }
     }
 }

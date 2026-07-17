@@ -1,10 +1,11 @@
-﻿@using MauiBlazorWeb.Shared.Classes
+﻿@using System.Text.Json
+@using MauiBlazorWeb.Shared.Classes
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
 @using MauiBlazorWeb.Shared.Helpers
 @using MauiBlazorWeb.Web.Services.ServicesImpl
-@using global::Shared.Dtos.DtosImpl
 @using Microsoft.JSInterop
-@using System.Text.Json
+@using global::Shared.Classes
+@using global::Shared.Dtos.DtosImpl
 @implements IAsyncDisposable
 @inject GenericDtoServiceFactory DtoServiceFactory
 @inject IJSRuntime JS
@@ -31,6 +32,26 @@
                 <MudText>Speichern</MudText>
             }
         </MudButton>
+        <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Download"
+                   OnClick="DownloadMeetingLocationsPdf"
+                   Disabled="@(_isDownloadingPdf || _isSaving || _hasUnsavedChanges || string.IsNullOrWhiteSpace(saveChickenActionDto.DriverRoutePlansJson))"
+                   Class="mr-2">
+            @if (_isDownloadingPdf)
+            {
+                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                <MudText Class="ms-2">Wird geladen...</MudText>
+            }
+            else
+            {
+                <MudText>Treffpunkte PDF</MudText>
+            }
+        </MudButton>
+        @if (_hasUnsavedChanges)
+        {
+            <MudText Typo="Typo.caption" Color="Color.Warning" Class="ml-2">
+                Ungespeicherte Änderungen - bitte zuerst speichern, um das PDF herunterzuladen.
+            </MudText>
+        }
     </MudPaper>
 
     <MudDropContainer T="DropItem" @ref="_dropContainer" Items="_requestItems"
@@ -159,6 +180,8 @@
     private List<MapArrow> _overviewArrows = new();
     private bool _isLoading = false;
     private bool _isSaving = false;
+    private bool _isDownloadingPdf = false;
+    private bool _hasUnsavedChanges = false;
     private int _lastLoadedActionId = 0;
     private bool _isDisposed = false;
     private CancellationTokenSource? _cancellationTokenSource;
@@ -237,7 +260,6 @@
     /// </summary>
     private void RefreshMaps()
     {
-        Console.WriteLine("Refreshing maps...");
         BuildMapForSelectedLocation();
         BuildOverviewMap();
     }
@@ -258,6 +280,7 @@
         BuildRequestItems();
 
         RefreshMaps(); // Rebuild both maps with initial loaded coordinates
+        _hasUnsavedChanges = false;
         _needsDropRefresh = true;
     }
 
@@ -307,6 +330,7 @@
         };
 
         _meetingLocations.Add(newLocation);
+        _hasUnsavedChanges = true;
         SelectLocation(newLocation);
     }
 
@@ -326,6 +350,7 @@
         }
 
         _requestItems = new List<DropItem>(_requestItems);
+        _hasUnsavedChanges = true;
         RefreshMaps();
         _needsDropRefresh = true;
         StateHasChanged();
@@ -335,6 +360,7 @@
     {
         if (_selectedLocation == null) return;
         _selectedLocation.Name = name;
+        _hasUnsavedChanges = true;
         _needsDropRefresh = true;
         StateHasChanged();
     }
@@ -343,6 +369,7 @@
     {
         if (_selectedLocation == null || date == null) return;
         _selectedLocation.DateTime = date.Value.Date + _selectedLocation.DateTime.TimeOfDay;
+        _hasUnsavedChanges = true;
         RefreshMaps();
         StateHasChanged();
     }
@@ -351,6 +378,7 @@
     {
         if (_selectedLocation == null || time == null) return;
         _selectedLocation.DateTime = _selectedLocation.DateTime.Date + time.Value;
+        _hasUnsavedChanges = true;
         RefreshMaps();
         StateHasChanged();
     }
@@ -359,6 +387,7 @@
     {
         if (_selectedLocation == null) return;
         _selectedLocation.DriverIds = driverIds?.ToList() ?? new List<int>();
+        _hasUnsavedChanges = true;
         RefreshMaps();
         StateHasChanged();
     }
@@ -445,6 +474,7 @@
         }
 
         _requestItems = new List<DropItem>(_requestItems);
+        _hasUnsavedChanges = true;
         RefreshMaps();
 
         _needsDropRefresh = true;
@@ -459,6 +489,7 @@
         _meetingLocations.Clear();
         _selectedLocation = null;
         BuildRequestItems();
+        _hasUnsavedChanges = true;
         RefreshMaps();
 
         _needsDropRefresh = true;
@@ -507,6 +538,7 @@
             saveChickenActionDto.DriverRoutePlansJson = json;
             await _saveChickenActionService.UpdateAsync(saveChickenActionDto);
 
+            _hasUnsavedChanges = false;
             Snackbar.Add("Zuordnungen und Reihenfolge erfolgreich gespeichert!", Severity.Success);
         }
         catch (Exception ex)
@@ -565,29 +597,6 @@
         }
 
         await Task.CompletedTask;
-    }
-
-    public class MeetingLocation
-    {
-        public string Id { get; set; } = Guid.NewGuid().ToString("N");
-        public string Name { get; set; } = "";
-        public DateTime DateTime { get; set; } = DateTime.Today;
-        public List<int> DriverIds { get; set; } = new();
-        public GeoCoordinate? GeoCoordinate { get; set; }
-    }
-
-    public class SavedRequestAssignmentsData
-    {
-        public int Version { get; set; }
-        public List<MeetingLocation> MeetingLocations { get; set; } = new();
-        public List<RequestAssignmentJson> Assignments { get; set; } = new();
-    }
-
-    public class RequestAssignmentJson
-    {
-        public int RequestId { get; set; }
-        public string MeetingLocationId { get; set; } = "";
-        public int Order { get; set; }
     }
 
     private int GetTotalNumberOfChickens(MeetingLocation location)
@@ -670,6 +679,7 @@
         if (_selectedLocation == null) return;
         _selectedLocation.GeoCoordinate ??= new GeoCoordinate();
         _selectedLocation.GeoCoordinate.Latitude = latitude ?? 0;
+        _hasUnsavedChanges = true;
         RefreshMaps();
         StateHasChanged();
     }
@@ -679,6 +689,7 @@
         if (_selectedLocation == null) return;
         _selectedLocation.GeoCoordinate ??= new GeoCoordinate();
         _selectedLocation.GeoCoordinate.Longitude = longitude ?? 0;
+        _hasUnsavedChanges = true;
         RefreshMaps();
         StateHasChanged();
     }
@@ -687,6 +698,7 @@
     {
         if (_selectedLocation == null) return;
         _selectedLocation.GeoCoordinate = coordinate;
+        _hasUnsavedChanges = true;
         RefreshMaps();
         StateHasChanged();
     }
@@ -695,6 +707,7 @@
     {
         if (_selectedLocation == null) return;
         _selectedLocation.GeoCoordinate = coordinate;
+        _hasUnsavedChanges = true;
         RefreshMaps();
         StateHasChanged();
     }
@@ -716,40 +729,8 @@
                 Color = "orange",
                 Info = $"{location.Name} ({location.DateTime:dd.MM.yyyy HH:mm})"
             });
-
-            /*
-                        foreach (var driverId in location.DriverIds)
-                        {
-                            var driverCoordinate = Drivers.FirstOrDefault(d => d.Id == driverId)?.Person?.Address?.GeoCoordinate;
-                            if (driverCoordinate == null)
-                                continue;
-
-                            _overviewArrows.Add(new MapArrow
-                            {
-                                LatitudeFrom = driverCoordinate.Latitude,
-                                LongitudeFrom = driverCoordinate.Longitude,
-                                LatitudeTo = location.GeoCoordinate.Latitude,
-                                LongitudeTo = location.GeoCoordinate.Longitude
-                            });
-                        }
-                        */
         }
 
-        /*
-                foreach (var driver in Drivers)
-                {
-                    var driverCoordinate = driver.Person?.Address?.GeoCoordinate;
-                    if (driverCoordinate == null)
-                        continue;
-
-                    _overviewMarkers.Add(new MapMarker
-                    {
-                        Latitude = driverCoordinate.Latitude,
-                        Longitude = driverCoordinate.Longitude,
-                        Info = $"{GetDriverName(driver.Id)} (Fahrer)"
-                    });
-                }
-        */
         foreach (var item in _requestItems)
         {
             var requestCoordinate = item.saveChickenRequest.Person?.Address?.GeoCoordinate;
@@ -823,8 +804,44 @@
         _requestItems.Add(item);
         _requestItems = new List<DropItem>(_requestItems);
 
+        _hasUnsavedChanges = true;
         RefreshMaps();
         _needsDropRefresh = true;
         StateHasChanged();
+    }
+
+    private async Task DownloadMeetingLocationsPdf()
+    {
+        if (saveChickenActionDto == null || saveChickenActionDto.Id == 0)
+            return;
+
+        if (_saveChickenActionService == null)
+            return;
+
+        _isDownloadingPdf = true;
+        StateHasChanged();
+
+        try
+        {
+            var bytes = await
+_saveChickenActionService.GetFileAsync($"api/SaveChickenAction/{saveChickenActionDto.Id}/meeting-locations-pdf");
+            if (bytes == null || bytes.Length == 0)
+            {
+                Snackbar.Add("PDF konnte nicht geladen werden.", Severity.Error);
+                return;
+            }
+
+            var fileName = "treffpunkte.pdf";
+            await JS.InvokeVoidAsync("downloadFileFromBytes", fileName, "application/pdf", bytes);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Fehler beim Herunterladen: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isDownloadingPdf = false;
+            StateHasChanged();
+        }
     }
 }
