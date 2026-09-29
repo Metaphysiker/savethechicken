@@ -66,6 +66,19 @@ public class AutoMapperService
 
             cfg.CreateMap<SaveChickenActionDto, SaveChickenAction>();
 
+            // SaveChickenActionFarm
+            cfg.CreateMap<SaveChickenActionFarm, SaveChickenActionFarmDto>()
+                .ForMember(
+                    dest => dest.GenericName,
+                    opt => opt.MapFrom(src =>
+                        $"{(src.SaveChickenAction != null ? src.SaveChickenAction.Title : string.Empty)} - {(src.Farm != null ? src.Farm.Name : string.Empty)}".Trim(' ', '-')
+                    )
+                );
+
+            cfg.CreateMap<SaveChickenActionFarmDto, SaveChickenActionFarm>()
+                .ForMember(dest => dest.Farm, opt => opt.Ignore())
+                .ForMember(dest => dest.SaveChickenAction, opt => opt.Ignore()); // Avoid circular graph creation during payload saves; rely on foreign keys
+
             // StoredFile
             cfg.CreateMap<StoredFile, StoredFileDto>()
                 .ForMember(dest => dest.GenericName, opt => opt.MapFrom(src => src.FileName))

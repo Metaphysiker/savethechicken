@@ -1,7 +1,10 @@
 namespace WebApi.Models.ModelsImpl;
 
-public class SaveChickenActionFarm
+public class SaveChickenActionFarm: IModel
 {
+        public int Id { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
 
         public int FarmId { get; set; }
         public Farm Farm { get; set; } = null!;
