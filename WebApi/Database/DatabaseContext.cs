@@ -8,6 +8,7 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
 {
     public DbSet<SaveChickenRequest> SaveChickenRequests { get; set; }
     public DbSet<SaveChickenAction> SaveChickenActions { get; set; }
+    public DbSet<SaveChickenActionFarm> SaveChickenActionFarms { get; set; }
     public DbSet<Farm> Farms { get; set; }
     public DbSet<Contact> Contacts { get; set; }
     public DbSet<Address> Addresses { get; set; }
@@ -230,6 +231,24 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
                             .Split(new[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries)
                             .Select(s => DateOnly.Parse(s.Trim())).ToList()
                 );
+        });
+
+        modelBuilder.Entity<SaveChickenActionFarm>(entity =>
+        {
+            // Composite Primary Key using both Foreign Keys
+            entity.HasKey(saf => new { saf.SaveChickenActionId, saf.FarmId });
+
+            // Link to SaveChickenAction
+            entity.HasOne(saf => saf.SaveChickenAction)
+                .WithMany(sa => sa.SaveChickenActionFarms)
+                .HasForeignKey(saf => saf.SaveChickenActionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Link to Farm
+            entity.HasOne(saf => saf.Farm)
+                .WithMany(f => f.SaveChickenActionFarms)
+                .HasForeignKey(saf => saf.FarmId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         base.OnModelCreating(modelBuilder);
