@@ -1,0 +1,109 @@
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.Farms
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using Microsoft.Extensions.Localization
+@using global::Shared.Dtos.DtosImpl
+@using MudBlazor
+@inject IStringLocalizer<AppResources> L
+@inject GenericDtoServiceFactory DtoServiceFactory
+
+<MudPaper Class="pa-4 my-4">
+    <MudText Typo="Typo.h6">@L["SaveChickenActionAndFarmSelection"]</MudText>
+
+    <!-- SaveChickenAction Selector -->
+    <SaveChickenActionSelector SelectedActionId="Model.SaveChickenActionId"
+                              SelectedActionIdChanged="OnSaveChickenActionIdChanged"
+                              IsReadOnly="@isSaveChickenActionSelectorReadOnly" />
+
+    <!-- Farm Selector -->
+    <FarmSelector SelectedFarmId="Model.FarmId"
+                  SelectedFarmIdChanged="OnFarmIdChanged"
+                  IsReadOnly="@isFarmSelectorReadOnly" />
+
+    @if (PreSelectedSaveChickenActionId.HasValue)
+    {
+        <MudAlert Severity="Severity.Info" Dense="true" Class="mt-2">
+            @L["ActionPreselected_Info"]
+        </MudAlert>
+    }
+
+    @if (PreSelectedFarmId.HasValue)
+    {
+        <MudAlert Severity="Severity.Info" Dense="true" Class="mt-2">
+            @L["FarmPreselected_Info"]
+        </MudAlert>
+    }
+</MudPaper>
+
+<MudPaper Class="pa-4 my-4" Elevation="2" data-testid="action-farm-info">
+    <MudText Typo="Typo.h6">@L["QuantitiesInformation"]</MudText>
+
+    <div class="my-4">
+        <MudNumericField T="int"
+                         ReadOnly="@IsReadOnly"
+                         @bind-Value="Model.NumberOfChickensToBeSaved"
+                         Label="@L["NumberOfChickensToBeSaved"]"
+                         Variant="Variant.Outlined"
+                         Min="0"
+                         UserAttributes="@(new Dictionary<string, object> { { "data-testid", "chickens-to-be-saved" } })" />
+        <ValidationMessage For="@(() => Model.NumberOfChickensToBeSaved)" />
+    </div>
+
+    <div class="my-4">
+        <MudNumericField T="int"
+                         ReadOnly="@IsReadOnly"
+                         @bind-Value="Model.NumberOfRoostersToBeSaved"
+                         Label="@L["NumberOfRoostersToBeSaved"]"
+                         Variant="Variant.Outlined"
+                         Min="0"
+                         UserAttributes="@(new Dictionary<string, object> { { "data-testid", "roosters-to-be-saved" } })" />
+        <ValidationMessage For="@(() => Model.NumberOfRoostersToBeSaved)" />
+    </div>
+</MudPaper>
+
+@code {
+    [Parameter, EditorRequired]
+    public SaveChickenActionFarmDto Model { get; set; } = default!;
+
+    [Parameter]
+    public bool IsReadOnly { get; set; } = false;
+
+    [Parameter]
+    public int? PreSelectedSaveChickenActionId { get; set; }
+
+    [Parameter]
+    public int? PreSelectedFarmId { get; set; }
+
+    private bool isSaveChickenActionSelectorReadOnly => IsReadOnly || PreSelectedSaveChickenActionId.HasValue;
+    private bool isFarmSelectorReadOnly => IsReadOnly || PreSelectedFarmId.HasValue;
+
+    protected override void OnInitialized()
+    {
+        if (PreSelectedSaveChickenActionId.HasValue && Model.SaveChickenActionId == 0)
+        {
+            Model.SaveChickenActionId = PreSelectedSaveChickenActionId.Value;
+        }
+
+        if (PreSelectedFarmId.HasValue && Model.FarmId == 0)
+        {
+            Model.FarmId = PreSelectedFarmId.Value;
+        }
+    }
+
+    private void OnSaveChickenActionIdChanged(int? newActionId)
+    {
+        if (newActionId.HasValue)
+        {
+            Model.SaveChickenActionId = newActionId.Value;
+        }
+    }
+
+    private void OnFarmIdChanged(int? newFarmId)
+    {
+        if (newFarmId.HasValue)
+        {
+            Model.FarmId = newFarmId.Value;
+        }
+    }
+}

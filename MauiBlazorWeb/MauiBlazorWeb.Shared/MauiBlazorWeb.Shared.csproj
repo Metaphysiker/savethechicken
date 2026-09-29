@@ -1,30 +1,24 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
-
+<Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
-
   <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.DataAnnotations.Validation" Version="3.2.0-rc1.20223.4" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.8" />
     <PackageReference Include="MudBlazor" Version="8.15.0" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Shared.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Folder Include="Factories\FactoriesImpl\" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Update="Resources\Strings\AppResources.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -32,18 +26,15 @@
       <DependentUpon>AppResources.resx</DependentUpon>
     </Compile>
   </ItemGroup>
-
   <ItemGroup>
     <Content Update="wwwroot\js\map.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
   <ItemGroup>
     <EmbeddedResource Update="Resources\Strings\AppResources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-
 </Project>

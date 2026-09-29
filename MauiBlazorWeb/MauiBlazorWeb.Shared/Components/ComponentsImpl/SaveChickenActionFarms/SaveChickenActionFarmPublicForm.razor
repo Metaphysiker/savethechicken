@@ -1,0 +1,97 @@
+@using MauiBlazorWeb.Shared.Resources.Strings
+@using MauiBlazorWeb.Shared.Services.ServicesImpl
+@using Microsoft.Extensions.Localization
+@using global::Shared.Dtos.DtosImpl
+@inject IStringLocalizer<AppResources> L
+@inject HttpClient HttpClient
+@inject ISnackbar Snackbar
+
+@code {
+    [Parameter, EditorRequired]
+    public SaveChickenActionFarmDto Model { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback OnSubmitSuccess { get; set; }
+
+    private bool isSubmitting = false;
+
+    private async Task HandleValidSubmit()
+    {
+        if (isSubmitting) return;
+
+        isSubmitting = true;
+        try
+        {
+            var response = await HttpClient.PostAsJsonAsync("api/SaveChickenActionFarm", Model);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Snackbar.Add("Vielen Dank! Die Hof-Zuordnung wurde erfolgreich gespeichert.", Severity.Success);
+                await OnSubmitSuccess.InvokeAsync();
+            }
+            else
+            {
+                Snackbar.Add($"Fehler beim Senden: {response.StatusCode}", Severity.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ein Fehler ist aufgetreten: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+}
+
+<MudPaper Class="pa-6 my-6" Elevation="6">
+    <EditForm Model="Model" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+
+        <!-- Selection Details -->
+        <MudText Typo="Typo.h6" Class="mb-2 mt-4">
+            <MudIcon Icon="@Icons.Material.Filled.Agriculture" Class="me-1" /> Zuordnung details
+        </MudText>
+        <MudDivider Class="mb-3" />
+
+        <MudGrid>
+            <MudItem xs="12" sm="6">
+                <MudNumericField @bind-Value="Model.NumberOfChickensToBeSaved"
+                                Label="Anzahl Hennen zu retten*"
+                                Variant="Variant.Outlined"
+                                Min="0"
+                                UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "chickens-count" })" />
+                <ValidationMessage For="@(() => Model.NumberOfChickensToBeSaved)" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudNumericField @bind-Value="Model.NumberOfRoostersToBeSaved"
+                                Label="Anzahl Hähne zu retten*"
+                                Variant="Variant.Outlined"
+                                Min="0"
+                                UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "roosters-count" })" />
+                <ValidationMessage For="@(() => Model.NumberOfRoostersToBeSaved)" />
+            </MudItem>
+        </MudGrid>
+
+        <!-- Submit Button -->
+        <MudButton ButtonType="ButtonType.Submit"
+                  Variant="Variant.Filled"
+                  Color="Color.Primary"
+                  Size="Size.Large"
+                  Disabled="isSubmitting"
+                  FullWidth="true"
+                  Class="mt-6"
+                  data-testid="submit-button">
+            @if (isSubmitting)
+            {
+                <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+                <span class="ml-2">Wird gesendet...</span>
+            }
+            else
+            {
+                <span>Zuordnung Speichern</span>
+            }
+        </MudButton>
+    </EditForm>
+</MudPaper>
