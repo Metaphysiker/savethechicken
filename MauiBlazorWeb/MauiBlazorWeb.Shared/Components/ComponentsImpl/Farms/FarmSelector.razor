@@ -1,0 +1,63 @@
+@using MauiBlazorWeb.Shared.Factories.FactoriesImpl
+@inject GenericDtoServiceFactory DtoServiceFactory
+@using MauiBlazorWeb.Web.Services.ServicesImpl
+@using MudBlazor
+@using global::Shared.Dtos.DtosImpl
+
+<MudSelect T="int?"
+           Label="Farm auswählen"
+           Value="SelectedActionId"
+           ValueChanged="OnValueChanged"
+           Dense="true"
+           Variant="Variant.Outlined"
+           Clearable="true"
+           Disabled="@IsReadOnly"
+           UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "save-chicken-action-selector" })">
+    @foreach (var action in GetFilteredActions())
+    {
+        <MudSelectItem Value="@((int?)action.Id)">
+            #@action.Id | @action.GenericName
+        </MudSelectItem>
+    }
+</MudSelect>
+
+
+@code {
+    [Parameter] public int? SelectedActionId { get; set; }
+    [Parameter] public EventCallback<int?> SelectedActionIdChanged { get; set; }
+    [Parameter] public EventCallback<FarmDto?> OnActionSelected { get; set; }
+    [Parameter] public List<int>? ExcludeIds { get; set; }
+    [Parameter] public bool IsReadOnly { get; set; } = false;
+
+    private GenericDtoService<FarmDto, FarmSearch>? _service;
+    private List<FarmDto> actions = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _service = DtoServiceFactory.Create<FarmDto, FarmSearch>();
+        actions = await _service.GetAllAsync();
+
+        if (SelectedActionId.HasValue)
+        {
+            await OnValueChanged(SelectedActionId);
+        }
+    }
+
+    private IEnumerable<FarmDto> GetFilteredActions()
+    {
+        if (ExcludeIds == null || !ExcludeIds.Any())
+            return actions;
+
+        return actions.Where(a => !ExcludeIds.Contains(a.Id));
+    }
+
+    private async Task OnValueChanged(int? newValue)
+    {
+        SelectedActionId = newValue;
+
+        var selectedAction = actions.FirstOrDefault(a => a.Id == newValue);
+
+        await SelectedActionIdChanged.InvokeAsync(newValue);
+        await OnActionSelected.InvokeAsync(selectedAction);
+    }
+}
