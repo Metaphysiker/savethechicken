@@ -14,34 +14,25 @@ public class AutoMapperService
             cfg.CreateMap<Contact, ContactDto>()
                 .ForMember(
                     dest => dest.GenericName,
-                    opt => opt.MapFrom(src =>
-                        $"{src.FirstName} {src.LastName}, {src.Email}".Trim()
-                    )
+                    opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}, {src.Email}".Trim())
                 );
-
             cfg.CreateMap<ContactDto, Contact>();
 
             // Address
             cfg.CreateMap<Address, AddressDto>()
                 .ForMember(
                     dest => dest.GenericName,
-                    opt => opt.MapFrom(src =>
-                        $"{src.Street} {src.City} {src.PostalCode}".Trim()
-                    )
+                    opt => opt.MapFrom(src => $"{src.Street} {src.City} {src.PostalCode}".Trim())
                 );
-
             cfg.CreateMap<AddressDto, Address>();
 
             // Farm
             cfg.CreateMap<Farm, FarmDto>()
                 .ForMember(
                     dest => dest.GenericName,
-                    opt => opt.MapFrom(src =>
-                        $"{src.Name}, {src.Contact.FirstName} {src.Contact.LastName}, {src.Address.City}".Trim()
-                    )
+                    opt => opt.MapFrom(src => $"{src.Name}, {src.Contact.FirstName} {src.Contact.LastName}, {src.Address.City}".Trim())
                 );
-
-            cfg.CreateMap<FarmDto, Farm>();
+            cfg.CreateMap<FarmDto, Farm>(); // Contact & Address map directly as owned/child entities
 
             // SaveChickenRequest
             cfg.CreateMap<SaveChickenRequest, SaveChickenRequestDto>()
@@ -53,9 +44,9 @@ public class AutoMapperService
                             : string.Empty
                     )
                 );
-
             cfg.CreateMap<SaveChickenRequestDto, SaveChickenRequest>()
-                .ForMember(dest => dest.Person, opt => opt.Ignore()); // Ignore Person when mapping from DTO - use PersonId instead
+                .ForMember(dest => dest.Person, opt => opt.Ignore())
+                .ForMember(dest => dest.SaveChickenAction, opt => opt.Ignore());
 
             // SaveChickenAction
             cfg.CreateMap<SaveChickenAction, SaveChickenActionDto>()
@@ -63,7 +54,6 @@ public class AutoMapperService
                     dest => dest.GenericName,
                     opt => opt.MapFrom(src => src.Title)
                 );
-
             cfg.CreateMap<SaveChickenActionDto, SaveChickenAction>();
 
             // SaveChickenActionFarm
@@ -71,13 +61,16 @@ public class AutoMapperService
                 .ForMember(
                     dest => dest.GenericName,
                     opt => opt.MapFrom(src =>
-                        $"{(src.SaveChickenAction != null ? src.SaveChickenAction.Title : string.Empty)} - {(src.Farm != null ? src.Farm.Name : string.Empty)}".Trim(' ', '-')
+                        string.Join(" - ", new[]
+                        {
+                            src.SaveChickenAction != null ? src.SaveChickenAction.Title : null,
+                            src.Farm != null ? src.Farm.Name : null
+                        }.Where(s => !string.IsNullOrWhiteSpace(s)))
                     )
                 );
-
             cfg.CreateMap<SaveChickenActionFarmDto, SaveChickenActionFarm>()
                 .ForMember(dest => dest.Farm, opt => opt.Ignore())
-                .ForMember(dest => dest.SaveChickenAction, opt => opt.Ignore()); // Avoid circular graph creation during payload saves; rely on foreign keys
+                .ForMember(dest => dest.SaveChickenAction, opt => opt.Ignore());
 
             // StoredFile
             cfg.CreateMap<StoredFile, StoredFileDto>()
@@ -86,32 +79,34 @@ public class AutoMapperService
                 .ForMember(dest => dest.SaveChickenDriveRequest, opt => opt.Ignore())
                 .ForMember(dest => dest.Farm, opt => opt.Ignore());
 
-            cfg.CreateMap<StoredFileDto, StoredFile>();
+            cfg.CreateMap<StoredFileDto, StoredFile>()
+                .ForMember(dest => dest.SaveChickenRequest, opt => opt.Ignore())
+                .ForMember(dest => dest.SaveChickenDriveRequest, opt => opt.Ignore())
+                .ForMember(dest => dest.Farm, opt => opt.Ignore());
 
             // Person
             cfg.CreateMap<Person, PersonDto>()
                 .ForMember(
                     dest => dest.GenericName,
-                    opt => opt.MapFrom(src =>
-                        $"{src.Contact.FirstName} {src.Contact.LastName}".Trim()
-                    )
+                    opt => opt.MapFrom(src => $"{src.Contact.FirstName} {src.Contact.LastName}".Trim())
                 )
                 .ForMember(dest => dest.SaveChickenRequests, opt => opt.Ignore())
                 .ForMember(dest => dest.SaveChickenDriveRequests, opt => opt.Ignore());
 
-            cfg.CreateMap<PersonDto, Person>();
+            cfg.CreateMap<PersonDto, Person>()
+                .ForMember(dest => dest.SaveChickenRequests, opt => opt.Ignore())
+                .ForMember(dest => dest.SaveChickenDriveRequests, opt => opt.Ignore());
 
             // SaveChickenDriveRequest
             cfg.CreateMap<SaveChickenDriveRequest, SaveChickenDriveRequestDto>()
                 .ForMember(
                     dest => dest.GenericName,
-                    opt => opt.MapFrom(src =>
-                        $"{src.Person.Contact.FirstName} {src.Person.Contact.LastName}, {src.CarMake}".Trim()
-                    )
+                    opt => opt.MapFrom(src => $"{src.Person.Contact.FirstName} {src.Person.Contact.LastName}, {src.CarMake}".Trim())
                 );
 
             cfg.CreateMap<SaveChickenDriveRequestDto, SaveChickenDriveRequest>()
-                .ForMember(dest => dest.Person, opt => opt.Ignore()); // Ignore Person when mapping from DTO - use PersonId instead
+                .ForMember(dest => dest.Person, opt => opt.Ignore())
+                .ForMember(dest => dest.SaveChickenAction, opt => opt.Ignore());
         });
 
         mapper = config.CreateMapper();

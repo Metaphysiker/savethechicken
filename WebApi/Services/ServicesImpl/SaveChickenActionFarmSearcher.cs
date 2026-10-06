@@ -27,6 +27,18 @@ namespace Services.ServicesImpl
             if (search.Ids != null && search.Ids.Any())
                 query = query.Where(x => search.Ids.Contains(x.Id));
 
+            // Filter by farm
+            if (search.FarmId.HasValue)
+                query = query.Where(x => x.FarmId == search.FarmId.Value);
+
+            // Filter by single action
+            if (search.SaveChickenActionId.HasValue)
+                query = query.Where(x => x.SaveChickenActionId == search.SaveChickenActionId.Value);
+
+            // Filter by multiple actions
+            if (search.SaveChickenActionIds != null && search.SaveChickenActionIds.Any())
+                query = query.Where(x => search.SaveChickenActionIds.Contains(x.SaveChickenActionId));
+
             int page = search.Page > 0 ? search.Page : 1;
             int pageSize = search.PageSize > 0 ? search.PageSize : 10;
 

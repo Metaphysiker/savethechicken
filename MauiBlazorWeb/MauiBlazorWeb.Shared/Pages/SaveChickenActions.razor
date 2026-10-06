@@ -136,7 +136,7 @@
                 </SearchForm>
                 <Table Context="ctx">
                     <SaveChickenActionFarmTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3"
-                                                OnItemsChanged="ctx.Item4.InvokeAsync" />
+                                                OnItemsChanged="ctx.Item4.InvokeAsync" HiddenColumns="@(new[] { "SaveChickenAction" })" />
                 </Table>
             </GenericSearch>
 

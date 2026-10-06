@@ -1,5 +1,6 @@
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActions
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Farms
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.StoredFiles
 @using MauiBlazorWeb.Shared.Resources.Strings
 @using Microsoft.Extensions.Localization
 @using MudBlazor
@@ -12,6 +13,13 @@
     [Parameter]
     public List<SaveChickenActionFarmDto> items { get; set; } = new List<SaveChickenActionFarmDto>();
 
+    /// <summary>
+    /// List of column names to hide (e.g., ["Farm", "Show", "Edit", "Delete"]).
+    /// Case-insensitive evaluation.
+    /// </summary>
+    [Parameter]
+    public IEnumerable<string> HiddenColumns { get; set; } = Enumerable.Empty<string>();
+
     [Parameter] public EventCallback<SaveChickenActionFarmDto> OnItemSelected { get; set; }
     void SelectItem(SaveChickenActionFarmDto item) => OnItemSelected.InvokeAsync(item);
 
@@ -22,6 +30,11 @@
 
     private string? currentColumnName = null;
     private bool? currentSortDescending = null;
+
+    private bool IsColumnVisible(string columnName)
+    {
+        return !HiddenColumns.Any(c => string.Equals(c, columnName, StringComparison.OrdinalIgnoreCase));
+    }
 
     private void OnHeaderClick(string columnName)
     {
@@ -47,104 +60,371 @@
     <MudDataGrid Items="@items" Hover="true" Dense="true" Striped="true" Bordered="true" SortMode="SortMode.None">
         <Columns>
             <!-- SaveChickenAction Column -->
-            <TemplateColumn>
-                <HeaderTemplate>
-                    <MudButton OnClick="@(() => OnHeaderClick("SaveChickenAction.Title"))" Variant="Variant.Text"
-                               Style="text-transform: none;">
-                        @L["SaveChickenAction"]
-                        @if (GetSortIcon("SaveChickenAction.Title") != null)
-                        {
-                            <MudIcon Icon="@GetSortIcon("SaveChickenAction.Title")" Size="Size.Small" />
-                        }
-                    </MudButton>
-                </HeaderTemplate>
-                <CellTemplate>
-                    @(context.Item.SaveChickenAction?.Title ?? context.Item.SaveChickenActionId.ToString())
-                </CellTemplate>
-            </TemplateColumn>
+            @if (IsColumnVisible("SaveChickenAction"))
+            {
+                <TemplateColumn>
+                    <HeaderTemplate>
+                        <MudButton OnClick="@(() => OnHeaderClick("SaveChickenAction.Title"))" Variant="Variant.Text"
+                                   Style="text-transform: none;">
+                            @L["SaveChickenAction"]
+                            @if (GetSortIcon("SaveChickenAction.Title") != null)
+                            {
+                                <MudIcon Icon="@GetSortIcon("SaveChickenAction.Title")" Size="Size.Small" />
+                            }
+                        </MudButton>
+                    </HeaderTemplate>
+                    <CellTemplate>
+                        @(context.Item.SaveChickenAction?.Title ?? context.Item.SaveChickenActionId.ToString())
+                    </CellTemplate>
+                </TemplateColumn>
+            }
 
-            <!-- Farm Column -->
-            <TemplateColumn>
-                <HeaderTemplate>
-                    <MudButton OnClick="@(() => OnHeaderClick("Farm.Name"))" Variant="Variant.Text"
-                               Style="text-transform: none;">
-                        @L["Farm"]
-                        @if (GetSortIcon("Farm.Name") != null)
+            <!-- Farm Name Column -->
+            @if (IsColumnVisible("Farm"))
+            {
+                <TemplateColumn>
+                    <HeaderTemplate>
+                        <MudButton OnClick="@(() => OnHeaderClick("Farm.Name"))" Variant="Variant.Text"
+                                   Style="text-transform: none;">
+                            @L["Farm_Name"]
+                            @if (GetSortIcon("Farm.Name") != null)
+                            {
+                                <MudIcon Icon="@GetSortIcon("Farm.Name")" Size="Size.Small" />
+                            }
+                        </MudButton>
+                    </HeaderTemplate>
+                    <CellTemplate>
+                        @if (!string.IsNullOrEmpty(context.Item.Farm?.Name))
                         {
-                            <MudIcon Icon="@GetSortIcon("Farm.Name")" Size="Size.Small" />
+                            @context.Item.Farm.Name
                         }
-                    </MudButton>
-                </HeaderTemplate>
-                <CellTemplate>
-                    @(context.Item.Farm?.Name ?? context.Item.FarmId.ToString())
-                </CellTemplate>
-            </TemplateColumn>
+                        else if (context.Item.Farm != null)
+                        {
+                            <span style="color: orange; font-style: italic;">(Unnamed Farm - ID: @context.Item.FarmId)</span>
+                        }
+                        else
+                        {
+                            <span style="color: red; font-style: italic;">N/A (Farm: ✗ - ID: @context.Item.FarmId)</span>
+                        }
+                    </CellTemplate>
+                </TemplateColumn>
+            }
+
+            <!-- Contact First Name -->
+            @if (IsColumnVisible("Contact.FirstName"))
+            {
+                <TemplateColumn>
+                    <HeaderTemplate>
+                        <MudButton OnClick="@(() => OnHeaderClick("Farm.Contact.FirstName"))" Variant="Variant.Text"
+                                   Style="text-transform: none;">
+                            @L["Contact_FirstName"]
+                            @if (GetSortIcon("Farm.Contact.FirstName") != null)
+                            {
+                                <MudIcon Icon="@GetSortIcon("Farm.Contact.FirstName")" Size="Size.Small" />
+                            }
+                        </MudButton>
+                    </HeaderTemplate>
+                    <CellTemplate>@context.Item.Farm?.Contact?.FirstName</CellTemplate>
+                </TemplateColumn>
+            }
+
+            <!-- Contact Last Name -->
+            @if (IsColumnVisible("Contact.LastName"))
+            {
+                <TemplateColumn>
+                    <HeaderTemplate>
+                        <MudButton OnClick="@(() => OnHeaderClick("Farm.Contact.LastName"))" Variant="Variant.Text"
+                                   Style="text-transform: none;">
+                            @L["Contact_LastName"]
+                            @if (GetSortIcon("Farm.Contact.LastName") != null)
+                            {
+                                <MudIcon Icon="@GetSortIcon("Farm.Contact.LastName")" Size="Size.Small" />
+                            }
+                        </MudButton>
+                    </HeaderTemplate>
+                    <CellTemplate>@context.Item.Farm?.Contact?.LastName</CellTemplate>
+                </TemplateColumn>
+            }
+
+            <!-- Address Street -->
+            @if (IsColumnVisible("Address.Street"))
+            {
+                <TemplateColumn>
+                    <HeaderTemplate>
+                        <MudButton OnClick="@(() => OnHeaderClick("Farm.Address.Street"))" Variant="Variant.Text"
+                                   Style="text-transform: none;">
+                            @L["Address_Street"]
+                            @if (GetSortIcon("Farm.Address.Street") != null)
+                            {
+                                <MudIcon Icon="@GetSortIcon("Farm.Address.Street")" Size="Size.Small" />
+                            }
+                        </MudButton>
+                    </HeaderTemplate>
+                    <CellTemplate>@context.Item.Farm?.Address?.Street</CellTemplate>
+                </TemplateColumn>
+            }
+
+            <!-- Address City -->
+            @if (IsColumnVisible("Address.City"))
+            {
+                <TemplateColumn>
+                    <HeaderTemplate>
+                        <MudButton OnClick="@(() => OnHeaderClick("Farm.Address.City"))" Variant="Variant.Text"
+                                   Style="text-transform: none;">
+                            @L["Address_City"]
+                            @if (GetSortIcon("Farm.Address.City") != null)
+                            {
+                                <MudIcon Icon="@GetSortIcon("Farm.Address.City")" Size="Size.Small" />
+                            }
+                        </MudButton>
+                    </HeaderTemplate>
+                    <CellTemplate>@context.Item.Farm?.Address?.City</CellTemplate>
+                </TemplateColumn>
+            }
+
+            <!-- Address Postal Code -->
+            @if (IsColumnVisible("Address.PostalCode"))
+            {
+                <TemplateColumn>
+                    <HeaderTemplate>
+                        <MudButton OnClick="@(() => OnHeaderClick("Farm.Address.PostalCode"))" Variant="Variant.Text"
+                                   Style="text-transform: none;">
+                            @L["Address_PostalCode"]
+                            @if (GetSortIcon("Farm.Address.PostalCode") != null)
+                            {
+                                <MudIcon Icon="@GetSortIcon("Farm.Address.PostalCode")" Size="Size.Small" />
+                            }
+                        </MudButton>
+                    </HeaderTemplate>
+                    <CellTemplate>@context.Item.Farm?.Address?.PostalCode</CellTemplate>
+                </TemplateColumn>
+            }
+
+            <!-- Contact Phone Number -->
+            @if (IsColumnVisible("Contact.PhoneNumber"))
+            {
+                <TemplateColumn>
+                    <HeaderTemplate>
+                        <MudButton OnClick="@(() => OnHeaderClick("Farm.Contact.PhoneNumber"))" Variant="Variant.Text"
+                                   Style="text-transform: none;">
+                            @L["Contact_Phone"]
+                            @if (GetSortIcon("Farm.Contact.PhoneNumber") != null)
+                            {
+                                <MudIcon Icon="@GetSortIcon("Farm.Contact.PhoneNumber")" Size="Size.Small" />
+                            }
+                        </MudButton>
+                    </HeaderTemplate>
+                    <CellTemplate>@context.Item.Farm?.Contact?.PhoneNumber</CellTemplate>
+                </TemplateColumn>
+            }
+
+            <!-- Contact Email -->
+            @if (IsColumnVisible("Contact.Email"))
+            {
+                <TemplateColumn>
+                    <HeaderTemplate>
+                        <MudButton OnClick="@(() => OnHeaderClick("Farm.Contact.Email"))" Variant="Variant.Text"
+                                   Style="text-transform: none;">
+                            @L["Contact_Email"]
+                            @if (GetSortIcon("Farm.Contact.Email") != null)
+                            {
+                                <MudIcon Icon="@GetSortIcon("Farm.Contact.Email")" Size="Size.Small" />
+                            }
+                        </MudButton>
+                    </HeaderTemplate>
+                    <CellTemplate>@context.Item.Farm?.Contact?.Email</CellTemplate>
+                </TemplateColumn>
+            }
+
+            <!-- Farm Total Chickens -->
+            @if (IsColumnVisible("NumberOfChickens"))
+            {
+                <TemplateColumn>
+                    <HeaderTemplate>
+                        <MudButton OnClick="@(() => OnHeaderClick("Farm.NumberOfChickens"))" Variant="Variant.Text"
+                                   Style="text-transform: none;">
+                            @L["NumberOfChickens"]
+                            @if (GetSortIcon("Farm.NumberOfChickens") != null)
+                            {
+                                <MudIcon Icon="@GetSortIcon("Farm.NumberOfChickens")" Size="Size.Small" />
+                            }
+                        </MudButton>
+                    </HeaderTemplate>
+                    <CellTemplate>@context.Item.Farm?.NumberOfChickens</CellTemplate>
+                </TemplateColumn>
+            }
+
+            <!-- Farm Total Roosters -->
+            @if (IsColumnVisible("NumberOfRoosters"))
+            {
+                <TemplateColumn>
+                    <HeaderTemplate>
+                        <MudButton OnClick="@(() => OnHeaderClick("Farm.NumberOfRoosters"))" Variant="Variant.Text"
+                                   Style="text-transform: none;">
+                            @L["NumberOfRoosters"]
+                            @if (GetSortIcon("Farm.NumberOfRoosters") != null)
+                            {
+                                <MudIcon Icon="@GetSortIcon("Farm.NumberOfRoosters")" Size="Size.Small" />
+                            }
+                        </MudButton>
+                    </HeaderTemplate>
+                    <CellTemplate>@context.Item.Farm?.NumberOfRoosters</CellTemplate>
+                </TemplateColumn>
+            }
 
             <!-- Number of Chickens to be Saved -->
-            <TemplateColumn>
-                <HeaderTemplate>
-                    <MudButton OnClick="@(() => OnHeaderClick("NumberOfChickensToBeSaved"))" Variant="Variant.Text"
-                               Style="text-transform: none;">
-                        @L["NumberOfChickensToBeSaved"]
-                        @if (GetSortIcon("NumberOfChickensToBeSaved") != null)
-                        {
-                            <MudIcon Icon="@GetSortIcon("NumberOfChickensToBeSaved")" Size="Size.Small" />
-                        }
-                    </MudButton>
-                </HeaderTemplate>
-                <CellTemplate>@context.Item.NumberOfChickensToBeSaved</CellTemplate>
-            </TemplateColumn>
+            @if (IsColumnVisible("NumberOfChickensToBeSaved"))
+            {
+                <TemplateColumn>
+                    <HeaderTemplate>
+                        <MudButton OnClick="@(() => OnHeaderClick("NumberOfChickensToBeSaved"))" Variant="Variant.Text"
+                                   Style="text-transform: none;">
+                            @L["NumberOfChickensToBeSaved"]
+                            @if (GetSortIcon("NumberOfChickensToBeSaved") != null)
+                            {
+                                <MudIcon Icon="@GetSortIcon("NumberOfChickensToBeSaved")" Size="Size.Small" />
+                            }
+                        </MudButton>
+                    </HeaderTemplate>
+                    <CellTemplate>@context.Item.NumberOfChickensToBeSaved</CellTemplate>
+                </TemplateColumn>
+            }
 
             <!-- Number of Roosters to be Saved -->
-            <TemplateColumn>
-                <HeaderTemplate>
-                    <MudButton OnClick="@(() => OnHeaderClick("NumberOfRoostersToBeSaved"))" Variant="Variant.Text"
-                               Style="text-transform: none;">
-                        @L["NumberOfRoostersToBeSaved"]
-                        @if (GetSortIcon("NumberOfRoostersToBeSaved") != null)
+            @if (IsColumnVisible("NumberOfRoostersToBeSaved"))
+            {
+                <TemplateColumn>
+                    <HeaderTemplate>
+                        <MudButton OnClick="@(() => OnHeaderClick("NumberOfRoostersToBeSaved"))" Variant="Variant.Text"
+                                   Style="text-transform: none;">
+                            @L["NumberOfRoostersToBeSaved"]
+                            @if (GetSortIcon("NumberOfRoostersToBeSaved") != null)
+                            {
+                                <MudIcon Icon="@GetSortIcon("NumberOfRoostersToBeSaved")" Size="Size.Small" />
+                            }
+                        </MudButton>
+                    </HeaderTemplate>
+                    <CellTemplate>@context.Item.NumberOfRoostersToBeSaved</CellTemplate>
+                </TemplateColumn>
+            }
+
+            <!-- Farm Size -->
+            @if (IsColumnVisible("Size"))
+            {
+                <TemplateColumn>
+                    <HeaderTemplate>
+                        <MudButton OnClick="@(() => OnHeaderClick("Farm.Size"))" Variant="Variant.Text"
+                                   Style="text-transform: none;">
+                            @L["Farm_Size"]
+                            @if (GetSortIcon("Farm.Size") != null)
+                            {
+                                <MudIcon Icon="@GetSortIcon("Farm.Size")" Size="Size.Small" />
+                            }
+                        </MudButton>
+                    </HeaderTemplate>
+                    <CellTemplate>@context.Item.Farm?.Size</CellTemplate>
+                </TemplateColumn>
+            }
+
+            <!-- Farm Color -->
+            @if (IsColumnVisible("Color"))
+            {
+                <TemplateColumn>
+                    <HeaderTemplate>
+                        <MudButton OnClick="@(() => OnHeaderClick("Farm.Color"))" Variant="Variant.Text"
+                                   Style="text-transform: none;">
+                            @L["Color"]
+                            @if (GetSortIcon("Farm.Color") != null)
+                            {
+                                <MudIcon Icon="@GetSortIcon("Farm.Color")" Size="Size.Small" />
+                            }
+                        </MudButton>
+                    </HeaderTemplate>
+                    <CellTemplate>@context.Item.Farm?.Color</CellTemplate>
+                </TemplateColumn>
+            }
+
+            <!-- General Information -->
+            @if (IsColumnVisible("GeneralInformation"))
+            {
+                <TemplateColumn>
+                    <HeaderTemplate>
+                        <MudButton OnClick="@(() => OnHeaderClick("Farm.GeneralInformation"))" Variant="Variant.Text"
+                                   Style="text-transform: none;">
+                            @L["GeneralInformation"]
+                            @if (GetSortIcon("Farm.GeneralInformation") != null)
+                            {
+                                <MudIcon Icon="@GetSortIcon("Farm.GeneralInformation")" Size="Size.Small" />
+                            }
+                        </MudButton>
+                    </HeaderTemplate>
+                    <CellTemplate>@context.Item.Farm?.GeneralInformation</CellTemplate>
+                </TemplateColumn>
+            }
+
+            <!-- Stored Files -->
+            @if (IsColumnVisible("Files"))
+            {
+                <TemplateColumn>
+                    <HeaderTemplate>
+                        @L["Files"]
+                    </HeaderTemplate>
+                    <CellTemplate>
+                        @if (context.Item.Farm?.Files != null)
                         {
-                            <MudIcon Icon="@GetSortIcon("NumberOfRoostersToBeSaved")" Size="Size.Small" />
+                            @foreach (var file in context.Item.Farm.Files)
+                            {
+                                <StoredFileDialog StoredFile="file" />
+                            }
                         }
-                    </MudButton>
-                </HeaderTemplate>
-                <CellTemplate>@context.Item.NumberOfRoostersToBeSaved</CellTemplate>
-            </TemplateColumn>
+                    </CellTemplate>
+                </TemplateColumn>
+            }
 
             <!-- Show Action -->
-            <TemplateColumn>
-                <HeaderTemplate>@L["show"]</HeaderTemplate>
-                <CellTemplate>
-                    <MudButton Variant="Variant.Filled" OnClick="@(() => ShowItem(context.Item.Id))"
-                               UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "view-button" })">
-                        <MudIcon Icon="@Icons.Material.Filled.Visibility" />
-                    </MudButton>
-                </CellTemplate>
-            </TemplateColumn>
+            @if (IsColumnVisible("Show"))
+            {
+                <TemplateColumn>
+                    <HeaderTemplate>@L["show"]</HeaderTemplate>
+                    <CellTemplate>
+                        <MudButton Variant="Variant.Filled" OnClick="@(() => ShowItem(context.Item.Id))"
+                                   UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "view-button" })">
+                            <MudIcon Icon="@Icons.Material.Filled.Visibility" />
+                        </MudButton>
+                    </CellTemplate>
+                </TemplateColumn>
+            }
 
             <!-- Edit Action -->
-            <TemplateColumn>
-                <HeaderTemplate>@L["edit"]</HeaderTemplate>
-                <CellTemplate>
-                    @if (context.Item != null)
-                    {
-                        <GenericUpdateDialogLauncher TDto="SaveChickenActionFarmDto" model="context.Item"
-                                                     OnEdited="@(() => OnItemsChanged.InvokeAsync())">
-                            <ChildContent Context="editModel">
-                                <SaveChickenActionFarmForm Model="editModel" />
-                            </ChildContent>
-                        </GenericUpdateDialogLauncher>
-                    }
-                </CellTemplate>
-            </TemplateColumn>
+            @if (IsColumnVisible("Edit"))
+            {
+                <TemplateColumn>
+                    <HeaderTemplate>@L["edit"]</HeaderTemplate>
+                    <CellTemplate>
+                        @if (context.Item != null)
+                        {
+                            <GenericUpdateDialogLauncher TDto="SaveChickenActionFarmDto" model="context.Item"
+                                                         OnEdited="@(() => OnItemsChanged.InvokeAsync())">
+                                <ChildContent Context="editModel">
+                                    <SaveChickenActionFarmForm Model="editModel" IsSaveChickenActionReadOnly="true" />
+                                </ChildContent>
+                            </GenericUpdateDialogLauncher>
+                        }
+                    </CellTemplate>
+                </TemplateColumn>
+            }
 
             <!-- Delete Action -->
-            <TemplateColumn>
-                <HeaderTemplate>@L["delete"]</HeaderTemplate>
-                <CellTemplate>
-                    <GenericDeleteDialog TDto="SaveChickenActionFarmDto" Model="context.Item"
-                                         OnDeleted="@(() => OnItemsChanged.InvokeAsync())" />
-                </CellTemplate>
-            </TemplateColumn>
+            @if (IsColumnVisible("Delete"))
+            {
+                <TemplateColumn>
+                    <HeaderTemplate>@L["delete"]</HeaderTemplate>
+                    <CellTemplate>
+                        <GenericDeleteDialog TDto="SaveChickenActionFarmDto" Model="context.Item"
+                                             OnDeleted="@(() => OnItemsChanged.InvokeAsync())" />
+                    </CellTemplate>
+                </TemplateColumn>
+            }
         </Columns>
     </MudDataGrid>
 </div>

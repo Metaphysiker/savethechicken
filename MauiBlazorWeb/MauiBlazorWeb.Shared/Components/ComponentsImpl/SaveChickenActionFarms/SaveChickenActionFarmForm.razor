@@ -14,15 +14,12 @@
     <SaveChickenActionSelector SelectedActionId="Model.SaveChickenActionId"
                                SelectedActionIdChanged="OnSaveChickenActionIdChanged" IsReadOnly="@isSaveChickenActionSelectorReadOnly" />
 
-
-
     @if (PreSelectedSaveChickenActionId.HasValue)
     {
         <MudAlert Severity="Severity.Info" Dense="true" Class="mt-2">
             @L["ActionPreselected_Info"]
         </MudAlert>
     }
-
 
     <FarmSelector SelectedActionId="Model.FarmId" SelectedActionIdChanged="OnFarmIdChanged"
                   IsReadOnly="@isFarmSelectorReadOnly" />
@@ -33,7 +30,6 @@
             @L["FarmPreselected_Info"]
         </MudAlert>
     }
-
 
 </MudPaper>
 
@@ -63,12 +59,16 @@
     public bool IsReadOnly { get; set; } = false;
 
     [Parameter]
+    public bool IsSaveChickenActionReadOnly { get; set; } = false;
+
+    [Parameter]
     public int? PreSelectedSaveChickenActionId { get; set; }
 
     [Parameter]
     public int? PreSelectedFarmId { get; set; }
 
-    private bool isSaveChickenActionSelectorReadOnly => IsReadOnly || PreSelectedSaveChickenActionId.HasValue;
+    private bool isSaveChickenActionSelectorReadOnly => IsReadOnly || IsSaveChickenActionReadOnly ||
+PreSelectedSaveChickenActionId.HasValue;
     private bool isFarmSelectorReadOnly => IsReadOnly || PreSelectedFarmId.HasValue;
 
     protected override void OnInitialized()
