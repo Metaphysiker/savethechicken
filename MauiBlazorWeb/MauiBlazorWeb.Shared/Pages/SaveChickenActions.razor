@@ -1,6 +1,7 @@
 ﻿@page "/admin/save-chicken-actions/{id:int}"
 
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl
+@using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenActionFarms
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenDriveRequests
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.Farms
 @using MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChickenRequests
@@ -125,6 +126,13 @@
                        StartIcon="@Icons.Material.Filled.Add" Class="mt-3" data-testid="add-farm-button">
                 @L["AddFarm"]
             </MudButton>
+            <hr />
+            xxxx
+            <GenericCreate TDto="SaveChickenActionFarmDto">
+                <ChildContent Context="model">
+                    <SaveChickenActionFarmForm Model="model" />
+                </ChildContent>
+            </GenericCreate>
         </MudPaper>
 
         <MudPaper Class="pa-4 my-4">
