@@ -49,7 +49,8 @@
             <!-- SaveChickenAction Column -->
             <TemplateColumn>
                 <HeaderTemplate>
-                    <MudButton OnClick="@(() => OnHeaderClick("SaveChickenAction.Title"))" Variant="Variant.Text" Style="text-transform: none;">
+                    <MudButton OnClick="@(() => OnHeaderClick("SaveChickenAction.Title"))" Variant="Variant.Text"
+                               Style="text-transform: none;">
                         @L["SaveChickenAction"]
                         @if (GetSortIcon("SaveChickenAction.Title") != null)
                         {
@@ -65,7 +66,8 @@
             <!-- Farm Column -->
             <TemplateColumn>
                 <HeaderTemplate>
-                    <MudButton OnClick="@(() => OnHeaderClick("Farm.Name"))" Variant="Variant.Text" Style="text-transform: none;">
+                    <MudButton OnClick="@(() => OnHeaderClick("Farm.Name"))" Variant="Variant.Text"
+                               Style="text-transform: none;">
                         @L["Farm"]
                         @if (GetSortIcon("Farm.Name") != null)
                         {
@@ -81,7 +83,8 @@
             <!-- Number of Chickens to be Saved -->
             <TemplateColumn>
                 <HeaderTemplate>
-                    <MudButton OnClick="@(() => OnHeaderClick("NumberOfChickensToBeSaved"))" Variant="Variant.Text" Style="text-transform: none;">
+                    <MudButton OnClick="@(() => OnHeaderClick("NumberOfChickensToBeSaved"))" Variant="Variant.Text"
+                               Style="text-transform: none;">
                         @L["NumberOfChickensToBeSaved"]
                         @if (GetSortIcon("NumberOfChickensToBeSaved") != null)
                         {
@@ -95,7 +98,8 @@
             <!-- Number of Roosters to be Saved -->
             <TemplateColumn>
                 <HeaderTemplate>
-                    <MudButton OnClick="@(() => OnHeaderClick("NumberOfRoostersToBeSaved"))" Variant="Variant.Text" Style="text-transform: none;">
+                    <MudButton OnClick="@(() => OnHeaderClick("NumberOfRoostersToBeSaved"))" Variant="Variant.Text"
+                               Style="text-transform: none;">
                         @L["NumberOfRoostersToBeSaved"]
                         @if (GetSortIcon("NumberOfRoostersToBeSaved") != null)
                         {
@@ -110,8 +114,7 @@
             <TemplateColumn>
                 <HeaderTemplate>@L["show"]</HeaderTemplate>
                 <CellTemplate>
-                    <MudButton Variant="Variant.Filled"
-                               OnClick="@(() => ShowItem(context.Item.Id))"
+                    <MudButton Variant="Variant.Filled" OnClick="@(() => ShowItem(context.Item.Id))"
                                UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "view-button" })">
                         <MudIcon Icon="@Icons.Material.Filled.Visibility" />
                     </MudButton>
@@ -124,13 +127,12 @@
                 <CellTemplate>
                     @if (context.Item != null)
                     {
-                        <GenericUpdateDialog TDto="SaveChickenActionFarmDto"
-                                             Model="context.Item"
-                                             OnEdited="@(() => OnItemsChanged.InvokeAsync())">
+                        <GenericUpdateDialogLauncher TDto="SaveChickenActionFarmDto" model="context.Item"
+                                                     OnEdited="@(() => OnItemsChanged.InvokeAsync())">
                             <ChildContent Context="editModel">
                                 <SaveChickenActionFarmForm Model="editModel" />
                             </ChildContent>
-                        </GenericUpdateDialog>
+                        </GenericUpdateDialogLauncher>
                     }
                 </CellTemplate>
             </TemplateColumn>
@@ -139,8 +141,7 @@
             <TemplateColumn>
                 <HeaderTemplate>@L["delete"]</HeaderTemplate>
                 <CellTemplate>
-                    <GenericDeleteDialog TDto="SaveChickenActionFarmDto"
-                                         Model="context.Item"
+                    <GenericDeleteDialog TDto="SaveChickenActionFarmDto" Model="context.Item"
                                          OnDeleted="@(() => OnItemsChanged.InvokeAsync())" />
                 </CellTemplate>
             </TemplateColumn>

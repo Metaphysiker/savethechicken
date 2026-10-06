@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
@@ -11,9 +12,11 @@ using NpgsqlTypes;
 namespace WebApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20261006133029_AddSaveChickenActionFarms")]
+    partial class AddSaveChickenActionFarms
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -483,16 +486,16 @@ namespace WebApi.Migrations
 
             modelBuilder.Entity("WebApi.Models.ModelsImpl.SaveChickenActionFarm", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("SaveChickenActionId")
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<int>("FarmId")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("FarmId")
+                    b.Property<int>("Id")
                         .HasColumnType("integer");
 
                     b.Property<int>("NumberOfChickensToBeSaved")
@@ -501,18 +504,12 @@ namespace WebApi.Migrations
                     b.Property<int>("NumberOfRoostersToBeSaved")
                         .HasColumnType("integer");
 
-                    b.Property<int>("SaveChickenActionId")
-                        .HasColumnType("integer");
-
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("Id");
+                    b.HasKey("SaveChickenActionId", "FarmId");
 
                     b.HasIndex("FarmId");
-
-                    b.HasIndex("SaveChickenActionId", "FarmId")
-                        .IsUnique();
 
                     b.ToTable("SaveChickenActionFarms");
                 });

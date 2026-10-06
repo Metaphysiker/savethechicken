@@ -109,25 +109,22 @@
         </MudPaper>
 
         <MudPaper Class="pa-4 my-4">
-            <MudText Typo="Typo.h6">@L["Farms"]</MudText>
 
-            <GenericSearch @key="@("farm-" + farmRefreshKey)" TDto="FarmDto" TSearchDto="FarmSearch" search="farmSearch"
-                           OnItemsFound="OnFarmItemsFound">
-                <SearchForm Context="search">
-                    <FarmSearchForm Model="search" />
-                </SearchForm>
-                <Table Context="ctx">
-                    <FarmTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3"
-                               OnItemsChanged="ctx.Item4.InvokeAsync" />
-                </Table>
-            </GenericSearch>
+            @if (false)
+            {
+                <MudText Typo="Typo.h6">@L["Farms"]</MudText>
 
-            <MudButton Variant="Variant.Filled" Color="Color.Tertiary" OnClick="OpenAddFarmDialog"
-                       StartIcon="@Icons.Material.Filled.Add" Class="mt-3" data-testid="add-farm-button">
-                @L["AddFarm"]
-            </MudButton>
-            <hr />
-            xxxx
+                <GenericSearch @key="@("farm-" + farmRefreshKey)" TDto="FarmDto" TSearchDto="FarmSearch" search="farmSearch"
+                               OnItemsFound="OnFarmItemsFound">
+                    <SearchForm Context="search">
+                        <FarmSearchForm Model="search" />
+                    </SearchForm>
+                    <Table Context="ctx">
+                        <FarmTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3"
+                                   OnItemsChanged="ctx.Item4.InvokeAsync" />
+                    </Table>
+                </GenericSearch>
+            }
 
             <MudText Typo="Typo.h6">@L["SaveChickenActionFarms"]</MudText>
 
@@ -143,11 +140,10 @@
                 </Table>
             </GenericSearch>
 
-            <GenericCreate TDto="SaveChickenActionFarmDto" OnCreated="HandleSaveChickenActionFarmCreated">
-                <ChildContent Context="model">
-                    <SaveChickenActionFarmForm Model="model" PreSelectedSaveChickenActionId="selectedActionId" />
-                </ChildContent>
-            </GenericCreate>
+            <MudButton Variant="Variant.Filled" Color="Color.Tertiary" OnClick="OpenAddSaveChickenActionFarmDialog"
+                       StartIcon="@Icons.Material.Filled.Add" Class="mt-3" data-testid="add-action-farm-button">
+                @L["AddSaveChickenActionFarm"]
+            </MudButton>
         </MudPaper>
 
         <MudPaper Class="pa-4 my-4">
@@ -493,12 +489,39 @@ DialogService.ShowAsync<MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChick
 
     private async Task HandleSaveChickenActionFarmCreated()
     {
-        // Log to browser console via JS interop
-        await JS.InvokeVoidAsync("console.log", "SaveChickenActionFarm created successfully.");
-
-        Console.WriteLine("SaveChickenActionFarm created successfully.");
-        // Force GenericSearch to refresh by changing the key
         saveChickenActionFarmRefreshKey++;
         StateHasChanged();
+    }
+
+    private async Task OpenAddSaveChickenActionFarmDialog()
+    {
+        if (selectedAction == null || selectedAction.Id == 0)
+            return;
+
+        var newActionFarm = new SaveChickenActionFarmDto
+        {
+            SaveChickenActionId = selectedAction.Id
+        };
+
+        RenderFragment<SaveChickenActionFarmDto> childContent = (editModel) => builder =>
+        {
+            builder.OpenComponent<SaveChickenActionFarmForm>(0);
+            builder.AddAttribute(1, "Model", editModel);
+            builder.AddAttribute(2, "PreSelectedSaveChickenActionId", selectedAction.Id);
+            builder.CloseComponent();
+        };
+
+        var parameters = new DialogParameters
+    {
+        { "Model", newActionFarm },
+        { "ChildContent", childContent },
+        { "OnCreated", EventCallback.Factory.Create(this, HandleSaveChickenActionFarmCreated) }
+    };
+
+        var options = new DialogOptions { FullScreen = true, CloseButton = true, MaxWidth = MaxWidth.False };
+        await DialogService.ShowAsync<GenericCreateDialog<SaveChickenActionFarmDto>>(
+            L["CreateSaveChickenActionFarm"],
+            parameters,
+            options);
     }
 }

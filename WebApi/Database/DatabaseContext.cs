@@ -28,31 +28,31 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
     }
 
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // =========================
+        // FILE RELATIONSHIPS (CASCADE DELETE)
+        // =========================
+        modelBuilder.Entity<StoredFile>(entity =>
         {
-            // =========================
-            // FILE RELATIONSHIPS (CASCADE DELETE)
-            // =========================
-            modelBuilder.Entity<StoredFile>(entity =>
-            {
-                // SaveChickenDriveRequest
-                entity.HasOne(f => f.SaveChickenDriveRequest)
-                    .WithMany(e => e.Files)
-                    .HasForeignKey(f => f.SaveChickenDriveRequestId)
-                    .OnDelete(DeleteBehavior.Cascade);
+            // SaveChickenDriveRequest
+            entity.HasOne(f => f.SaveChickenDriveRequest)
+                .WithMany(e => e.Files)
+                .HasForeignKey(f => f.SaveChickenDriveRequestId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-                // SaveChickenRequest
-                entity.HasOne(f => f.SaveChickenRequest)
-                    .WithMany(e => e.Files)
-                    .HasForeignKey(f => f.SaveChickenRequestId)
-                    .OnDelete(DeleteBehavior.Cascade);
+            // SaveChickenRequest
+            entity.HasOne(f => f.SaveChickenRequest)
+                .WithMany(e => e.Files)
+                .HasForeignKey(f => f.SaveChickenRequestId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-                // Farm
-                entity.HasOne(f => f.Farm)
-                    .WithMany(e => e.Files)
-                    .HasForeignKey(f => f.FarmId)
-                    .OnDelete(DeleteBehavior.Cascade);
-            });
+            // Farm
+            entity.HasOne(f => f.Farm)
+                .WithMany(e => e.Files)
+                .HasForeignKey(f => f.FarmId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
 
         modelBuilder.Entity<Farm>(entity =>
         {
@@ -211,10 +211,17 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
 
         modelBuilder.Entity<SaveChickenAction>(entity =>
         {
+            // Legacy / Direct HasMany (optional or during transition)
             entity.HasMany(e => e.Farms)
                 .WithOne(f => f.SaveChickenAction)
                 .HasForeignKey(f => f.SaveChickenActionId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            // New Many-to-Many via Join Entity
+            entity.HasMany(e => e.SaveChickenActionFarms)
+                .WithOne(saf => saf.SaveChickenAction)
+                .HasForeignKey(saf => saf.SaveChickenActionId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasMany(e => e.SaveChickenDriveRequests)
                 .WithOne(r => r.SaveChickenAction)
@@ -235,8 +242,11 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
 
         modelBuilder.Entity<SaveChickenActionFarm>(entity =>
         {
-            // Composite Primary Key using both Foreign Keys
-            entity.HasKey(saf => new { saf.SaveChickenActionId, saf.FarmId });
+
+            entity.HasKey(saf => saf.Id);
+
+            entity.HasIndex(saf => new { saf.SaveChickenActionId, saf.FarmId })
+          .IsUnique();
 
             // Link to SaveChickenAction
             entity.HasOne(saf => saf.SaveChickenAction)

@@ -1,0 +1,33 @@
+@using MudBlazor
+@using global::Shared.Dtos
+@typeparam TDto where TDto : class
+
+<MudDialog>
+    <DialogContent>
+        <MudDivider Class="mb-4" />
+
+        @if (Model != null && ChildContent != null)
+        {
+            <GenericCreate TDto="TDto" model="@Model" ChildContent="@ChildContent" ResourceName="@ResourceName"
+                           OnCreated="@HandleCreated" />
+        }
+    </DialogContent>
+</MudDialog>
+
+@code {
+    [CascadingParameter] private IMudDialogInstance? MudDialog { get; set; }
+
+    [Parameter, EditorRequired] public TDto Model { get; set; } = default!;
+    [Parameter, EditorRequired] public RenderFragment<TDto> ChildContent { get; set; } = default!;
+    [Parameter] public string? ResourceName { get; set; }
+    [Parameter] public EventCallback OnCreated { get; set; }
+
+    private async Task HandleCreated()
+    {
+        if (OnCreated.HasDelegate)
+        {
+            await OnCreated.InvokeAsync();
+        }
+        MudDialog?.Close(DialogResult.Ok(true));
+    }
+}
