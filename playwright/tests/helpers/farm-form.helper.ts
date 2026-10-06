@@ -5,8 +5,6 @@ import { selectSaveChickenAction } from './save-chicken-action-selector.helper';
 export interface FarmFormData {
   // Farm details
   name: string;
-  numberOfChickens: string;
-  numberOfRoosters: string;
   size: string;
   color: string;
   generalInformation: string;
@@ -45,8 +43,6 @@ export async function fillFarmForm(page: Page, data: FarmFormData): Promise<void
 
   // Fill farm name and details using data-testids
   await page.getByTestId('farm-name').fill(data.name);
-  await page.getByTestId('number-of-chickens').fill(data.numberOfChickens);
-  await page.getByTestId('number-of-roosters').fill(data.numberOfRoosters);
   await page.getByTestId('farm-size').fill(data.size);
   await page.getByTestId('farm-color').fill(data.color);
   await page.getByTestId('farm-general-info').fill(data.generalInformation);

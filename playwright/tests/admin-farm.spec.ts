@@ -61,8 +61,6 @@ test.describe('Admin Farm Management', () => {
       await fillFarmForm(page, {
         saveChickenActionId: actionId,
         name: testFarmName,
-        numberOfChickens: '50',
-        numberOfRoosters: '5',
         size: 'Gross',
         color: 'Braun',
         generalInformation: 'Test farm with good conditions for chickens',
@@ -123,8 +121,6 @@ test.describe('Admin Farm Management', () => {
       await expect(page.getByText('Bern')).toBeVisible();
       await expect(page.getByText('3000')).toBeVisible();
       await expect(page.getByText('Farm Road 321')).toBeVisible();
-      await expect(page.getByText(/Anzahl Hühner:\s*50/)).toBeVisible();
-      await expect(page.getByText(/Anzahl Hähne:\s*5/)).toBeVisible();
       await expect(page.getByText('Gross')).toBeVisible();
       await expect(page.getByText('Braun')).toBeVisible();
       await expect(page.getByText('Test farm with good conditions for chickens')).toBeVisible();
@@ -168,8 +164,6 @@ test.describe('Admin Farm Management', () => {
       await fillFarmForm(page, {
         saveChickenActionId: actionId,
         name: originalName,
-        numberOfChickens: '25',
-        numberOfRoosters: '3',
         size: 'Mittel',
         color: 'Weiss',
         generalInformation: 'Original farm info',
@@ -223,8 +217,6 @@ test.describe('Admin Farm Management', () => {
 
       // Update farm details
       await page.getByLabel('Name des Betriebs').fill(updatedName);
-      await page.getByLabel('Anzahl Hühner').fill('50');
-      await page.getByLabel('Anzahl Hähne').fill('5');
       await page.getByLabel('Grösse').fill('Gross');
       await page.getByLabel('Farbe').fill('Braun');
       await page.getByTestId('farm-general-info').fill('Updated farm info');
@@ -263,8 +255,6 @@ test.describe('Admin Farm Management', () => {
       await expect(page.getByText(`UpdatedFirst${timestamp}`)).toBeVisible();
       await expect(page.getByText(updatedEmail)).toBeVisible();
       await expect(page.getByText('Updated farm info')).toBeVisible();
-      await expect(page.getByText(/Anzahl Hühner:\s*50/)).toBeVisible();
-      await expect(page.getByText(/Anzahl Hähne:\s*5/)).toBeVisible();
 
       // Verify old data is NOT visible
       await expect(page.getByText(originalName)).not.toBeVisible();
@@ -306,8 +296,6 @@ test.describe('Admin Farm Management', () => {
       await fillFarmForm(page, {
         saveChickenActionId: actionId,
         name: testFarmName,
-        numberOfChickens: '15',
-        numberOfRoosters: '2',
         size: 'Klein',
         color: 'Grau',
         generalInformation: 'This farm will be deleted',
@@ -385,7 +373,6 @@ test.describe('Admin Farm Management', () => {
 
       // Fill only farm name and chickens count, leave other required fields empty
       await page.getByTestId('farm-name').fill('Test Farm');
-      await page.getByTestId('number-of-chickens').fill('10');
 
       // Try to submit with incomplete form
       await page.getByRole('button', { name: /erstellen|submit|create/i }).click();
