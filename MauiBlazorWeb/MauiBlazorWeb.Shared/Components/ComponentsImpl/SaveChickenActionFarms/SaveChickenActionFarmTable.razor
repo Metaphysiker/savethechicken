@@ -236,42 +236,6 @@
                 </TemplateColumn>
             }
 
-            <!-- Farm Total Chickens -->
-            @if (IsColumnVisible("NumberOfChickens"))
-            {
-                <TemplateColumn>
-                    <HeaderTemplate>
-                        <MudButton OnClick="@(() => OnHeaderClick("Farm.NumberOfChickens"))" Variant="Variant.Text"
-                                   Style="text-transform: none;">
-                            @L["NumberOfChickens"]
-                            @if (GetSortIcon("Farm.NumberOfChickens") != null)
-                            {
-                                <MudIcon Icon="@GetSortIcon("Farm.NumberOfChickens")" Size="Size.Small" />
-                            }
-                        </MudButton>
-                    </HeaderTemplate>
-                    <CellTemplate>@context.Item.NumberOfChickensToBeSaved</CellTemplate>
-                </TemplateColumn>
-            }
-
-            <!-- Farm Total Roosters -->
-            @if (IsColumnVisible("NumberOfRoosters"))
-            {
-                <TemplateColumn>
-                    <HeaderTemplate>
-                        <MudButton OnClick="@(() => OnHeaderClick("Farm.NumberOfRoosters"))" Variant="Variant.Text"
-                                   Style="text-transform: none;">
-                            @L["NumberOfRoosters"]
-                            @if (GetSortIcon("Farm.NumberOfRoosters") != null)
-                            {
-                                <MudIcon Icon="@GetSortIcon("Farm.NumberOfRoosters")" Size="Size.Small" />
-                            }
-                        </MudButton>
-                    </HeaderTemplate>
-                    <CellTemplate>@context.Item.NumberOfRoostersToBeSaved</CellTemplate>
-                </TemplateColumn>
-            }
-
             <!-- Number of Chickens to be Saved -->
             @if (IsColumnVisible("NumberOfChickensToBeSaved"))
             {

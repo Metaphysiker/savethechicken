@@ -747,4 +747,19 @@
   <data name="DownloadSaveChickenAgreement" xml:space="preserve">
     <value>Abgabevereinbarung herunterladen</value>
   </data>
+  <data name="SaveChickenActionFarms" xml:space="preserve">
+    <value>Betriebe</value>
+  </data>
+  <data name="AddSaveChickenActionFarm" xml:space="preserve">
+    <value>Betrieb hinzufügen</value>
+  </data>
+  <data name="CreateSaveChickenActionFarm" xml:space="preserve">
+    <value>Betrieb erstellen</value>
+  </data>
+  <data name="SaveChickenActionAndFarmSelection" xml:space="preserve">
+    <value>Rettungsaktion und Betrieb auswählen</value>
+  </data>
+  <data name="QuantitiesInformation" xml:space="preserve">
+    <value>Information</value>
+  </data>
 </root>
