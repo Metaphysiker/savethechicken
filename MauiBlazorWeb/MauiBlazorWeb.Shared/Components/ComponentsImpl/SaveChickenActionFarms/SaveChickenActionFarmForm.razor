@@ -4,7 +4,6 @@
 @using MauiBlazorWeb.Shared.Resources.Strings
 @using Microsoft.Extensions.Localization
 @using global::Shared.Dtos.DtosImpl
-@using MudBlazor
 @inject IStringLocalizer<AppResources> L
 @inject GenericDtoServiceFactory DtoServiceFactory
 
@@ -13,13 +12,9 @@
 
     <!-- SaveChickenAction Selector -->
     <SaveChickenActionSelector SelectedActionId="Model.SaveChickenActionId"
-                              SelectedActionIdChanged="OnSaveChickenActionIdChanged"
-                              IsReadOnly="@isSaveChickenActionSelectorReadOnly" />
+                               SelectedActionIdChanged="OnSaveChickenActionIdChanged" IsReadOnly="@isSaveChickenActionSelectorReadOnly" />
 
-    <!-- Farm Selector -->
-    <FarmSelector SelectedFarmId="Model.FarmId"
-                  SelectedFarmIdChanged="OnFarmIdChanged"
-                  IsReadOnly="@isFarmSelectorReadOnly" />
+
 
     @if (PreSelectedSaveChickenActionId.HasValue)
     {
@@ -28,35 +23,33 @@
         </MudAlert>
     }
 
+
+    <FarmSelector SelectedActionId="Model.FarmId" SelectedActionIdChanged="OnFarmIdChanged"
+                  IsReadOnly="@isFarmSelectorReadOnly" />
+
     @if (PreSelectedFarmId.HasValue)
     {
         <MudAlert Severity="Severity.Info" Dense="true" Class="mt-2">
             @L["FarmPreselected_Info"]
         </MudAlert>
     }
+
+
 </MudPaper>
 
 <MudPaper Class="pa-4 my-4" Elevation="2" data-testid="action-farm-info">
     <MudText Typo="Typo.h6">@L["QuantitiesInformation"]</MudText>
 
     <div class="my-4">
-        <MudNumericField T="int"
-                         ReadOnly="@IsReadOnly"
-                         @bind-Value="Model.NumberOfChickensToBeSaved"
-                         Label="@L["NumberOfChickensToBeSaved"]"
-                         Variant="Variant.Outlined"
-                         Min="0"
+        <MudNumericField T="int" ReadOnly="@IsReadOnly" @bind-Value="Model.NumberOfChickensToBeSaved"
+                         Label="@L["NumberOfChickensToBeSaved"]" Variant="Variant.Outlined" Min="0"
                          UserAttributes="@(new Dictionary<string, object> { { "data-testid", "chickens-to-be-saved" } })" />
         <ValidationMessage For="@(() => Model.NumberOfChickensToBeSaved)" />
     </div>
 
     <div class="my-4">
-        <MudNumericField T="int"
-                         ReadOnly="@IsReadOnly"
-                         @bind-Value="Model.NumberOfRoostersToBeSaved"
-                         Label="@L["NumberOfRoostersToBeSaved"]"
-                         Variant="Variant.Outlined"
-                         Min="0"
+        <MudNumericField T="int" ReadOnly="@IsReadOnly" @bind-Value="Model.NumberOfRoostersToBeSaved"
+                         Label="@L["NumberOfRoostersToBeSaved"]" Variant="Variant.Outlined" Min="0"
                          UserAttributes="@(new Dictionary<string, object> { { "data-testid", "roosters-to-be-saved" } })" />
         <ValidationMessage For="@(() => Model.NumberOfRoostersToBeSaved)" />
     </div>

@@ -18,31 +18,17 @@ namespace MauiBlazorWeb.Shared.Factories.FactoriesImpl
             where TDto : class
             where TSearchDto : class
         {
-            var resource = "";
-            if (typeof(TDto).Name.EndsWith(typeof(SaveChickenRequestDto).Name))
+            var resource = typeof(TDto) switch
             {
-                resource = "SaveChickenRequest";
-            }
-            else if (typeof(TDto).Name.EndsWith(typeof(SaveChickenDriveRequestDto).Name))
-            {
-                resource = "SaveChickenDriveRequest";
-            }
-            else if (typeof(TDto).Name.EndsWith(typeof(FarmDto).Name))
-            {
-                resource = "Farm";
-            }
-            else if (typeof(TDto).Name.EndsWith(typeof(SaveChickenActionDto).Name))
-            {
-                resource = "SaveChickenAction";
-            }
-            else if (typeof(TDto).Name.EndsWith(typeof(PersonDto).Name))
-            {
-                resource = "Person";
-            }
-            else if (typeof(TDto).Name.EndsWith("StoredFileDto"))
-            {
-                resource = "File";
-            }
+                var t when t == typeof(SaveChickenRequestDto) => "SaveChickenRequest",
+                var t when t == typeof(SaveChickenDriveRequestDto) => "SaveChickenDriveRequest",
+                var t when t == typeof(SaveChickenActionFarmDto) => "SaveChickenActionFarm",
+                var t when t == typeof(FarmDto) => "Farm",
+                var t when t == typeof(SaveChickenActionDto) => "SaveChickenAction",
+                var t when t == typeof(PersonDto) => "Person",
+                var t when t == typeof(StoredFileDto) => "File",
+                _ => throw new InvalidOperationException($"No resource mapping configured for type '{typeof(TDto).Name}'.")
+            };
 
             return new GenericDtoService<TDto, TSearchDto>(_httpClient, resource);
         }

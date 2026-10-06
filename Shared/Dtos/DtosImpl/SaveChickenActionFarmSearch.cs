@@ -1,7 +1,8 @@
 namespace Shared.Dtos.DtosImpl;
 
-public class SaveChickenActionFarmSearch: ISearchDto
+public class SaveChickenActionFarmSearch : ISearchDto
 {
     public int? FarmId { get; set; }
     public int? SaveChickenActionId { get; set; }
+    public List<int>? SaveChickenActionIds { get; set; }
 }

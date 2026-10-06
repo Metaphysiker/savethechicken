@@ -13,6 +13,8 @@ namespace MauiBlazorWeb.Web.Services.ServicesImpl
         private readonly HttpClient _httpClient;
         private readonly string _baseUrl;
 
+        public string GetBaseUrl() => _baseUrl;
+
         public GenericDtoService(HttpClient httpClient, string resource)
         {
             _httpClient = httpClient;

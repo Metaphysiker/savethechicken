@@ -66,8 +66,8 @@
         <MudPaper Class="pa-4">
             <MudText Typo="Typo.h6">@L["Adopters"]</MudText>
 
-            <GenericSearch @key="@searchRefreshKey" TDto="SaveChickenRequestDto" TSearchDto="SaveChickenRequestSearch"
-                           search="saveChickenRequestSearch" OnItemsFound="OnItemsFound">
+            <GenericSearch @key="@("request-" + searchRefreshKey)" TDto="SaveChickenRequestDto"
+                           TSearchDto="SaveChickenRequestSearch" search="saveChickenRequestSearch" OnItemsFound="OnItemsFound">
                 <SearchForm Context="search">
                     <SaveChickenRequestSearchForm Model="search" />
                 </SearchForm>
@@ -90,7 +90,7 @@
         <MudPaper Class="pa-4 my-4">
             <MudText Typo="Typo.h6">@L["Drivers"]</MudText>
 
-            <GenericSearch @key="@driveRequestRefreshKey" TDto="SaveChickenDriveRequestDto"
+            <GenericSearch @key="@("drive-" + driveRequestRefreshKey)" TDto="SaveChickenDriveRequestDto"
                            TSearchDto="SaveChickenDriveRequestSearch" search="saveChickenDriveRequestSearch"
                            OnItemsFound="OnSaveChickenDriveRequestItemsFound">
                 <SearchForm Context="search">
@@ -111,7 +111,7 @@
         <MudPaper Class="pa-4 my-4">
             <MudText Typo="Typo.h6">@L["Farms"]</MudText>
 
-            <GenericSearch @key="@farmRefreshKey" TDto="FarmDto" TSearchDto="FarmSearch" search="farmSearch"
+            <GenericSearch @key="@("farm-" + farmRefreshKey)" TDto="FarmDto" TSearchDto="FarmSearch" search="farmSearch"
                            OnItemsFound="OnFarmItemsFound">
                 <SearchForm Context="search">
                     <FarmSearchForm Model="search" />
@@ -128,9 +128,24 @@
             </MudButton>
             <hr />
             xxxx
-            <GenericCreate TDto="SaveChickenActionFarmDto">
+
+            <MudText Typo="Typo.h6">@L["SaveChickenActionFarms"]</MudText>
+
+            <GenericSearch @key="@("actionfarm-" + saveChickenActionFarmRefreshKey)" TDto="SaveChickenActionFarmDto"
+                           TSearchDto="SaveChickenActionFarmSearch" search="saveChickenActionFarmSearch"
+                           OnItemsFound="OnSaveChickenActionFarmItemsFound">
+                <SearchForm Context="search">
+                    <SaveChickenActionFarmSearchForm Model="search" />
+                </SearchForm>
+                <Table Context="ctx">
+                    <SaveChickenActionFarmTable items="ctx.Item1" OnItemSelected="ctx.Item2" OnSortSelected="ctx.Item3"
+                                                OnItemsChanged="ctx.Item4.InvokeAsync" />
+                </Table>
+            </GenericSearch>
+
+            <GenericCreate TDto="SaveChickenActionFarmDto" OnCreated="HandleSaveChickenActionFarmCreated">
                 <ChildContent Context="model">
-                    <SaveChickenActionFarmForm Model="model" />
+                    <SaveChickenActionFarmForm Model="model" PreSelectedSaveChickenActionId="selectedActionId" />
                 </ChildContent>
             </GenericCreate>
         </MudPaper>
@@ -159,9 +174,12 @@
     private List<SaveChickenRequestDto> foundSaveChickenRequests = new();
     private List<FarmDto> foundFarms = new();
     private List<SaveChickenDriveRequestDto> saveChickenDriveRequests = new();
+    private List<SaveChickenActionFarmDto> saveChickenActionFarms = new();
     private int searchRefreshKey = 0;
     private int driveRequestRefreshKey = 0;
     private int farmRefreshKey = 0;
+    private SaveChickenActionFarmSearch saveChickenActionFarmSearch = new SaveChickenActionFarmSearch();
+    private int saveChickenActionFarmRefreshKey = 0;
 
     [Parameter]
     public int? id { get; set; }
@@ -194,6 +212,12 @@
         StateHasChanged();
     }
 
+    private void OnSaveChickenActionFarmItemsFound(List<SaveChickenActionFarmDto> actionFarms)
+    {
+        saveChickenActionFarms = actionFarms;
+        StateHasChanged();
+    }
+
     private void OnActionSelected(SaveChickenActionDto action)
     {
         selectedAction = action;
@@ -206,6 +230,7 @@
         UpdateSaveChickenRequestSearch();
         UpdateSaveChickenDriveRequestSearch();
         UpdateFarmSearch();
+        UpdateSaveChickenActionFarmSearch();
     }
 
     protected override async Task OnInitializedAsync()
@@ -266,6 +291,17 @@
          ? new List<int> { selectedAction.Id }
          : new List<int>();
         saveChickenDriveRequestSearch = new SaveChickenDriveRequestSearch
+        {
+            SaveChickenActionIds = saveChickenActionIds
+        };
+    }
+
+    private void UpdateSaveChickenActionFarmSearch()
+    {
+        var saveChickenActionIds = selectedAction != null
+         ? new List<int> { selectedAction.Id }
+         : new List<int>();
+        saveChickenActionFarmSearch = new SaveChickenActionFarmSearch
         {
             SaveChickenActionIds = saveChickenActionIds
         };
@@ -453,5 +489,16 @@ DialogService.ShowAsync<MauiBlazorWeb.Shared.Components.ComponentsImpl.SaveChick
         var fileName = "abgabevereinbarungen.zip";
 
         await JS.InvokeVoidAsync("downloadFileFromBytes", fileName, "application/zip", bytes);
+    }
+
+    private async Task HandleSaveChickenActionFarmCreated()
+    {
+        // Log to browser console via JS interop
+        await JS.InvokeVoidAsync("console.log", "SaveChickenActionFarm created successfully.");
+
+        Console.WriteLine("SaveChickenActionFarm created successfully.");
+        // Force GenericSearch to refresh by changing the key
+        saveChickenActionFarmRefreshKey++;
+        StateHasChanged();
     }
 }

@@ -1,22 +1,15 @@
 @using MauiBlazorWeb.Shared.Factories.FactoriesImpl
 @inject GenericDtoServiceFactory DtoServiceFactory
 @using MauiBlazorWeb.Web.Services.ServicesImpl
-@using MudBlazor
 @using global::Shared.Dtos.DtosImpl
 
-<MudSelect T="int?"
-           Label="Farm auswählen"
-           Value="SelectedActionId"
-           ValueChanged="OnValueChanged"
-           Dense="true"
-           Variant="Variant.Outlined"
-           Clearable="true"
-           Disabled="@IsReadOnly"
+<MudSelect T="int?" Label="Farm auswählen" Value="SelectedActionId" ValueChanged="OnValueChanged" Dense="true"
+           Variant="Variant.Outlined" Clearable="true" Disabled="@IsReadOnly"
            UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "save-chicken-action-selector" })">
-    @foreach (var action in GetFilteredActions())
+    @foreach (var farm in GetFilteredActions())
     {
-        <MudSelectItem Value="@((int?)action.Id)">
-            #@action.Id | @action.GenericName
+        <MudSelectItem Value="@((int?)farm.Id)">
+            @farm.GenericName
         </MudSelectItem>
     }
 </MudSelect>
