@@ -58,8 +58,6 @@ public class MigrationController : ControllerBase
                     {
                         FarmId = farm.Id,
                         SaveChickenActionId = actionId,
-                        NumberOfChickensToBeSaved = farm.NumberOfChickens,
-                        NumberOfRoostersToBeSaved = farm.NumberOfRoosters,
                         CreatedAt = now,
                         UpdatedAt = now
                     });

@@ -14,12 +14,6 @@ namespace Shared.Dtos.DtosImpl
         [Required]
         public string Name { get; set; } = string.Empty;
 
-        [Range(1, int.MaxValue, ErrorMessage = "Number of chickens must be greater than 0")]
-        public int NumberOfChickens { get; set; } = 0;
-
-        [Range(0, int.MaxValue, ErrorMessage = "Number of roosters must be greater than or equal to 0")]
-        public int NumberOfRoosters { get; set; } = 0;
-
         public string Size { get; set; } = string.Empty;
         public string Color { get; set; } = string.Empty;
 

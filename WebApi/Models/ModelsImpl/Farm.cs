@@ -10,8 +10,6 @@ namespace WebApi.Models.ModelsImpl
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public int NumberOfChickens { get; set; } = 0;
-        public int NumberOfRoosters { get; set; } = 0;
         public string Size { get; set; } = String.Empty;
         public string Color { get; set; } = String.Empty;
         public string GeneralInformation { get; set; } = String.Empty;

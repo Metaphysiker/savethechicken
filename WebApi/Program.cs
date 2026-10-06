@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using Npgsql;
 using QuestPDF.Infrastructure;
 using System.Text;
 using WebApi.Factories.FactoriesImpl;
@@ -109,7 +110,8 @@ if (!isDocker)
     };
 
     builder.Services.AddDefaultAWSOptions(awsOptions);
-} else
+}
+else
 {
     builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions());
     Console.WriteLine("Running in Docker - using AWS options from environment");
@@ -128,10 +130,13 @@ using (var scope = app.Services.CreateScope())
 
     try
     {
-        // Ensure the database exists and apply migrations
-        logger.LogInformation("Ensuring database exists and applying migrations...");
+        logger.LogInformation("Applying database migrations...");
         db.Database.Migrate();
-        logger.LogInformation("Database migrations completed successfully");
+        logger.LogInformation("Database migrations applied successfully.");
+    }
+    catch (Exception ex) when (ex.InnerException is PostgresException pgEx && pgEx.SqlState == "42P07")
+    {
+        logger.LogWarning("Table already exists (42P07). Skipping failed migration step.");
     }
     catch (Exception ex)
     {

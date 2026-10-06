@@ -8,24 +8,25 @@
     <MudPaper Class="pa-4">
         <MudText Typo="Typo.h6">Betriebe</MudText>
 
-        <MudTable T="FarmDto" Items="Farms" Dense="true" Bordered="true" Striped="true">
+        <MudTable T="SaveChickenActionFarmDto" Items="SaveChickenActionFarms" Dense="true" Bordered="true"
+                  Striped="true">
             <HeaderContent>
                 <MudTh>Name</MudTh>
                 <MudTh>Anzahl Hühner</MudTh>
                 <MudTh>Anzahl Hähne</MudTh>
             </HeaderContent>
             <RowTemplate Context="context">
-                <MudTd DataLabel="Name">@context.Name</MudTd>
-                <MudTd DataLabel="Anzahl Hühner">@context.NumberOfChickens</MudTd>
-                <MudTd DataLabel="Anzahl Hähne">@context.NumberOfRoosters</MudTd>
+                <MudTd DataLabel="Name">@(context.Farm?.Name ?? "Unbekannt")</MudTd>
+                <MudTd DataLabel="Anzahl Hühner">@context.NumberOfChickensToBeSaved</MudTd>
+                <MudTd DataLabel="Anzahl Hähne">@context.NumberOfRoostersToBeSaved</MudTd>
             </RowTemplate>
             <FooterContent>
                 <MudTd><b>Summe</b></MudTd>
                 <MudTd>
-                    <b>@Farms.Sum(f => f.NumberOfChickens)</b>
+                    <b>@SaveChickenActionFarms.Sum(f => f.NumberOfChickensToBeSaved)</b>
                 </MudTd>
                 <MudTd>
-                    <b>@Farms.Sum(f => f.NumberOfRoosters)</b>
+                    <b>@SaveChickenActionFarms.Sum(f => f.NumberOfRoostersToBeSaved)</b>
                 </MudTd>
             </FooterContent>
         </MudTable>
@@ -41,7 +42,8 @@
                 <MudTh>Anzahl Hähne</MudTh>
             </HeaderContent>
             <RowTemplate Context="context">
-                <MudTd DataLabel="Name">@context.Person?.Contact?.FirstName@(" ")@context.Person?.Contact?.LastName</MudTd>
+                <MudTd DataLabel="Name">@context.Person?.Contact?.FirstName@(" ")@context.Person?.Contact?.LastName
+                </MudTd>
                 <MudTd DataLabel="Anzahl Hühner">@context.NumberOfChickensToBeSaved</MudTd>
                 <MudTd DataLabel="Anzahl Hähne">@context.NumberOfRoostersToBeSaved</MudTd>
             </RowTemplate>
@@ -57,38 +59,40 @@
         </MudTable>
     </MudPaper>
 
-<MudPaper Class="pa-4">
-    <MudSimpleTable Dense="true" Bordered="true" Striped="true">
-        <thead>
-            <tr>
-                <th>Rettung</th>
-                <th>Anzahl</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Gerettete Hühner</td>
+    <MudPaper Class="pa-4">
+        <MudSimpleTable Dense="true" Bordered="true" Striped="true">
+            <thead>
+                <tr>
+                    <th>Rettung</th>
+                    <th>Anzahl</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Gerettete Hühner</td>
                     <td>@SaveChickenRequests.Sum(r => r.NumberOfChickensToBeSaved)</td>
-            </tr>
-            <tr>
-                <td>Zurückgelassene Hühner</td>
-                <td>
-                    @(Farms.Sum(f => f.NumberOfChickens) - SaveChickenRequests.Sum(r => r.NumberOfChickensToBeSaved))
-                </td>
-            </tr>
-            <tr>
-                <td>Gerettete Hähne</td>
-                <td>@(SaveChickenRequests.Sum(r => r.NumberOfRoostersToBeSaved))</td>
-            </tr>
-            <tr>
-                <td>Zurückgelassene Hähne</td>
-                <td>
-                        @(Farms.Sum(f => f.NumberOfRoosters) - SaveChickenRequests.Sum(r => r.NumberOfRoostersToBeSaved))
-                </td>
-            </tr>
-        </tbody>
-    </MudSimpleTable>
-</MudPaper>
+                </tr>
+                <tr>
+                    <td>Zurückgelassene Hühner</td>
+                    <td>
+                        @(SaveChickenActionFarms.Sum(f => f.NumberOfChickensToBeSaved) - SaveChickenRequests.Sum(r =>
+                            r.NumberOfChickensToBeSaved))
+                    </td>
+                </tr>
+                <tr>
+                    <td>Gerettete Hähne</td>
+                    <td>@(SaveChickenRequests.Sum(r => r.NumberOfRoostersToBeSaved))</td>
+                </tr>
+                <tr>
+                    <td>Zurückgelassene Hähne</td>
+                    <td>
+                        @(SaveChickenActionFarms.Sum(f => f.NumberOfRoostersToBeSaved) - SaveChickenRequests.Sum(r =>
+                        r.NumberOfRoostersToBeSaved))
+                    </td>
+                </tr>
+            </tbody>
+        </MudSimpleTable>
+    </MudPaper>
 
 </MudContainer>
 @code {
@@ -97,27 +101,27 @@
 
     public List<SaveChickenDriveRequestDto> Drivers { get; set; } = new();
 
-    public List<FarmDto> Farms { get; set; } = new();
+    public List<SaveChickenActionFarmDto> SaveChickenActionFarms { get; set; } = new();
 
     public List<SaveChickenRequestDto> SaveChickenRequests { get; set; } = new();
 
     private GenericDtoService<SaveChickenActionDto, SaveChickenActionSearch>? _saveChickenActionService;
     private GenericDtoService<SaveChickenRequestDto, SaveChickenRequestSearch>? _saveChickenRequestService;
     private GenericDtoService<SaveChickenDriveRequestDto, SaveChickenDriveRequestSearch>? _driverService;
-    private GenericDtoService<FarmDto, FarmSearch>? _farmService;
+    private GenericDtoService<SaveChickenActionFarmDto, SaveChickenActionFarmSearch>? _saveChickenActionFarmService;
 
     protected override async Task OnInitializedAsync()
     {
-    _saveChickenActionService = DtoServiceFactory.Create<SaveChickenActionDto, SaveChickenActionSearch>();
-    _driverService = DtoServiceFactory.Create<SaveChickenDriveRequestDto, SaveChickenDriveRequestSearch>();
-    _farmService = DtoServiceFactory.Create<FarmDto, FarmSearch>();
-    _saveChickenRequestService = DtoServiceFactory.Create<SaveChickenRequestDto, SaveChickenRequestSearch>();
-    await GetAndSetDriversRequestsAndFarms();
-}
+        _saveChickenActionService = DtoServiceFactory.Create<SaveChickenActionDto, SaveChickenActionSearch>();
+        _driverService = DtoServiceFactory.Create<SaveChickenDriveRequestDto, SaveChickenDriveRequestSearch>();
+        _saveChickenActionFarmService = DtoServiceFactory.Create<SaveChickenActionFarmDto, SaveChickenActionFarmSearch>();
+        _saveChickenRequestService = DtoServiceFactory.Create<SaveChickenRequestDto, SaveChickenRequestSearch>();
+        await GetAndSetDriversRequestsAndFarms();
+    }
 
     private async Task GetAndSetDriversRequestsAndFarms()
     {
-        if (_driverService == null || _saveChickenRequestService == null || _farmService == null)
+        if (_driverService == null || _saveChickenRequestService == null || _saveChickenActionFarmService == null)
         {
             return;
         }
@@ -140,12 +144,12 @@
         var saveChickenRequestResults = await _saveChickenRequestService.SearchAsync(saveChickenRequestSearch);
         SaveChickenRequests = saveChickenRequestResults.Data;
 
-        var farmSearch = new FarmSearch
+        var saveChickenActionFarmSearch = new SaveChickenActionFarmSearch
         {
             SaveChickenActionIds = new List<int> { saveChickenActionDto.Id },
             PageSize = pageSize
         };
-        var farmResults = await _farmService.SearchAsync(farmSearch);
-        Farms = farmResults.Data;
+        var farmResults = await _saveChickenActionFarmService.SearchAsync(saveChickenActionFarmSearch);
+        SaveChickenActionFarms = farmResults.Data;
     }
 }

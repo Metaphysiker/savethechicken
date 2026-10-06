@@ -21,12 +21,12 @@
     [Parameter]
     public int? PreSelectedSaveChickenActionId { get; set; }
 
-    private bool isSaveChickenActionSelectorReadOnly => IsReadOnly || EntityWithFiles.Item.Id > 0 || PreSelectedSaveChickenActionId.HasValue;
+    private bool isSaveChickenActionSelectorReadOnly => IsReadOnly || EntityWithFiles.Item.Id > 0 ||
+PreSelectedSaveChickenActionId.HasValue;
 }
 
 <SaveChickenActionSelector SelectedActionId="EntityWithFiles.Item.SaveChickenActionId"
-                           SelectedActionIdChanged="OnSaveChickenActionIdChanged"
-                           IsReadOnly="@isSaveChickenActionSelectorReadOnly" />
+                           SelectedActionIdChanged="OnSaveChickenActionIdChanged" IsReadOnly="@isSaveChickenActionSelectorReadOnly" />
 
 @if (PreSelectedSaveChickenActionId.HasValue)
 {
@@ -41,26 +41,28 @@
 <MudPaper Class="pa-4 my-4" Elevation="2">
     <MudText Typo="Typo.h6">Allgemeine Informationen</MudText>
 
-    <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.Name" Label="@L["Farm_Name"]" Variant="Variant.Outlined" UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "farm-name" })" />
+    <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.Name" Label="@L["Farm_Name"]"
+                  Variant="Variant.Outlined"
+                  UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "farm-name" })" />
     <ValidationMessage For="@(() => EntityWithFiles.Item.Name)" />
 
-    <MudNumericField ReadOnly="@IsReadOnly" T="int" @bind-Value="EntityWithFiles.Item.NumberOfChickens" Label="@L["NumberOfChickens"]" Variant="Variant.Outlined" UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "number-of-chickens" })" />
-    <ValidationMessage For="@(() => EntityWithFiles.Item.NumberOfChickens)" />
-
-    <MudNumericField ReadOnly="@IsReadOnly" T="int" @bind-Value="EntityWithFiles.Item.NumberOfRoosters" Label="@L["NumberOfRoosters"]" Variant="Variant.Outlined" UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "number-of-roosters" })" />
-    <ValidationMessage For="@(() => EntityWithFiles.Item.NumberOfRoosters)" />
-
-    <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.Size" Label="@L["Farm_Size"]" Variant="Variant.Outlined" UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "farm-size" })" />
+    <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.Size" Label="@L["Farm_Size"]"
+                  Variant="Variant.Outlined"
+                  UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "farm-size" })" />
     <ValidationMessage For="@(() => EntityWithFiles.Item.Size)" />
 
-   <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.Color" Label="@L["Color"]" Variant="Variant.Outlined" UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "farm-color" })" />
+    <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.Color" Label="@L["Color"]"
+                  Variant="Variant.Outlined"
+                  UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "farm-color" })" />
     <ValidationMessage For="@(() => EntityWithFiles.Item.Color)" />
 
     <MudDivider Class="my-2"></MudDivider>
 
     <MudText>Weitere Informationen:</MudText>
 
-    <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.GeneralInformation" Label="@L["GeneralInformation"]" Variant="Variant.Outlined" Lines="3" UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "farm-general-info" })" />
+    <MudTextField ReadOnly="@IsReadOnly" @bind-Value="EntityWithFiles.Item.GeneralInformation"
+                  Label="@L["GeneralInformation"]" Variant="Variant.Outlined" Lines="3"
+                  UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "farm-general-info" })" />
     <ValidationMessage For="@(() => EntityWithFiles.Item.GeneralInformation)" />
 </MudPaper>
 
@@ -97,7 +99,7 @@
 
     private async Task getSaveChickenAction()
     {
-        if(_saveChickenActionService == null)
+        if (_saveChickenActionService == null)
         {
             return;
         }

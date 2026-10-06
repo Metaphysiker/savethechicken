@@ -166,8 +166,6 @@ namespace WebApi.Controllers.ControllersImpl
                 Name = publicDto.Name,
                 ContactId = contact.Id,
                 AddressId = address.Id,
-                NumberOfChickens = publicDto.NumberOfChickens,
-                NumberOfRoosters = publicDto.NumberOfRoosters,
                 Size = publicDto.Size,
                 Color = publicDto.Color,
                 GeneralInformation = publicDto.GeneralInformation,

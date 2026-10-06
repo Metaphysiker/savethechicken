@@ -85,7 +85,8 @@
         </MudGrid>
         <MudGrid>
             <MudItem xs="12" sm="6">
-                <MudTextField @bind-Value="Model.Email" Label="E-Mail*" Variant="Variant.Outlined" InputType="InputType.Email"
+                <MudTextField @bind-Value="Model.Email" Label="E-Mail*" Variant="Variant.Outlined"
+                              InputType="InputType.Email"
                               UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "contact-email" })" />
                 <ValidationMessage For="@(() => Model.Email)" />
             </MudItem>
@@ -128,22 +129,8 @@
 
         <MudItem Class="mb-3">
             <MudTextField @bind-Value="Model.Name" Label="Name des Betriebs*" Variant="Variant.Outlined"
-                         UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "farm-name" })" />
+                          UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "farm-name" })" />
             <ValidationMessage For="@(() => Model.Name)" />
-        </MudItem>
-
-        <MudItem Class="mb-3">
-            <MudNumericField T="int" @bind-Value="Model.NumberOfChickens" Label="Anzahl Hühner*"
-                            Variant="Variant.Outlined" Min="0"
-                            UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "chickens-count" })" />
-            <ValidationMessage For="@(() => Model.NumberOfChickens)" />
-        </MudItem>
-
-        <MudItem Class="mb-3">
-            <MudNumericField T="int" @bind-Value="Model.NumberOfRoosters" Label="Anzahl Hähne"
-                            Variant="Variant.Outlined" Min="0"
-                            UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "roosters-count" })" />
-            <ValidationMessage For="@(() => Model.NumberOfRoosters)" />
         </MudItem>
 
         <MudItem Class="mb-3">
@@ -159,8 +146,8 @@
         <MudItem Class="mb-3">
             <MudText Class="mb-2">Allgemeine Informationen zum Betrieb:</MudText>
             <MudTextField @bind-Value="Model.GeneralInformation" Label="Zusätzliche Informationen"
-                         Variant="Variant.Outlined" Lines="4"
-                         UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "general-info" })" />
+                          Variant="Variant.Outlined" Lines="4"
+                          UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "general-info" })" />
         </MudItem>
     </MudPaper>
 
@@ -172,13 +159,8 @@
     }
 
     <!-- Submit Button -->
-    <MudButton ButtonType="ButtonType.Submit"
-              Variant="Variant.Filled"
-              Color="Color.Primary"
-              Size="Size.Large"
-              Disabled="isSubmitting"
-              FullWidth="true"
-              data-testid="submit-button">
+    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large"
+               Disabled="isSubmitting" FullWidth="true" data-testid="submit-button">
         @if (isSubmitting)
         {
             <MudProgressCircular Size="Size.Small" Indeterminate="true" />
