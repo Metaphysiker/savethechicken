@@ -20,6 +20,9 @@ namespace Services.ServicesImpl
         {
             var query = _db.Set<SaveChickenActionFarm>().AsQueryable();
 
+            // Always include Farm and SaveChickenAction for search functionality
+            query = query.Include(x => x.Farm).Include(x => x.SaveChickenAction);
+
             foreach (var include in includes)
                 query = query.Include(include);
 
@@ -38,6 +41,20 @@ namespace Services.ServicesImpl
             // Filter by multiple actions
             if (search.SaveChickenActionIds != null && search.SaveChickenActionIds.Any())
                 query = query.Where(x => search.SaveChickenActionIds.Contains(x.SaveChickenActionId));
+
+            // Filter by search term - search in Farm and SaveChickenAction fields
+            if (!string.IsNullOrWhiteSpace(search.SearchTerm))
+            {
+                var searchTerm = search.SearchTerm.ToLower();
+                query = query.Where(x =>
+                    x.Farm.SearchVector.Matches(EF.Functions.PlainToTsQuery("german", search.SearchTerm)) ||
+                    x.Farm.Name.ToLower().Contains(searchTerm) ||
+                    x.Farm.GeneralInformation.ToLower().Contains(searchTerm) ||
+                    x.Farm.Size.ToLower().Contains(searchTerm) ||
+                    x.Farm.Color.ToLower().Contains(searchTerm) ||
+                    x.SaveChickenAction.Title.ToLower().Contains(searchTerm) ||
+                    x.SaveChickenAction.Description.ToLower().Contains(searchTerm));
+            }
 
             int page = search.Page > 0 ? search.Page : 1;
             int pageSize = search.PageSize > 0 ? search.PageSize : 10;

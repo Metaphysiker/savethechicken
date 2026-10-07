@@ -35,9 +35,12 @@ export default defineConfig({
     video: 'retain-on-failure',
   },
 
+  /* Global setup for Docker environment */
+  globalSetup: './tests/global-setup.ts',
+
   /* Configure projects for major browsers */
   projects: [
-    // Setup project
+    // Setup project for authentication
     { name: 'setup', testMatch: /.*\.setup\.ts/ },
 
     {

@@ -5,7 +5,7 @@
 
 <MudSelect T="int?" Label="Farm auswählen" Value="SelectedActionId" ValueChanged="OnValueChanged" Dense="true"
            Variant="Variant.Outlined" Clearable="true" Disabled="@IsReadOnly"
-           UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "save-chicken-action-selector" })">
+           UserAttributes="@(new Dictionary<string, object> { ["data-testid"] = "farm-selector" })">
     @foreach (var farm in GetFilteredActions())
     {
         <MudSelectItem Value="@((int?)farm.Id)">

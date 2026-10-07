@@ -8,7 +8,13 @@
     "test:ui": "playwright test --ui",
     "test:debug": "playwright test --debug",
     "test:report": "playwright show-report",
-    "test:codegen": "playwright codegen http://localhost:8080"
+    "test:codegen": "playwright codegen http://localhost:8080",
+    "test:setup": "cd ../infrastructure/development && docker compose down -v && docker compose up -d && sleep 10 && curl -X GET http://localhost:8091/api/Setup/setup",
+    "test:cleanup": "cd ../infrastructure/development && docker compose down -v",
+    "test:full": "bash scripts/test-runner.sh",
+    "test:full:no-cleanup": "bash scripts/test-runner.sh --no-cleanup",
+    "test:full:skip-setup": "bash scripts/test-runner.sh --skip-setup",
+    "test:global-setup": "npx ts-node ./tests/global-setup.ts"
   },
   "keywords": [
     "playwright",
@@ -20,6 +26,7 @@
   "devDependencies": {
     "@playwright/test": "^1.42.0",
     "@types/node": "^20.19.37",
+    "ts-node": "^10.9.1",
     "typescript": "^5.3.0"
   }
 }
