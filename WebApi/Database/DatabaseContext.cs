@@ -211,13 +211,7 @@ public class DatabaseContext : IdentityDbContext<IdentityUser>
 
         modelBuilder.Entity<SaveChickenAction>(entity =>
         {
-            // Legacy / Direct HasMany (optional or during transition)
-            entity.HasMany(e => e.Farms)
-                .WithOne(f => f.SaveChickenAction)
-                .HasForeignKey(f => f.SaveChickenActionId)
-                .OnDelete(DeleteBehavior.SetNull);
-
-            // New Many-to-Many via Join Entity
+            // Many-to-Many via Join Entity
             entity.HasMany(e => e.SaveChickenActionFarms)
                 .WithOne(saf => saf.SaveChickenAction)
                 .HasForeignKey(saf => saf.SaveChickenActionId)

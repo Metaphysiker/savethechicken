@@ -169,7 +169,6 @@ namespace WebApi.Controllers.ControllersImpl
                 Size = publicDto.Size,
                 Color = publicDto.Color,
                 GeneralInformation = publicDto.GeneralInformation,
-                SaveChickenActionId = publicDto.SaveChickenActionId,
                 IsSubmittedFromPublicForm = true,
                 IsHandled = false, // Public farms start as unhandled
                 CreatedAt = DateTime.UtcNow,
@@ -177,6 +176,20 @@ namespace WebApi.Controllers.ControllersImpl
             };
 
             var result = await _service.Create(farm, FarmIncludes.Default);
+            
+            // If SaveChickenActionId is provided, create the join entry
+            if (publicDto.SaveChickenActionId.HasValue)
+            {
+                _db.SaveChickenActionFarms.Add(new SaveChickenActionFarm
+                {
+                    SaveChickenActionId = publicDto.SaveChickenActionId.Value,
+                    FarmId = result.Id,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                });
+                await _db.SaveChangesAsync();
+            }
+
             var resultDto = _mapper.mapper.Map<FarmDto>(result);
 
             return CreatedAtAction(nameof(Read), new { id = resultDto.Id }, resultDto);

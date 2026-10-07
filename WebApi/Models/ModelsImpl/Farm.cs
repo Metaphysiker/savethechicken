@@ -19,8 +19,6 @@ namespace WebApi.Models.ModelsImpl
         public Address Address { get; set; } = null!;
         public int AddressId { get; set; }
         public List<StoredFile> Files { get; set; }
-        public int? SaveChickenActionId { get; set; }
-        public SaveChickenAction? SaveChickenAction { get; set; }
         public List<SaveChickenActionFarm> SaveChickenActionFarms { get; set; } = new();
         public bool IsSubmittedFromPublicForm { get; set; } = false;
         public bool IsHandled { get; set; } = false;

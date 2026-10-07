@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Shared.Dtos.DtosImpl
 {
-    public class FarmDto : IDto, IEntityWithFileDtos, IEntityWithSaveChickenActionDto
+    public class FarmDto : IDto, IEntityWithFileDtos
     {
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -25,8 +25,6 @@ namespace Shared.Dtos.DtosImpl
         public AddressDto Address { get; set; }
         public int AddressId { get; set; }
         public List<StoredFileDto> Files { get; set; }
-        public SaveChickenActionDto? SaveChickenAction { get; set; }
-        public int? SaveChickenActionId { get; set; }
         public bool IsSubmittedFromPublicForm { get; set; } = false;
         public bool IsHandled { get; set; } = false;
         public string GenericName { get; set; } = string.Empty;

@@ -29,53 +29,6 @@ public class MigrationController : ControllerBase
     [HttpGet("migrate")]
     public async Task<ActionResult> Migrate()
     {
-        await using var tx = await _db.Database.BeginTransactionAsync();
-        try
-        {
-            var farms = await _db.Farms
-                .Where(f => f.SaveChickenActionId != null)
-                .ToListAsync();
-
-            if (farms.Count == 0)
-                return Ok(new { Message = "No farms found requiring migration." });
-
-            var existing = (await _db.Set<SaveChickenActionFarm>()
-                    .Select(x => new { x.FarmId, x.SaveChickenActionId })
-                    .ToListAsync())
-                .Select(x => (x.FarmId, x.SaveChickenActionId))
-                .ToHashSet();
-
-            var now = DateTime.UtcNow;
-            var created = 0;
-
-            foreach (var farm in farms)
-            {
-                var actionId = farm.SaveChickenActionId!.Value;
-
-                if (existing.Add((farm.Id, actionId)))
-                {
-                    _db.Set<SaveChickenActionFarm>().Add(new SaveChickenActionFarm
-                    {
-                        FarmId = farm.Id,
-                        SaveChickenActionId = actionId,
-                        CreatedAt = now,
-                        UpdatedAt = now
-                    });
-                    created++;
-                }
-
-                farm.SaveChickenActionId = null;
-            }
-
-            await _db.SaveChangesAsync();
-            await tx.CommitAsync();
-
-            return Ok(new { TotalFarmsProcessed = farms.Count, NewJoinEntriesCreated = created });
-        }
-        catch (Exception ex)
-        {
-            await tx.RollbackAsync();
-            return StatusCode(500, new { Error = ex.Message, Inner = ex.InnerException?.Message });
-        }
+        return Ok(new { Message = "Migration no longer needed - SaveChickenActionId removed from Farm." });
     }
 }

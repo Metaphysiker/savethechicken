@@ -25,14 +25,12 @@ namespace WebApi.Models.ModelsImpl
         public string? DriverRoutePlansJson { get; set; }
 
         public List<SaveChickenRequest> SaveChickenRequests { get; set; }
-        public List<Farm> Farms { get; set; }
         public List<SaveChickenActionFarm> SaveChickenActionFarms { get; set; } = new();
         public List<SaveChickenDriveRequest> SaveChickenDriveRequests { get; set; }
 
         public SaveChickenAction()
         {
             SaveChickenRequests = new List<SaveChickenRequest>();
-            Farms = new List<Farm>();
             SaveChickenDriveRequests = new List<SaveChickenDriveRequest>();
         }
 

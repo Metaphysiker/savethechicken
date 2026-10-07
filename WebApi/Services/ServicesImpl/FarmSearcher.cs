@@ -28,9 +28,6 @@ namespace Services.ServicesImpl
             if (search.Ids != null && search.Ids.Any())
                 query = query.Where(x => search.Ids.Contains(x.Id));
 
-            if (search.SaveChickenActionIds != null && search.SaveChickenActionIds.Any())
-                query = query.Where(x => x.SaveChickenActionId.HasValue && search.SaveChickenActionIds.Contains(x.SaveChickenActionId.Value));
-
             if (!string.IsNullOrWhiteSpace(search.SearchTerm))
             {
                 query = query.Where(x =>

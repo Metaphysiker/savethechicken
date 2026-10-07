@@ -73,13 +73,20 @@ public class SetupController : ControllerBase
         var farms = await ReadSeedFile<Farm>("FarmSeed.json", options);
         if (farms != null && farms.Count > 0)
         {
-            // Assign the action ID to each farm
+            _db.Farms.AddRange(farms);
+            await _db.SaveChangesAsync();
+            
+            // Create SaveChickenActionFarm join entries
             foreach (var farm in farms)
             {
-                farm.SaveChickenActionId = action.Id;
+                _db.SaveChickenActionFarms.Add(new SaveChickenActionFarm
+                {
+                    SaveChickenActionId = action.Id,
+                    FarmId = farm.Id,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                });
             }
-
-            _db.Farms.AddRange(farms);
             await _db.SaveChangesAsync();
         }
 

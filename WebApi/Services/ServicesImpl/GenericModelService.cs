@@ -86,10 +86,6 @@ namespace WebApi.Services.ServicesImpl
                         .Where(r => r.SaveChickenActionId == saveChickenAction.Id);
                     await relatedSaveChickenRequests.ForEachAsync(r => r.SaveChickenActionId = null);
 
-                    var relatedFarms = _db.Set<Farm>()
-                        .Where(f => f.SaveChickenActionId == saveChickenAction.Id);
-                    await relatedFarms.ForEachAsync(f => f.SaveChickenActionId = null);
-
                     var relatedSaveChickenDriveRequests = _db.Set<SaveChickenDriveRequest>()
                         .Where(d => d.SaveChickenActionId == saveChickenAction.Id);
                     await relatedSaveChickenDriveRequests.ForEachAsync(d => d.SaveChickenActionId = null);
