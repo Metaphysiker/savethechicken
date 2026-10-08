@@ -150,10 +150,15 @@ namespace WebApi.Controllers.ControllersImpl
                 farms.Add(farm);
             }
 
-            foreach (var request in farms)
+            foreach (var farm in farms)
             {
-                request.SaveChickenActionId = archive.Id;
-                await _farmService.Create(request);
+                // Create the SaveChickenActionFarm relationship
+                farm.SaveChickenActionFarms.Add(new SaveChickenActionFarm
+                {
+                    SaveChickenActionId = archive.Id,
+                    Farm = farm
+                });
+                await _farmService.Create(farm);
             }
 
             return Ok("CSV processed successfully.");

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Shared.Dtos.DtosImpl
 {
-    public class FarmDto : IDto, IEntityWithFileDtos
+    public class FarmDto : IDto, IEntityWithFileDtos, IEntityWithSaveChickenActionDto
     {
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -28,6 +28,13 @@ namespace Shared.Dtos.DtosImpl
         public bool IsSubmittedFromPublicForm { get; set; } = false;
         public bool IsHandled { get; set; } = false;
         public string GenericName { get; set; } = string.Empty;
+        
+        // For UI compatibility - represents the primary/selected SaveChickenAction
+        public SaveChickenActionDto? SaveChickenAction { get; set; }
+        public int? SaveChickenActionId { get; set; }
+        
+        // For many-to-many relationship
+        public List<SaveChickenActionFarmDto> SaveChickenActionFarms { get; set; } = new();
 
         public FarmDto()
         {

@@ -23,7 +23,7 @@ export async function selectFarm(page: Page, farmId: number): Promise<void> {
   // Wait for dropdown to open
   await page.waitForTimeout(1000);
 
-  // Find the list item that matches our farm ID
+  // Find the list item that matches our farm ID pattern (now displays as #5 | FarmName)
   const optionPattern = `#${farmId}`;
   console.log(`Looking for Farm option containing: ${optionPattern}`);
 

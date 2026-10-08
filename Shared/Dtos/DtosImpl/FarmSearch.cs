@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +8,6 @@ namespace Shared.Dtos.DtosImpl
 {
     public class FarmSearch : ISearchDto
     {
+        public List<int>? SaveChickenActionIds { get; set; }
     }
 }

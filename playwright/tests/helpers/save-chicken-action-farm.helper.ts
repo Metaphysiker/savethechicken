@@ -21,7 +21,7 @@ export async function createSaveChickenActionFarm(page: Page, data: CreateSaveCh
   await addButton.click();
 
   // Wait for the dialog to open
-  await page.waitForSelector('text=SaveChickenActionAndFarmSelection', { state: 'visible', timeout: 10000 });
+  await page.getByTestId('save-chicken-action-farm-form').waitFor({ state: 'visible', timeout: 10000 });
 
   // Fill the form
   await fillSaveChickenActionFarmForm(page, {
@@ -50,7 +50,7 @@ export async function createSaveChickenActionFarm(page: Page, data: CreateSaveCh
   await createButton.click();
 
   // Wait for the dialog to close - check that the form is no longer visible
-  await page.waitForSelector('text=SaveChickenActionAndFarmSelection', { state: 'hidden', timeout: 10000 });
+  await page.getByTestId('save-chicken-action-farm-form').waitFor({ state: 'hidden', timeout: 10000 });
 
   // Wait for the table to refresh
   await page.waitForTimeout(2000);

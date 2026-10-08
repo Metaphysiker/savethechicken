@@ -1,8 +1,10 @@
 using Amazon.Extensions.NETCore.Setup;
 using Amazon.S3;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Npgsql;
@@ -10,6 +12,7 @@ using QuestPDF.Infrastructure;
 using System.Text;
 using WebApi.Factories.FactoriesImpl;
 using WebApi.Services;
+using WebApi.HealthChecks;
 using WebApi.Services.ServicesImpl;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,6 +29,11 @@ builder.Services.AddScoped<IDocumentService, DocumentService>();
 QuestPDF.Settings.License = LicenseType.Community;
 builder.Services.AddScoped<CsvImportService>();
 builder.Services.AddDbContext<DatabaseContext>();
+
+// Add health checks
+builder.Services.AddHealthChecks()
+    .AddCheck<DatabaseHealthCheck>("database");
+
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
@@ -169,5 +177,13 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Add health check endpoints
+app.MapHealthChecks("/health");
+
+app.MapHealthChecks("/health/db", new HealthCheckOptions
+{
+    Predicate = check => check.Name == "database"
+});
 
 app.Run();

@@ -1,12 +1,18 @@
 import { FullConfig } from '@playwright/test';
-import { execSync } from 'child_process';
+import { execSync, spawnSync } from 'child_process';
 import * as path from 'path';
+import * as os from 'os';
 
 // Configuration
-const DOCKER_COMPOSE_DIR = path.join(__dirname, '../../../infrastructure/development');
-const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:8091';
-const MAX_RETRIES = 30;
+const DOCKER_COMPOSE_DIR = path.join(__dirname, '../../infrastructure/testing');
+const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:8081';
+const MAX_RETRIES = 60;
 const RETRY_DELAY_MS = 2000;
+
+// Debug logging
+console.log('DOCKER_COMPOSE_DIR:', DOCKER_COMPOSE_DIR);
+console.log('API_BASE_URL:', API_BASE_URL);
+console.log('Using TESTING infrastructure');
 
 /**
  * Execute a shell command
@@ -14,11 +20,31 @@ const RETRY_DELAY_MS = 2000;
 function runCommand(command: string, cwd?: string, ignoreError: boolean = false): void {
   console.log(`  → Running: ${command}`);
   try {
-    execSync(command, {
-      cwd: cwd || DOCKER_COMPOSE_DIR,
-      encoding: 'utf-8',
-      stdio: 'inherit'
-    });
+    // On Windows, explicitly use cmd.exe with /c flag
+    if (os.platform() === 'win32') {
+      const result = spawnSync('cmd.exe', ['/c', command], {
+        cwd: cwd || DOCKER_COMPOSE_DIR,
+        stdio: 'inherit',
+        shell: false
+      });
+      
+      if (result.error) {
+        throw result.error;
+      }
+      
+      if (result.status !== 0) {
+        throw new Error(`Command failed with exit code ${result.status}`);
+      }
+    } else {
+      // On Unix-like systems, use execSync with shell
+      execSync(command, {
+        cwd: cwd || DOCKER_COMPOSE_DIR,
+        encoding: 'utf-8',
+        stdio: 'inherit',
+        shell: true
+      });
+    }
+    
     console.log(`  ✓ Command succeeded: ${command}`);
   } catch (error) {
     if (ignoreError) {
@@ -35,19 +61,23 @@ function runCommand(command: string, cwd?: string, ignoreError: boolean = false)
  */
 async function waitForUrl(url: string, timeout: number = 60000): Promise<void> {
   const startTime = Date.now();
+  let attempt = 0;
   
   while (Date.now() - startTime < timeout) {
+    attempt++;
     try {
       const response = await fetch(url);
       if (response.ok) {
+        console.log(`  ✓ URL ${url} is accessible (attempt ${attempt})`);
         return;
       }
+      console.log(`  ⚠ URL ${url} returned status ${response.status} (attempt ${attempt})`);
     } catch (error) {
-      // Ignore errors, will retry
+      console.log(`  ⚠ URL ${url} not accessible yet (attempt ${attempt}): ${error}`);
     }
     await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS));
   }
-  throw new Error(`Timeout waiting for URL: ${url}`);
+  throw new Error(`Timeout waiting for URL: ${url} after ${attempt} attempts`);
 }
 
 /**
@@ -84,6 +114,10 @@ async function globalSetup(config: FullConfig): Promise<void> {
   console.log('\nStep 2: Starting Docker containers...');
   runCommand('docker compose up -d', DOCKER_COMPOSE_DIR);
   console.log('✓ Containers started in detached mode');
+  
+  // Wait a moment for containers to start initializing
+  console.log('  → Waiting 5 seconds for containers to initialize...');
+  await new Promise(resolve => setTimeout(resolve, 5000));
   
   // Step 3: Wait for database to be ready
   console.log('\nStep 3: Waiting for database to be ready...');

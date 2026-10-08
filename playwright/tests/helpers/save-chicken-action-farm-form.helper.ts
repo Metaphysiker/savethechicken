@@ -16,7 +16,7 @@ export interface SaveChickenActionFarmFormData {
  */
 export async function fillSaveChickenActionFarmForm(page: Page, data: SaveChickenActionFarmFormData): Promise<void> {
   // Wait for the form to be visible
-  await page.waitForSelector('text=SaveChickenActionAndFarmSelection', { state: 'visible', timeout: 10000 });
+  await page.getByTestId('save-chicken-action-farm-form').waitFor({ state: 'visible', timeout: 10000 });
 
   // Wait for the SaveChickenAction selector to show it's pre-selected (if opened from detail page)
   // The SaveChickenAction should already be selected and read-only

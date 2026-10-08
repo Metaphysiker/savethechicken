@@ -212,7 +212,6 @@ public class CsvImportService
         {
             var farm = new Farm
             {
-                SaveChickenActionId = r.SaveChickenActionId,
                 Name = r.FarmName ?? string.Empty,
                 GeneralInformation = r.Description ?? string.Empty,
                 Contact = new Contact
@@ -227,6 +226,16 @@ public class CsvImportService
                     PostalCode = string.Empty
                 }
             };
+
+            // Add SaveChickenActionFarm relationship if SaveChickenActionId is provided
+            if (r.SaveChickenActionId.HasValue)
+            {
+                farm.SaveChickenActionFarms.Add(new SaveChickenActionFarm
+                {
+                    SaveChickenActionId = r.SaveChickenActionId.Value,
+                    Farm = farm
+                });
+            }
 
             dbContext.Farms.Add(farm);
         }

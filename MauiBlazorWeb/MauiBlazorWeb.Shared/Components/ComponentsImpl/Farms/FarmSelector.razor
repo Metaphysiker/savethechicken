@@ -9,7 +9,7 @@
     @foreach (var farm in GetFilteredActions())
     {
         <MudSelectItem Value="@((int?)farm.Id)">
-            @farm.GenericName
+            #@farm.Id | @farm.GenericName
         </MudSelectItem>
     }
 </MudSelect>
